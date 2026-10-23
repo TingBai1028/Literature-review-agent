@@ -1,0 +1,27 @@
+# Secrets: never commit these
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Run output and downloaded data (regenerate with scripts/)
+runs/
+data/raw/
+data/pdfs/
+data/cache/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Frontend
+node_modules/
+frontend/dist/

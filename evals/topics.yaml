@@ -1,0 +1,14 @@
+# Offline evaluation topics. Each needs a published survey paper to compare against.
+# TODO: replace the examples with 5-10 topics your team knows well.
+
+topics:
+  - id: example-1
+    question: "TODO: research question"
+    effort: normal
+    survey:
+      title: "TODO: survey paper title"
+      doi: "TODO"
+    expected_clusters:   # from the survey's section headings
+      - "TODO"
+    expected_gaps:       # from the survey's open problems / future work
+      - "TODO"

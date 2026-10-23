@@ -1,0 +1,17 @@
+pydantic>=2.6
+httpx>=0.27
+numpy>=1.26
+python-dotenv>=1.0
+pyyaml>=6.0
+pytest>=8.0
+
+# TODO: uncomment when you implement the Clusterer
+# sentence-transformers>=3.0   # for SPECTER2 or other embedding models
+# scikit-learn>=1.4            # for silhouette score / clustering
+# umap-learn>=0.5
+# hdbscan>=0.8
+
+# TODO: uncomment when you implement full-text reading (High / Ultra)
+# pypdf>=4.0
+
+# TODO: add your LLM provider's SDK, e.g. openai or anthropic

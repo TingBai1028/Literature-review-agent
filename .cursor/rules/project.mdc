@@ -1,0 +1,21 @@
+---
+description: Project architecture and conventions for the literature review agent
+alwaysApply: true
+---
+
+# Project context
+
+This is a literature review agent for the Open Agent Hackathon 2026 (Track 02: The Agent That Can Explain Why).
+The pipeline is described in ARCHITECTURE.md: Planner -> Retriever -> Clusterer -> Connection finder -> Gap finder,
+with grading agents after the last three and two human reviews.
+
+# Conventions
+
+- Agents exchange the Pydantic models in `litagent/schemas.py`. Don't pass free text between agents.
+- Every connection and gap must carry Evidence (paper id + verbatim quote).
+- All LLM calls go through `litagent/integrations/llm.py`.
+- Paper data goes through `litagent/integrations/zetaris.py`; agent findings go to the Meterless world model in `litagent/integrations/meterless.py`.
+- Tunable numbers live in `litagent/config.py`, not inside agents.
+- Log each important decision with `trace.log(...)`, including why.
+- Keep the dry-run branch in each agent working; `pytest` runs the pipeline in dry-run mode.
+- Never commit keys. Read secrets from `.env` via environment variables.
