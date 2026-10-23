@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 from pathlib import Path
 from typing import TypeVar
@@ -84,7 +85,7 @@ def complete_json(
         usage = response.usage
         tokens = {"prompt": usage.prompt_tokens, "completion": usage.completion_tokens} if usage else None
         try:
-            parsed = output_model.model_validate_json(_strip_fences(text))
+            parsed = output_model.model_validate_json(_clean_json_text(text))
         except ValidationError as e:
             _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "invalid JSON",
                  "retry with error" if attempt == 1 else "raise", str(e), response.model or model, tokens, start)
@@ -101,8 +102,15 @@ def complete_json(
     raise AssertionError("unreachable")
 
 
-def _strip_fences(text: str) -> str:
-    """Some models wrap JSON in ```json fences even when asked not to."""
+def _clean_json_text(text: str) -> str:
+    """Remove reasoning and wrappers around the JSON.
+
+    Nemotron 3 reasons by default and may put its thinking in <think>...</think> before the answer
+    (sometimes without the opening tag). Some models also wrap JSON in ```json fences.
+    """
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    if "</think>" in text:
+        text = text.rsplit("</think>", 1)[1]
     text = text.strip()
     if text.startswith("```"):
         text = text.split("\n", 1)[1] if "\n" in text else ""

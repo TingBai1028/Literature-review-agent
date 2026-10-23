@@ -15,9 +15,9 @@
     "meterless_nightshift": "Primary AI provider for every LLM call (OpenAI-compatible client)",
     "meterless_engine": "World Model: shared findings graph returned as paper_map (real engine: TODO)",
     "zetaris": "Data layer, running locally in Docker",
-    "nvidia": "Nemotron model via Nightshift (model ID: TODO)",
+    "nvidia": "Nemotron 3 Super via Nightshift for every agent",
     "cursor": "TODO: optional"
   },
-  "models": ["TODO-nemotron-model-id"],
+  "models": ["nvidia/nemotron-3-super-120b-a12b (TODO: confirm ID in Nightshift Providers tab)"],
   "license": "TODO"
 }

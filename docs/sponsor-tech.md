@@ -5,7 +5,7 @@ Required in the submission: how we used Meterless (Nightshift + an Engine), Zeta
 ## Meterless Nightshift: primary AI provider
 
 - **What it does for us:** every LLM call (Planner, cluster labels, Connection finder, Gap finder, grading agent) goes through Nightshift. It accepts OpenAI-format requests, so `complete_json` uses the official OpenAI client with `base_url=METERLESS_BASE_URL` and `api_key=METERLESS_RUNTIME_TOKEN`.
-- **Model:** set explicitly in `litagent/config.py` (`NIGHTSHIFT_MODEL`), no automatic routing, so a non-NVIDIA model is never picked. TODO: fill in the Nemotron model ID from the Providers tab.
+- **Model:** Nemotron 3 Super (`nvidia/nemotron-3-super-120b-a12b`), set explicitly in `litagent/config.py` (`NIGHTSHIFT_MODEL`), no automatic routing, so a non-NVIDIA model is never picked. Chosen for speed (12B active parameters) and long context. Reasoning is on by default, so `<think>` blocks are removed before JSON parsing. TODO: confirm the exact ID in the Providers tab.
 - **Where in the code:** `litagent/integrations/llm.py` (JSON output validated with Pydantic, one retry with the validation error, 60 s timeout, model name + token usage logged per call)
 - **Screenshot / evidence:** TODO
 
@@ -27,7 +27,7 @@ Required in the submission: how we used Meterless (Nightshift + an Engine), Zeta
 
 ## NVIDIA
 
-- **Nemotron through Nightshift:** all agents use one Nemotron model, connected in Nightshift's Providers tab (the NVIDIA key lives there, never in our app or `.env`).
+- **Nemotron through Nightshift:** all agents use Nemotron 3 Super, connected in Nightshift's Providers tab (the NVIDIA key lives there, never in our app or `.env`).
 - **Evidence:** every LLM event in `logs/trace-<run_id>.jsonl` records the `model` that handled the request, as reported by Nightshift.
 - No local GPU is used.
 
