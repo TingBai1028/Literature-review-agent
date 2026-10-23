@@ -12,5 +12,6 @@ Hackathon rule: use open data you can use legally, keep samples small, add downl
 
 ## In this folder
 
-- `sample/`: TODO: a few small JSON files of papers for tests and the demo
+- `sample/`: real OpenAlex papers (CC0), about 60 per topic, used by sample mode (`SAMPLE_MODE=true`) and the tests. The Retriever picks the file whose name shares the most words with the question. Add a topic with
+  `python scripts/download_sample_data.py "your topic" --limit 60 --year-from 2021 --out data/sample --name your_topic_words`.
 - `raw/`, `pdfs/`, `cache/`: downloaded data; git-ignored. Recreate with `python scripts/download_sample_data.py`.

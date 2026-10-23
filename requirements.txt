@@ -5,7 +5,15 @@ python-dotenv>=1.0
 pyyaml>=6.0
 pytest>=8.0
 
-# TODO: uncomment when you implement the Clusterer
+# LLM: Meterless Nightshift is OpenAI-compatible, so we use the official OpenAI client
+openai>=1.40
+
+# POST /run API (run.py)
+fastapi>=0.110
+uvicorn>=0.29
+
+# TODO: uncomment when you implement the Clusterer.
+# The Docker image must not download models at runtime: bake the embedding model in at build time.
 # sentence-transformers>=3.0   # for SPECTER2 or other embedding models
 # scikit-learn>=1.4            # for silhouette score / clustering
 # umap-learn>=0.5
@@ -13,5 +21,3 @@ pytest>=8.0
 
 # TODO: uncomment when you implement full-text reading (High / Ultra)
 # pypdf>=4.0
-
-# TODO: add your LLM provider's SDK, e.g. openai or anthropic

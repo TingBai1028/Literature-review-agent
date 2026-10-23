@@ -50,9 +50,30 @@ class DefaultCriteria:
         return date.today().year - self.years_back
 
 
+# Nightshift model for every agent. Must be an NVIDIA Nemotron model, set explicitly
+# (no automatic routing, which could pick a non-NVIDIA model).
+# TODO: copy the exact model ID from Nightshift's Providers tab.
+NIGHTSHIFT_MODEL = "TODO-nemotron-model-id"
+
+
+def _env_bool(name: str, default: str = "false") -> bool:
+    return os.getenv(name, default).strip().lower() in {"1", "true", "yes"}
+
+
 @dataclass
 class Settings:
-    dry_run: bool = field(default_factory=lambda: os.getenv("DRY_RUN", "false").lower() == "true")
+    # Sample mode: the whole pipeline runs on data/sample/ with no Zetaris, Nightshift or network
+    sample_mode: bool = field(default_factory=lambda: _env_bool("SAMPLE_MODE"))
+
+    # LLM (Meterless Nightshift, OpenAI-compatible)
+    llm_model: str = NIGHTSHIFT_MODEL
+    llm_timeout_s: float = 60.0  # per model request (rules: 30-90 s)
+
+    # Zetaris SQL requests (rules: 30-60 s)
+    zetaris_timeout_s: float = 45.0
+
+    # Whole run: stop between stages and return a partial result after this many seconds
+    run_timeout_s: float = field(default_factory=lambda: float(os.getenv("RUN_TIMEOUT_S", "600")))
 
     # Clustering
     cluster_similarity_threshold: float = 0.7  # TODO: check against your embedding model on a sample
@@ -66,4 +87,4 @@ class Settings:
 
     defaults: DefaultCriteria = field(default_factory=DefaultCriteria)
 
-    runs_dir: str = "runs"
+    logs_dir: str = "logs"

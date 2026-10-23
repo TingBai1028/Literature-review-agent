@@ -6,11 +6,12 @@ TODO: choose a stack (e.g. React + a graph library such as Cytoscape.js or react
 
 1. **Chat box** for the research question, plus an effort selector (Normal / Medium / High / Ultra).
 2. **Human review 1:** summary and paper list, with a box for feedback ("only papers after 2022", "more review papers").
-3. **Paper map:** clusters, connections and gaps rendered from the Meterless world model (`WorldModel.to_graph_json()`).
+3. **Paper map:** clusters, connections and gaps rendered from the Meterless world model (`output.paper_map` in the `/run` response).
    - Clicking a connection or gap shows its evidence: the paper and the quote.
 4. **Human review 2:** thumbs up / down and a follow-up message box.
-5. **Trace view (optional, good for the demo):** the steps from `runs/<run_id>.jsonl`, including grading scores and redos.
+5. **Trace view (optional, good for the demo):** the steps from `logs/trace-<run_id>.jsonl`, including grading scores and redos.
 
 ## Connecting to the pipeline
 
-TODO: expose `litagent.orchestrator.run_pipeline` through a small API (e.g. FastAPI), and implement the `Reviewer` interface in `litagent/human_review.py` so human reviews come from the UI instead of the terminal.
+`POST /run` (`litagent/api.py`, started by `python run.py`) runs the pipeline and returns JSON. It never waits for input: pass the user's Human review 1 comment as `input.feedback` to re-plan.
+TODO: for fully interactive reviews, implement the `Reviewer` interface in `litagent/human_review.py` so they come from the UI.

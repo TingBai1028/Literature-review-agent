@@ -15,4 +15,4 @@ Code: `litagent/agents/grader.py` · Prompt: `prompts/grader.md`
 8. **Guardrails:** sees the output and the evidence, not the producing agent's reasoning. TODO: try a different model from the producing agents.
 
 **Input:** stage, output, papers · **Output:** `Grade`
-**Owner:** TODO · **Status:** Dry run + size check written
+**Owner:** TODO · **Status:** Sample mode + size check written

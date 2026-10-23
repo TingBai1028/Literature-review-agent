@@ -9,9 +9,25 @@ Source: participant onboarding deck. Final requirements are in the Official Rule
 - [ ] **Demo video**: 1–4 minutes, agent in action
 - [ ] **Slide deck**: problem, user, solution, architecture
 - [ ] **GitHub repository**: README with run instructions (Colab links if used)
-- [ ] **Sponsor tech explanation**: Zetaris, Meterless, Cursor, NVIDIA → `docs/sponsor-tech.md`
+- [ ] **Sponsor tech explanation**: Meterless (Nightshift + World Model), Zetaris, NVIDIA, Cursor (optional) → `docs/sponsor-tech.md`
 - [ ] **Pre-existing components** declared → `docs/pre-existing-components.md`
 - [ ] **Project details**: name, description, team members, track (Track 02)
+
+## Technical execution requirements
+
+- [ ] Public GitHub repo
+- [ ] `run.py` at the repo root; `POST /run` returns `success` / `error` JSON (never crashes silently)
+- [ ] At least 3 examples: `input_examples/` + matching `output_examples/` (sample mode)
+- [ ] `SAMPLE_MODE=true` runs end to end with no Zetaris, Nightshift or network
+- [ ] Meterless Nightshift is the primary AI provider; Nemotron model ID set in `litagent/config.py`
+- [ ] A Meterless Engine works in a user-facing feature with a passing test: World Model → `paper_map` (`tests/test_meterless_world_model.py`). TODO: connect the real engine
+- [ ] Zetaris running locally in Docker is the data layer (`ZETARIS_REST_URL`, `ZETARIS_ORG_ID`, `ZETARIS_API_KEY`)
+- [ ] `logs/trace-<run_id>.jsonl` written for every run, with model names and no secrets
+- [ ] Timeouts on every external call; full run within 5–10 minutes (`RUN_TIMEOUT_S`)
+- [ ] `docker build` works and the container runs in sample mode; no model downloads at runtime, no local GPU
+- [ ] `.env.example` has placeholders only
+- [ ] `metadata.json` filled in and checked against the Submission Form Preview
+- [ ] `pytest` passes
 
 ## Repo hygiene
 
@@ -37,5 +53,5 @@ Ties go to the higher Impact score, then the earlier submission.
 
 - [ ] Agents that act, not just describe
 - [ ] Critique, retries and recovery visible in the demo
-- [ ] Traces showing how the agent got its answer (`runs/*.jsonl`)
+- [ ] Traces showing how the agent got its answer (`logs/trace-*.jsonl`)
 - [ ] An output someone could actually use

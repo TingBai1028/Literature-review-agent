@@ -19,4 +19,4 @@ Code: `litagent/agents/clusterer.py` · Prompt: `prompts/cluster_labeler.md`
 **Research TODO:** confirm the 0.7 threshold for the chosen embedding model; decide what to do with single-paper outliers (they may be useful to the Gap finder).
 
 **Input:** `list[Paper]`, Effort · **Output:** `list[Cluster]`
-**Owner:** TODO · **Status:** Dry run only
+**Owner:** TODO · **Status:** Sample mode only

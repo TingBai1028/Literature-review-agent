@@ -1,0 +1,1223 @@
+{
+  "run_id": "example-01",
+  "status": "success",
+  "output": {
+    "run_id": "example-01",
+    "status": "done",
+    "message_to_user": null,
+    "plan": {
+      "question": "How do large language models handle low-resource languages?",
+      "criteria": {
+        "topic": "How do large language models handle low-resource languages?",
+        "year_from": 2021,
+        "year_to": null,
+        "min_citations_per_year": null,
+        "paper_types": [
+          "primary",
+          "review"
+        ]
+      },
+      "queries": [
+        "How do large language models handle low-resource languages?"
+      ],
+      "effort": "normal",
+      "max_papers": 30,
+      "token_budget": 50000,
+      "used_defaults": [
+        "year_from=2021",
+        "paper_types=primary+review"
+      ]
+    },
+    "papers": [
+      {
+        "id": "W7154856337",
+        "title": "Contextual Learning Support for Low-Resource Language Large Language Models: Efficient Training Strategies for Zero-Shot and Few-Shot Learning",
+        "abstract": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation resources. This paper proposes an efficient training strategy based on contextual learning, aimed at addressing the difficulties encountered by low-resource languages in zero-shot and few-shot learning scenarios. The approach leverages cross-lingual knowledge transfer from high-resource languages and systematically enhances contextual information in prompts and representations to maximize the model\u2019s generalization ability. We explore the combination of multi-task learning and self-supervised learning to exploit heterogeneous corpora, using existing multilingual and monolingual resources for pretraining. A lightweight fine-tuning stage with a small amount of labeled data is then employed for targeted adaptation to specific downstream tasks and languages. The proposed framework is designed to be computationally efficient, reducing training cost while maintaining or improving performance. Experimental results on a range of language understanding and generation benchmarks demonstrate significant improvements in task performance across various low-resource languages under both zero-shot and few-shot conditions. Ablation studies further highlight the contribution of contextual learning components and cross-lingual transfer mechanisms. These findings provide practical guidance for developing scalable large language models for underrepresented languages and offer new ideas and methods for future research on inclusive and resource-efficient language technologies.",
+        "year": 2026,
+        "authors": [
+          "Tanya Xiang"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://pinnaclepubs.com/index.php/PAPPS/article/download/664/642",
+        "doi": "https://doi.org/10.71222/gkj3aw70",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4402389783",
+        "title": "Performance of Recent Large Language Models for a Low-Resourced Language",
+        "abstract": "Large Language Models (LLMs) have shown significant advances in the past year. In addition to new versions of GPT and Llama, several other LLMs have been introduced recently. Some of these are open models \u2013 available for download and modification. Although multilingual large language models have been available for some time, their performance on low-resourced languages such as Sinhala has been poor. We evaluated four recent LLMs on their performance directly in the Sinhala language, and by translation to and from English. We also evaluated their fine-tunability with a small amount of fine-tuning data. Claude and GPT 4o perform well out-of-the-box and do significantly better than previous versions. Llama and Mistral perform poorly but show some promise of improvement with fine tuning.",
+        "year": 2024,
+        "authors": [
+          "Ravindu Jayakody",
+          "Gihan Dias"
+        ],
+        "citation_count": 19,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2407.21330",
+        "doi": "https://doi.org/10.1109/ialp63756.2024.10661169",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7155356580",
+        "title": "Employing large language models in Swahili, a low-resource language",
+        "abstract": "The article is potentially destined to examine the efficacy of Large Language Models (LLMs) in Swahili (standard dialect spoken in Tanzania), a relatively less privileged and Low-resource Language (LRL) that, to some extent, remains underrepresented in AI communication technologies. Despite the rapid growth in LLM use, Swahili users in Tanzania often encounter inaccuracies and unclear outputs, highlighting persistent challenges in model performance. The inaccuracies of LLMs in Swahili undoubtedly demonstrate the challenges associated with their use and effectiveness in such a language. In this study, participants from Tanzanian Swahili-speaking communities evaluated the models' outputs through usability tests. Findings reveal that apart from architectural limitations, data scarcity drives the ineffectiveness of the models. Frequent distortions, mostly in Swahili than in French confirms the need for broader multilingual inclusion in LLM training. The study highlights the imperative for inclusive AI development that empowers low-resource languages.",
+        "year": 2026,
+        "authors": [
+          "Dietram Efrem Mgeni -"
+        ],
+        "citation_count": 2,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1016/j.nlp.2026.100209",
+        "doi": "https://doi.org/10.1016/j.nlp.2026.100209",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4405173107",
+        "title": "Opportunities and Challenges of Large Language Models for Low-Resource Languages in Humanities Research",
+        "abstract": "Low-resource languages serve as invaluable repositories of human history, embodying cultural evolution and intellectual diversity. Despite their significance, these languages face critical challenges, including data scarcity and technological limitations, which hinder their comprehensive study and preservation. Recent advancements in large language models (LLMs) offer transformative opportunities for addressing these challenges, enabling innovative methodologies in linguistic, historical, and cultural research. This study systematically evaluates the applications of LLMs in low-resource language research, encompassing linguistic variation, historical documentation, cultural expressions, and literary analysis. By analyzing technical frameworks, current methodologies, and ethical considerations, this paper identifies key challenges such as data accessibility, model adaptability, and cultural sensitivity. Given the cultural, historical, and linguistic richness inherent in low-resource languages, this work emphasizes interdisciplinary collaboration and the development of customized models as promising avenues for advancing research in this domain. By underscoring the potential of integrating artificial intelligence with the humanities to preserve and study humanity's linguistic and cultural heritage, this study fosters global efforts towards safeguarding intellectual diversity.",
+        "year": 2024,
+        "authors": [
+          "Tianyang Zhong",
+          "Zhenyuan Yang",
+          "Zhengliang Liu",
+          "Zhang, Ruidong",
+          "You, Weihang",
+          "Yiheng Liu",
+          "Haiyang Sun",
+          "Pan, Yi",
+          "Yiwei Li",
+          "Yifan Zhou",
+          "Hanqi Jiang",
+          "Junhao Chen",
+          "Li, Xiang",
+          "Liu, Tianming"
+        ],
+        "citation_count": 12,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2412.04497",
+        "doi": "https://doi.org/10.48550/arxiv.2412.04497",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4407393353",
+        "title": "Fine-tuning large language models for improved health communication in low-resource languages",
+        "abstract": "BACKGROUND: The reported study illustrates a methodology for compiling training datasets to fine-tune Large Language Models (LLMs) for healthcare information in Vietnamese, a low-resource language. The objective is to bridge the gap in medical information accessibility and enhance healthcare communication in developing countries by adapting LLMs to specific linguistic nuances and domain needs. METHOD: The methodology involves selecting a base model, compiling a domain-specific dataset, and fine-tuning the model with this dataset. Three open-source models were selected. The dataset, comprising approximately 337,000 prompt-response pairs in Vietnamese, was compiled using existing datasets, data crawled from Vietnamese medical online forums, and distilled from Vietnamese medical textbooks. The three models were fine-tuned using the Low-Rank adaptation (LoRA) and Quantized Low-Rank adaptation (QLoRA) techniques. Models' performances were evaluated using BertScore score, Rouge-L score, and the \"LLM-as-a-Judge\" method. RESULTS: The fine-tuned models showed enhancements in performance over their base versions across evaluation metrics in BertScore score, Rouge-L score and \"LLM-as-a-Judge\" method, confirming the effectiveness of the fine-tuning process. This study details the process of fine-tuning open-source LLMs for health information inquiries in Vietnamese, demonstrating its potential to improve healthcare communication in low-resource languages. Deploying the fine-tuned LLM on-premise enhances data privacy and security. However, the significant computing power and costs required pose challenges, especially for organizations in developing countries. CONCLUSION: This case study highlights the unique challenges faced by developing countries using low-resource languages. Initiatives are needed to emphasize efforts to bridge healthcare gaps in underserved areas and contribute to global health equity.",
+        "year": 2025,
+        "authors": [
+          "Nhat Bui",
+          "Giang Nguyen",
+          "Nguyen Nguyen",
+          "Bao Vo",
+          "Luan Vo",
+          "Tom Huynh",
+          "Arthur Tang",
+          "Van Nhiem Tran",
+          "Tuyen Huynh",
+          "Huy Quang Nguyen",
+          "Minh Ngoc Dinh"
+        ],
+        "citation_count": 27,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1016/j.cmpb.2025.108655",
+        "doi": "https://doi.org/10.1016/j.cmpb.2025.108655",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4392637283",
+        "title": "Large Language Models and Low-Resource Languages: An Examination of Armenian NLP",
+        "abstract": "This paper presents a comprehensive review of Natural Language Processing (NLP) research on Armenian, a language that, despite its rich history and unique linguistic characteristics, is currently low-resource in the field of NLP.We critically synthesize and evaluate various studies in Armenian NLP, highlighting key advancements, challenges, and areas for improvement.A notable aspect of our work is the underlined lack of application of Large Language Models (LLMs) in Armenian NLP, signifying an area of potential exploration and development.Identifying and discussing these challenges and opportunities lays the groundwork for future research directions in Armenian NLP.The emphasis on Armenian also advocates for increased attention to low-resource languages in NLP research, stressing the importance of linguistic diversity and equity.To the best of our knowledge, this is the first paper providing such an extensive review of Armenian NLP, marking a significant contribution to the field.",
+        "year": 2023,
+        "authors": [
+          "Hayastan Avetisyan",
+          "David Broneske"
+        ],
+        "citation_count": 4,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://aclanthology.org/2023.findings-ijcnlp.18.pdf",
+        "doi": "https://doi.org/10.18653/v1/2023.findings-ijcnlp.18",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4408280927",
+        "title": "Toward Low-Resource Languages Machine Translation: A Language-Specific Fine-Tuning With LoRA for Specialized Large Language Models",
+        "abstract": "In the field of computational linguistics, addressing machine translation (MT) challenges for low-resource languages remains crucial, as these languages often lack extensive data compared to high-resource languages. General large language models (LLMs), such as GPT-4 and Llama, primarily trained on monolingual corpora, face significant challenges in translating low-resource languages, often resulting in subpar translation quality. This study introduces Language-Specific Fine-Tuning with Low-rank adaptation (LSFTL), a method that enhances translation for low-resource languages by optimizing the multi-head attention and feed-forward networks of Transformer layers through low-rank matrix adaptation. LSFTL preserves the majority of the model parameters while selectively fine-tuning key components, thereby maintaining stability and enhancing translation quality. Experiments on non-English centered low-resource Asian languages demonstrated that LSFTL improved COMET scores by 1-3 points compared to specialized multilingual machine translation models. Additionally, LSFTL\u2019s parameter-efficient approach allows smaller models to achieve performance comparable to their larger counterparts, highlighting its significance in making machine translation systems more accessible and effective for low-resource languages.",
+        "year": 2025,
+        "authors": [
+          "Xiao LIANG",
+          "Yen-Min Jasmina Khaw",
+          "Soung\u2010Yue Liew",
+          "Tien-Ping Tan",
+          "Donghong Qin"
+        ],
+        "citation_count": 33,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1109/access.2025.3549795",
+        "doi": "https://doi.org/10.1109/access.2025.3549795",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7115677253",
+        "title": "Adaptive and Efficient Large Language Models for Low-Resource African Languages",
+        "abstract": "PAIDeF SuperAI 2025 Conference Adaptive and Efficient Large Language Models for Low-Resource African Languages Authors: Mohammed Ajuji, Saifullahi Ibrahim Waziri, Datti Useni Emmanuel Keywords\u2014Large Language Models, Low-Resource Languages, LoRA, Fine-Tuning, African NLP, Responsible AI, LLaMA-3, Synthetic Data Augmentation.",
+        "year": 2025,
+        "authors": [
+          "Ajuji, Mohammed",
+          "Waziri, Saifullahi Ibrahim",
+          "Emmanuel, Datti Useni"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.5281/zenodo.17952587",
+        "doi": "https://doi.org/10.5281/zenodo.17952587",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7165482954",
+        "title": "Large Language Models Adaptation for Low-resource Languages: The Case for African Languages",
+        "abstract": "Despite remarkable advances in Large Language Models (LLMs), African languagesremain critically underserved by the current training and adaptation pipeline. This thesisaddresses the fundamental bottlenecks in adapting LLMs for low-resource languagesthrough a unified two-stage investigation: benchmarking via Supervised Fine-Tuning(SFT) and foundational adaptation via Continued Pre-Training (CPT).Our first contribution is INJONGO, a natively-generated multicultural benchmark forintent classification and slot-filling spanning 16 African languages. Crucially, INJONGO isnon-contaminated\u2014not included in the training data of the LLMs we evaluate\u2014ensuringfair assessment. Our experiments yield two key findings: (1) SFT effectively adaptsdecoder-only LLMs to downstream tasks, demonstrating the viability of task-specificalignment; and (2) encoder models pre-trained on African languages (e.g., AfroXLMR-76L)with SFT dramatically outperform those without such exposure. This second findingdirectly motivates our subsequent work: if pre-training on African languages benefits encodersso significantly, the same principle should apply to decoder-only LLMs.Building on this insight, our second contribution is AfriqueLLM, a suite of modelsadapted for 20 African languages via CPT on 26 billion tokens. We systematically investi-gate data mixture strategies required to maintain general capabilities while adapting lan-guage. Our findings demonstrate that incorporating code, mathematics, and synthetic dataprevents catastrophic forgetting. We further identify a \u201cZero-to-Hero\u201d phenomenon: mod-els with strong architectural foundations (e.g., Qwen 3) adapt more effectively than thosewith broader but shallower multilingual coverage. Our flagship model, AfriqueQwen-14B,achieves state-of-the-art results on African benchmarks, emphasizing that data composi-tion and architectural choice are the primary drivers of successful low-resource adaptation.All datasets, models, and code are publicly released to support the development ofrobust LLMs for the African continent.",
+        "year": 2026,
+        "authors": [
+          "Peter Yu"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://mcgill.scholaris.ca/bitstreams/b25141aa-742c-4dd8-9b25-4117b965cd9a/download",
+        "doi": "https://doi.org/10.82308/55922",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7155373379",
+        "title": "Continual-learning for Modelling Low-Resource Languages from Large Language Models",
+        "abstract": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge. For example, small language models (SLM) built for low-resource languages by adapting large language models (LLMs) pose the challenge of catastrophic forgetting. This work proposes to employ a continual learning strategy using parts-of-speech (POS)-based code-switching along with a replay adapter strategy to mitigate the identified gap of catastrophic forgetting while training SLM from LLM. Experiments conducted on vision language tasks such as visual question answering and language modelling task exhibits the success of the proposed architecture.",
+        "year": 2026,
+        "authors": [
+          "Association for Computational Linguistics 2026",
+          "DAS DAS",
+          "Santosh Srinath K",
+          "Varun Reddy Padala",
+          "Mudit Somani",
+          "Prajna Upadhyay"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.48448/aq48-r240",
+        "doi": "https://doi.org/10.48448/aq48-r240",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7123296616",
+        "title": "Continual-learning for Modelling Low-Resource Languages from Large Language Models",
+        "abstract": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge. For example, small language models (SLM) built for low-resource languages by adapting large language models (LLMs) pose the challenge of catastrophic forgetting. This work proposes to employ a continual learning strategy using parts-of-speech (POS)-based code-switching along with a replay adapter strategy to mitigate the identified gap of catastrophic forgetting while training SLM from LLM. Experiments conducted on vision language tasks such as visual question answering and language modelling task exhibits the success of the proposed architecture.",
+        "year": 2026,
+        "authors": [
+          "Santosh Srinath K",
+          "Mudit Somani",
+          "Varun Reddy Padala",
+          "Prajna Upadhyay",
+          "Das, Abhijit"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.48550/arxiv.2601.05874",
+        "doi": "https://doi.org/10.48550/arxiv.2601.05874",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7123371404",
+        "title": "Continual-learning for Modelling Low-Resource Languages from Large Language Models",
+        "abstract": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge. For example, small language models (SLM) built for low-resource languages by adapting large language models (LLMs) pose the challenge of catastrophic forgetting. This work proposes to employ a continual learning strategy using parts-of-speech (POS)-based code-switching along with a replay adapter strategy to mitigate the identified gap of catastrophic forgetting while training SLM from LLM. Experiments conducted on vision language tasks such as visual question answering and language modelling task exhibits the success of the proposed architecture.",
+        "year": 2026,
+        "authors": [
+          "Santosh Srinath K",
+          "Mudit Somani",
+          "Varun Reddy Padala",
+          "Prajna Upadhyay",
+          "Abhijit Das"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2601.05874",
+        "doi": null,
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4416249530",
+        "title": "Large Language Models for Toxic Language Detection in Low-Resource Balkan Languages",
+        "abstract": "Online toxic language causes real harm, especially in regions with limited moderation tools. In this study, we evaluate how large language models handle toxic comments in Serbian, Croatian, and Bosnian, which are languages with limited labeled data. We built and manually labeled a dataset of 4,500 YouTube and TikTok comments drawn from videos across diverse categories, including music, politics, sports, modeling, influencer content, discussions of sexism, and general topics. We demonstrate how adding minimal context can improve toxic language detection in low-resource settings and suggest practical strategies such as improved prompt design and threshold calibration. Four models (GPT-3.5 Turbo, GPT-4.1, Gemini 1.5 Pro, and Claude 3 Opus) were tested in two modes: zero-shot and context-augmented. We measured precision, recall, F1 score, accuracy, and false positive rates. Including a short context snippet raised recall by about 0.12 on average and improved F1 score by up to 0.10, though it sometimes increased false positives. The best balance came from Gemini in context-augmented mode, reaching an F1 score of 0.82 and accuracy of 0.82, while zero-shot GPT-4.1 led on precision and had the lowest false alarms. These results show that prompt design alone can yield meaningful gains in toxicity detection for underserved Balkan language communities.",
+        "year": 2025,
+        "authors": [
+          "A Muminovic",
+          "A Muminovic"
+        ],
+        "citation_count": 2,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2506.09992",
+        "doi": "https://doi.org/10.1109/cyber-ai66431.2025.11233432",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4410184664",
+        "title": "Interactive Machine Translation with Large Language Models for Low-Resourced Languages",
+        "abstract": null,
+        "year": 2025,
+        "authors": [
+          "Sergio G\u00f3mez-Gonz\u00e1lez",
+          "Miguel Domingo",
+          "\u00c1ngel Navarro",
+          "Francisco Casacuberta"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.2139/ssrn.5244227",
+        "doi": "https://doi.org/10.2139/ssrn.5244227",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7162479607",
+        "title": "Enhancing Low-Resource Language Data Using Large Language Models",
+        "abstract": "This dissertation explores the uses of Large Language Models (LLMs) for enhancing Low-Resource Language (LRL) data. LLMs are models trained with substantial datasets to perform language tasks such as translation, text generation, information retrieval, and summarization, among others. The primary applications of LLMs for LRLs explored here are data denoising and morphological generation. Six LRLs are used throughout this research: K'iche', Seri, Kaqchikel, Huave, Uspanteko, and Nahuatl. These languages are Mesoamerican languages spoken in Mexico and Guatemala. They are used as examples of possibilities for LRL research using LLMs; however, the findings are meant to be applicable to other LRLs as well. Noisy data refers to data that contains errors or inconsistencies. For language data, data denoising is a process where a dataset is standardized if there is an existing standard, else it is normalized- made consistent through manual or computational methods. This dissertation tests computational methods of denoising through fine-tuning and prompting pre-trained LLMs. For denoising with LLMs, two approaches are used. The first approach uses a pretrained text-to-text LLM fine-tuned with limited data for each language. The second approach uses the instruction-tuned LLM GPT-4o. This LLMs approach explores various techniques of prompt engineering (the writing of prompts to elicit certain output) and demonstrates SOTA denoising with relatively small unlabeled datasets using a method termed \"unlabeled corpus analysis.\" Morphological generation is the process of generating the inflected forms of a given word stem. This experiment attempts morphological generation for K\u2019iche' with the instruction-tuned model, GPT-4o, through prompt engineering. K'iche' is an agglutinative language. Since written resources are scarce, not all inflected word forms can be gathered from texts. Morphological generation could theoretically be used to combat data scarcity in LRLs. This experiment in morphological generation builds on the prompting techniques used in the instruction-based denoising task and demonstrates the limitations of GPT-4o in performing some NLP tasks for LRLs. Data denoising and morphological generation are both important tasks for enhancing LRL data. Data denoising improves the quality of language data, while morphological generation improves the quantity. Both have the potential to make a dataset more conducive to linguistic research and practical applications.",
+        "year": 2026,
+        "authors": [
+          "Cheyenne Wing",
+          "Cheyenne Wing"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://repository.arizona.edu/bitstream/10150/680315/1/azu_etd_22922_sip1_m.pdf",
+        "doi": null,
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7134895265",
+        "title": "Interactive Machine Translation with Large Language Models for Low-resource Languages",
+        "abstract": null,
+        "year": 2026,
+        "authors": [
+          "Sergio G\u00f3mez-Gonz\u00e1lez",
+          "Miguel Domingo",
+          "\u00c1ngel Navarro",
+          "Francisco Casacuberta"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.2139/ssrn.6385139",
+        "doi": "https://doi.org/10.2139/ssrn.6385139",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4402671168",
+        "title": "Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages",
+        "abstract": "Large language models (LLMs) as listwise rerankers have shown impressive zero-shot capabilities in various passage ranking tasks.Despite their success, there is still a gap in existing literature on their effectiveness in reranking low-resource languages.To address this, we investigate how LLMs function as listwise rerankers in cross-lingual information retrieval (CLIR) systems with queries in English and passages in four African languages: Hausa, Somali, Swahili, and Yoruba.We analyze and compare the effectiveness of monolingual reranking using either query or document translations.We also evaluate the effectiveness of LLMs when leveraging their own generated translations.To grasp the general picture, we examine the effectiveness of multiple LLMs-the proprietary models RankGPT 4 and RankGPT 3.5 , along with the open-source model RankZephyr.While the document translation setting, i.e., both queries and documents are in English, leads to the best reranking effectiveness, our results indicate that for specific LLMs, reranking in the African language setting achieves competitive effectiveness with the cross-lingual setting, and even performs better when using the LLM's own translations.",
+        "year": 2024,
+        "authors": [
+          "Mofetoluwa Adeyemi",
+          "Akintunde Oladipo",
+          "Ronak Pradeep",
+          "Jimmy Lin"
+        ],
+        "citation_count": 14,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://aclanthology.org/2024.acl-short.59.pdf",
+        "doi": "https://doi.org/10.18653/v1/2024.acl-short.59",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4407385098",
+        "title": "Large multimodal models for low-resource languages: A survey",
+        "abstract": "\u2022 Represents the first comprehensive analysis of LMMs specifically focused on LR languages. \u2022 Provides a novel taxonomy that categorizes existing approaches into six main categories. \u2022 Systematically organizes the literature to enable a clear understanding of current approaches and remaining challenges. \u2022 Provides an open-source repository that includes implementation details, datasets, and benchmarks. In this survey, we systematically analyze techniques used to adapt large multimodal models (LMMs) for low-resource (LR) languages, examining approaches ranging from visual enhancement and data creation to cross-modal transfer and fusion strategies. Through a comprehensive analysis of 117 studies across 96 LR languages, we identify key patterns in how researchers tackle the challenges of limited data and computational resources. We categorize works into resource-oriented and method-oriented contributions, further dividing contributions into relevant sub-categories. We compare method-oriented contributions in terms of performance and efficiency, discussing benefits and limitations of representative studies. We find that visual information often serves as a crucial bridge for improving model performance in LR settings, though significant challenges remain in areas such as hallucination mitigation and computational efficiency. In summary, we provide researchers with a clear understanding of current approaches and remaining challenges in making LMMs more accessible to speakers of LR (understudied) languages. We complement our survey with an open-source repository available at: https://github.com/marianlupascu/LMM4LRL-Survey .",
+        "year": 2026,
+        "authors": [
+          "Marian Lupa\u015fcu",
+          "Ana-Cristina Rogoz",
+          "Mihai\u2010Sorin Stupariu",
+          "Radu Tudor Ionescu"
+        ],
+        "citation_count": 11,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1016/j.inffus.2026.104189",
+        "doi": "https://doi.org/10.1016/j.inffus.2026.104189",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4392669965",
+        "title": "Large Language Models As Annotators: A Preliminary Evaluation For Annotating Low-Resource Language Content",
+        "abstract": "The process of collecting human-generated annotations is time-consuming and resourcehungry.In the case of low-resource (LR) languages such as Indic languages, these efforts are more expensive due to the dearth of data and human experts.Considering their importance in solving downstream applications, there have been concentrated efforts exploring alternatives for human-generated annotations.To that extent, we seek to evaluate multilingual large language models (LLMs) for their potential to substitute or aid human-generated annotation efforts.We use LLMs to re-label publicly available datasets in LR languages for the tasks of natural language inference, sentiment analysis, and news classification.We compare these annotations with existing ground truth labels to analyze the efficacy of using LLMs for annotation tasks.We observe that the performance of these LLMs varies substantially across different tasks and languages.The results show that off-the-shelf use of multilingual LLMs is not appropriate and results in poor performance in two of the three tasks.",
+        "year": 2023,
+        "authors": [
+          "Savita Bhat",
+          "Vasudeva Varma"
+        ],
+        "citation_count": 11,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://aclanthology.org/2023.eval4nlp-1.8.pdf",
+        "doi": "https://doi.org/10.18653/v1/2023.eval4nlp-1.8",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4416034203",
+        "title": "FormosanBench: Benchmarking Low-Resource Austronesian Languages in the Era of Large Language Models",
+        "abstract": "While large language models (LLMs) have demonstrated impressive performance across a wide range of natural language processing (NLP) tasks in high-resource languages, their capabilities in low-resource and minority languages remain significantly underexplored.Formosan languages-a subgroup of Austronesian languages spoken in Taiwan-are both linguistically rich and endangered, largely due to the sociolinguistic dominance of Mandarin.In this work, we introduce FORMOSANBENCH, the first benchmark for evaluating LLMs on low-resource Austronesian languages.It covers three endangered Formosan languages: Atayal, Amis, and Paiwan, across three core NLP tasks: machine translation, automatic speech recognition (ASR), and text summarization.We assess model performance in zero-shot, 10-shot, and fine-tuned settings using FORMOSANBENCH.Our results reveal a substantial performance gap between high-resource and Formosan languages.Existing LLMs consistently perform poorly on all tasks, and 10-shot learning and fine-tuning yield only limited improvements.These findings underscore the urgent need for more inclusive NLP technologies that can effectively support endangered and underrepresented languages.We release our datasets and code to facilitate future research in this direction : https://github.com/HsiYuGit/ FormosanBench.",
+        "year": 2025,
+        "authors": [
+          "Kaiying Kevin Lin",
+          "Hsi-Yu Chen",
+          "Haopeng Zhang"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://aclanthology.org/2025.findings-emnlp.897.pdf",
+        "doi": "https://doi.org/10.18653/v1/2025.findings-emnlp.897",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4409178241",
+        "title": "Large Language Models With Contrastive Decoding Algorithm for Hallucination Mitigation in Low\u2010Resource Languages",
+        "abstract": "ABSTRACT Neural machine translation (NMT) has advanced with deep learning and large\u2010scale multilingual models, yet translating low\u2010resource languages often lacks sufficient training data and leads to hallucinations. This often results in translated content that diverges significantly from the source text. This research proposes a refined Contrastive Decoding (CD) algorithm that dynamically adjusts weights of log probabilities from strong expert and weak amateur models to mitigate hallucinations in low\u2010resource NMT and improve translation quality. Advanced large language NMT models, including ChatGLM and LLaMA, are fine\u2010tuned and implemented for their superior contextual understanding and cross\u2010lingual capabilities. The refined CD algorithm evaluates multiple candidate translations using BLEU score, semantic similarity, and Named Entity Recognition accuracy. Extensive experimental results show substantial improvements in translation quality and a significant reduction in hallucination rates. Fine\u2010tuned models achieve higher evaluation metrics compared to baseline models and state\u2010of\u2010the\u2010art models. An ablation study confirms the contributions of each methodological component and highlights the effectiveness of the refined CD algorithm and advanced models in mitigating hallucinations. Notably, the refined methodology increased the BLEU score by approximately 30% compared to baseline models.",
+        "year": 2025,
+        "authors": [
+          "Hongying Zan",
+          "Arifa Javed",
+          "Muhammad Ashif Khan Abdullah",
+          "Javed Rashid",
+          "Muhammad Rehan Faheem"
+        ],
+        "citation_count": 8,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1049/cit2.70004",
+        "doi": "https://doi.org/10.1049/cit2.70004",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4404389841",
+        "title": "Evaluating and Adapting Large Language Models to Represent Folktales in Low-Resource Languages",
+        "abstract": "Folktales are a rich resource of knowledge about the society and culture of a civilisation. Digital folklore research aims to use automated techniques to better understand these folktales, and it relies on abstract representations of the textual data. Although a number of large language models (LLMs) claim to be able to represent low-resource langauges such as Irish and Gaelic, we present two classification tasks to explore how useful these representations are, and three adaptations to improve the performance of these models. We find that adapting the models to work with longer sequences, and continuing pre-training on the domain of folktales improves classification performance, although these findings are tempered by the impressive performance of a baseline SVM with non-contextual features.",
+        "year": 2024,
+        "authors": [
+          "J. A. Meaney",
+          "Beatrice Alex",
+          "William Lamb"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2411.05593",
+        "doi": "https://doi.org/10.48550/arxiv.2411.05593",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7165392193",
+        "title": "Fine-Tuning Challenges of Large Language Models for Low-Resource Languages: an Analysis Based on the Azerbaijani Language",
+        "abstract": "Large Language Models have shown capabilities in natural language processing tasks. Their performance drops drastically on low-resource languages that lack large annotated corpora. We look at the challenges of fine-tuning Large Language Models for low-resource languages with Azerbaijani as a case study. We examine data scarcity, morphological complexity, tokenization problems and domain gaps that make model adaptation harder. We also review methods like data augmentation, cross-lingual pre-training and transfer learning and assess how well they work for Azerbaijani. The results show that small targeted datasets can lead to real improvements as long as tokenization and morphological modeling are handled properly.",
+        "year": 2026,
+        "authors": [
+          "Gular Huseynova",
+          "Daniz Karimova",
+          "Zarda Salim"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://archive.interconf.center/index.php/2709-4685/article/download/8191/8254",
+        "doi": "https://doi.org/10.51582/interconf.19-20.05.2026.015",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4416223637",
+        "title": "Multimodal Large Language Models for Low-Resource Languages: A Case Study for Basque",
+        "abstract": "Current Multimodal Large Language Models exhibit very strong performance for several demanding tasks. While commercial MLLMs deliver acceptable performance in low-resource languages, comparable results remain unattained within the open science community. In this paper, we aim to develop a strong MLLM for a low-resource language, namely Basque. For that purpose, we develop our own training and evaluation image-text datasets. Using two different Large Language Models as backbones, the Llama-3.1-Instruct model and a Basque-adapted variant called Latxa, we explore several data mixtures for training. We show that: i) low ratios of Basque multimodal data (around 20%) are already enough to obtain solid results on Basque benchmarks, and ii) contrary to expected, a Basque instructed backbone LLM is not required to obtain a strong MLLM in Basque. Our results pave the way to develop MLLMs for other low-resource languages by openly releasing our resources.",
+        "year": 2026,
+        "authors": [
+          "Lukas Arana",
+          "Julen Etxaniz",
+          "Ander Salaberria",
+          "Gorka Azkune"
+        ],
+        "citation_count": 1,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2511.09396",
+        "doi": "https://doi.org/10.63317/2ry23e89ew5v",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4412862878",
+        "title": "Evaluating quantized Large Language Models for code generation on low-resource language benchmarks",
+        "abstract": "Democratization of AI, which is making AI accessible and usable for everyone, is an important topic with the broader topic of the digital divide. This issue is especially relevant to Large Language Models (LLM) that are becoming increasingly popular as AI co-pilots but suffer from a lack of accessibility due to high computational demand. In this study, we evaluate whether LLM quantization is a viable approach toward enabling LLMs on generic consumer devices. The study assesses the performance of five quantized code LLMs in Lua and Python code generation tasks. All code LLMs had approximately 7 billion parameters and were deployed on a generic CPU-only consumer laptop. To evaluate the impact of quantization, the models were tested at 2-, 4-, and 8-bit integer precisions. Pass@1 and pass@10 evaluations were done at variable temperatures and token sampling rates. Along with tasks such as question answering, text summarization, and text generation, programming tasks are one of the popular applications of AI co-pilots. Furthermore, code generation is a high-precision task, which makes it a suitable benchmark to evaluate and compare quantized models for everyday use by individuals. Lua is chosen as a low-resource language to avoid models\u2019 biases related to high-resource languages. Performance in Lua is contrasted against performance in Python, which was chosen as a high-resource language. The results suggest that the models quantized at the 4-bit integer precision offer the best trade-off between performance and model size. These models can be comfortably deployed on an average laptop without a dedicated GPU. The findings suggest that lower quantization precision adversely affects more the performance in low-resource languages than in high-resource languages. But it also hinted that the quantization to an integer precision from the full precision affects more the performance in high-resource language. The quantized models at 8-bit integer precision require more inference that does not effectively translate to better performance. While quantization indeed increases the accessibility of smaller LLMs with 7 billion parameters, these LLMs demonstrate overall low performance (less than 50%) on high-precision and low-resource tasks such as Lua code generation. While accessibility is improved, usability is still not at a practical level of foundational LLMs such as GPT-4o or Llama 3.1 with 405 billion parameters. Additionally, in the most failed instances, the models excel at generating code that is free of syntax errors but fails at unit tests or has runtime issues. This means that any generated code requires extensive testing that may negate any potential efficiency boost delivered by these smaller coding models.",
+        "year": 2025,
+        "authors": [
+          "Enkhbold Nyamsuren"
+        ],
+        "citation_count": 11,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1016/j.cola.2025.101351",
+        "doi": "https://doi.org/10.1016/j.cola.2025.101351",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4417133178",
+        "title": "Instructing Large Language Models for Low-Resource Languages: A Systematic Study for Basque",
+        "abstract": "Instructing language models with user intent requires large instruction datasets, which are only available for a limited set of languages. In this paper, we explore alternatives to conventional instruction adaptation pipelines in low-resource scenarios. We assume a realistic scenario for low-resource languages, where only the following are available: corpora in the target language, existing open-weight multilingual base and instructed backbone LLMs, and synthetically generated instructions sampled from the instructed backbone. We present a comprehensive set of experiments for Basque that systematically study different combinations of these components evaluated on benchmarks and human preferences from 1,680 participants. Our conclusions show that target language corpora are essential, with synthetic instructions yielding robust models, and, most importantly, that using as backbone an instruction-tuned model outperforms using a base non-instructed model. Scaling up to Llama 3.1 Instruct 70B as backbone, our model comes near frontier models of much larger sizes for Basque, without using any Basque instructions. We release code, models, instruction datasets, and human preferences to support full reproducibility in future research on low-resource language adaptation. https://github.com/hitz-zentroa/latxa-instruct",
+        "year": 2025,
+        "authors": [
+          "Oscar Sainz",
+          "Naiara P\u00e9rez",
+          "Julen Etxaniz",
+          "Joseba Fernandez de Landa Aguirre",
+          "Itziar Aldabe",
+          "Iker Garc\u00eda-Ferrero",
+          "Zabala, Aimar",
+          "Ekhi Azurmendi",
+          "Germ\u00e1n Rigau",
+          "Eneko Agirre",
+          "Mikel Artetxe",
+          "Aitor Soroa"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2506.07597",
+        "doi": "https://doi.org/10.48550/arxiv.2506.07597",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4403364915",
+        "title": "NusaMT-7B: Machine Translation for Low-Resource Indonesian Languages with Large Language Models",
+        "abstract": "Large Language Models (LLMs) have demonstrated exceptional promise in translation tasks for high-resource languages. However, their performance in low-resource languages is limited by the scarcity of both parallel and monolingual corpora, as well as the presence of noise. Consequently, such LLMs suffer with alignment and have lagged behind State-of-The-Art (SoTA) neural machine translation (NMT) models in these settings. This paper introduces NusaMT-7B, an LLM-based machine translation model for low-resource Indonesian languages, starting with Balinese and Minangkabau. Leveraging the pretrained LLaMA2-7B, our approach integrates continued pre-training on monolingual data, Supervised Fine-Tuning (SFT), self-learning, and an LLM-based data cleaner to reduce noise in parallel sentences. In the FLORES-200 multilingual translation benchmark, NusaMT-7B outperforms SoTA models in the spBLEU metric by up to +6.69 spBLEU in translations into Balinese and Minangkabau, but underperforms by up to -3.38 spBLEU in translations into higher-resource languages. Our results show that fine-tuned LLMs can enhance translation quality for low-resource languages, aiding in linguistic preservation and cross-cultural communication.",
+        "year": 2024,
+        "authors": [
+          "William Tan",
+          "Kevin Zhu"
+        ],
+        "citation_count": 1,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2410.07830",
+        "doi": "https://doi.org/10.48550/arxiv.2410.07830",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4412889388",
+        "title": "Evaluating Tokenizer Adaptation Methods for Large Language Models on Low-Resource Programming Languages",
+        "abstract": "Large language models (LLMs), which are primarily trained on high-resource programming languages (HRPLs), tend to perform suboptimally for low-resource programming languages (LRPLs).This study investigates the impact of tokenizer adaptation methods on improving code generation for LRPLs.Star-Coder 2 and DeepSeek-Coder models adapted to Elixir and Racket using methods such as Fast Vocabulary Transfer (FVT), FOCUS, and Zero-shot Tokenizer Transfer (ZeTT) are evaluated and compared with the original and finetuned models.Our experiments reveal that ZeTT outperforms other methods, achieving significant improvements in handling syntax, program logic, and data types for LRPLs.However, we also highlight performance declines in non-target languages like Python after tokenizer adaptation.The study approves the positive impact of tokenizer adaptation in enhancing LRPL code generation and suggests directions for future research, including token embeddings improvement.The code for experiments reproduction is available in the GitHub repository 1 .",
+        "year": 2025,
+        "authors": [
+          "Georgy Andryushchenko",
+          "Vladimir Vladimirovich Ivanov"
+        ],
+        "citation_count": 2,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://aclanthology.org/2025.acl-srw.57.pdf",
+        "doi": "https://doi.org/10.18653/v1/2025.acl-srw.57",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7197036362",
+        "title": "Large Language Models for Low-Resource Languages: A Conceptual Framework for an Electronic Explanatory Dictionary of the Tajik Language",
+        "abstract": "This paper presents a conceptual framework for developing an electronic explanatory dictionary of the Tajik language using large language models (LLMs). The relevance of the work stems from the absence of a comprehensive digital lexicographic resource for Tajik that is comparable in functionality to dictionaries for high-resource languages, and from the limited adaptation of modern natural language processing technologies to low-resource language systems. Based on a systematic survey of existing linguistic, statistical, and corpus resources, we propose a dictionary architecture that integrates modules for morphological analysis, lemmatization, semantic clustering, and dictionary entry generation using LLMs. The choice of subword tokenization is justified by the agglutinative nature of Tajik morphology and its high morphological variability, along with a parameter-efficient fine-tuning (PEFT) strategy suitable for limited annotated data. The novelty of the work lies in proposing the first holistic conceptual architecture of an explanatory dictionary for Tajik that unifies classical lexicographic methods, language statistics, and generative capabilities of LLMs into a single system. The practical significance of the study is the formation of a methodological foundation for developing a full-featured electronic dictionary that can serve both as a lexicographic tool and as a core resource for machine translation, automatic summarization, sentiment analysis, and other applied NLP tasks. The paper is intended for specialists in computational linguistics, lexicography, and developers of natural language processing systems working with low-resource languages.",
+        "year": 2026,
+        "authors": [
+          "Mullosharaf K. Arabov",
+          "Saidali M. Pirzoda",
+          "B. Sultonov"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2608.04186",
+        "doi": "https://doi.org/10.48550/arxiv.2608.04186",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7168097912",
+        "title": "THE ALGORITHMIC TRANSLATOR Using Large Language Models to Revive Low-Resource Programming Languages",
+        "abstract": "THE ALGORITHMIC TRANSLATOR Using Large Language Models to Revive Low-Resource Programming Languages",
+        "year": 2026,
+        "authors": [
+          "m el-rakhawi"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.5281/zenodo.21320355",
+        "doi": "https://doi.org/10.5281/zenodo.21320355",
+        "source": "openalex",
+        "full_text": null
+      }
+    ],
+    "clusters": [
+      {
+        "id": "C1",
+        "label": "Sample theme 1",
+        "paper_ids": [
+          "W7154856337",
+          "W4405173107",
+          "W4408280927",
+          "W7155373379",
+          "W4416249530",
+          "W7134895265",
+          "W4392669965",
+          "W4404389841",
+          "W4412862878",
+          "W4412889388"
+        ],
+        "rationale": "Sample mode: placeholder grouping, not real clustering"
+      },
+      {
+        "id": "C2",
+        "label": "Sample theme 2",
+        "paper_ids": [
+          "W4402389783",
+          "W4407393353",
+          "W7115677253",
+          "W7123296616",
+          "W4410184664",
+          "W4402671168",
+          "W4416034203",
+          "W7165392193",
+          "W4417133178",
+          "W7197036362"
+        ],
+        "rationale": "Sample mode: placeholder grouping, not real clustering"
+      },
+      {
+        "id": "C3",
+        "label": "Sample theme 3",
+        "paper_ids": [
+          "W7155356580",
+          "W4392637283",
+          "W7165482954",
+          "W7123371404",
+          "W7162479607",
+          "W4407385098",
+          "W4409178241",
+          "W4416223637",
+          "W4403364915",
+          "W7168097912"
+        ],
+        "rationale": "Sample mode: placeholder grouping, not real clustering"
+      }
+    ],
+    "connections": [
+      {
+        "id": "C1-K1",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W7154856337",
+          "W4405173107"
+        ],
+        "cluster_ids": [
+          "C1"
+        ],
+        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "evidence": [
+          {
+            "paper_id": "W7154856337",
+            "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+          },
+          {
+            "paper_id": "W4405173107",
+            "quote": "Low-resource languages serve as invaluable repositories of human history, embodying cultural evolution and intellectual diversity."
+          }
+        ]
+      },
+      {
+        "id": "C2-K1",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4402389783",
+          "W4407393353"
+        ],
+        "cluster_ids": [
+          "C2"
+        ],
+        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "evidence": [
+          {
+            "paper_id": "W4402389783",
+            "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+          },
+          {
+            "paper_id": "W4407393353",
+            "quote": "BACKGROUND: The reported study illustrates a methodology for compiling training datasets to fine-tune Large Language Models (LLMs) for healthcare information in Vietnamese, a low-resource language."
+          }
+        ]
+      },
+      {
+        "id": "C3-K1",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W7155356580",
+          "W4392637283"
+        ],
+        "cluster_ids": [
+          "C3"
+        ],
+        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "evidence": [
+          {
+            "paper_id": "W7155356580",
+            "quote": "The article is potentially destined to examine the efficacy of Large Language Models (LLMs) in Swahili (standard dialect spoken in Tanzania), a relatively less privileged and Low-resource Language (LR"
+          },
+          {
+            "paper_id": "W4392637283",
+            "quote": "This paper presents a comprehensive review of Natural Language Processing (NLP) research on Armenian, a language that, despite its rich history and unique linguistic characteristics, is currently low-"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "C1-G1",
+        "cluster_id": "C1",
+        "description": "Sample mode: placeholder gap between the first two papers of this group.",
+        "between_paper_ids": [
+          "W7154856337",
+          "W4405173107"
+        ],
+        "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+        "evidence": [
+          {
+            "paper_id": "W7154856337",
+            "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+          }
+        ]
+      },
+      {
+        "id": "C2-G1",
+        "cluster_id": "C2",
+        "description": "Sample mode: placeholder gap between the first two papers of this group.",
+        "between_paper_ids": [
+          "W4402389783",
+          "W4407393353"
+        ],
+        "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+        "evidence": [
+          {
+            "paper_id": "W4402389783",
+            "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+          }
+        ]
+      },
+      {
+        "id": "C3-G1",
+        "cluster_id": "C3",
+        "description": "Sample mode: placeholder gap between the first two papers of this group.",
+        "between_paper_ids": [
+          "W7155356580",
+          "W4392637283"
+        ],
+        "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+        "evidence": [
+          {
+            "paper_id": "W7155356580",
+            "quote": "The article is potentially destined to examine the efficacy of Large Language Models (LLMs) in Swahili (standard dialect spoken in Tanzania), a relatively less privileged and Low-resource Language (LR"
+          }
+        ]
+      }
+    ],
+    "warnings": [],
+    "paper_map": {
+      "nodes": [
+        {
+          "id": "W7154856337",
+          "type": "paper",
+          "title": "Contextual Learning Support for Low-Resource Language Large Language Models: Efficient Training Strategies for Zero-Shot and Few-Shot Learning",
+          "year": 2026
+        },
+        {
+          "id": "W4402389783",
+          "type": "paper",
+          "title": "Performance of Recent Large Language Models for a Low-Resourced Language",
+          "year": 2024
+        },
+        {
+          "id": "W7155356580",
+          "type": "paper",
+          "title": "Employing large language models in Swahili, a low-resource language",
+          "year": 2026
+        },
+        {
+          "id": "W4405173107",
+          "type": "paper",
+          "title": "Opportunities and Challenges of Large Language Models for Low-Resource Languages in Humanities Research",
+          "year": 2024
+        },
+        {
+          "id": "W4407393353",
+          "type": "paper",
+          "title": "Fine-tuning large language models for improved health communication in low-resource languages",
+          "year": 2025
+        },
+        {
+          "id": "W4392637283",
+          "type": "paper",
+          "title": "Large Language Models and Low-Resource Languages: An Examination of Armenian NLP",
+          "year": 2023
+        },
+        {
+          "id": "W4408280927",
+          "type": "paper",
+          "title": "Toward Low-Resource Languages Machine Translation: A Language-Specific Fine-Tuning With LoRA for Specialized Large Language Models",
+          "year": 2025
+        },
+        {
+          "id": "W7115677253",
+          "type": "paper",
+          "title": "Adaptive and Efficient Large Language Models for Low-Resource African Languages",
+          "year": 2025
+        },
+        {
+          "id": "W7165482954",
+          "type": "paper",
+          "title": "Large Language Models Adaptation for Low-resource Languages: The Case for African Languages",
+          "year": 2026
+        },
+        {
+          "id": "W7155373379",
+          "type": "paper",
+          "title": "Continual-learning for Modelling Low-Resource Languages from Large Language Models",
+          "year": 2026
+        },
+        {
+          "id": "W7123296616",
+          "type": "paper",
+          "title": "Continual-learning for Modelling Low-Resource Languages from Large Language Models",
+          "year": 2026
+        },
+        {
+          "id": "W7123371404",
+          "type": "paper",
+          "title": "Continual-learning for Modelling Low-Resource Languages from Large Language Models",
+          "year": 2026
+        },
+        {
+          "id": "W4416249530",
+          "type": "paper",
+          "title": "Large Language Models for Toxic Language Detection in Low-Resource Balkan Languages",
+          "year": 2025
+        },
+        {
+          "id": "W4410184664",
+          "type": "paper",
+          "title": "Interactive Machine Translation with Large Language Models for Low-Resourced Languages",
+          "year": 2025
+        },
+        {
+          "id": "W7162479607",
+          "type": "paper",
+          "title": "Enhancing Low-Resource Language Data Using Large Language Models",
+          "year": 2026
+        },
+        {
+          "id": "W7134895265",
+          "type": "paper",
+          "title": "Interactive Machine Translation with Large Language Models for Low-resource Languages",
+          "year": 2026
+        },
+        {
+          "id": "W4402671168",
+          "type": "paper",
+          "title": "Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages",
+          "year": 2024
+        },
+        {
+          "id": "W4407385098",
+          "type": "paper",
+          "title": "Large multimodal models for low-resource languages: A survey",
+          "year": 2026
+        },
+        {
+          "id": "W4392669965",
+          "type": "paper",
+          "title": "Large Language Models As Annotators: A Preliminary Evaluation For Annotating Low-Resource Language Content",
+          "year": 2023
+        },
+        {
+          "id": "W4416034203",
+          "type": "paper",
+          "title": "FormosanBench: Benchmarking Low-Resource Austronesian Languages in the Era of Large Language Models",
+          "year": 2025
+        },
+        {
+          "id": "W4409178241",
+          "type": "paper",
+          "title": "Large Language Models With Contrastive Decoding Algorithm for Hallucination Mitigation in Low\u2010Resource Languages",
+          "year": 2025
+        },
+        {
+          "id": "W4404389841",
+          "type": "paper",
+          "title": "Evaluating and Adapting Large Language Models to Represent Folktales in Low-Resource Languages",
+          "year": 2024
+        },
+        {
+          "id": "W7165392193",
+          "type": "paper",
+          "title": "Fine-Tuning Challenges of Large Language Models for Low-Resource Languages: an Analysis Based on the Azerbaijani Language",
+          "year": 2026
+        },
+        {
+          "id": "W4416223637",
+          "type": "paper",
+          "title": "Multimodal Large Language Models for Low-Resource Languages: A Case Study for Basque",
+          "year": 2026
+        },
+        {
+          "id": "W4412862878",
+          "type": "paper",
+          "title": "Evaluating quantized Large Language Models for code generation on low-resource language benchmarks",
+          "year": 2025
+        },
+        {
+          "id": "W4417133178",
+          "type": "paper",
+          "title": "Instructing Large Language Models for Low-Resource Languages: A Systematic Study for Basque",
+          "year": 2025
+        },
+        {
+          "id": "W4403364915",
+          "type": "paper",
+          "title": "NusaMT-7B: Machine Translation for Low-Resource Indonesian Languages with Large Language Models",
+          "year": 2024
+        },
+        {
+          "id": "W4412889388",
+          "type": "paper",
+          "title": "Evaluating Tokenizer Adaptation Methods for Large Language Models on Low-Resource Programming Languages",
+          "year": 2025
+        },
+        {
+          "id": "W7197036362",
+          "type": "paper",
+          "title": "Large Language Models for Low-Resource Languages: A Conceptual Framework for an Electronic Explanatory Dictionary of the Tajik Language",
+          "year": 2026
+        },
+        {
+          "id": "W7168097912",
+          "type": "paper",
+          "title": "THE ALGORITHMIC TRANSLATOR Using Large Language Models to Revive Low-Resource Programming Languages",
+          "year": 2026
+        },
+        {
+          "id": "C1",
+          "type": "cluster",
+          "label": "Sample theme 1",
+          "rationale": "Sample mode: placeholder grouping, not real clustering"
+        },
+        {
+          "id": "C2",
+          "type": "cluster",
+          "label": "Sample theme 2",
+          "rationale": "Sample mode: placeholder grouping, not real clustering"
+        },
+        {
+          "id": "C3",
+          "type": "cluster",
+          "label": "Sample theme 3",
+          "rationale": "Sample mode: placeholder grouping, not real clustering"
+        },
+        {
+          "id": "C1-G1",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between the first two papers of this group.",
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+        },
+        {
+          "id": "C2-G1",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between the first two papers of this group.",
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+        },
+        {
+          "id": "C3-G1",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between the first two papers of this group.",
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+        }
+      ],
+      "edges": [
+        {
+          "source": "W7154856337",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4405173107",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4408280927",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7155373379",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4416249530",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7134895265",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4392669965",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4404389841",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4412862878",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4412889388",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4402389783",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4407393353",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7115677253",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7123296616",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4410184664",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4402671168",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4416034203",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7165392193",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4417133178",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7197036362",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7155356580",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4392637283",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7165482954",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7123371404",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7162479607",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4407385098",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4409178241",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4416223637",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4403364915",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7168097912",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7154856337",
+          "target": "W4405173107",
+          "type": "within_cluster",
+          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "evidence": [
+            {
+              "paper_id": "W7154856337",
+              "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+            },
+            {
+              "paper_id": "W4405173107",
+              "quote": "Low-resource languages serve as invaluable repositories of human history, embodying cultural evolution and intellectual diversity."
+            }
+          ]
+        },
+        {
+          "source": "W4402389783",
+          "target": "W4407393353",
+          "type": "within_cluster",
+          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "evidence": [
+            {
+              "paper_id": "W4402389783",
+              "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+            },
+            {
+              "paper_id": "W4407393353",
+              "quote": "BACKGROUND: The reported study illustrates a methodology for compiling training datasets to fine-tune Large Language Models (LLMs) for healthcare information in Vietnamese, a low-resource language."
+            }
+          ]
+        },
+        {
+          "source": "W7155356580",
+          "target": "W4392637283",
+          "type": "within_cluster",
+          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "evidence": [
+            {
+              "paper_id": "W7155356580",
+              "quote": "The article is potentially destined to examine the efficacy of Large Language Models (LLMs) in Swahili (standard dialect spoken in Tanzania), a relatively less privileged and Low-resource Language (LR"
+            },
+            {
+              "paper_id": "W4392637283",
+              "quote": "This paper presents a comprehensive review of Natural Language Processing (NLP) research on Armenian, a language that, despite its rich history and unique linguistic characteristics, is currently low-"
+            }
+          ]
+        },
+        {
+          "source": "C1-G1",
+          "target": "W7154856337",
+          "type": "gap_near"
+        },
+        {
+          "source": "C1-G1",
+          "target": "W4405173107",
+          "type": "gap_near"
+        },
+        {
+          "source": "C2-G1",
+          "target": "W4402389783",
+          "type": "gap_near"
+        },
+        {
+          "source": "C2-G1",
+          "target": "W4407393353",
+          "type": "gap_near"
+        },
+        {
+          "source": "C3-G1",
+          "target": "W7155356580",
+          "type": "gap_near"
+        },
+        {
+          "source": "C3-G1",
+          "target": "W4392637283",
+          "type": "gap_near"
+        }
+      ]
+    }
+  }
+}

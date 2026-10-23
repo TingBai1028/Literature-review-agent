@@ -1,0 +1,7 @@
+{
+  "run_id": "example-04",
+  "input": {
+    "query": "find papers",
+    "effort": "normal"
+  }
+}

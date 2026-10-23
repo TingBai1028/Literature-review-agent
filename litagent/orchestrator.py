@@ -5,10 +5,15 @@ Loops:
 - Human review 1 or 2 not satisfied -> back to the Planner with the user's feedback.
 - Grading agent fails a stage -> redo that stage once with the grader's fix,
   then continue with a warning (TODO: decide whether to ask the user instead).
+
+Bounds: replans and redos are capped in config.py, and the whole run stops between stages
+once settings.run_timeout_s has passed, returning status="partial" with what was finished.
+An exception in any stage is logged to the trace and re-raised for the caller (CLI or API).
 """
 
 from __future__ import annotations
 
+import time
 from typing import Callable, TypeVar
 
 from litagent.agents import clusterer, connection_finder, gap_finder, grader, planner, retriever
@@ -22,78 +27,121 @@ from litagent.trace import Trace
 T = TypeVar("T")
 
 
+class _OutOfTime(Exception):
+    def __init__(self, before: str):
+        self.before = before
+
+
 def run_pipeline(
     question: str,
     effort: Effort,
     reviewer: Reviewer,
     settings: Settings | None = None,
     signed_in: bool = False,
+    run_id: str | None = None,
 ) -> RunResult:
     settings = settings or Settings()
-    trace = Trace(settings.runs_dir)
-    store = ZetarisStore(dry_run=settings.dry_run)
-    world = WorldModel()
-    feedback: str | None = None
+    with Trace(settings.logs_dir, run_id) as trace:
+        trace.log("orchestrator", "start", "run started", question, "planner",
+                  why=f"effort={effort.value}, sample_mode={settings.sample_mode}")
+        deadline = time.monotonic() + settings.run_timeout_s
+        stage = "orchestrator"
+        result: RunResult | None = None
+        world = WorldModel()
 
-    for attempt in range(1, settings.max_replans + 1):
-        # ----- 1. Planner -----
-        planned = planner.plan(question, effort, settings, feedback)
-        if planned.status == "need_topic" or planned.plan is None:
-            trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic")
-            return RunResult(run_id=trace.run_id, status="need_topic", message_to_user=planned.message_to_user)
-        plan = planned.plan
-        trace.log("planner", f"plan (attempt {attempt})", "plan created", plan, "retriever", why=f"defaults used: {plan.used_defaults}")
+        def check_time(next_stage: str) -> None:
+            if time.monotonic() > deadline:
+                raise _OutOfTime(next_stage)
 
-        # ----- 2. Retriever -> Zetaris -----
-        papers = retriever.retrieve(plan, settings, signed_in=signed_in)
-        store.save_papers(papers)
-        world.add_papers(papers)
-        trace.log("retriever", "retrieve", f"{len(papers)} papers", next_step="human review 1")
+        try:
+            stage = "zetaris"
+            store = ZetarisStore(sample_mode=settings.sample_mode, timeout_s=settings.zetaris_timeout_s)
+            feedback: str | None = None
 
-        # ----- Human review 1 -----
-        fb = reviewer.review_papers(retriever.summarise(papers, plan, settings))
-        if not fb.approved:
-            feedback = fb.comment
-            trace.log("human", "review 1", "not satisfied", fb.comment, "planner", why="User feedback")
-            continue
-        trace.log("human", "review 1", "approved", next_step="clusterer")
-        papers = store.get_papers()
+            for attempt in range(1, settings.max_replans + 1):
+                # ----- 1. Planner -----
+                stage = "planner"
+                check_time(stage)
+                planned = planner.plan(question, effort, settings, feedback)
+                if planned.status == "need_topic" or planned.plan is None:
+                    trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic")
+                    return RunResult(run_id=trace.run_id, status="need_topic", message_to_user=planned.message_to_user)
+                plan = planned.plan
+                trace.log("planner", f"plan (attempt {attempt})", "plan created", plan, "retriever", why=f"defaults used: {plan.used_defaults}")
 
-        result = RunResult(run_id=trace.run_id, status="done", plan=plan, papers=papers)
+                # ----- 2. Retriever -> Zetaris -----
+                stage = "retriever"
+                check_time(stage)
+                papers = retriever.retrieve(plan, settings, signed_in=signed_in)
+                store.save_papers(papers)
+                world.add_papers(papers)
+                trace.log("retriever", "retrieve", f"{len(papers)} papers", next_step="human review 1",
+                          why="sample papers from data/sample/" if settings.sample_mode else f"queries: {plan.queries}")
 
-        # ----- 3. Clusterer + grading -----
-        result.clusters = _graded_stage(
-            "clusters", lambda fix: clusterer.cluster(papers, effort, settings, fix), papers, settings, trace, result
-        )
-        world.write_clusters(result.clusters)
+                # ----- Human review 1 -----
+                stage = "human"
+                fb = reviewer.review_papers(retriever.summarise(papers, plan, settings))
+                if not fb.approved:
+                    feedback = fb.comment
+                    trace.log("human", "review 1", "not satisfied", fb.comment, "planner", why="User feedback")
+                    continue
+                trace.log("human", "review 1", "approved", next_step="clusterer")
+                papers = store.get_papers()
 
-        # ----- 4. Connection finder + grading -----
-        result.connections = _graded_stage(
-            "connections",
-            lambda fix: connection_finder.find_connections(papers, result.clusters, settings, fix),
-            papers, settings, trace, result,
-        )
-        world.write_connections(result.connections)
+                result = RunResult(run_id=trace.run_id, status="done", plan=plan, papers=papers)
 
-        # ----- 5. Gap finder + grading -----
-        result.gaps = _graded_stage(
-            "gaps",
-            lambda fix: gap_finder.find_gaps(papers, result.clusters, result.connections, settings, fix),
-            papers, settings, trace, result,
-        )
-        world.write_gaps(result.gaps)
+                # ----- 3. Clusterer + grading -----
+                stage = "clusterer"
+                check_time(stage)
+                result.clusters = _graded_stage(
+                    "clusters", lambda fix: clusterer.cluster(papers, effort, settings, fix), papers, settings, trace, result
+                )
+                world.write_clusters(result.clusters)
 
-        # ----- Human review 2 -----
-        # TODO: the front end renders world.to_graph_json() as the paper map
-        fb = reviewer.review_result(result)
-        if fb.approved:
-            trace.log("human", "review 2", "approved", next_step="done")
-            return result
-        feedback = fb.comment
-        trace.log("human", "review 2", "follow-up", fb.comment, "planner", why="User feedback")
+                # ----- 4. Connection finder + grading -----
+                stage = "connection_finder"
+                check_time(stage)
+                result.connections = _graded_stage(
+                    "connections",
+                    lambda fix: connection_finder.find_connections(papers, result.clusters, settings, fix),
+                    papers, settings, trace, result,
+                )
+                world.write_connections(result.connections)
 
-    trace.log("orchestrator", "stop", "max replans reached", why=f"limit {settings.max_replans}")
-    return RunResult(run_id=trace.run_id, status="max_replans_reached", message_to_user="Let's narrow the question down together.")
+                # ----- 5. Gap finder + grading -----
+                stage = "gap_finder"
+                check_time(stage)
+                result.gaps = _graded_stage(
+                    "gaps",
+                    lambda fix: gap_finder.find_gaps(papers, result.clusters, result.connections, settings, fix),
+                    papers, settings, trace, result,
+                )
+                world.write_gaps(result.gaps)
+                result.paper_map = world.to_graph_json()
+
+                # ----- Human review 2 -----
+                stage = "human"
+                fb = reviewer.review_result(result)
+                if fb.approved:
+                    trace.log("human", "review 2", "approved", next_step="done")
+                    return result
+                feedback = fb.comment
+                trace.log("human", "review 2", "follow-up", fb.comment, "planner", why="User feedback")
+
+            trace.log("orchestrator", "stop", "max replans reached", why=f"limit {settings.max_replans}")
+            return RunResult(run_id=trace.run_id, status="max_replans_reached", message_to_user="Let's narrow the question down together.")
+
+        except _OutOfTime as e:
+            partial = result or RunResult(run_id=trace.run_id, status="partial")
+            partial.status = "partial"
+            partial.paper_map = world.to_graph_json()
+            partial.warnings.append(f"Run time limit ({settings.run_timeout_s:.0f} s) reached before {e.before}; returning what was finished.")
+            trace.log("orchestrator", "time limit", "stop early", next_step="return partial result",
+                      why=f"limit {settings.run_timeout_s:.0f} s reached before {e.before}")
+            return partial
+        except Exception as e:
+            trace.error(stage, "run stage", e, next_step="return error to caller")
+            raise
 
 
 def _graded_stage(
@@ -117,4 +165,6 @@ def _graded_stage(
             return output
         fix = g.fix
     result.warnings.append(f"{stage} did not pass grading after {settings.max_redo_per_stage + 1} attempts")
+    trace.log("orchestrator", f"fallback {stage}", "continue with last attempt", next_step="next stage",
+              why=f"{stage} still failed grading after {settings.max_redo_per_stage + 1} attempts")
     return output

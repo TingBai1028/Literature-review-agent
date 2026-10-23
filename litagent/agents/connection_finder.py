@@ -11,8 +11,8 @@ from litagent.schemas import Cluster, Connection, Evidence, Paper
 
 
 def find_connections(papers: list[Paper], clusters: list[Cluster], settings: Settings, fix: str | None = None) -> list[Connection]:
-    if settings.dry_run:
-        return _fake_connections(clusters)
+    if settings.sample_mode:
+        return _fake_connections(papers, clusters)
 
     # TODO: within each cluster: decide which paper pairs to compare (all pairs? top-k most similar?),
     #       then ask the LLM (prompts/connection_finder.md) how they connect, with quotes.
@@ -21,7 +21,9 @@ def find_connections(papers: list[Paper], clusters: list[Cluster], settings: Set
     raise NotImplementedError
 
 
-def _fake_connections(clusters: list[Cluster]) -> list[Connection]:
+def _fake_connections(papers: list[Paper], clusters: list[Cluster]) -> list[Connection]:
+    """Sample mode: link the first two papers of each cluster, quoting their abstracts verbatim."""
+    by_id = {p.id: p for p in papers}
     out = []
     for c in clusters:
         if len(c.paper_ids) >= 2:
@@ -32,8 +34,18 @@ def _fake_connections(clusters: list[Cluster]) -> list[Connection]:
                     kind="within_cluster",
                     paper_ids=[a, b],
                     cluster_ids=[c.id],
-                    description="Dry run: both papers study the same problem.",
-                    evidence=[Evidence(paper_id=a, quote="fake quote"), Evidence(paper_id=b, quote="fake quote")],
+                    description="Sample mode: placeholder connection between two papers in the same group.",
+                    evidence=[Evidence(paper_id=a, quote=first_sentence(by_id.get(a))),
+                              Evidence(paper_id=b, quote=first_sentence(by_id.get(b)))],
                 )
             )
     return out
+
+
+def first_sentence(paper: Paper | None, limit: int = 200) -> str:
+    """A verbatim snippet from the abstract (or title), used as sample-mode evidence."""
+    if paper is None:
+        return ""
+    text = paper.abstract or paper.title
+    end = text.find(". ")
+    return text[: end + 1 if 0 < end < limit else limit]

@@ -27,8 +27,8 @@ def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: 
         if problem:
             return Grade(stage=stage, accuracy=1, appropriateness=1, actionability=1, fix=problem, reasoning="Rule-based size check failed")
 
-    if settings.dry_run:
-        return Grade(stage=stage, accuracy=3, appropriateness=3, actionability=2, reasoning="Dry run")
+    if settings.sample_mode:
+        return Grade(stage=stage, accuracy=3, appropriateness=3, actionability=2, reasoning="Sample mode: placeholder grade")
 
     # The grader sees the output and the evidence, not the producing agent's reasoning,
     # so it isn't talked into agreeing with it.
@@ -40,7 +40,7 @@ def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: 
         },
         ensure_ascii=False,
     )
-    return complete_json(load_prompt("grader"), user_message, Grade)
+    return complete_json(load_prompt("grader"), user_message, Grade, settings=settings, agent_name="grader")
 
 
 def passed(g: Grade, settings: Settings) -> bool:

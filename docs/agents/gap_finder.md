@@ -16,4 +16,4 @@ Code: `litagent/agents/gap_finder.py` · Prompt: `prompts/gap_finder.md`
 8. **Guardrails:** cap gaps per cluster (TODO number).
 
 **Input:** papers, clusters, connections · **Output:** `list[Gap]`
-**Owner:** TODO · **Status:** Dry run only
+**Owner:** TODO · **Status:** Sample mode only

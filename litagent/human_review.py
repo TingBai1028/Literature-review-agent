@@ -17,12 +17,26 @@ class Reviewer(Protocol):
 
 
 class AutoApproveReviewer:
-    """For dry runs, tests and evals: always approves."""
+    """For sample mode, tests and evals: always approves."""
 
     def review_papers(self, summary: RetrievalSummary) -> HumanFeedback:
         return HumanFeedback(approved=True)
 
     def review_result(self, result: RunResult) -> HumanFeedback:
+        return HumanFeedback(approved=True)
+
+
+class RequestReviewer(AutoApproveReviewer):
+    """For POST /run: never waits for input. If the request carries `feedback`, Human review 1
+    rejects once with it (so the Planner re-plans), then everything is approved."""
+
+    def __init__(self, feedback: str | None = None):
+        self.feedback = feedback
+
+    def review_papers(self, summary: RetrievalSummary) -> HumanFeedback:
+        if self.feedback:
+            comment, self.feedback = self.feedback, None
+            return HumanFeedback(approved=False, comment=comment)
         return HumanFeedback(approved=True)
 
 

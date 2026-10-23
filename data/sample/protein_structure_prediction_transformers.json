@@ -1,0 +1,1182 @@
+[
+  {
+    "id": "W3165545667",
+    "title": "Deep Learning-Based Advances in Protein Structure Prediction",
+    "abstract": "Obtaining an accurate description of protein structure is a fundamental step toward understanding the underpinning of biology. Although recent advances in experimental approaches have greatly enhanced our capabilities to experimentally determine protein structures, the gap between the number of protein sequences and known protein structures is ever increasing. Computational protein structure prediction is one of the ways to fill this gap. Recently, the protein structure prediction field has witnessed a lot of advances due to Deep Learning (DL)-based approaches as evidenced by the success of AlphaFold2 in the most recent Critical Assessment of protein Structure Prediction (CASP14). In this article, we highlight important milestones and progresses in the field of protein structure prediction due to DL-based methods as observed in CASP experiments. We describe advances in various steps of protein structure prediction pipeline viz. protein contact map prediction, protein distogram prediction, protein real-valued distance prediction, and Quality Assessment/refinement. We also highlight some end-to-end DL-based approaches for protein structure prediction approaches. Additionally, as there have been some recent DL-based advances in protein structure determination using Cryo-Electron (Cryo-EM) microscopy based, we also highlight some of the important progress in the field. Finally, we provide an outlook and possible future research directions for DL-based approaches in the protein structure prediction arena.",
+    "year": 2021,
+    "authors": [
+      "Subash Chandra Pakhrin",
+      "Bikash Shrestha",
+      "Badri Adhikari",
+      "Dukka B. KC"
+    ],
+    "citation_count": 117,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.mdpi.com/1422-0067/22/11/5553/pdf?version=1622004144",
+    "doi": "https://doi.org/10.3390/ijms22115553",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4401209403",
+    "title": "AI-Driven Deep Learning Techniques in Protein Structure Prediction",
+    "abstract": "Protein structure prediction is important for understanding their function and behavior. This review study presents a comprehensive review of the computational models used in predicting protein structure. It covers the progression from established protein modeling to state-of-the-art artificial intelligence (AI) frameworks. The paper will start with a brief introduction to protein structures, protein modeling, and AI. The section on established protein modeling will discuss homology modeling, ab initio modeling, and threading. The next section is deep learning-based models. It introduces some state-of-the-art AI models, such as AlphaFold (AlphaFold, AlphaFold2, AlphaFold3), RoseTTAFold, ProteinBERT, etc. This section also discusses how AI techniques have been integrated into established frameworks like Swiss-Model, Rosetta, and I-TASSER. The model performance is compared using the rankings of CASP14 (Critical Assessment of Structure Prediction) and CASP15. CASP16 is ongoing, and its results are not included in this review. Continuous Automated Model EvaluatiOn (CAMEO) complements the biennial CASP experiment. Template modeling score (TM-score), global distance test total score (GDT_TS), and Local Distance Difference Test (lDDT) score are discussed too. This paper then acknowledges the ongoing difficulties in predicting protein structure and emphasizes the necessity of additional searches like dynamic protein behavior, conformational changes, and protein-protein interactions. In the application section, this paper introduces some applications in various fields like drug design, industry, education, and novel protein development. In summary, this paper provides a comprehensive overview of the latest advancements in established protein modeling and deep learning-based models for protein structure predictions. It emphasizes the significant advancements achieved by AI and identifies potential areas for further investigation.",
+    "year": 2024,
+    "authors": [
+      "Lingtao Chen",
+      "Qiaomu Li",
+      "Kazi Fahim Ahmad Nasif",
+      "Ying Xie",
+      "Bobin Deng",
+      "Shuteng Niu",
+      "Seyedamin Pouriyeh",
+      "Zhiyu Dai",
+      "Jiawei Chen",
+      "Yixin Xie"
+    ],
+    "citation_count": 139,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.3390/ijms25158426",
+    "doi": "https://doi.org/10.3390/ijms25158426",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3163965514",
+    "title": "Improved protein structure prediction by deep learning irrespective of co-evolution information",
+    "abstract": null,
+    "year": 2021,
+    "authors": [
+      "Jinbo Xu",
+      "Matt McPartlon",
+      "Jin Li"
+    ],
+    "citation_count": 256,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.biorxiv.org/content/biorxiv/early/2020/10/12/2020.10.12.336859.full.pdf",
+    "doi": "https://doi.org/10.1038/s42256-021-00348-5",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4300861364",
+    "title": "Single-sequence protein structure prediction using a language model and deep learning",
+    "abstract": null,
+    "year": 2022,
+    "authors": [
+      "Ratul Chowdhury",
+      "Nazim Bouatta",
+      "Surojit Biswas",
+      "Christina Floristean",
+      "Anant Kharkar",
+      "Koushik Roy",
+      "Charlotte Rochereau",
+      "Gustaf Ahdritz",
+      "Joanna T. Zhang",
+      "George McDonald Church",
+      "Peter Karl Sorger",
+      "Mohammed AlQuraishi"
+    ],
+    "citation_count": 454,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.biorxiv.org/content/biorxiv/early/2021/08/04/2021.08.02.454840.full.pdf",
+    "doi": "https://doi.org/10.1038/s41587-022-01432-w",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4402753025",
+    "title": "Deep learning methods for protein structure prediction",
+    "abstract": "Abstract Protein structure prediction (PSP) has been a prominent topic in bioinformatics and computational biology, aiming to predict protein function and structure from sequence data. The three‐dimensional conformation of proteins is pivotal for their intricate biological roles. With the advancement of computational capabilities and the adoption of deep learning (DL) technologies (especially Transformer network architectures), the PSP field has ushered in a brand‐new era of “neuralization.” Here, we focus on reviewing the evolution of PSP from traditional to modern deep learning‐based approaches and the characteristics of various structural prediction methods. This emphasizes the advantages of deep learning‐based hybrid prediction methods over traditional approaches. This study also provides a summary analysis of widely used bioinformatics databases and the latest structure prediction models. It discusses deep learning networks and algorithmic optimization for model training, validation, and evaluation. In addition, a summary discussion of the major advances in deep learning‐based protein structure prediction is presented. The update of AlphaFold 3 further extends the boundaries of prediction models, especially in protein‐small molecule structure prediction. This marks a key shift toward a holistic approach in biomolecular structure elucidation, aiming at solving almost all sequence‐to‐structure puzzles in various biological phenomena.",
+    "year": 2024,
+    "authors": [
+      "Yiming Qin",
+      "Zihan Chen",
+      "Peng Ye",
+      "Ying Xiao",
+      "Tian Zhong",
+      "Xi Yu"
+    ],
+    "citation_count": 29,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/mef2.96",
+    "doi": "https://doi.org/10.1002/mef2.96",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3132448805",
+    "title": "Deep learning techniques have significantly impacted protein structure prediction and protein design",
+    "abstract": null,
+    "year": 2021,
+    "authors": [
+      "Robin Pearce",
+      "Yang Zhang"
+    ],
+    "citation_count": 127,
+    "is_review": true,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1016/j.sbi.2021.01.007",
+    "doi": "https://doi.org/10.1016/j.sbi.2021.01.007",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4391338754",
+    "title": "Deep learning for protein structure prediction and design—progress and applications",
+    "abstract": "Proteins are the key molecular machines that orchestrate all biological processes of the cell. Most proteins fold into three-dimensional shapes that are critical for their function. Studying the 3D shape of proteins can inform us of the mechanisms that underlie biological processes in living cells and can have practical applications in the study of disease mutations or the discovery of novel drug treatments. Here, we review the progress made in sequence-based prediction of protein structures with a focus on applications that go beyond the prediction of single monomer structures. This includes the application of deep learning methods for the prediction of structures of protein complexes, different conformations, the evolution of protein structures and the application of these methods to protein design. These developments create new opportunities for research that will have impact across many areas of biomedical research.",
+    "year": 2024,
+    "authors": [
+      "Jürgen Jänes",
+      "Pedro Beltrão"
+    ],
+    "citation_count": 69,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1038/s44320-024-00016-x",
+    "doi": "https://doi.org/10.1038/s44320-024-00016-x",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4409112594",
+    "title": "Protein structure prediction via deep learning: an in-depth review",
+    "abstract": "The application of deep learning algorithms in protein structure prediction has greatly influenced drug discovery and development. Accurate protein structures are crucial for understanding biological processes and designing effective therapeutics. Traditionally, experimental methods like X-ray crystallography, nuclear magnetic resonance, and cryo-electron microscopy have been the gold standard for determining protein structures. However, these approaches are often costly, inefficient, and time-consuming. At the same time, the number of known protein sequences far exceeds the number of experimentally determined structures, creating a gap that necessitates the use of computational approaches. Deep learning has emerged as a promising solution to address this challenge over the past decade. This review provides a comprehensive guide to applying deep learning methodologies and tools in protein structure prediction. We initially outline the databases related to the protein structure prediction, then delve into the recently developed large language models as well as state-of-the-art deep learning-based methods. The review concludes with a perspective on the future of predicting protein structure, highlighting potential challenges and opportunities.",
+    "year": 2025,
+    "authors": [
+      "Yajie Meng",
+      "Zhuang Zhang",
+      "Chang Zhou",
+      "Xianfang Tang",
+      "Xinrong Hu",
+      "Geng Tian",
+      "Jialiang Yang",
+      "Yuhua Yao"
+    ],
+    "citation_count": 43,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2025.1498662/pdf",
+    "doi": "https://doi.org/10.3389/fphar.2025.1498662",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4328048207",
+    "title": "Protein structure prediction with in-cell photo-crosslinking mass spectrometry and deep learning",
+    "abstract": "While AlphaFold2 can predict accurate protein structures from the primary sequence, challenges remain for proteins that undergo conformational changes or for which few homologous sequences are known. Here we introduce AlphaLink, a modified version of the AlphaFold2 algorithm that incorporates experimental distance restraint information into its network architecture. By employing sparse experimental contacts as anchor points, AlphaLink improves on the performance of AlphaFold2 in predicting challenging targets. We confirm this experimentally by using the noncanonical amino acid photo-leucine to obtain information on residue-residue contacts inside cells by crosslinking mass spectrometry. The program can predict distinct conformations of proteins on the basis of the distance restraints provided, demonstrating the value of experimental data in driving protein structure prediction. The noise-tolerant framework for integrating data in protein structure prediction presented here opens a path to accurate characterization of protein structures from in-cell data.",
+    "year": 2023,
+    "authors": [
+      "Kolja Stahl",
+      "Andrea Graziadei",
+      "Therese Dau",
+      "Oliver Brock",
+      "Juri Rappsilber"
+    ],
+    "citation_count": 163,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.nature.com/articles/s41587-023-01704-z.pdf",
+    "doi": "https://doi.org/10.1038/s41587-023-01704-z",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4318716433",
+    "title": "Deep learning for protein complex structure prediction",
+    "abstract": "Recent developments in the structure prediction of protein complexes have resulted in accuracies rivalling experimental methods in many cases. The high accuracy is mainly observed in dimeric complexes and other problems such as protein disorder and predicting the structure of host-pathogen interactions remain. This review highlights the foundation for current accurate structure prediction of protein complexes and possible ways to address the remaining limitations.",
+    "year": 2023,
+    "authors": [
+      "Patrick Bryant"
+    ],
+    "citation_count": 52,
+    "is_review": true,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1016/j.sbi.2023.102529",
+    "doi": "https://doi.org/10.1016/j.sbi.2023.102529",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3184615727",
+    "title": "Protein–RNA interaction prediction with deep learning: structure matters",
+    "abstract": "Protein-RNA interactions are of vital importance to a variety of cellular activities. Both experimental and computational techniques have been developed to study the interactions. Because of the limitation of the previous database, especially the lack of protein structure data, most of the existing computational methods rely heavily on the sequence data, with only a small portion of the methods utilizing the structural information. Recently, AlphaFold has revolutionized the entire protein and biology field. Foreseeably, the protein-RNA interaction prediction will also be promoted significantly in the upcoming years. In this work, we give a thorough review of this field, surveying both the binding site and binding preference prediction problems and covering the commonly used datasets, features and models. We also point out the potential challenges and opportunities in this field. This survey summarizes the development of the RNA-binding protein-RNA interaction field in the past and foresees its future development in the post-AlphaFold era.",
+    "year": 2021,
+    "authors": [
+      "Junkang Wei",
+      "Siyuan Chen",
+      "Licheng Zong",
+      "Xin Gao",
+      "Yu Li"
+    ],
+    "citation_count": 92,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://academic.oup.com/bib/article-pdf/23/1/bbab540/42231707/bbab540.pdf",
+    "doi": "https://doi.org/10.1093/bib/bbab540",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3186340132",
+    "title": "Improving protein tertiary structure prediction by deep learning and distance prediction in CASP14",
+    "abstract": "Substantial progresses in protein structure prediction have been made by utilizing deep-learning and residue-residue distance prediction since CASP13. Inspired by the advances, we improve our CASP14 MULTICOM protein structure prediction system by incorporating three new components: (a) a new deep learning-based protein inter-residue distance predictor to improve template-free (ab initio) tertiary structure prediction, (b) an enhanced template-based tertiary structure prediction method, and (c) distance-based model quality assessment methods empowered by deep learning. In the 2020 CASP14 experiment, MULTICOM predictor was ranked seventh out of 146 predictors in tertiary structure prediction and ranked third out of 136 predictors in inter-domain structure prediction. The results demonstrate that the template-free modeling based on deep learning and residue-residue distance prediction can predict the correct topology for almost all template-based modeling targets and a majority of hard targets (template-free targets or targets whose templates cannot be recognized), which is a significant improvement over the CASP13 MULTICOM predictor. Moreover, the template-free modeling performs better than the template-based modeling on not only hard targets but also the targets that have homologous templates. The performance of the template-free modeling largely depends on the accuracy of distance prediction closely related to the quality of multiple sequence alignments. The structural model quality assessment works well on targets for which enough good models can be predicted, but it may perform poorly when only a few good models are predicted for a hard target and the distribution of model quality scores is highly skewed. MULTICOM is available at https://github.com/jianlin-cheng/MULTICOM_Human_CASP14/tree/CASP14_DeepRank3 and https://github.com/multicom-toolbox/multicom/tree/multicom_v2.0.",
+    "year": 2021,
+    "authors": [
+      "Jian Liu",
+      "Tianqi Wu",
+      "Zhiye Guo",
+      "Jie Hou",
+      "Jianlin Jack Cheng"
+    ],
+    "citation_count": 31,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/prot.26186",
+    "doi": "https://doi.org/10.1002/prot.26186",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4205835872",
+    "title": "A Review of Protein Structure Prediction using Deep Learning",
+    "abstract": "Proteins are macromolecules composed of 20 types of amino acids in a specific order. Understanding how proteins fold is vital because its 3-dimensional structure determines the function of a protein. Prediction of protein structure based on amino acid strands and evolutionary information becomes the basis for other studies such as predicting the function, property or behaviour of a protein and modifying or designing new proteins to perform certain desired functions. Machine learning advances, particularly deep learning, are igniting a paradigm shift in scientific study. In this review, we summarize recent work in applying deep learning techniques to tackle problems in protein structural prediction. We discuss various deep learning approaches used to predict protein structure and future achievements and challenges. This review is expected to help provide perspectives on problems in biochemistry that can take advantage of the deep learning approach. Some of the unanswered challenges with current computational approaches are predicting the location and precision orientation of protein side chains, predicting protein interactions with DNA, RNA and other small molecules and predicting the structure of protein complexes.",
+    "year": 2021,
+    "authors": [
+      "Meredita Susanty",
+      "Tati Latifah Erawati Rajab",
+      "Rukman Hertadi"
+    ],
+    "citation_count": 1,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.bio-conferences.org/articles/bioconf/pdf/2021/13/bioconf_biomic2021_04003.pdf",
+    "doi": "https://doi.org/10.1051/bioconf/20214104003",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4367156817",
+    "title": "Application of deep learning methods for protein structure prediction",
+    "abstract": "The rapid development of machine learning and deep learning methods has led to their widespread use in many areas of research, including their use in solving problems of proteomics. Today, machine learning methods play an important role in predicting the three-dimensional structural components of proteins by interpreting how protein sequences and their homology govern interresidual contacts and structural organization. Recent CASPs (Critical Assessment of Structure Prediction) assessing the state of the art in modeling protein structure based on amino acid sequence have demonstrated significant progress in modeling structures without the use of structural templates (historically “ab initio” modeling). The progress was driven by the successful application of deep learning techniques to predict the distances between residuals. In turn, these results led to a significant increase in the accuracy of the three-dimensional structure, provided that a sufficient number of sequences are known for a family of proteins. In addition, the number of sequences required for alignment has been significantly reduced, and the accuracy of templatebased models has also improved significantly. This paper provides an overview of recent advances in the application of deep learning methods used to predict the three-dimensional structure of a protein. The possibilities of using neural networks to identify unknown protein structures and functions of proteins, which is one of the most important tasks of proteomics, are also considered. Problems that have yet to be solved are described, but it is expected that in the near future the described methods will play a decisive role in the structural bioinformatics of proteins.",
+    "year": 2022,
+    "authors": [
+      "Yekaterina Golenko",
+      "Aisulu Ismailova",
+      "R.N. Moldasheva"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "http://dx.doi.org/10.47533/2020.1606-146x.192",
+    "doi": "https://doi.org/10.47533/2020.1606-146x.192",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4410621619",
+    "title": "Deep-learning-based single-domain and multidomain protein structure prediction with D-I-TASSER",
+    "abstract": "The dominant success of deep learning techniques on protein structure prediction has challenged the necessity and usefulness of traditional force field-based folding simulations. We proposed a hybrid approach, deep-learning-based iterative threading assembly refinement (D-I-TASSER), which constructs atomic-level protein structural models by integrating multisource deep learning potentials with iterative threading fragment assembly simulations. D-I-TASSER introduces a domain splitting and assembly protocol for the automated modeling of large multidomain protein structures. Benchmark tests and the most recent critical assessment of protein structure prediction, 15 experiments demonstrate that D-I-TASSER outperforms AlphaFold2 and AlphaFold3 on both single-domain and multidomain proteins. Large-scale folding experiments further show that D-I-TASSER could fold 81% of protein domains and 73% of full-chain sequences in the human proteome with results highly complementary to recently released models by AlphaFold2. These results highlight a new avenue to integrate deep learning with classical physics-based folding simulations for high-accuracy protein structure and function predictions that are usable in genome-wide applications.",
+    "year": 2025,
+    "authors": [
+      "Wei Hui Zheng",
+      "Qiqige Wuyun",
+      "Yang Li",
+      "Quancheng Liu",
+      "Xiaogen Zhou",
+      "Chunxiang Peng",
+      "Yiheng Zhu",
+      "Lydia Freddolino",
+      "Yang Zhang"
+    ],
+    "citation_count": 103,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.nature.com/articles/s41587-025-02654-4.pdf",
+    "doi": "https://doi.org/10.1038/s41587-025-02654-4",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4406537183",
+    "title": "Structure-Based Approaches for Protein–Protein Interaction Prediction Using Machine Learning and Deep Learning",
+    "abstract": "Protein-Protein Interaction (PPI) prediction plays a pivotal role in understanding cellular processes and uncovering molecular mechanisms underlying health and disease. Structure-based PPI prediction has emerged as a robust alternative to sequence-based methods, offering greater biological accuracy by integrating three-dimensional spatial and biochemical features. This work summarizes the recent advances in computational approaches leveraging protein structure information for PPI prediction, focusing on machine learning (ML) and deep learning (DL) techniques. These methods not only improve predictive accuracy but also provide insights into functional sites, such as binding and catalytic residues. However, challenges such as limited high-resolution structural data and the need for effective negative sampling persist. Through the integration of experimental and computational tools, structure-based prediction paves the way for comprehensive proteomic network analysis, holding promise for advancements in drug discovery, biomarker identification, and personalized medicine. Future directions include enhancing scalability and dataset reliability to expand these approaches across diverse proteomes.",
+    "year": 2025,
+    "authors": [
+      "Despoina P. Kiouri",
+      "Georgios Batsis",
+      "Christos T. Chasapis"
+    ],
+    "citation_count": 27,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.mdpi.com/2218-273X/15/1/141/pdf?version=1737097468",
+    "doi": "https://doi.org/10.3390/biom15010141",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4367301305",
+    "title": "Deep Learning for Protein Structure Prediction: Advancements in Structural Bioinformatics",
+    "abstract": "Abstract Motivation Accurate prediction of protein structures is crucial for understanding protein function, stability, and interactions, with far-reaching implications in drug discovery and protein engineering. As the fields of structural bioinformatics and artificial intelligence continue to converge, a standardized model for protein structure prediction is still yet to be seen as even large models like AlphaFold continue to change architectures. To this end, we provide a comprehensive literature review highlighting the latest advancements and challenges in deep learning-based structure prediction, as well as a benchmark system for structure prediction and visualization of amino acid protein sequences. Results We present ProteiNN, a Transformer-based model for end-to-end single-sequence protein structure prediction, motivated by the need for accurate and efficient methods to decipher protein structures and their roles in biological processes and a system to perform prediction on user-input protein sequences. The model leverages the transformer architecture’s powerful representation learning capabilities to predict protein secondary and tertiary structures directly from integer-encoded amino acid sequences. Our results demonstrate that ProteiNN is effective in predicting secondary structures, though further improvements are necessary to enhance the model’s performance in predicting higher-level structures. This work thus showcases the potential of transformer-based architectures in structure prediction and lays the foundation for future research in structural bioinformatics and related fields.",
+    "year": 2023,
+    "authors": [
+      "Daniel Szelogowski"
+    ],
+    "citation_count": 5,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.biorxiv.org/content/biorxiv/early/2023/04/28/2023.04.26.538026.1.full.pdf",
+    "doi": "https://doi.org/10.1101/2023.04.26.538026",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4389480950",
+    "title": "DeepMainmast: integrated protocol of protein structure modeling for cryo-EM with deep learning and structure prediction",
+    "abstract": null,
+    "year": 2023,
+    "authors": [
+      "Genki Terashi",
+      "Xiao Wang",
+      "Devashish Prasad",
+      "Tsukasa Nakamura",
+      "Daisuke Kihara"
+    ],
+    "citation_count": 68,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12815591/",
+    "doi": "https://doi.org/10.1038/s41592-023-02099-0",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4229031603",
+    "title": "ScanNet: an interpretable geometric deep learning model for structure-based protein binding site prediction",
+    "abstract": null,
+    "year": 2022,
+    "authors": [
+      "Jérôme Tubiana",
+      "Dina Schneidman‐Duhovny",
+      "Haim J. Wolfson"
+    ],
+    "citation_count": 274,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1101/2021.09.05.459013",
+    "doi": "https://doi.org/10.1038/s41592-022-01490-7",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4390536911",
+    "title": "Structure-based, deep-learning models for protein-ligand binding affinity prediction",
+    "abstract": "The launch of AlphaFold series has brought deep-learning techniques into the molecular structural science. As another crucial problem, structure-based prediction of protein-ligand binding affinity urgently calls for advanced computational techniques. Is deep learning ready to decode this problem? Here we review mainstream structure-based, deep-learning approaches for this problem, focusing on molecular representations, learning architectures and model interpretability. A model taxonomy has been generated. To compensate for the lack of valid comparisons among those models, we realized and evaluated representatives from a uniform basis, with the advantages and shortcomings discussed. This review will potentially benefit structure-based drug discovery and related areas.",
+    "year": 2024,
+    "authors": [
+      "Debby D. Wang",
+      "Wenhui Wu",
+      "Ran Wang"
+    ],
+    "citation_count": 49,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://jcheminf.biomedcentral.com/counter/pdf/10.1186/s13321-023-00795-9",
+    "doi": "https://doi.org/10.1186/s13321-023-00795-9",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4390501271",
+    "title": "Improving deep learning protein monomer and complex structure prediction using DeepMSA2 with huge metagenomics data",
+    "abstract": "Leveraging iterative alignment search through genomic and metagenome sequence databases, we report the DeepMSA2 pipeline for uniform protein single- and multichain multiple-sequence alignment (MSA) construction. Large-scale benchmarks show that DeepMSA2 MSAs can remarkably increase the accuracy of protein tertiary and quaternary structure predictions compared with current state-of-the-art methods. An integrated pipeline with DeepMSA2 participated in the most recent CASP15 experiment and created complex structural models with considerably higher quality than the AlphaFold2-Multimer server (v.2.2.0). Detailed data analyses show that the major advantage of DeepMSA2 lies in its balanced alignment search and effective model selection, and in the power of integrating huge metagenomics databases. These results demonstrate a new avenue to improve deep learning protein structure prediction through advanced MSA construction and provide additional evidence that optimization of input information to deep learning-based structure prediction methods must be considered with as much care as the design of the predictor itself.",
+    "year": 2024,
+    "authors": [
+      "Wei Hui Zheng",
+      "Qiqige Wuyun",
+      "Yang Li",
+      "Chengxin Zhang",
+      "Lydia Freddolino",
+      "Yang Zhang"
+    ],
+    "citation_count": 131,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.nature.com/articles/s41592-023-02130-4.pdf",
+    "doi": "https://doi.org/10.1038/s41592-023-02130-4",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4214530112",
+    "title": "Structure-Aware Multimodal Deep Learning for Drug–Protein Interaction Prediction",
+    "abstract": "Identifying drug-protein interactions (DPIs) is crucial in drug discovery, and a number of machine learning methods have been developed to predict DPIs. Existing methods usually use unrealistic data sets with hidden bias, which will limit the accuracy of virtual screening methods. Meanwhile, most DPI prediction methods pay more attention to molecular representation but lack effective research on protein representation and high-level associations between different instances. To this end, we present the novel structure-aware multimodal deep DPI prediction model, STAMP-DPI, which was trained on a curated industry-scale benchmark data set. We built a high-quality benchmark data set named GalaxyDB for DPI prediction. This industry-scale data set along with an unbiased training procedure resulted in a more robust benchmark study. For informative protein representation, we constructed a structure-aware graph neural network method from the protein sequence by combining predicted contact maps and graph neural networks. Through further integration of structure-based representation and high-level pretrained embeddings for molecules and proteins, our model effectively captures the feature representation of the interactions between them. As a result, STAMP-DPI outperformed state-of-the-art DPI prediction methods by decreasing 7.00% mean square error (MSE) in the Davis data set and improving 8.89% area under the curve (AUC) in the GalaxyDB data set. Moreover, our model is an interpretable model with the transformer-based interaction mechanism, which can accurately reveal the binding sites between molecules and proteins.",
+    "year": 2022,
+    "authors": [
+      "Penglei Wang",
+      "Shuangjia Zheng",
+      "Yize Jiang",
+      "Chengtao Li",
+      "Junhong Liu",
+      "Chang Wen",
+      "Atanas Patronov",
+      "Dahong Qian",
+      "Hongming Chen",
+      "Yuedong Yang"
+    ],
+    "citation_count": 75,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "http://hdl.handle.net/10072/413886",
+    "doi": "https://doi.org/10.1021/acs.jcim.2c00060",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4225919313",
+    "title": "A Deep Learning Approach for Prediction of Protein Secondary Structure",
+    "abstract": "The secondary structure of a protein is critical for establishing a link between the protein primary and tertiary structures. For this reason, it is important to design methods for accurate protein secondary structure prediction. Most of the existing computational techniques for protein structural and functional prediction are based on machine learning with shallow frameworks. Different deep learning architectures have already been applied to tackle protein secondary structure prediction problem. In this study, deep learning based models, i.e., convolutional neural network and long short-term memory for protein secondary structure prediction were proposed. The input to proposed models is amino acid sequences which were derived from CulledPDB dataset. Hyperparameter tuning with cross validation was employed to attain best parameters for the proposed models. The proposed models enables effective processing of amino acids and attain approximately 87.05% and 87.47% Q3 accuracy of protein secondary structure prediction for convolutional neural network and long short-term memory models, respectively.",
+    "year": 2022,
+    "authors": [
+      "Muhammad Faizan Zubair",
+      "Muhammad Kashif Hanif",
+      "Eatedal A. Alabdulkreem",
+      "Yazeed Yasin Ghadi",
+      "Muhammad Irfan Khan",
+      "Muhammad Umer Sarwar",
+      "Ayesha Hanif"
+    ],
+    "citation_count": 2,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://file.techscience.com/ueditor/files/cmc/TSP_CMC-72-2/TSP_CMC_26408/TSP_CMC_26408.pdf",
+    "doi": "https://doi.org/10.32604/cmc.2022.026408",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4409170867",
+    "title": "Applications of Deep Learning in Protein Structure Prediction for Drug Discovery",
+    "abstract": null,
+    "year": 2025,
+    "authors": [
+      "Muhammad Abubakar"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.2139/ssrn.5203752",
+    "doi": "https://doi.org/10.2139/ssrn.5203752",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3169629772",
+    "title": "Protein Secondary Structure Prediction With a Reductive Deep Learning Method",
+    "abstract": "Protein secondary structures have been identified as the links in the physical processes of primary sequences, typically random coils, folding into functional tertiary structures that enable proteins to involve a variety of biological events in life science. Therefore, an efficient protein secondary structure predictor is of importance especially when the structure of an amino acid sequence fragment is not solved by high-resolution experiments, such as X-ray crystallography, cryo-electron microscopy, and nuclear magnetic resonance spectroscopy, which are usually time consuming and expensive. In this paper, a reductive deep learning model MLPRNN has been proposed to predict either 3-state or 8-state protein secondary structures. The prediction accuracy by the MLPRNN on the publicly available benchmark CB513 data set is comparable with those by other state-of-the-art models. More importantly, taking into account the reductive architecture, MLPRNN could be a baseline for future developments.",
+    "year": 2021,
+    "authors": [
+      "Zhiliang Lyu",
+      "Zhijin Wang",
+      "Fangfang Luo",
+      "Jianwei Shuai",
+      "Yandong Huang"
+    ],
+    "citation_count": 39,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.frontiersin.org/articles/10.3389/fbioe.2021.687426/pdf",
+    "doi": "https://doi.org/10.3389/fbioe.2021.687426",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3167623110",
+    "title": "Recent Applications of Deep Learning Methods on Evolution- and Contact-Based Protein Structure Prediction",
+    "abstract": "The new advances in deep learning methods have influenced many aspects of scientific research, including the study of the protein system. The prediction of proteins' 3D structural components is now heavily dependent on machine learning techniques that interpret how protein sequences and their homology govern the inter-residue contacts and structural organization. Especially, methods employing deep neural networks have had a significant impact on recent CASP13 and CASP14 competition. Here, we explore the recent applications of deep learning methods in the protein structure prediction area. We also look at the potential opportunities for deep learning methods to identify unknown protein structures and functions to be discovered and help guide drug-target interactions. Although significant problems still need to be addressed, we expect these techniques in the near future to play crucial roles in protein structural bioinformatics as well as in drug discovery.",
+    "year": 2021,
+    "authors": [
+      "Donghyuk Suh",
+      "Jai Woo Lee",
+      "Sun Choi",
+      "Yoonji Lee"
+    ],
+    "citation_count": 25,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.mdpi.com/1422-0067/22/11/6032/pdf?version=1622715380",
+    "doi": "https://doi.org/10.3390/ijms22116032",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4308930019",
+    "title": "Deep learning for protein secondary structure prediction: Pre and post-AlphaFold",
+    "abstract": "This paper aims to provide a comprehensive review of the trends and challenges of deep neural networks for protein secondary structure prediction (PSSP). In recent years, deep neural networks have become the primary method for protein secondary structure prediction. Previous studies showed that deep neural networks had uplifted the accuracy of three-state secondary structure prediction to more than 80%. Favored deep learning methods, such as convolutional neural networks, recurrent neural networks, inception networks, and graph neural networks, have been implemented in protein secondary structure prediction. Methods adapted from natural language processing (NLP) and computer vision are also employed, including attention mechanism, ResNet, and U-shape networks. In the post-AlphaFold era, PSSP studies focus on different objectives, such as enhancing the quality of evolutionary information and exploiting protein language models as the PSSP input. The recent trend to utilize pre-trained language models as input features for secondary structure prediction provides a new direction for PSSP studies. Moreover, the state-of-the-art accuracy achieved by previous PSSP models is still below its theoretical limit. There are still rooms for improvement to be made in the field.",
+    "year": 2022,
+    "authors": [
+      "Dewi Pramudi Ismi",
+      "Reza Pulungan",
+      "Afiahayati"
+    ],
+    "citation_count": 50,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1016/j.csbj.2022.11.012",
+    "doi": "https://doi.org/10.1016/j.csbj.2022.11.012",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W7165660686",
+    "title": "Deep Learning Models for Protein Structure Prediction: A Comprehensive Survey",
+    "abstract": "A major challenge in computational biology is determining the 3D structure of proteins from their 1D amino acid sequence. Accurate prediction of protein structures improves the understanding of protein function and facilitates applications in drug discovery, protein engineering, and structural biology. Modeling proteins using template-based approaches is difficult when homologous structures are unavailable in the Protein Data Bank (PDB). Recent advances in deep learning (DL) have significantly improved the accuracy of protein structure prediction (PSP). The current approaches employ convolutional neural networks (CNNs), recurrent neural networks (RNNs), graph neural networks (GNNs), and Transformer architectures to learn complex sequence patterns, evolutionary relationships, and long-range residue interactions that govern protein folding. By predicting long-range residue contacts, inter-residue distances, and geometric constraints, these approaches enable the generation of highly accurate three-dimensional protein structures. DL has transformed PSP, with models such as AlphaFold2, AlphaFold3, Boltz-1, and other recent architectures achieving near-experimental accuracy on many CASP targets. The Critical Assessment of Protein Structure Prediction (CASP) is the standard biennial community-wide benchmark for evaluating PSP methods. One of the biggest challenges remaining in this area is modeling regions of proteins that are intrinsically disordered and capturing the full range of protein dynamics and the relationships of different protein domains that exist in different proteins. This survey provides a comprehensive review of recent DL-based PSP methods, analyzes their architectural evolution, compares their strengths and limitations, and discusses emerging research challenges and future directions.",
+    "year": 2026,
+    "authors": [
+      "C Srushti",
+      "P M Prathibhavani",
+      "K R. Venugopal"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.58482/ijeresm.v5i2.7",
+    "doi": "https://doi.org/10.58482/ijeresm.v5i2.7",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3183921815",
+    "title": "Protein structure prediction using deep learning distance and hydrogen‐bonding restraints in CASP14",
+    "abstract": "In this article, we report 3D structure prediction results by two of our best server groups (\"Zhang-Server\" and \"QUARK\") in CASP14. These two servers were built based on the D-I-TASSER and D-QUARK algorithms, which integrated four newly developed components into the classical protein folding pipelines, I-TASSER and QUARK, respectively. The new components include: (a) a new multiple sequence alignment (MSA) collection tool, DeepMSA2, which is extended from the DeepMSA program; (b) a contact-based domain boundary prediction algorithm, FUpred, to detect protein domain boundaries; (c) a residual convolutional neural network-based method, DeepPotential, to predict multiple spatial restraints by co-evolutionary features derived from the MSA; and (d) optimized spatial restraint energy potentials to guide the structure assembly simulations. For 37 FM targets, the average TM-scores of the first models produced by D-I-TASSER and D-QUARK were 96% and 112% higher than those constructed by I-TASSER and QUARK, respectively. The data analysis indicates noticeable improvements produced by each of the four new components, especially for the newly added spatial restraints from DeepPotential and the well-tuned force field that combines spatial restraints, threading templates, and generic knowledge-based potentials. However, challenges still exist in the current pipelines. These include difficulties in modeling multi-domain proteins due to low accuracy in inter-domain distance prediction and modeling protein domains from oligomer complexes, as the co-evolutionary analysis cannot distinguish inter-chain and intra-chain distances. Specifically tuning the deep learning-based predictors for multi-domain targets and protein complexes may be helpful to address these issues.",
+    "year": 2021,
+    "authors": [
+      "Wei Hui Zheng",
+      "Yang Li",
+      "Chengxin Zhang",
+      "Xiaogen Zhou",
+      "Robin Pearce",
+      "Eric W. Bell",
+      "Xiaoqiang Huang",
+      "Yang Zhang"
+    ],
+    "citation_count": 60,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/prot.26193",
+    "doi": "https://doi.org/10.1002/prot.26193",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4405153727",
+    "title": "Protein Structure Prediction, Structural Bioinformatics and Deep Learning",
+    "abstract": "Protein structure prediction is essential for understanding protein stability, and interactions. It holds immense potential for drug discovery and protein engineering. However, despite advancements in structural bioinformatics and artificial intelligence, a standardised model for structure prediction still needs to be worked out. Even prominent models like AlphaFold often undergo architectural changes. To address this gap, a comprehensive detail of recent progress and challenges in deep learning-based protein structure prediction has been presented. Additionally, a benchmark system for structure prediction and visualization, enabling analysis of user-provided protein sequences has been introduced. Looking to the need for efficient and accurate methods to decipher protein structures and their biological roles, DeepProtein has been introduced. This model leverages the potent representation learning capabilities of the Transformer architecture to directly predict secondary and tertiary structures from integer-encoded amino acid sequences. The results demonstrate DeepProtein’s effectiveness in secondary structure prediction. Further refinement is necessary to enhance its performance in predicting higher-order structures. The present document highlights the potential of Transformer-based architectures for structure prediction, paving the way for future research in structural bioinformatics and related fields.",
+    "year": 2024,
+    "authors": [
+      "Tejas Agarwal"
+    ],
+    "citation_count": 1,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.20546/ijcmas.2024.1308.023",
+    "doi": "https://doi.org/10.20546/ijcmas.2024.1308.023",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4312518579",
+    "title": "Understanding by design: Implementing deep learning from protein structure prediction to protein design",
+    "abstract": "Recently, Wang and colleagues introduce two deep learning approaches in designing scaffolding proteins with binding and catalytic functions and apply these methods to many areas such as immunogen candidates design and enzyme design.1 This study serves as a prime example of how deep learning methods can be elegantly applied to push the envelope, especially transforming protein prediction models, to protein design. Thriving under the burgeoning development of deep learning technologies, nowadays protein structure can be reliably predicted based on its amino acid sequence. Alphafold 22 and RoseTTAFold3 achieved the state-of-the-art accuracy on the structure prediction of single-domain proteins. These methods pave the road in structural biology field from resolving protein structure per se towards designing new proteins. On the one hand, almost all the structures of single-domain proteins can be accurately predicted by current methods. The predicted structure database provides great resources for structure-based function prediction. On the other hand, the deep learning model for structure prediction can be adopted for functional protein design. Currently, protein design problems that generate sequences based on certain structures or other information are still challenging. In the presented resource article in the prestigious journal Science, July 2022, Wang et al. describe two deep learning approaches for scaffolding functional sites (Figure 1). The first approach was named “constrained hallucination,” which optimized the scaffold sequence by sampling in sequence space and maximizing the feasibility of structure folding. This method was an optimum from the previous work using trRosetta.4 In this study, the authors adopted RoseTTAFold for the structure prediction and used a composite loss function for sequence selection. More specifically, the composite loss function consisted of three parts, including a hallucination loss, a motif reconstruction loss, and a problem-specific loss, which made it more feasible to fit different problems. Compared to the trRosetta, the application of RoseTTAFold achieved a better performance in guiding functional site-constrained protein design and can directly generate 3D coordinates of a given sequence. Therefore, it confers valuable references for jointly optimizing both sequence and structure. The second approach was named “inpainting,” which completed the full sequence and structure from the partially given functional sites. Inpainting of the protein sequence and structure was done by a single forward prediction through a specifically trained RoseTTAFold network. This approach elegantly converted the protein design problem to an information recovery problem which is commonly exist in the general artificial intelligence research, such as completing the missing words in a sentence in the natural language processing field or filling the masked images in the computer vision field. The authors utilized these two approaches (i.e., “constrained hallucination” and “inpainting”) to design proteins that contain different functional sites, exemplified by immunogen candidates and receptor traps, metal-coordinating proteins, enzyme activate sites and protein-binding proteins. The quality of designs was initially evaluated in silicon using AlphaFold regarding its performance on de novo proteins, followed by the functional tests in biochemical experiments. Both approaches showed great accuracy in predicting fixed regions and the ability to design missing regions. Concomitantly, each approach has its own pros and cons. The ‘constrained hallucination' approach will search in broader sequence space and not be limited by known structure or knowledge, which might discover more novel targets. However, this approach is compute-consuming because the gradient descent step will need a both forward and backward pass process. “Inpainting” approach is more efficient in optimize lead compounds for different protein design problems because there is only a forward pass through the network and no need to tailor the function for different problems. However, inpainting might be suboptimal in de novo protein designs due to the limited priori knowledge. Protein design and protein structure prediction could be regarded as mirroring problems that are based on the same protein folding principles. Protein design generally tries to predict the sequence by a given structure and protein structure predicts try to generate the 3D structure of a given sequence. With the iteration of deep learning methods and the addition of arithmetic power, the protein folding problem has been better solved, especially in the structure prediction of single-strand proteins which could be reliably predicted. However, there is still a paucity of solutions in the protein design problem. One reason is that the protein structure prediction problem is relatively clear and specified with the basic assumption that protein folding obeys consistent physicochemical rules. In previous studies, researchers found that the conserved information between different amino acid sequences and the distance between amino acids can be obtained by multiple sequence alignment, which tremendously improves the accuracy of prediction. In contrast, in protein design problems, the choice of protein sequence depends not only on its structure but also on its context-based function. Inevitably, protein design is often case-dependent, with different principles and considerations for different functional designs, which makes it difficult to transfer universal frameworks and models for different problems. In addition, current methods for candidate sequence generation in protein design often generate tens of millions of candidate sequences, either by natural product screening, structural motif combination, or random sampling, which consume a lot of arithmetic power and make the research and development period longer. The two different methods provided in Wang et al.'s study shed light on the balance between completeness and efficiency during protein design. Furthermore, the methods in this paper take full advantage of the deep learning models applied in the protein structure prediction, demonstrating that the technology successfully applied to one problem would inspire the solution of another problem. Compared to traditional protein design methods, deep learning provides an end-to-end method for modeling the relationship between amino acid sequences and protein structures, which avoids the generation of secondary structures and could jointly optimize both sequences and structures.5 Overall, the implementation of advanced deep learning technologies would spark a new wave of innovation in this field. Yuanxu Gao: Conceptualization, writing – original draft preparation, writing – review and editing; Jiangshan Zhan: writing – review and editing; Albert C. H. Yu: Writing – review and editing. All authors have read and approved the article. This study was supported by the Science and Technology Development Fund, Macau SAR, (File on. SKL-LPS(MUST)-2021-2023); the China Postdoctoral Science Foundation (YJ20210222; Jiangshan Zhan). Author Yuanxu Gao is an editorial staff of MedComm-Future Medicine. Author Yuanxu Gao was not involved in the journal's review of or decisions related to this manuscript. The author Jiangshan Zhan is an employee and the author Albert C. H. Yu is the CEO of Hai Kang Life Corporation Ltd. but Jiangshan Zhan and Albert C. H. Yu have no potential relevant financial or non-financial interests to disclose. Not applicable. Not applicable.",
+    "year": 2022,
+    "authors": [
+      "Yuanxu Gao",
+      "Jiangshan Zhan",
+      "Albert Cheung‐Hoi Yu"
+    ],
+    "citation_count": 3,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/mef2.22",
+    "doi": "https://doi.org/10.1002/mef2.22",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4399595373",
+    "title": "Deep Learning Prediction of Protein Complex Structures",
+    "abstract": "Proteins interact to form protein complex to carry out biological functions such as catalytic chemical reaction. Therefore, it is important to develop computational methods to predict protein-protein interaction and the structures of protein complexes to study and enhance protein function. In this project, we successfully developed several deep learning methods to predict inter-protein contacts and the reinforcement learning and optimization methods to reconstruct protein complex structures from predicted inter-chain contacts. The methods were integrated with the MULTICOM protein complex structure prediction system and applied to predict the complex structures of biomass production-related proteins of green algae. During the two and a half years of research and development, all the specific milestones of the project were achieved successfully. 16 publications/manuscripts were produced. 10 software tools were developed. A patent application was submitted. Our MULTICOM predictors leveraging some tools developed in this project were ranked among the top predictors in the 15th Critical Assessment of Techniques for Protein Structure Prediction (CASP15) in 2022.",
+    "year": 2024,
+    "authors": [
+      "Univ. of Missouri, Columbia, MO (United States)",
+      "Jianlin Jack Cheng"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.osti.gov/servlets/purl/2371241",
+    "doi": "https://doi.org/10.2172/2371241",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4283013935",
+    "title": "Scoring Functions for Protein-Ligand Binding Affinity Prediction Using Structure-based Deep Learning: A Review",
+    "abstract": "prediction of protein-ligand binding free energies or binding affinities has the potential to transform drug discovery. In recent years, there has been a rapid growth of interest in deep learning methods for the prediction of protein-ligand binding affinities based on the structural information of protein-ligand complexes. These structure-based scoring functions often obtain better results than classical scoring functions when applied within their applicability domain. Here we review structure-based scoring functions for binding affinity prediction based on deep learning, focussing on different types of architectures, featurization strategies, data sets, methods for training and evaluation, and the role of explainable artificial intelligence in building useful models for real drug-discovery applications.",
+    "year": 2022,
+    "authors": [
+      "Rocco Meli",
+      "Garrett M. Morris",
+      "Philip Charles Biggin"
+    ],
+    "citation_count": 155,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.frontiersin.org/articles/10.3389/fbinf.2022.885983/pdf",
+    "doi": "https://doi.org/10.3389/fbinf.2022.885983",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W7116299005",
+    "title": "Deep Learning for Protein Structure Prediction: A New Era in Drug Design",
+    "abstract": "Keywords: Deep Learning, Protein Structure Prediction, Drug Design, AlphaFold, Artificial Intelligence, Computational Biochemistry, Drug Discovery",
+    "year": 2025,
+    "authors": [
+      "www.rasitdinc.com"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.5281/zenodo.17996538",
+    "doi": "https://doi.org/10.5281/zenodo.17996538",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4311253683",
+    "title": "Applying deep reinforcement learning to the HP model for protein structure prediction",
+    "abstract": null,
+    "year": 2022,
+    "authors": [
+      "Kaiyuan Yang",
+      "Houjing Huang",
+      "Olafs Vandans",
+      "Adithya Murali",
+      "Fujia Tian",
+      "Roland H. C. Yap",
+      "Liang Dai"
+    ],
+    "citation_count": 15,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://scholars.cityu.edu.hk/en/publications/applying-deep-reinforcement-learning-to-the-hp-model-for-protein-",
+    "doi": "https://doi.org/10.1016/j.physa.2022.128395",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3185577893",
+    "title": "AI3SD Video: Deep Learning enhanced prediction of protein structure and dynamics",
+    "abstract": "Proteins exist in several different conformations. These structural changes are often associated with fluctuations at the residue level. Recent findings showed that co-evolutionary analysis coupled with machine-learning techniques improved the prediction precision by providing quantitative distance predictions between pairs of residues. The predicted statistical distance distribution from the Multi Sequence Analysis (MSA) revealed the presence of different local maxima suggesting the flexibility of key residue pairs. Here we investigate the ability of the residue-residue distance prediction to provide insights into the protein conformational ensemble. We combine deep learning approaches with mechanistic modeling to a set of proteins that experimentally showed conformational changes. The predicted protein models were filtered based on their energy scored, RMSD clustered, and the centroids locally refined. The models were compared to the experimental-Molecular Dynamics (MD) relaxed structure by analyzing the backbone residue torsional distribution and the sidechains orientations. Our pipeline not only consents us to retrieve the global experimental folding but also the experimental structural dynamics due to local and global conformational changes. Based on the insight of this study we are proposing a protocol that allows the in-silico investigation of protein dynamics suited for pharmacological research on catalysis and molecular recognition.",
+    "year": 2021,
+    "authors": [
+      "Martina Audagnotto"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.5258/soton/p0099",
+    "doi": "https://doi.org/10.5258/soton/p0099",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W7213516358",
+    "title": "Deep Learning-Based Prediction of Protein Structure from Sequence Data",
+    "abstract": "Predicting a protein's three-dimensional structure from its amino acid sequence was, for five decades, the kind of problem that structural biologists cited as a benchmark of how far computational methods still had to travel. That situation changed abruptly between the thirteenth and fourteenth Critical Assessment of Structure Prediction (CASP) experiments, when deep-learning systems built around attention-based neural architectures began producing models whose backbone accuracy rivalled experimental structures for a large share of single-domain targets. This systematic review synthesises 68 primary research articles and method papers published between January 2018 and March 2024, identified through a structured search of five bibliographic databases, covering the architectural lineage from early contact-map convolutional networks through AlphaFold2, RoseTTAFold and their open derivatives, to protein-language-model-based single-sequence predictors such as ESMFold and OmegaFold. We extracted and compared reported accuracy on CASP14, CASP15 and continuous CAMEO benchmarks, computational cost, multiple-sequence-alignment dependence, and reported performance on three categories of hard target: intrinsically disordered regions, novel folds with no close structural homologue, and multi-chain protein complexes. Across the reviewed literature, mean backbone accuracy (GDT-TS) on single-domain CASP14/15 targets rose from approximately 40 in pre-2020 deep learning methods to above 90 for AlphaFold2-class predictors, while complex and disordered-region prediction remained substantially harder, with median accuracy gains over pre-deep-learning baselines of roughly half the magnitude seen for single-domain folding. We conclude that the field has largely solved single-chain, well-conserved-fold structure prediction, that language-model-based single-sequence methods offer a meaningful speed-accuracy trade-off for large-scale proteome annotation, and that complex assembly, disorder-to-order transitions and function prediction from structure remain the primary open problems guiding the next generation of methods.",
+    "year": 2024,
+    "authors": [
+      "Petr Dubois",
+      "Claire Havlicek",
+      "Fernandez, Astrid"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.5281/zenodo.22688030",
+    "doi": "https://doi.org/10.5281/zenodo.22688030",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W7220302866",
+    "title": "Deep Learning Approaches for Protein Structure Prediction in Regenerative Therapies",
+    "abstract": "Protein structure prediction -- the computational determination of a protein's three-dimensional structure from its amino acid sequence -- has been transformed by the advent of deep learning methods, most dramatically by AlphaFold2 (Jumper et al., 2021), which achieved near-experimental accuracy for single-chain protein structure prediction. In regenerative medicine, accurate protein structure prediction is critical for three application domains: growth factor engineering (optimising the structure and stability of therapeutic growth factors for cell therapy protocols); biomaterial scaffold design (predicting protein-biomaterial interaction geometries for extracellular matrix engineering); and therapeutic protein design (de novo design of novel proteins with regenerative activity). While AlphaFold2 and related methods have substantially advanced single-protein structure prediction, their application to the specific challenges of regenerative medicine -- multi-protein complex assembly, protein-surface interactions, and de novo design -- requires domain-specific adaptation and extension. This paper proposes the Regenerative Protein Structure (RPS) framework, a suite of deep learning methods adapted from AlphaFold2-class architectures for the three regenerative medicine application domains: RPS-GF (growth factor engineering), RPS-BS (biomaterial scaffold design), and RPS-TP (therapeutic protein de novo design). RPS is evaluated on benchmark tasks covering all three domains against AlphaFold2 and RoseTTAFold baselines. RPS-GF achieves TM-score = 0.94 (SD = 0.02) for growth factor structure prediction -- 6.8% improvement over AlphaFold2 (0.88) for thermostability-optimised variants. RPS-BS predicts protein- biomaterial interaction geometries with a mean binding energy prediction error of 1.84 kcal/mol (SD = 0.28) -- 38.2% improvement over docking baselines. RPS-TP designs novel pro-angiogenic peptides with 74.6% experimental validation rate (SD = 6.2%), substantially exceeding random sequence baseline (8.4%). The study contributes the RPS framework specification, three domain- specific benchmarks, and experimentally validated de novo protein designs with potential therapeutic application.",
+    "year": 2024,
+    "authors": [
+      "Jonas Hansen"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://galaxiauniverse.com/index.php/BRS/article/download/318/273",
+    "doi": null,
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4417148774",
+    "title": "Advanced Deep Learning Methods for Protein Structure Prediction and Design",
+    "abstract": "After AlphaFold won the Nobel Prize, protein prediction with deep learning once again became a hot topic. We comprehensively explore advanced deep learning methods applied to protein structure prediction and design. It begins by examining recent innovations in prediction architectures, with detailed discussions on improvements such as diffusion based frameworks and novel pairwise attention modules. The text analyses key components including structure generation, evaluation metrics, multiple sequence alignment processing, and network architecture, thereby illustrating the current state of the art in computational protein modelling. Subsequent chapters focus on practical applications, presenting case studies that range from individual protein predictions to complex biomolecular interactions. Strategies for enhancing prediction accuracy and integrating deep learning techniques with experimental validation are thoroughly explored. The later sections review the industry landscape of protein design, highlighting the transformative role of artificial intelligence in biotechnology and discussing emerging market trends and future challenges. Supplementary appendices provide essential resources such as databases and open source tools, making this volume a valuable reference for researchers and students.",
+    "year": 2025,
+    "authors": [
+      "Zhang, Yichao",
+      "Ningyuan Deng",
+      "Xinyuan Song",
+      "Ziqian Bi",
+      "Tianyang Wang",
+      "Zheyu Yao",
+      "Keyu Chen",
+      "Ming Li",
+      "Qian Niu",
+      "Junyu Liu",
+      "Benji Peng",
+      "Sen Zhang",
+      "Ming Liu",
+      "Li Zhang",
+      "Pan, Xuanhe",
+      "Jinlang Wang",
+      "Pohsun Feng",
+      "Yizhu Wen",
+      "Lawrence K.Q. Yan",
+      "Tseng, Hongming",
+      "Yan Zhong",
+      "Yunze Wang",
+      "Ziyuan Qin",
+      "Bowen Jing",
+      "Junjie Yang",
+      "Jun Zhou",
+      "Chia Xin Liang",
+      "Junhao Song"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://arxiv.org/pdf/2503.13522",
+    "doi": "https://doi.org/10.48550/arxiv.2503.13522",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4200213155",
+    "title": "High-Performance Deep Learning Toolbox for Genome-Scale Prediction of Protein Structure and Function",
+    "abstract": "Computational biology is one of many scientific disciplines ripe for innovation and acceleration with the advent of high-performance computing (HPC). In recent years, the field of machine learning has also seen significant benefits from adopting HPC practices. In this work, we present a novel HPC pipeline that incorporates various machine-learning approaches for structure-based functional annotation of proteins on the scale of whole genomes. Our pipeline makes extensive use of deep learning and provides computational insights into best practices for training advanced deep-learning models for high-throughput data such as proteomics data. We showcase methodologies our pipeline currently supports and detail future tasks for our pipeline to envelop, including large-scale sequence comparison using SAdLSA and prediction of protein tertiary structures using AlphaFold2.",
+    "year": 2021,
+    "authors": [
+      "Mu Gao",
+      "Peik K. Lund-Andersen",
+      "Alex Morehead",
+      "Sajid Mahmud",
+      "Chen Chen",
+      "Xiao Chen",
+      "Nabin Giri",
+      "Raj S. Roy",
+      "Farhan Quadir",
+      "T. Chad Effler",
+      "Ryan Prout",
+      "Subil Abraham",
+      "Wael R Elwasif",
+      "Nicholas Quentin Haas",
+      "Jeffrey Skolnick",
+      "Jianlin Jack Cheng",
+      "Ada Sedova"
+    ],
+    "citation_count": 11,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.osti.gov/servlets/purl/1840182",
+    "doi": "https://doi.org/10.1109/mlhpc54614.2021.00010",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4417496152",
+    "title": "Advances in Protein Structure Prediction through Deep Learning Models",
+    "abstract": "Accurate protein structure prediction (PSP) is essential for understanding biological function. However, experimental determination of protein structures remains costly and limited in scope. In recent years, advances in deep learning (DL) have substantially improved PSP. These methods help close the gap between the vast number of known protein sequences and limited experimentally resolved structures. This article reviews five representative DL architectures: convolutional neural networks (CNNs), recurrent neural networks (RNNs), transformers, graph neural networks (GNNs), and diffusion-based models. Key protein databases used for training and validation are also introduced, including the Protein Data Bank (PDB), UniProt, Pfam, RefSeq, and the Big Fantastic Database (BFD). Performance evaluations based on the Critical Assessment of Protein Structure Prediction (CASP) benchmarks show that models such as AlphaFold2 and its successors achieve near-experimental accuracy. Nevertheless, challenges remain for low-homology sequences, protein–protein interactions, and dynamic folding pathways. Current limitations of DL in PSP also include data bias, restricted interpretability, and an inability to fully capture protein dynamics. To overcome these barriers, future directions may include explainable AI, debiased datasets, and integration with molecular dynamics simulations.",
+    "year": 2025,
+    "authors": [
+      "Xinyang Zhang"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://lseee.net/index.php/ms/article/download/1451/MS005802.pdf",
+    "doi": "https://doi.org/10.61173/rsjk7x31",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4224939843",
+    "title": "LM-GVP: an extensible sequence and structure informed deep learning framework for protein property prediction",
+    "abstract": "Proteins perform many essential functions in biological systems and can be successfully developed as bio-therapeutics. It is invaluable to be able to predict their properties based on a proposed sequence and structure. In this study, we developed a novel generalizable deep learning framework, LM-GVP, composed of a protein Language Model (LM) and Graph Neural Network (GNN) to leverage information from both 1D amino acid sequences and 3D structures of proteins. Our approach outperformed the state-of-the-art protein LMs on a variety of property prediction tasks including fluorescence, protease stability, and protein functions from Gene Ontology (GO). We also illustrated insights into how a GNN prediction head can inform the fine-tuning of protein LMs to better leverage structural information. We envision that our deep learning framework will be generalizable to many protein property prediction problems to greatly accelerate protein engineering and drug development.",
+    "year": 2022,
+    "authors": [
+      "Zichen Wang",
+      "Steven A. Combs",
+      "Ryan M. Brand",
+      "Miguel Romero Calvo",
+      "Panpan Xu",
+      "George Price",
+      "Nataliya Golovach",
+      "Emmanuel Oluwatobi Salawu",
+      "Colby J. Wise",
+      "Sri Priya Ponnapalli",
+      "Peter Clark"
+    ],
+    "citation_count": 85,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.nature.com/articles/s41598-022-10775-y.pdf",
+    "doi": "https://doi.org/10.1038/s41598-022-10775-y",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W7142067576",
+    "title": "Role of Deep Learning in Protein Structure Prediction: Current Progress and Open Challenges",
+    "abstract": "Introduction: Protein structure prediction is a fundamental challenge in computational biology, with significant implications for drug discovery, disease modelling, and biotechnology. Traditional experimental methods such as X-ray crystallography, nuclear magnetic resonance spectroscopy, and cryo-electron microscopy provide highly accurate structural insights but are expensive, time-consuming, and often unsuitable for complex or membrane-bound proteins. To address these limitations, computational approaches have emerged, categorized into physics-based simulations, evolutionary-based modeling, and deep learning techniques. Recent advancements in machine learning and deep learning have revolutionized protein structure prediction. Models like AlphaFold2 and RoseTTAFold have achieved near-experimental accuracy by leveraging large-scale protein datasets and advanced neural network architectures. However, challenges remain in multi-protein interaction modeling, side-chain conformation prediction, dataset biases, and computational efficiency. Additionally, the black-box nature of deep learning models limits their interpretability, necessitating efforts to enhance transparency and explainability in AI-driven protein modeling. Objectives: The main objective of this study is to comprehensive review the protein structure prediction methodologies, highlighting the evolution from traditional computational models to cutting-edge deep learning frameworks. Methods: It discusses key challenges, including dataset limitations, model scalability, and integration with experimental techniques, and explores future research directions such as self-supervised learning, quantum computing for protein folding simulations, and energy-efficient deep learning architectures. Conclusions: By addressing these challenges, computational protein modeling can further advance biomedical research, enabling more accurate disease modeling, rational drug design, and the development of synthetic biomolecules with tailored functions.",
+    "year": 2025,
+    "authors": [
+      "S P Deshpande Bhushan Wakode"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://internationalpubls.com/index.php/cana/article/download/4850/2689",
+    "doi": "https://doi.org/10.52783/cana.v32.4850",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4311293038",
+    "title": "DLBLS_SS: protein secondary structure prediction using deep learning and broad learning system",
+    "abstract": "Protein secondary structure prediction (PSSP) is not only beneficial to the study of protein structure and function but also to the development of drugs. As a challenging task in computational biology, experimental methods for PSSP are time-consuming and expensive. In this paper, we propose a novel PSSP model DLBLS_SS based on deep learning and broad learning system (BLS) to predict 3-state and 8-state secondary structure. We first use a bidirectional long short-term memory (BLSTM) network to extract global features in residue sequences. Then, our proposed SEBTCN based on temporal convolutional networks (TCN) and channel attention can capture bidirectional key long-range dependencies in sequences. We also use BLS to rapidly optimize fused features while further capturing local interactions between residues. We conduct extensive experiments on public test sets including CASP10, CASP11, CASP12, CASP13, CASP14 and CB513 to evaluate the performance of the model. Experimental results show that our model exhibits better 3-state and 8-state PSSP performance compared to five state-of-the-art models.",
+    "year": 2022,
+    "authors": [
+      "Lu Yuan",
+      "Xiaopei Hu",
+      "Yuming Ma",
+      "Yihui Liu"
+    ],
+    "citation_count": 14,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://pubs.rsc.org/en/content/articlepdf/2022/ra/d2ra06433b",
+    "doi": "https://doi.org/10.1039/d2ra06433b",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3111382885",
+    "title": "On the performance of deep learning for numerical optimization: An application to protein structure prediction",
+    "abstract": null,
+    "year": 2021,
+    "authors": [
+      "Hojjat Rakhshani",
+      "Lhassane Idoumghar",
+      "Soheila Ghambari",
+      "Julien Lepagnot",
+      "Mathieu Brévilliers"
+    ],
+    "citation_count": 9,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1016/j.asoc.2021.107596",
+    "doi": "https://doi.org/10.1016/j.asoc.2021.107596",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4411723436",
+    "title": "Harnessing the Potential of Deep Learning to Improve Protein Structure Prediction: Challenges and Strategies",
+    "abstract": "Proteins serve as the essential functional units of life, and understanding their three-dimensional structures is crucial for uncovering the biological mechanisms at play. Recent advancements in deep learning technologies, particularly those exemplified by AlphaFold, have transformed the conventional approaches to structure prediction. By utilizing a combination of residual neural network architectures and co-evolutionary features, these methods have achieved prediction accuracies that approach experimental results, ushering in a new era of intelligent modeling within computational biology. However, several core challenges persist in the realm of deep learning-driven structure prediction. These include the scarcity and quality issues surrounding training data, which can hinder model performance; the reliance on substantial computational resources, which limits the universality of algorithms; the difficulty in interpreting biophysical mechanisms due to the black-box nature of these models; and the challenges associated with sequence homology, particularly in accurately predicting the structures of orphan proteins. To address these issues, this paper proposes a range of multi-dimensional optimization strategies aimed at enhancing the efficacy of deep learning in protein structure prediction. In conclusion, the paper offers a forward-looking perspective on potential future research directions in this rapidly evolving field.",
+    "year": 2025,
+    "authors": [
+      "Yishuai Cheng"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://hsetdata.com/index.php/ojs/article/download/771/728",
+    "doi": "https://doi.org/10.54097/8n774f38",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4400315590",
+    "title": "The State-of-the-Art Overview to Application of Deep Learning in Accurate Protein Design and Structure Prediction",
+    "abstract": "In recent years, there has been a notable increase in the scientific community's interest in rational protein design. The prospect of designing an amino acid sequence that can reliably fold into a desired three-dimensional structure and exhibit the intended function is captivating. However, a major challenge in this endeavor lies in accurately predicting the resulting protein structure. The exponential growth of protein databases has fueled the advancement of the field, while newly developed algorithms have pushed the boundaries of what was previously achievable in structure prediction. In particular, using deep learning methods instead of brute force approaches has emerged as a faster and more accurate strategy. These deep-learning techniques leverage the vast amount of data available in protein databases to extract meaningful patterns and predict protein structures with improved precision. In this article, we explore the recent developments in the field of protein structure prediction. We delve into the newly developed methods that leverage deep learning approaches, highlighting their significance and potential for advancing our understanding of protein design.",
+    "year": 2024,
+    "authors": [
+      "Saber Saharkhiz",
+      "Mehrnaz Mostafavi",
+      "Amin Birashk",
+      "Shiva Karimian",
+      "Shayan Khalilollah",
+      "Sohrab Jaferian",
+      "Yalda Yazdani",
+      "Iraj Alipourfard",
+      "Yun Suk Huh",
+      "Marzieh Ramezani Farani",
+      "Reza Akhavan‐Sigari"
+    ],
+    "citation_count": 6,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1007/s41061-024-00469-6",
+    "doi": "https://doi.org/10.1007/s41061-024-00469-6",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W7214551647",
+    "title": "Protein Structure Prediction Using AlphaFold: A Deep Learning Approach.",
+    "abstract": "Abstract: Predicting the three-dimensional structure of a protein directly from its amino-acid sequence has remained one of the most persistent open problems in computational biology, commonly referred to as the protein folding problem. For decades, structural information was obtainable only through slow, expensive, and technically demanding experimental techniques such as X-ray crystallography, nuclear magnetic resonance (NMR) spectroscopy, and cryo-electron microscopy (cryo-EM). The introduction of AlphaFold by DeepMind marked a turning point in this field, demonstrating that deep learning models trained on evolutionary and structural data could predict protein structures with accuracy approaching that of experimental methods. This paper presents a theoretical review of protein structure prediction using AlphaFold. It surveys the biological background of proteins and folding, traditional experimental and computational prediction techniques, and the evolution of AlphaFold across its first, second, and third generations. Particular attention is given to the architecture of AlphaFold 2, including multiple sequence alignment processing, attention-based representation learning, the Evoformer block, the structure module, and confidence estimation. The paper further discusses applications of AlphaFold in drug discovery, disease research, structural biology, protein engineering, and biotechnology, along with its current limitations regarding protein dynamics, complexes, and ligand interactions. Finally, prospective research directions are outlined, emphasizing the importance of integrating AlphaFold-based predictions with experimental validation.",
+    "year": 2026,
+    "authors": [
+      "Mridhula Muthukumar"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.5281/zenodo.22994642",
+    "doi": "https://doi.org/10.5281/zenodo.22994642",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4413579388",
+    "title": "Prediction of the hydration structures at the protein–protein Interface of dimers using deep learning",
+    "abstract": "Hydration is crucial in various biological processes such as protein folding, ligand binding, and protein–protein interactions. Clarifying the role of hydration will improve our understanding of biological processes. Previously, we proposed a deep-learning model “gr Predictor” that successfully reproduced hydration structures obtained using the three-dimensional reference interaction site model theory. Because the gr Predictor was trained using a set of only single-chain proteins, in this study, we investigated whether it could predict the hydration structures at the protein–protein interfaces of dimers. This prediction was found to be successful. These results expand the applicability of the gr Predictor.",
+    "year": 2025,
+    "authors": [
+      "Yuki Ito",
+      "Takashi Yoshidome"
+    ],
+    "citation_count": 3,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1016/j.cplett.2025.142372",
+    "doi": "https://doi.org/10.1016/j.cplett.2025.142372",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4409190911",
+    "title": "Advancements in one-dimensional protein structure prediction using machine learning and deep learning",
+    "abstract": "The accurate prediction of protein structures remains a cornerstone challenge in structural bioinformatics, essential for understanding the intricate relationship between protein sequence, structure, and function. Recent advancements in Machine Learning (ML) and Deep Learning (DL) have revolutionized this field, offering innovative approaches to tackle one- dimensional (1D) protein structure annotations, including secondary structure, solvent accessibility, and intrinsic disorder. This review highlights the evolution of predictive methodologies, from early machine learning models to sophisticated deep learning frameworks that integrate sequence embeddings and pretrained language models. Key advancements, such as AlphaFold's transformative impact on structure prediction and the rise of protein language models (PLMs), have enabled unprecedented accuracy in capturing sequence-structure relationships. Furthermore, we explore the role of specialized datasets, benchmarking competitions, and multimodal integration in shaping state-of-the-art prediction models. By addressing challenges in data quality, scalability, interpretability, and task-specific optimization, this review underscores the transformative impact of ML, DL, and PLMs on 1D protein prediction while providing insights into emerging trends and future directions in this rapidly evolving field.",
+    "year": 2025,
+    "authors": [
+      "Wafa  T Alanazi",
+      "Di Meng",
+      "Gianluca Pollastri"
+    ],
+    "citation_count": 8,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1016/j.csbj.2025.04.005",
+    "doi": "https://doi.org/10.1016/j.csbj.2025.04.005",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4375863182",
+    "title": "Protein structure prediction with energy minimization and deep learning approaches",
+    "abstract": "In this paper we discuss the advantages and problems of two alternatives for ab initio protein structure prediction. On one hand, recent approaches based on deep learning, which have significantly improved prediction results for a wide variety of proteins, are discussed. On the other hand, methods based on protein conformational energy minimization and with different search strategies are analyzed. In this latter case, our methods based on a memetic combination between differential evolution and the fragment replacement technique are included, incorporating also the possibility of niching in the evolutionary search. Different proteins have been used to analyze the pros and cons in both approaches, proposing possibilities of integration of both alternatives.",
+    "year": 2023,
+    "authors": [
+      "Juan Luis Filgueiras",
+      "Daniel Varela",
+      "José Carlos Almeida Santos"
+    ],
+    "citation_count": 11,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11047-023-09943-4.pdf",
+    "doi": "https://doi.org/10.1007/s11047-023-09943-4",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4407173261",
+    "title": "Protein ligand structure prediction: From empirical to deep learning approaches",
+    "abstract": "Protein-ligand structure prediction methods, aiming to predict the three-dimensional complex structure and binding energy of a compound and target protein, are essential in many structure-based drug discovery pipelines, including virtual screening and lead optimization. Traditional empirical approaches use explicit scoring functions and conformational search techniques to predict protein-ligand structures and binding affinities. With the recent advent of deep learning (DL) methods, DL-based models learn both the scoring function and conformational sampling by approximating the underlying data distribution from training data. In this review, we first discuss the key components of both empirical and DL-based structure prediction methods to provide a unified view. We categorize these computational methods into two main groups based on whether a template protein structure is required, and briefly overview the important methods in each category. Finally, we discuss the major challenges and opportunities, focusing on the future development of DL-based approaches.",
+    "year": 2025,
+    "authors": [
+      "Guangfeng Zhou",
+      "Frank DiMaio"
+    ],
+    "citation_count": 8,
+    "is_review": true,
+    "is_open_access": true,
+    "pdf_url": "https://doi.org/10.1016/j.sbi.2025.102998",
+    "doi": "https://doi.org/10.1016/j.sbi.2025.102998",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4399982595",
+    "title": "Protein–Protein Interaction Prediction via Structure‐Based Deep Learning",
+    "abstract": "Protein-protein interactions (PPIs) play an essential role in life activities. Many artificial intelligence algorithms based on protein sequence information have been developed to predict PPIs. However, these models have difficulty dealing with various sequence lengths and suffer from low generalization and prediction accuracy. In this study, we proposed a novel end-to-end deep learning framework, RSPPI, combining residual neural network (ResNet) and spatial pyramid pooling (SPP), to predict PPIs based on the protein sequence physicochemistry properties and spatial structural information. In the RSPPI model, ResNet was employed to extract the structural and physicochemical information from the protein three-dimensional structure and primary sequence; the SPP layer was used to transform feature maps to a single vector and avoid the fixed-length requirement. The RSPPI model possessed excellent cross-species performance and outperformed several state-of-the-art methods based either on protein sequence or gene ontology in most evaluation metrics. The RSPPI model provides a novel strategy to develop an AI PPI prediction algorithm.",
+    "year": 2024,
+    "authors": [
+      "Yucong Liu",
+      "Yijun Liu",
+      "Zhenhai Li"
+    ],
+    "citation_count": 9,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.biorxiv.org/content/biorxiv/early/2023/05/30/2023.05.27.542552.full.pdf",
+    "doi": "https://doi.org/10.1002/prot.26721",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W3159267658",
+    "title": "Study of real-valued distance prediction for protein structure prediction with deep learning",
+    "abstract": "MOTIVATION: Inter-residue distance prediction by convolutional residual neural network (deep ResNet) has greatly advanced protein structure prediction. Currently, the most successful structure prediction methods predict distance by discretizing it into dozens of bins. Here, we study how well real-valued distance can be predicted and how useful it is for 3D structure modeling by comparing it with discrete-valued prediction based upon the same deep ResNet. RESULTS: Different from the recent methods that predict only a single real value for the distance of an atom pair, we predict both the mean and standard deviation of a distance and then fold a protein by the predicted mean and deviation. Our findings include: (i) tested on the CASP13 FM (free-modeling) targets, our real-valued distance prediction obtains 81% precision on top L/5 long-range contact prediction, much better than the best CASP13 results (70%); (ii) our real-valued prediction can predict correct folds for the same number of CASP13 FM targets as the best CASP13 group, despite generating only 20 decoys for each target; (iii) our method greatly outperforms a very new real-valued prediction method DeepDist in both contact prediction and 3D structure modeling and (iv) when the same deep ResNet is used, our real-valued distance prediction has 1-6% higher contact and distance accuracy than our own discrete-valued prediction, but less accurate 3D structure models. AVAILABILITY AND IMPLEMENTATION: https://github.com/j3xugit/RaptorX-3DModeling. SUPPLEMENTARY INFORMATION: Supplementary data are available at Bioinformatics online.",
+    "year": 2021,
+    "authors": [
+      "Jin Li",
+      "Jinbo Xu"
+    ],
+    "citation_count": 18,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.biorxiv.org/content/biorxiv/early/2020/11/27/2020.11.26.400523.full.pdf",
+    "doi": "https://doi.org/10.1093/bioinformatics/btab333",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4321613637",
+    "title": "New methods for protein structure prediction using machine learning and deep learning",
+    "abstract": "Computational protein structure prediction is one of the most challenging problems in bioinformatics area. Due to the widespread use of sampling-and-selection strategy, protein model quality assessment became important. In this dissertation, new machine learning and deep learning methods have been proposed for protein model quality assessment, protein contact prediction, protein model refinement, and loop modeling. The goal of model quality assessment (QA) is to estimate the quality of predicted protein models. First, two new single-model QA methods based on Residual Neural Networks, called PDRN and VDRN, were proposed to achieve state-of-the-art performance. They used a comprehensive set of structure features to predict a quality score in the range of [0, 1]. Next, three single-model QA methods, MMQA-1 MMQA-2 and MMQA-HE, were proposed based on ideas of two-stage learning and hierarchical ensembles. MMQA-1 and MMQA-2 divided the entire feature set into two different sets and used different feature sets and training data in each stage of learning. In addition, MMQA-HE created ensembles of models in the first stage of learning for improved performance. In CASP14, MMQA-1 ranked NO. 2 in terms of average GDT-TS difference. MMQA-2 and MMQA-HE outperformed MMQA-1 consistently across different QA performance metrics in our experiments. Furthermore, a quasi-single-model QA method called INC-QA was proposed using a new method that trained a deep neural network as a QA predictor for each protein target based on template structure information generated from the target sequence. Experimental results using CASP data showed that INC-QA achieved state-of-the-art results, outperforming existing methods on CASP QA stage 2 category on CASP 13 targets. With the release of groundbreaking protein structure prediction software AlphaFold2 and RosettaFold, many research teams start using them to generate highly accurate protein models. We evaluated the performance of different QA methods on models generated by them with random modification by 3DRobot and found that multi-model QA methods were still better than single-model QA methods on these kind of high-performance model pools. Finally, in terms of the prediction of overall folding accuracy and overall interface accuracy for protein complexes in CASP15, we found a strong correlation between the predicted folding accuracy and predicted interface accuracy of protein models. Loop modeling tries to predict the conformation of a relatively short stretch of protein backbone and sidechain. It is a difficult problem due to conformational variability. AlphaFold2 achieved outstanding results in 3-D protein structure prediction and was expected to perform well on loop modeling. We investigated the performances of AlphaFold2 variants on loop modeling benchmark datasets and proposed an efficient constant-time method of using AlphaFold2 for loop modeling, called IAFLoop. To predict the structure of a loop region, IAFLoop ran a fast version of AlphaFold2 with a reduced database without ensembling on an extended segment of the target loop region, and used RMSD based consensus scores to select the top models. Our experimental results showed that IAFLoop generated highly accurate loop models, outperforming basic AlphaFold2 by up to 17 percent in RMSD error, while using less than half of the time. Compared to the previous best method, IAFLoop reduces the RMSD error by more than half. Contact map prediction is to predict whether the Euclidean distance between two C[beta] atoms (C[alpha] for Glycine) in a protein structure is less than 8 angstroms. Contacts information can act as a powerful constraint for determining the overall structural and assist the protein 3D structure prediction process. Based on MUFold-Contact, a new two-stage multi-branch deep neural network based on Residual Network and Inception V3 Network was proposed to improve the performance of MUFold-Contact. In the first stage, distance maps of shortrange, medium-range and long-range residue pairs were predicted, respectively, and the predicted distance along with other features were used as input to predict a binary contact map in the second stage. The role of protein structure refinement is to take models generated by protein structure prediction process and bring them closer to the true native structure. Inspired by AlphaFold in CASP13, a new protein structure refinement process MUFOLD-REFINE based on distance distribution of template pool was developed and achieve improved performance over the MUFOLD refinement method used in CASP13",
+    "year": 2022,
+    "authors": [
+      "Junlin Wang"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://mospace.umsystem.edu/xmlui/bitstream/10355/94265/1/WangJunlinResearch.pdf",
+    "doi": "https://doi.org/10.32469/10355/94265",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W7170043904",
+    "title": "AI-Driven Protein Structure Prediction: A Review of Deep Learning Methods for Protein Folding and Drug Design",
+    "abstract": "Predicting a protein's three-dimensional structure from its amino acid sequence, long regarded as one of the central unsolved problems in computational biology, has been transformed over the past several years by deep learning systems capable of achieving accuracy approaching that of experimental structure determination for many protein families. This paper reviews the methods underlying this transformation, tracing the field's progression from early template-based and co-evolution-based approaches through end-to-end deep learning architectures that jointly reason over sequence, evolutionary, and geometric information. We describe the architectural innovations that enabled this progress, including attention-based processing of evolutionary sequence alignments and geometry-aware structure modules, and examine extensions to protein complex prediction, protein language models, and generative de novo protein design. We review applications in drug discovery, protein function annotation, protein engineering, disease mechanism elucidation, and vaccine and antibody design, summarize the benchmarks used to evaluate structure prediction methods, and present a case study illustrating how a predicted structure is used within a drug discovery pipeline. We discuss remaining challenges, including prediction accuracy for intrinsically disordered regions, multi-state and dynamic conformational prediction, and experimental validation bottlenecks, and outline future directions connecting structure prediction with generative protein design and integrative structural biology.",
+    "year": 2024,
+    "authors": [
+      "Hardik",
+      "Sahil",
+      "Simran",
+      "Yash",
+      "Neha Sharma"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://ijrasht.com/index.php/files/article/download/319/196",
+    "doi": "https://doi.org/10.71143/y3ptrr62",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4382401741",
+    "title": "Prediction of CD44 Structure by Deep Learning-Based Protein Modeling",
+    "abstract": "CD44 is a cell surface glycoprotein transmembrane receptor that is involved in cell-cell and cell-matrix interactions. It crucially associates with several molecules composing the extracellular matrix, the main one of which is hyaluronic acid. It is ubiquitously expressed in various types of cells and is involved in the regulation of important signaling pathways, thus playing a key role in several physiological and pathological processes. Structural information about CD44 is, therefore, fundamental for understanding the mechanism of action of this receptor and developing effective treatments against its aberrant expression and dysregulation frequently associated with pathological conditions. To date, only the structure of the hyaluronan-binding domain (HABD) of CD44 has been experimentally determined. To elucidate the nature of CD44s, the most frequently expressed isoform, we employed the recently developed deep-learning-based tools D-I-TASSER, AlphaFold2, and RoseTTAFold for an initial structural prediction of the full-length receptor, accompanied by molecular dynamics simulations on the most promising model. All three approaches correctly predicted the HABD, with AlphaFold2 outperforming D-I-TASSER and RoseTTAFold in the structural comparison with the crystallographic HABD structure and confidence in predicting the transmembrane helix. Low confidence regions were also predicted, which largely corresponded to the disordered regions of CD44s. These regions allow the receptor to perform its unconventional activity.",
+    "year": 2023,
+    "authors": [
+      "Chiara Camponeschi",
+      "Benedetta Righino",
+      "Davide Pirolli",
+      "Alessandro Semeraro",
+      "Francesco Ria",
+      "Maria Cristina De Rosa"
+    ],
+    "citation_count": 9,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.mdpi.com/2218-273X/13/7/1047/pdf?version=1687924739",
+    "doi": "https://doi.org/10.3390/biom13071047",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W7202087238",
+    "title": "Deep Learning for Protein Structure Prediction: From AlphaFold to the Next Frontier",
+    "abstract": "Protein structure is closely linked with protein function. For many decades, scientists tried to predict the three-dimensional structure of a protein from its amino acid sequence. Experimental methods such as X-ray crystallography, nuclear magnetic resonance spectroscopy, and cryo-electron microscopy provide reliable structures. However, these methods can be expensive and time-consuming. Computational methods therefore became important alternatives. Early prediction methods were based mainly on sequence similarity, physical energy functions, and structural templates. Their accuracy was limited for many proteins. Deep learning changed this field. AlphaFold2 showed that artificial intelligence can predict the structures of many proteins with near-experimental accuracy (Jumper et al., 2021). RoseTTAFold provided another powerful deep-learning approach (Baek et al., 2021). Protein language models such as ESMFold later showed that structural information can also be learned directly from very large collections of protein sequences (Lin et al., 2023). AlphaFold3 further expanded the field by predicting interactions among proteins, DNA, RNA, ions, small molecules, and modified residues (Abramson et al., 2024). Generative models such as RFdiffusion and ESM3 are now moving the field from structure prediction toward protein design (Watson et al., 2023; Hayes et al., 2025). Recent open models are also increasing access to advanced biomolecular modelling. Despite this progress, major challenges remain. Proteins are dynamic molecules. They may adopt several conformations. Their structures are influenced by ligands, membranes, modifications, and the cellular environment. Future models therefore need to predict not only one structure, but also molecular dynamics, interactions, binding strength, and biological function. This review describes the development of deep learning for protein structure prediction and discusses the major directions that may define the next frontier.",
+    "year": 2026,
+    "authors": [
+      "Everest Shiwach",
+      "Sandeep Kumar"
+    ],
+    "citation_count": 0,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://abjar.vandanapublications.com/index.php/ojs/article/download/122/296",
+    "doi": "https://doi.org/10.31033/abjar/5.3.2026.122",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4246182489",
+    "title": "MULTICOM2: an open-source protein structure prediction system powered by deep learning and distance prediction",
+    "abstract": "Abstract Protein structure prediction is an important problem in bioinformatics and has been studied for decades. However, there are still few open-source comprehensive protein structure prediction packages publicly available in the field. In this paper, we present our latest open-source protein tertiary structure prediction system - MULTICOM2, an integration of template-based modeling (TBM) and template-free modeling (FM) methods. The template-based modeling uses sequence alignment tools with deep multiple sequence alignments to search for structural templates, which are much faster and more accurate than MULTICOM1. The template-free (ab initio or de novo) modeling uses the inter-residue distances predicted by DeepDist to reconstruct tertiary structure models without using any known structure as template. In the blind CASP14 experiment, the average TM-score of the models predicted by our server predictor based on the MULTICOM2 system is 0.720 for 58 TBM (regular) domains and 0.514 for 38 FM and FM/TBM (hard) domains, indicating that MULTICOM2 is capable of predicting good tertiary structures across the board. It can predict the correct fold for 76 CASP14 domains (95% regular domains and 55% hard domains) if only one prediction is made for a domain. The success rate is increased to 3% for both regular and hard domains if five predictions are made per domain. Moreover, the prediction accuracy of the pure template-free structure modeling method on both TBM and FM targets is very close to the combination of template-based and template-free modeling methods. This demonstrates that the distance-based template-free modeling method powered by deep learning can largely replace the traditional template-based modeling method even on TBM targets that TBM methods used to dominate and therefore provides a uniform structure modeling approach to any protein. Finally, on the 38 CASP14 FM and FM/TBM hard domains, MULTICOM2 server predictors (MULTICOM-HYBRID, MULTICOM-DEEP, MULTICOM-DIST) were ranked among the top 20 automated server predictors in the CASP14 experiment. After combining multiple predictors from the same research group as one entry, MULTICOM-HYBRID was ranked no. 5. The source code of MULTICOM2 is freely available at https://github.com/multicom-toolbox/multicom/tree/multicom_v2.0.",
+    "year": 2021,
+    "authors": [
+      "Tianqi Wu",
+      "Jian Liu",
+      "Zhiye Guo",
+      "Jie Hou",
+      "Jianlin Jack Cheng"
+    ],
+    "citation_count": 9,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://www.researchsquare.com/article/rs-339464/latest.pdf",
+    "doi": "https://doi.org/10.21203/rs.3.rs-339464/v1",
+    "source": "openalex",
+    "full_text": null
+  },
+  {
+    "id": "W4296164039",
+    "title": "Fast and accurate Ab Initio Protein structure prediction using deep learning potentials",
+    "abstract": "Despite the immense progress recently witnessed in protein structure prediction, the modeling accuracy for proteins that lack sequence and/or structure homologs remains to be improved. We developed an open-source program, DeepFold, which integrates spatial restraints predicted by multi-task deep residual neural-networks along with a knowledge-based energy function to guide its gradient-descent folding simulations. The results on large-scale benchmark tests showed that DeepFold creates full-length models with accuracy significantly beyond classical folding approaches and other leading deep learning methods. Of particular interest is the modeling performance on the most difficult targets with very few homologous sequences, where DeepFold achieved an average TM-score that was 40.3% higher than trRosetta and 44.9% higher than DMPfold. Furthermore, the folding simulations for DeepFold were 262 times faster than traditional fragment assembly simulations. These results demonstrate the power of accurately predicted deep learning potentials to improve both the accuracy and speed of ab initio protein structure prediction.",
+    "year": 2022,
+    "authors": [
+      "Robin Pearce",
+      "Yang Li",
+      "Gilbert S. Omenn",
+      "Yang Zhang"
+    ],
+    "citation_count": 44,
+    "is_review": false,
+    "is_open_access": true,
+    "pdf_url": "https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1010539&type=printable",
+    "doi": "https://doi.org/10.1371/journal.pcbi.1010539",
+    "source": "openalex",
+    "full_text": null
+  }
+]
