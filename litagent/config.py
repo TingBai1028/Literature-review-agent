@@ -27,13 +27,14 @@ class EffortProfile:
     max_papers: int
     use_full_text: bool  # False = metadata only, True = download and read PDFs
     token_budget: int  # TODO: tune once you measure real token usage
+    num_queries: int  # search queries the Planner writes; more papers -> more phrasings
 
 
 EFFORT_PROFILES: dict[Effort, EffortProfile] = {
-    Effort.NORMAL: EffortProfile(max_papers=30, use_full_text=False, token_budget=50_000),
-    Effort.MEDIUM: EffortProfile(max_papers=60, use_full_text=False, token_budget=100_000),
-    Effort.HIGH: EffortProfile(max_papers=100, use_full_text=True, token_budget=300_000),
-    Effort.ULTRA: EffortProfile(max_papers=150, use_full_text=True, token_budget=600_000),
+    Effort.NORMAL: EffortProfile(max_papers=30, use_full_text=False, token_budget=50_000, num_queries=2),
+    Effort.MEDIUM: EffortProfile(max_papers=60, use_full_text=False, token_budget=100_000, num_queries=3),
+    Effort.HIGH: EffortProfile(max_papers=100, use_full_text=True, token_budget=300_000, num_queries=4),
+    Effort.ULTRA: EffortProfile(max_papers=150, use_full_text=True, token_budget=600_000, num_queries=4),
 }
 
 
@@ -43,7 +44,9 @@ class DefaultCriteria:
 
     years_back: int = 5
     paper_types: tuple[str, ...] = ("primary", "review")
-    min_citations_per_year: float | None = None  # TODO: decide whether to filter or only rank
+    # Team decision (24 Oct): no default minimum. Citations only filter when the user gives a number;
+    # otherwise the Retriever ranks by citations per year so recent papers aren't penalised.
+    min_citations_per_year: float | None = None
 
     @property
     def year_from(self) -> int:

@@ -1,7 +1,6 @@
 """complete_json with the OpenAI client mocked: never calls Nightshift in tests."""
 
 import json
-from types import SimpleNamespace
 
 import pytest
 
@@ -9,22 +8,7 @@ from litagent.config import Settings
 from litagent.integrations.llm import LLMError, TokenBudgetExceeded, TokenMeter, complete_json
 from litagent.schemas import HumanFeedback
 from litagent.trace import Trace
-
-
-class FakeClient:
-    def __init__(self, replies, report_usage=True):
-        self.replies = list(replies)
-        self.report_usage = report_usage
-        self.calls = []
-        self.chat = SimpleNamespace(completions=SimpleNamespace(create=self.create))
-
-    def create(self, **kwargs):
-        self.calls.append(kwargs)
-        return SimpleNamespace(
-            model="nvidia/nemotron-test",
-            choices=[SimpleNamespace(message=SimpleNamespace(content=self.replies.pop(0)))],
-            usage=SimpleNamespace(prompt_tokens=10, completion_tokens=5) if self.report_usage else None,
-        )
+from tests.fakes import FakeClient
 
 
 def real_settings() -> Settings:

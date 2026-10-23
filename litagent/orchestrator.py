@@ -67,17 +67,19 @@ def run_pipeline(
             stage = "zetaris"
             store = ZetarisStore(sample_mode=settings.sample_mode, timeout_s=settings.zetaris_timeout_s)
             feedback: str | None = None
+            previous_plan = None
 
             for attempt in range(1, settings.max_replans + 1):
                 # ----- 1. Planner -----
                 stage = "planner"
                 check_time(stage)
-                planned = planner.plan(question, effort, settings, feedback)
+                planned = planner.plan(question, effort, settings, feedback, previous_plan)
                 if planned.status == "need_topic" or planned.plan is None:
                     trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic")
                     return finish(RunResult(run_id=trace.run_id, status="need_topic", message_to_user=planned.message_to_user))
-                plan = planned.plan
-                trace.log("planner", f"plan (attempt {attempt})", "plan created", plan, "retriever", why=f"defaults used: {plan.used_defaults}")
+                plan = previous_plan = planned.plan
+                trace.log("planner", f"plan (attempt {attempt})", "plan created", plan, "retriever",
+                          why=f"{plan.rationale or 'no rationale given'}; defaults used: {plan.used_defaults}")
 
                 # ----- 2. Retriever -> Zetaris -----
                 stage = "retriever"
