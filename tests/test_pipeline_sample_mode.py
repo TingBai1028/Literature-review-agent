@@ -2,10 +2,12 @@
 
 import numpy as np
 
+from litagent.agents import connection_finder
 from litagent.agents.clusterer import cosine_similarity_matrix, group_by_threshold
 from litagent.agents.grader import check_cluster_sizes
 from litagent.config import Effort, Settings
 from litagent.human_review import AutoApproveReviewer
+from litagent.integrations.llm import current_meter
 from litagent.orchestrator import run_pipeline
 from litagent.schemas import Cluster, HumanFeedback
 
@@ -81,3 +83,26 @@ def test_sample_mode_uses_matching_sample_file(tmp_path):
     result = run_pipeline("graph neural networks for drug discovery", Effort.NORMAL, AutoApproveReviewer(), sample_settings(tmp_path))
     assert all(p.source == "openalex" for p in result.papers)
     assert any("drug" in p.title.lower() for p in result.papers)
+
+
+def test_token_budget_stops_mid_stage_with_partial_result(tmp_path, monkeypatch):
+    """Simulates the Connection finder's LLM calls using up the budget (no real LLM in sample mode)."""
+    def spend_tokens(*args, **kwargs):
+        meter = current_meter()
+        meter.add(meter.usage.budget, 0)
+        meter.check()  # what complete_json does before its next call
+
+    monkeypatch.setattr(connection_finder, "find_connections", spend_tokens)
+    result = run_pipeline("graph neural networks for drug discovery", Effort.NORMAL, AutoApproveReviewer(), sample_settings(tmp_path))
+    assert result.status == "partial"
+    assert result.papers and result.clusters  # finished stages are kept
+    assert result.connections == [] and result.gaps == []
+    assert any("Token budget" in w and "connection_finder" in w for w in result.warnings)
+    assert result.usage.total >= result.usage.budget == 50_000
+
+
+def test_usage_reported_on_every_result(tmp_path):
+    done = run_pipeline("graph neural networks for drug discovery", Effort.MEDIUM, AutoApproveReviewer(), sample_settings(tmp_path))
+    need_topic = run_pipeline("find papers", Effort.NORMAL, AutoApproveReviewer(), sample_settings(tmp_path))
+    assert done.usage.budget == 100_000 and done.usage.llm_calls == 0  # sample mode makes no LLM calls
+    assert need_topic.usage is not None

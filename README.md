@@ -71,7 +71,11 @@ pip install -r requirements.txt
 cp .env.example .env             # then fill in your values
 ```
 
-Set the Nemotron model ID in `litagent/config.py` (`NIGHTSHIFT_MODEL`).
+Confirm the Nemotron model ID in `litagent/config.py` (`NIGHTSHIFT_MODEL`), then check the connection with one tiny call:
+
+```bash
+python scripts/check_nightshift.py   # prints the model that answered and the tokens used
+```
 
 ### Run the API (main entry point)
 
@@ -86,11 +90,12 @@ curl -X POST localhost:8000/run -H 'Content-Type: application/json' \
 
 Request: `{"run_id": optional, "input": {"query": str, "effort": "normal|medium|high|ultra", "feedback": optional str}}`
 
-- Success: `{"run_id": ..., "status": "success", "output": {plan, papers, clusters, connections, gaps, paper_map, warnings, ...}}`
+- Success: `{"run_id": ..., "status": "success", "output": {plan, papers, clusters, connections, gaps, paper_map, usage, warnings, ...}}`
 - Failure: `{"run_id": ..., "status": "error", "error": {"type": ..., "message": ...}}` (HTTP 422 for bad input, 500 for a failed stage)
 - No topic in the query: `status: "success"` with `output.status: "need_topic"` and a friendly `message_to_user`.
 - Human reviews never wait for input through `/run`. Both are approved unless you pass `feedback`, which sends that comment back to the Planner once (Human review 1).
-- `output.status: "partial"` means the run hit `RUN_TIMEOUT_S` (default 600 s) and returned what it had finished.
+- `output.status: "partial"` means the run hit `RUN_TIMEOUT_S` (default 600 s) or its token budget, and returned what it had finished (the reason is in `warnings`).
+- `output.usage` gives the run's LLM tokens (`prompt_tokens`, `completion_tokens`, `llm_calls`) against the effort level's `budget`.
 
 ### Sample mode
 
@@ -134,6 +139,8 @@ Every run writes `logs/trace-<run_id>.jsonl` (one JSON object per line) and prin
 ### Run time
 
 Every external call has a timeout (model requests 60 s, Zetaris SQL 45 s, OpenAlex 30 s), redos and replans are capped in `litagent/config.py`, and the run stops between stages after `RUN_TIMEOUT_S` (default 600 s). The target is 5–10 minutes; Ultra (~150 papers, full text) may hit the cap and return a partial result.
+
+Each effort level also has a token budget (`EFFORT_PROFILES` in `litagent/config.py`). Every LLM call's tokens are counted, retries included, and once the budget is used up the run stops before the next call and returns a partial result. Nemotron 3 Super's reasoning counts as completion tokens, so tune the budgets after measuring real runs.
 
 ### Tests
 

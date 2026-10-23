@@ -11,6 +11,13 @@
     "connections": [],
     "gaps": [],
     "warnings": [],
-    "paper_map": null
+    "paper_map": null,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "llm_calls": 0,
+      "estimated_calls": 0,
+      "budget": 50000
+    }
   }
 }

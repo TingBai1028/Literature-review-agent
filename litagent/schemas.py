@@ -126,9 +126,23 @@ class HumanFeedback(BaseModel):
 # ---------- Final output ----------
 
 
+class TokenUsage(BaseModel):
+    """LLM tokens used by one run, checked against the effort level's token budget."""
+
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    llm_calls: int = 0
+    estimated_calls: int = 0  # calls where the provider reported no usage, so tokens were estimated
+    budget: int | None = None
+
+    @property
+    def total(self) -> int:
+        return self.prompt_tokens + self.completion_tokens
+
+
 class RunResult(BaseModel):
     run_id: str
-    status: Literal["done", "need_topic", "max_replans_reached", "partial"]  # partial = run time limit hit
+    status: Literal["done", "need_topic", "max_replans_reached", "partial"]  # partial = time limit or token budget hit
     message_to_user: str | None = None
     plan: SearchPlan | None = None
     papers: list[Paper] = Field(default_factory=list)
@@ -137,3 +151,4 @@ class RunResult(BaseModel):
     gaps: list[Gap] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)  # e.g. a stage that never passed grading
     paper_map: dict[str, Any] | None = None  # Meterless world model graph (nodes + edges) for the front end
+    usage: TokenUsage | None = None

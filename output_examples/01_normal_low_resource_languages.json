@@ -1218,6 +1218,13 @@
           "type": "gap_near"
         }
       ]
+    },
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "llm_calls": 0,
+      "estimated_calls": 0,
+      "budget": 50000
     }
   }
 }

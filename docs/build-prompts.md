@@ -11,20 +11,20 @@ The hackathon technical-requirements prompt (Nightshift, Zetaris, `/run`, sample
 
 ## 0. LLM wrapper (do this first: every agent uses it)
 
-`complete_json` is already implemented for Nightshift. Use this prompt only to change or extend it.
+Done: `complete_json` calls Nightshift (Nemotron 3 Super), counts tokens per run (`TokenMeter`) and enforces the effort level's token budget. Use this prompt only to change or extend it. Check the live connection with `python scripts/check_nightshift.py`.
 
 ```
 Review and extend complete_json in litagent/integrations/llm.py.
 
 Decisions:
 - Provider: Meterless Nightshift (fixed by the hackathon rules; OpenAI-compatible, official OpenAI client)
-- Model: ______ (a Nemotron model ID from Nightshift's Providers tab; set NIGHTSHIFT_MODEL in litagent/config.py, no automatic routing)
+- Model: Nemotron 3 Super (NIGHTSHIFT_MODEL in litagent/config.py, no automatic routing; confirm the ID in Nightshift's Providers tab)
 - Structured output method: response_format json_object + schema in the system prompt, unless Nightshift supports json_schema for this model
 
 Requirements:
 - Read METERLESS_BASE_URL and METERLESS_RUNTIME_TOKEN from environment variables (see .env.example). Never read or store the NVIDIA key.
 - Parse the response into output_model; if validation fails, retry once and include the validation error in the retry.
-- Keep logging the model name and token usage for every call, and make token usage readable by the orchestrator so the token budget can be enforced.
+- Keep logging the model name and token usage for every call, and keep counting tokens in the run's TokenMeter (budget enforced before each call).
 - Keep the request timeout (settings.llm_timeout_s).
 - Keep tests/test_llm.py passing with the client mocked. Don't call the real API in tests.
 

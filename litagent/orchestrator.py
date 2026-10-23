@@ -6,8 +6,9 @@ Loops:
 - Grading agent fails a stage -> redo that stage once with the grader's fix,
   then continue with a warning (TODO: decide whether to ask the user instead).
 
-Bounds: replans and redos are capped in config.py, and the whole run stops between stages
-once settings.run_timeout_s has passed, returning status="partial" with what was finished.
+Bounds: replans and redos are capped in config.py. The run stops between stages once
+settings.run_timeout_s has passed, and before any LLM call once the effort level's token budget
+is used up; both return status="partial" with what was finished.
 An exception in any stage is logged to the trace and re-raised for the caller (CLI or API).
 """
 
@@ -17,8 +18,9 @@ import time
 from typing import Callable, TypeVar
 
 from litagent.agents import clusterer, connection_finder, gap_finder, grader, planner, retriever
-from litagent.config import Effort, Settings
+from litagent.config import EFFORT_PROFILES, Effort, Settings
 from litagent.human_review import Reviewer
+from litagent.integrations.llm import TokenBudgetExceeded, TokenMeter
 from litagent.integrations.meterless import WorldModel
 from litagent.integrations.zetaris import ZetarisStore
 from litagent.schemas import RunResult
@@ -41,9 +43,17 @@ def run_pipeline(
     run_id: str | None = None,
 ) -> RunResult:
     settings = settings or Settings()
-    with Trace(settings.logs_dir, run_id) as trace:
+    budget = EFFORT_PROFILES[effort].token_budget
+    with Trace(settings.logs_dir, run_id) as trace, TokenMeter(budget) as meter:
         trace.log("orchestrator", "start", "run started", question, "planner",
-                  why=f"effort={effort.value}, sample_mode={settings.sample_mode}")
+                  why=f"effort={effort.value}, token budget={budget:,}, sample_mode={settings.sample_mode}")
+
+        def finish(r: RunResult) -> RunResult:
+            r.usage = meter.usage
+            trace.log("orchestrator", "finish", r.status, meter.usage, "return result",
+                      why=f"{meter.usage.total:,} of {budget:,} tokens in {meter.usage.llm_calls} LLM calls")
+            return r
+
         deadline = time.monotonic() + settings.run_timeout_s
         stage = "orchestrator"
         result: RunResult | None = None
@@ -65,7 +75,7 @@ def run_pipeline(
                 planned = planner.plan(question, effort, settings, feedback)
                 if planned.status == "need_topic" or planned.plan is None:
                     trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic")
-                    return RunResult(run_id=trace.run_id, status="need_topic", message_to_user=planned.message_to_user)
+                    return finish(RunResult(run_id=trace.run_id, status="need_topic", message_to_user=planned.message_to_user))
                 plan = planned.plan
                 trace.log("planner", f"plan (attempt {attempt})", "plan created", plan, "retriever", why=f"defaults used: {plan.used_defaults}")
 
@@ -124,21 +134,24 @@ def run_pipeline(
                 fb = reviewer.review_result(result)
                 if fb.approved:
                     trace.log("human", "review 2", "approved", next_step="done")
-                    return result
+                    return finish(result)
                 feedback = fb.comment
                 trace.log("human", "review 2", "follow-up", fb.comment, "planner", why="User feedback")
 
             trace.log("orchestrator", "stop", "max replans reached", why=f"limit {settings.max_replans}")
-            return RunResult(run_id=trace.run_id, status="max_replans_reached", message_to_user="Let's narrow the question down together.")
+            return finish(RunResult(run_id=trace.run_id, status="max_replans_reached", message_to_user="Let's narrow the question down together."))
 
-        except _OutOfTime as e:
+        except (_OutOfTime, TokenBudgetExceeded) as e:
+            if isinstance(e, _OutOfTime):
+                action, reason = "time limit", f"Run time limit ({settings.run_timeout_s:.0f} s) reached before {e.before}"
+            else:
+                action, reason = "token budget", f"Token budget ({budget:,} tokens) used up during {stage}"
             partial = result or RunResult(run_id=trace.run_id, status="partial")
             partial.status = "partial"
             partial.paper_map = world.to_graph_json()
-            partial.warnings.append(f"Run time limit ({settings.run_timeout_s:.0f} s) reached before {e.before}; returning what was finished.")
-            trace.log("orchestrator", "time limit", "stop early", next_step="return partial result",
-                      why=f"limit {settings.run_timeout_s:.0f} s reached before {e.before}")
-            return partial
+            partial.warnings.append(f"{reason}; returning what was finished.")
+            trace.log("orchestrator", action, "stop early", next_step="return partial result", why=reason)
+            return finish(partial)
         except Exception as e:
             trace.error(stage, "run stage", e, next_step="return error to caller")
             raise

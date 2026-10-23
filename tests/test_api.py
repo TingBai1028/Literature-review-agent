@@ -40,6 +40,7 @@ def test_run_success_shape(client, tmp_path):
     assert len(out["papers"]) == 30
     assert out["clusters"] and out["connections"] and out["gaps"]
     assert out["paper_map"]["nodes"] and out["paper_map"]["edges"]
+    assert out["usage"] == {"prompt_tokens": 0, "completion_tokens": 0, "llm_calls": 0, "estimated_calls": 0, "budget": 50_000}
 
     events = [json.loads(line) for line in read_trace(tmp_path, "t-1").splitlines()]
     required = {"timestamp", "run_id", "agent_name", "action", "decision", "result", "next", "why"}

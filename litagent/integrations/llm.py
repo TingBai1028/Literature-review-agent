@@ -12,6 +12,7 @@ import json
 import os
 import re
 import time
+from contextvars import ContextVar
 from pathlib import Path
 from typing import TypeVar
 
@@ -19,15 +20,59 @@ from openai import OpenAI
 from pydantic import BaseModel, ValidationError
 
 from litagent.config import Settings
+from litagent.schemas import TokenUsage
 from litagent.trace import current_trace
 
 T = TypeVar("T", bound=BaseModel)
 
 PROMPTS_DIR = Path(__file__).resolve().parents[2] / "prompts"
+CHARS_PER_TOKEN = 4  # rough estimate when the provider reports no usage
 
 
 class LLMError(RuntimeError):
     """The model could not be reached or did not return valid JSON after one retry."""
+
+
+class TokenBudgetExceeded(LLMError):
+    """The run has used its effort level's token budget; the orchestrator returns a partial result."""
+
+
+_current_meter: ContextVar[TokenMeter | None] = ContextVar("current_token_meter", default=None)
+
+
+class TokenMeter:
+    """Counts the tokens of every LLM call in a run (retries included) and enforces the budget.
+
+    The orchestrator opens one per run (`with TokenMeter(budget) as meter:`); complete_json finds it
+    through current_meter(), so agents don't have to pass it around.
+    """
+
+    def __init__(self, budget: int | None = None):
+        self.usage = TokenUsage(budget=budget)
+        self._token = None
+
+    def __enter__(self) -> TokenMeter:
+        self._token = _current_meter.set(self)
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        if self._token is not None:
+            _current_meter.reset(self._token)
+
+    def add(self, prompt_tokens: int, completion_tokens: int, estimated: bool = False) -> None:
+        self.usage.prompt_tokens += prompt_tokens
+        self.usage.completion_tokens += completion_tokens
+        self.usage.llm_calls += 1
+        self.usage.estimated_calls += int(estimated)
+
+    def check(self) -> None:
+        """Raise before a call once the budget is used up."""
+        if self.usage.budget is not None and self.usage.total >= self.usage.budget:
+            raise TokenBudgetExceeded(f"Token budget used: {self.usage.total:,} of {self.usage.budget:,} tokens")
+
+
+def current_meter() -> TokenMeter | None:
+    return _current_meter.get()
 
 
 def load_prompt(name: str) -> str:
@@ -55,7 +100,9 @@ def complete_json(
     """Call the LLM and parse its answer into `output_model`.
 
     Asks for JSON matching output_model's schema, validates it with Pydantic, and retries
-    once with the validation error included. Logs the model name and token usage of every call.
+    once with the validation error included. Logs the model name and token usage of every call,
+    adds the tokens to the run's TokenMeter, and raises TokenBudgetExceeded before a call once
+    the run's budget is used up.
     """
     settings = settings or Settings()
     if settings.sample_mode:
@@ -74,7 +121,10 @@ def complete_json(
         {"role": "user", "content": user_message},
     ]
 
+    meter = current_meter()
     for attempt in (1, 2):
+        if meter:
+            meter.check()
         start = time.monotonic()
         response = client.chat.completions.create(
             model=model,
@@ -82,8 +132,9 @@ def complete_json(
             response_format={"type": "json_object"},
         )
         text = response.choices[0].message.content or ""
-        usage = response.usage
-        tokens = {"prompt": usage.prompt_tokens, "completion": usage.completion_tokens} if usage else None
+        tokens = _tokens(response.usage, messages, text)
+        if meter:
+            meter.add(tokens["prompt"], tokens["completion"], estimated=tokens.get("estimated", False))
         try:
             parsed = output_model.model_validate_json(_clean_json_text(text))
         except ValidationError as e:
@@ -100,6 +151,14 @@ def complete_json(
              "return", "", response.model or model, tokens, start)
         return parsed
     raise AssertionError("unreachable")
+
+
+def _tokens(usage, messages: list[dict], reply: str) -> dict:
+    """Token usage as reported by the provider, or a rough estimate (marked) when it reports none."""
+    if usage and usage.prompt_tokens is not None:
+        return {"prompt": usage.prompt_tokens, "completion": usage.completion_tokens or 0}
+    prompt_chars = sum(len(m["content"]) for m in messages)
+    return {"prompt": prompt_chars // CHARS_PER_TOKEN, "completion": len(reply) // CHARS_PER_TOKEN, "estimated": True}
 
 
 def _clean_json_text(text: str) -> str:
