@@ -20,8 +20,11 @@ class SearchCriteria(BaseModel):
     topic: str
     year_from: int | None = None
     year_to: int | None = None
+    min_citations: int | None = None  # only when the user gives a number, e.g. "at least 50 citations"
     min_citations_per_year: float | None = None
-    paper_types: list[Literal["primary", "review"]] = ["primary", "review"]
+    paper_types: list[Literal["primary", "review"]] = Field(
+        default_factory=list, description="Empty = user didn't say; the Planner's defaults fill it"
+    )
 
 
 class SearchPlan(BaseModel):
@@ -32,6 +35,7 @@ class SearchPlan(BaseModel):
     max_papers: int
     token_budget: int
     used_defaults: list[str] = Field(default_factory=list, description="Which criteria fell back to defaults")
+    rationale: str | None = None  # one sentence from the Planner: why these criteria and queries
 
 
 class PlannerResult(BaseModel):

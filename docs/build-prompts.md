@@ -33,13 +33,15 @@ Plan first and show me the plan before writing code.
 
 ## 1. Planner
 
+Done (mocked tests). Remaining: tune `prompts/planner.md` on real questions once Nightshift is set up.
+
 ```
 Implement the real (non-sample-mode) Planner in litagent/agents/planner.py, following docs/agents/planner.md and prompts/planner.md.
 
 Decisions:
-- How to decide there is "no clear topic": ______ (e.g. let the LLM decide, with examples in the prompt)
-- Number of search queries per plan: ______ (suggest 2-4)
-- Citations: filter by minimum, or only use for ranking? ______
+- How to decide there is "no clear topic": the LLM decides, with examples in the prompt (empty message caught in code)
+- Number of search queries per plan: by effort, Normal 2 / Medium 3 / High-Ultra 4
+- Citations: filter only when the user gives a number; otherwise rank by citations per year
 
 Requirements:
 - Keep apply_defaults() as the only place defaults are applied.
