@@ -52,8 +52,10 @@ class DefaultCriteria:
 
 # Nightshift model for every agent. Must be an NVIDIA Nemotron model, set explicitly
 # (no automatic routing, which could pick a non-NVIDIA model).
-# TODO: copy the exact model ID from Nightshift's Providers tab.
-NIGHTSHIFT_MODEL = "TODO-nemotron-model-id"
+# Nemotron 3 Super (120B total / 12B active MoE): fast enough for many calls per run, long context.
+# TODO: confirm the exact ID string in Nightshift's Providers tab (this is OpenRouter's spelling).
+# Reasoning is on by default for this model; llm.py strips <think> blocks before parsing JSON.
+NIGHTSHIFT_MODEL = "nvidia/nemotron-3-super-120b-a12b"
 
 
 def _env_bool(name: str, default: str = "false") -> bool:

@@ -54,6 +54,17 @@ def test_retries_once_with_validation_error():
     assert "did not validate" in retry_messages[-1]["content"]
 
 
+@pytest.mark.parametrize("reply", [
+    '<think>The user wants approval. {"approved": false}</think>\n{"approved": true}',
+    'Reasoning without an opening tag...</think>{"approved": true}',
+])
+def test_reasoning_text_is_removed_before_parsing(reply):
+    client = FakeClient([reply])
+    out = complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client)
+    assert out == HumanFeedback(approved=True)
+    assert len(client.calls) == 1  # parsed first time, no retry needed
+
+
 def test_gives_up_after_second_invalid_reply():
     client = FakeClient(["not json", json.dumps({"approved": "maybe"})])
     with pytest.raises(LLMError):

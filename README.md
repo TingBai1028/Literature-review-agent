@@ -44,8 +44,8 @@ See [docs/sponsor-tech.md](docs/sponsor-tech.md) for the full write-up.
 
 | Sponsor | How we use it | Status |
 | --- | --- | --- |
-| Meterless Nightshift | Primary AI provider: every LLM call goes through it (`litagent/integrations/llm.py`, OpenAI-compatible client) | Wired; model ID still TODO |
-| NVIDIA | Nemotron model, connected through Nightshift (the NVIDIA key lives in Nightshift's Providers tab). The trace logs the model that handled each request. | Model ID still TODO |
+| Meterless Nightshift | Primary AI provider: every LLM call goes through it (`litagent/integrations/llm.py`, OpenAI-compatible client) | Wired; confirm model ID in Providers tab |
+| NVIDIA | Nemotron 3 Super (`NIGHTSHIFT_MODEL`), connected through Nightshift (the NVIDIA key lives in Nightshift's Providers tab). The trace logs the model that handled each request. | Nemotron 3 Super |
 | Zetaris | Shared paper data layer, running locally in Docker (`litagent/integrations/zetaris.py`) | REST client wired; paper table TODO |
 | Meterless World Model | Shared findings graph (clusters, connections, gaps), returned as `paper_map` for the paper map (`litagent/integrations/meterless.py`) | Interface + test ready; real engine not yet connected |
 | Cursor (with SpaceX XAI) | Optional: development environment, project rules in `.cursor/rules/` | Optional |
