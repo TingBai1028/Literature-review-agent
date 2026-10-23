@@ -1,7 +1,7 @@
 """Run the agent on every topic in evals/topics.yaml and save results.
 
     python -m evals.run_eval              # real run
-    python -m evals.run_eval --dry-run    # check the harness works
+    python -m evals.run_eval --sample-mode    # check the harness works
 """
 
 from __future__ import annotations
@@ -22,11 +22,11 @@ OUT = Path(__file__).parent / "results.json"
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--sample-mode", action="store_true")
     args = parser.parse_args()
 
     settings = Settings()
-    settings.dry_run = args.dry_run
+    settings.sample_mode = args.sample_mode or settings.sample_mode
     topics = yaml.safe_load(TOPICS.read_text(encoding="utf-8"))["topics"]
 
     results = []

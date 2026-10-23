@@ -16,4 +16,4 @@ Agent Loop Spec from the Day 4 workshop. Copy this file for a new agent.
 **Input contract:** schema in `litagent/schemas.py`
 **Output contract:** schema in `litagent/schemas.py`
 **Owner:** TODO
-**Status:** Not started / Dry run only / Working / Tested
+**Status:** Not started / Sample mode only / Working / Tested

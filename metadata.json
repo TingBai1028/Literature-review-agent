@@ -1,0 +1,23 @@
+{
+  "project_name": "TODO",
+  "description": "TODO: one-sentence pitch",
+  "track": "Track 02: The Agent That Can Explain Why",
+  "team": [
+    {"name": "TODO", "role": "TODO"}
+  ],
+  "repository": "TODO: public GitHub URL",
+  "demo_video": "TODO",
+  "slide_deck": "TODO",
+  "entry_point": "run.py",
+  "api": {"method": "POST", "path": "/run", "port": 8000},
+  "sample_mode_env": "SAMPLE_MODE=true",
+  "sponsor_technologies": {
+    "meterless_nightshift": "Primary AI provider for every LLM call (OpenAI-compatible client)",
+    "meterless_engine": "World Model: shared findings graph returned as paper_map (real engine: TODO)",
+    "zetaris": "Data layer, running locally in Docker",
+    "nvidia": "Nemotron model via Nightshift (model ID: TODO)",
+    "cursor": "TODO: optional"
+  },
+  "models": ["TODO-nemotron-model-id"],
+  "license": "TODO"
+}

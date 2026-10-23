@@ -1,0 +1,7 @@
+{
+  "run_id": "example-01",
+  "input": {
+    "query": "How do large language models handle low-resource languages?",
+    "effort": "normal"
+  }
+}

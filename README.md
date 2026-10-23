@@ -42,19 +42,23 @@ Per-agent specs are in [docs/agents/](docs/agents/).
 
 See [docs/sponsor-tech.md](docs/sponsor-tech.md) for the full write-up.
 
-| Sponsor | How we use it |
-| --- | --- |
-| Zetaris | TODO: shared data layer that serves paper data to every agent |
-| Meterless | TODO: world model (shared findings graph) and Markovian engine (chunked full-text reading) |
-| Cursor (with SpaceX XAI) | TODO: development environment |
-| NVIDIA | TODO: compute, if used |
+| Sponsor | How we use it | Status |
+| --- | --- | --- |
+| Meterless Nightshift | Primary AI provider: every LLM call goes through it (`litagent/integrations/llm.py`, OpenAI-compatible client) | Wired; model ID still TODO |
+| NVIDIA | Nemotron model, connected through Nightshift (the NVIDIA key lives in Nightshift's Providers tab). The trace logs the model that handled each request. | Model ID still TODO |
+| Zetaris | Shared paper data layer, running locally in Docker (`litagent/integrations/zetaris.py`) | REST client wired; paper table TODO |
+| Meterless World Model | Shared findings graph (clusters, connections, gaps), returned as `paper_map` for the paper map (`litagent/integrations/meterless.py`) | Interface + test ready; real engine not yet connected |
+| Cursor (with SpaceX XAI) | Optional: development environment, project rules in `.cursor/rules/` | Optional |
+
+Each sponsor integration sits behind its own adapter class, so an outage in one doesn't break the whole project, and sample mode runs without any of them.
 
 ## Getting started
 
 ### Requirements
 
 - Python 3.11+
-- TODO: Zetaris and Meterless access (see `.env.example`)
+- For real runs: Meterless Nightshift with a Nemotron model, and Zetaris running locally in Docker (see `.env.example`). Sample mode needs neither.
+- No GPU needed.
 
 ### Setup
 
@@ -64,20 +68,72 @@ cd TODO-repo-folder
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env             # then fill in your keys
+cp .env.example .env             # then fill in your values
 ```
 
-### Run
+Set the Nemotron model ID in `litagent/config.py` (`NIGHTSHIFT_MODEL`).
+
+### Run the API (main entry point)
 
 ```bash
-# End-to-end run with fake data, no keys needed (good for checking the pipeline)
-python -m litagent "How do large language models handle low-resource languages?" --effort normal --dry-run
-
-# Real run, with human review prompts in the terminal
-python -m litagent "TODO your question" --effort medium
+SAMPLE_MODE=true python run.py   # serves POST /run on 0.0.0.0:$PORT (default 8000)
 ```
 
-Every run writes a step-by-step trace to `runs/<run_id>.jsonl`.
+```bash
+curl -X POST localhost:8000/run -H 'Content-Type: application/json' \
+  -d '{"input": {"query": "How do large language models handle low-resource languages?", "effort": "normal"}}'
+```
+
+Request: `{"run_id": optional, "input": {"query": str, "effort": "normal|medium|high|ultra", "feedback": optional str}}`
+
+- Success: `{"run_id": ..., "status": "success", "output": {plan, papers, clusters, connections, gaps, paper_map, warnings, ...}}`
+- Failure: `{"run_id": ..., "status": "error", "error": {"type": ..., "message": ...}}` (HTTP 422 for bad input, 500 for a failed stage)
+- No topic in the query: `status: "success"` with `output.status: "need_topic"` and a friendly `message_to_user`.
+- Human reviews never wait for input through `/run`. Both are approved unless you pass `feedback`, which sends that comment back to the Planner once (Human review 1).
+- `output.status: "partial"` means the run hit `RUN_TIMEOUT_S` (default 600 s) and returned what it had finished.
+
+### Sample mode
+
+`SAMPLE_MODE=true` runs the whole pipeline with no Zetaris, Nightshift or network access. Papers are real OpenAlex records saved in `data/sample/`; clustering, connections, gaps and grades are placeholders labelled "Sample mode".
+
+### Examples
+
+`input_examples/` holds 4 `/run` requests (normal, medium with feedback, high, and no topic). `output_examples/` holds the matching responses, generated in sample mode:
+
+```bash
+SAMPLE_MODE=true python run.py &
+for f in input_examples/*.json; do
+  curl -s -X POST localhost:8000/run -H 'Content-Type: application/json' -d @$f | python -m json.tool --indent 2 > output_examples/$(basename $f)
+done
+```
+
+`pytest` checks that each input still produces its output.
+
+### Docker
+
+```bash
+docker build -t litagent .
+docker run --rm -p 8000:8000 -e SAMPLE_MODE=true litagent
+# Real run: Zetaris and Nightshift run on your machine, outside the container
+docker run --rm -p 8000:8000 --env-file .env litagent
+```
+
+Inside the container, `localhost` is the container itself: point `ZETARIS_REST_URL` and `METERLESS_BASE_URL` at `host.docker.internal` instead (on Linux, add `--add-host=host.docker.internal:host-gateway`). Dependencies are installed at build time; nothing is downloaded at runtime.
+
+### Command line
+
+```bash
+python -m litagent "How do large language models handle low-resource languages?" --effort normal --sample-mode
+python -m litagent "TODO your question" --effort medium      # real run, human reviews asked in the terminal
+```
+
+### Logs
+
+Every run writes `logs/trace-<run_id>.jsonl` (one JSON object per line) and prints readable `[INFO]` lines to stdout. Each event has `timestamp, run_id, agent_name, action, decision, result, next, why`. LLM calls add the model that handled the request and token usage. Zetaris queries, Meterless World Model writes, grades, redos, fallbacks and errors are all logged. Tokens and keys are masked.
+
+### Run time
+
+Every external call has a timeout (model requests 60 s, Zetaris SQL 45 s, OpenAlex 30 s), redos and replans are capped in `litagent/config.py`, and the run stops between stages after `RUN_TIMEOUT_S` (default 600 s). The target is 5–10 minutes; Ultra (~150 papers, full text) may hit the cap and return a partial result.
 
 ### Tests
 
@@ -91,7 +147,9 @@ TODO: Summarise results from [docs/evaluation.md](docs/evaluation.md). Example: 
 
 ## Data
 
-Paper metadata comes from open scholarly APIs. See [data/README.md](data/README.md) for sources and licences. No sensitive or restricted data is stored in this repo.
+- **Real runs:** paper metadata comes from open scholarly APIs (OpenAlex now; Semantic Scholar and arXiv planned) and is stored in Zetaris for the later agents.
+- **Sample mode and tests:** `data/sample/` holds about 60 real OpenAlex papers for each of 3 topics (OpenAlex data is CC0). Recreate or add topics with `scripts/download_sample_data.py`.
+- See [data/README.md](data/README.md) for sources and licences. No sensitive or restricted data is stored in this repo.
 
 ## Pre-existing components
 

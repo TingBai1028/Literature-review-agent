@@ -1,0 +1,2220 @@
+{
+  "run_id": "example-02",
+  "status": "success",
+  "output": {
+    "run_id": "example-02",
+    "status": "done",
+    "message_to_user": null,
+    "plan": {
+      "question": "What are graph neural networks being used for in drug discovery?",
+      "criteria": {
+        "topic": "What are graph neural networks being used for in drug discovery?",
+        "year_from": 2021,
+        "year_to": null,
+        "min_citations_per_year": null,
+        "paper_types": [
+          "primary",
+          "review"
+        ]
+      },
+      "queries": [
+        "What are graph neural networks being used for in drug discovery?"
+      ],
+      "effort": "medium",
+      "max_papers": 60,
+      "token_budget": 100000,
+      "used_defaults": [
+        "year_from=2021",
+        "paper_types=primary+review"
+      ]
+    },
+    "papers": [
+      {
+        "id": "W3110933132",
+        "title": "Molecular generative Graph Neural Networks for Drug Discovery",
+        "abstract": null,
+        "year": 2021,
+        "authors": [
+          "Pietro Bongini",
+          "Monica Bianchini",
+          "Franco Scarselli"
+        ],
+        "citation_count": 181,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2012.07397",
+        "doi": "https://doi.org/10.1016/j.neucom.2021.04.039",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4415320025",
+        "title": "Graph neural networks driven acceleration in drug discovery",
+        "abstract": "Graph neural networks (GNNs) are revolutionizing drug design processes. Over the past five years, GNNs have emerged as transformative tools by accurately modeling molecular structures and interactions with binding targets. Breakthroughs in predicting molecular properties, drug repurposing, toxicity assessment, and interaction analysis, along with generative GNNs enhancing virtual screening and novel molecule design, have significantly sped up drug discovery. These GNN-driven innovations improve predictive accuracy, cut development costs, and reduce late-stage failures. This review focuses on the interdisciplinary integration of GNNs throughout the discovery process, including lead discovery and optimization, synthetic route design, drug\u2013target interaction prediction, and molecular property profiling, while critically evaluating the challenges in translational medicine. GNNs are revolutionizing drug design by accurately modeling molecular structures and interactions. They enhance property prediction, drug repurposing, toxicity assessment, and novel molecule design, accelerating discovery while reducing costs and failures.",
+        "year": 2025,
+        "authors": [
+          "Rui Wang",
+          "Chunlin Zhuang"
+        ],
+        "citation_count": 29,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1016/j.apsb.2025.10.011",
+        "doi": "https://doi.org/10.1016/j.apsb.2025.10.011",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W3120618935",
+        "title": "Advanced graph and sequence neural networks for molecular property prediction and drug discovery",
+        "abstract": "MOTIVATION: Properties of molecules are indicative of their functions and thus are useful in many applications. With the advances of deep-learning methods, computational approaches for predicting molecular properties are gaining increasing momentum. However, there lacks customized and advanced methods and comprehensive tools for this task currently. RESULTS: Here, we develop a suite of comprehensive machine-learning methods and tools spanning different computational models, molecular representations and loss functions for molecular property prediction and drug discovery. Specifically, we represent molecules as both graphs and sequences. Built on these representations, we develop novel deep models for learning from molecular graphs and sequences. In order to learn effectively from highly imbalanced datasets, we develop advanced loss functions that optimize areas under precision-recall curves (PRCs) and receiver operating characteristic (ROC) curves. Altogether, our work not only serves as a comprehensive tool, but also contributes toward developing novel and advanced graph and sequence-learning methodologies. Results on both online and offline antibiotics discovery and molecular property prediction tasks show that our methods achieve consistent improvements over prior methods. In particular, our methods achieve #1 ranking in terms of both ROC-AUC (area under curve) and PRC-AUC on the AI Cures open challenge for drug discovery related to COVID-19. AVAILABILITY AND IMPLEMENTATION: Our source code is released as part of the MoleculeX library (https://github.com/divelab/MoleculeX) under AdvProp. SUPPLEMENTARY INFORMATION: Supplementary data are available at Bioinformatics online.",
+        "year": 2022,
+        "authors": [
+          "Zhengyang Wang",
+          "Meng Liu",
+          "Youzhi Luo",
+          "Xu Zhao",
+          "Yaochen Xie",
+          "Limei Wang",
+          "Lei Cai",
+          "Qi Qi",
+          "Zhuoning Yuan",
+          "Tianbao Yang",
+          "Shuiwang Ji"
+        ],
+        "citation_count": 123,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2012.01981",
+        "doi": "https://doi.org/10.1093/bioinformatics/btac112",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4396806998",
+        "title": "Knowledge mapping of graph neural networks for drug discovery: a bibliometric and visualized analysis",
+        "abstract": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research. Although researchers have made significant progress in this field, there is less research on bibliometrics. The purpose of this study is to conduct a comprehensive bibliometric analysis of graph neural network applications in drug discovery in order to identify current research hotspots and trends, as well as serve as a reference for future research. Methods: Publications from 2017 to 2023 about the application of graph neural network in drug discovery were collected from the Web of Science Core Collection. Bibliometrix, VOSviewer, and Citespace were mainly used for bibliometric studies. Results and Discussion: In this paper, a total of 652 papers from 48 countries/regions were included. Research interest in this field is continuously increasing. China and the United States have a significant advantage in terms of funding, the number of publications, and collaborations with other institutions and countries. Although some cooperation networks have been formed in this field, extensive worldwide cooperation still needs to be strengthened. The results of the keyword analysis clarified that graph neural network has primarily been applied to drug-target interaction, drug repurposing, and drug-drug interaction, while graph convolutional neural network and its related optimization methods are currently the core algorithms in this field. Data availability and ethical supervision, balancing computing resources, and developing novel graph neural network models with better interpretability are the key technical issues currently faced. This paper analyzes the current state, hot spots, and trends of graph neural network applications in drug discovery through bibliometric approaches, as well as the current issues and challenges in this field. These findings provide researchers with valuable insights on the current status and future directions of this field.",
+        "year": 2024,
+        "authors": [
+          "Rufan Yao",
+          "Zhenhua Shen",
+          "Xinyi Xu",
+          "Guixia Ling",
+          "Rongwu Xiang",
+          "Tingyan Song",
+          "Fei Zhai",
+          "Yuxuan Zhai"
+        ],
+        "citation_count": 33,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.3389/fphar.2024.1393415",
+        "doi": "https://doi.org/10.3389/fphar.2024.1393415",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W3116202926",
+        "title": "Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
+        "abstract": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than traditional descriptor-based methods. In this study, based on 11 public datasets covering various property endpoints, the predictive capacity and computational efficiency of the prediction models developed by eight machine learning (ML) algorithms, including four descriptor-based models (SVM, XGBoost, RF and DNN) and four graph-based models (GCN, GAT, MPNN and Attentive FP), were extensively tested and compared. The results demonstrate that on average the descriptor-based models outperform the graph-based models in terms of prediction accuracy and computational efficiency. SVM generally achieves the best predictions for the regression tasks. Both RF and XGBoost can achieve reliable predictions for the classification tasks, and some of the graph-based models, such as Attentive FP and GCN, can yield outstanding performance for a fraction of larger or multi-task datasets. In terms of computational cost, XGBoost and RF are the two most efficient algorithms and only need a few seconds to train a model even for a large dataset. The model interpretations by the SHAP method can effectively explore the established domain knowledge for the descriptor-based models. Finally, we explored use of these models for virtual screening (VS) towards HIV and demonstrated that different ML algorithms offer diverse VS profiles. All in all, we believe that the off-the-shelf descriptor-based models still can be directly employed to accurately predict various chemical endpoints with excellent computability and interpretability.",
+        "year": 2021,
+        "authors": [
+          "Dejun Jiang",
+          "Zhenxing Wu",
+          "Chang\u2010Yu Hsieh",
+          "Guangyong Chen",
+          "Ben Liao",
+          "Zhe Wang",
+          "Chao Shen",
+          "Dongsheng Cao",
+          "Jian Wu",
+          "Tingjun Hou"
+        ],
+        "citation_count": 660,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://jcheminf.biomedcentral.com/track/pdf/10.1186/s13321-020-00479-8",
+        "doi": "https://doi.org/10.1186/s13321-020-00479-8",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W3216638646",
+        "title": "Reliable Graph Neural Networks for Drug Discovery Under Distributional Shift",
+        "abstract": "The concern of overconfident mis-predictions under distributional shift demands extensive reliability research on Graph Neural Networks used in critical tasks in drug discovery. Here we first introduce CardioTox, a real-world benchmark on drug cardio-toxicity to facilitate such efforts. Our exploratory study shows overconfident mis-predictions are often distant from training data. That leads us to develop distance-aware GNNs: GNN-SNGP. Through evaluation on CardioTox and three established benchmarks, we demonstrate GNN-SNGP's effectiveness in increasing distance-awareness, reducing overconfident mis-predictions and making better calibrated predictions without sacrificing accuracy performance. Our ablation study further reveals the representation learned by GNN-SNGP improves distance-preservation over its base architecture and is one major factor for improvements.",
+        "year": 2021,
+        "authors": [
+          "Kehang Han",
+          "Balaji Lakshminarayanan",
+          "Jeremiah T. Liu"
+        ],
+        "citation_count": 14,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2111.12951",
+        "doi": "https://doi.org/10.48550/arxiv.2111.12951",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4416931215",
+        "title": "Intelligence on the graph: Graph neural networks for mechanistic drug target discovery",
+        "abstract": "Drug discovery is increasingly challenged by rising costs, long development cycles and high attrition rates, with accurate target identification remaining a critical bottleneck. Although artificial intelligence (AI) has demonstrated transformative potential, the systematic application of graph neural networks (GNNs) to drug target discovery remains underexplored. To address this gap, this paper provides a comprehensive and structured analysis of recent advances in GNN-based methods for drug-target interaction (DTI) and drug-target affinity (DTA) prediction. We dissect the methodological foundations of representative architectures including graph convolutional networks (GCNs), graph attention networks (GATs) and graph autoencoders (GAEs), and compare their mechanisms, advantages and applicable scenarios in modeling complex molecular and biological systems. Also, we synthesize frontier paradigms such as multimodal data fusion, high-order graph reasoning and dynamic GNNs, which enable the capture of atom-residue interactions, multi-target coordination mechanisms and cross-scale biological features. By systematically mapping methodological innovations to biological applications, this paper offers both theoretical guidance and translational insights. The key contributions of this paper include: (1) establishing a comparative framework that clarifies when and how different GNNs architectures can be applied in drug target discovery; (2) integrating cutting-edge paradigms rarely addressed in prior reviews, such as multimodal fusion and high-order graph modeling; and (3) highlighting representative case studies that bridge algorithmic innovation with practical drug discovery outcomes. Collectively, this work provides an authoritative and forward-looking reference, promoting the development of AI-driven, efficient and interpretable drug discovery pipelines.",
+        "year": 2025,
+        "authors": [
+          "Jing Chen",
+          "Nini Fan",
+          "Yuqing Lu",
+          "Jianhua Yang",
+          "Wenchao Song",
+          "Haiyang Sheng",
+          "Yinfeng Yang",
+          "Sirui Chen",
+          "Jinghui Wang"
+        ],
+        "citation_count": 8,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1016/j.jpha.2025.101508",
+        "doi": "https://doi.org/10.1016/j.jpha.2025.101508",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4406017182",
+        "title": "Drug discovery and mechanism prediction with explainable graph neural networks",
+        "abstract": "Apprehension of drug action mechanism is paramount for drug response prediction and precision medicine. The unprecedented development of machine learning and deep learning algorithms has expedited the drug response prediction research. However, existing methods mainly focus on forward encoding of drugs, which is to obtain an accurate prediction of the response levels, but omitted to decipher the reaction mechanism between drug molecules and genes. We propose the eXplainable Graph-based Drug response Prediction (XGDP) approach that achieves a precise drug response prediction and reveals the comprehensive mechanism of action between drugs and their targets. XGDP represents drugs with molecular graphs, which naturally preserve the structural information of molecules and a Graph Neural Network module is applied to learn the latent features of molecules. Gene expression data from cancer cell lines are incorporated and processed by a Convolutional Neural Network module. A couple of deep learning attribution algorithms are leveraged to interpret interactions between drug molecular features and genes. We demonstrate that XGDP not only enhances the prediction accuracy compared to pioneering works but is also capable of capturing the salient functional groups of drugs and interactions with significant genes of cancer cells.",
+        "year": 2025,
+        "authors": [
+          "Conghao Wang",
+          "Gaurav Asok Kumar",
+          "Jagath Chandana Rajapakse"
+        ],
+        "citation_count": 58,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.nature.com/articles/s41598-024-83090-3.pdf",
+        "doi": "https://doi.org/10.1038/s41598-024-83090-3",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4416068517",
+        "title": "A Survey of Graph Neural Networks for Drug Discovery: Recent Developments and Challenges",
+        "abstract": "Graph Neural Networks (GNNs) have gained traction in the complex domain of drug discovery because of their ability to process graph-structured data such as drug molecule models. This approach has resulted in a myriad of methods and models in published literature across several categories of drug discovery research. This paper covers the research categories comprehensively with recent papers, namely molecular property prediction, including drug-target binding affinity prediction, drug-drug interaction study, microbiome interaction prediction, drug repositioning, retrosynthesis, and new drug design, and provides guidance for future work on GNNs for drug discovery.",
+        "year": 2025,
+        "authors": [
+          "Berry, Katherine",
+          "Liang Cheng"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2509.07887",
+        "doi": "https://doi.org/10.48550/arxiv.2509.07887",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7163006540",
+        "title": "\"GRAPH NEURAL NETWORKS (GNNS) IN DRUG DISCOVERY AND DRUG TARGET AFFINITY (DTA) PREDICTION\"",
+        "abstract": "Graph Neural Networks (GNNs) are deep learning models that process graph-structured data, which consists of nodes and edges. They capture complex relationships and interaction, making them ideal for tasks like molecular drug discovery, Drug Target Interactions (DTI), and Drug Target (Binding) Affinity (DTA). GNNs revolutionize drug discovery by treating molecules as graphs, with atoms as nodes and chemical bonds as edges. This allows models to understand the complex three-dimensional structures and patterns relevant to biological activity. In poly-pharmacology, GNNs effectively model drug-drug interactions (DDIs) and predict multi-target activities. They improve predictive accuracy, lower development costs, and reduce late-stage failures. This review examines the application of GNNs in various phases of drug discovery, including lead discovery, optimization, synthetic route design, drug-target interaction prediction, and molecular property profiling, while addressing challenges in translational medicine. Computational drug-target affinity prediction has the potential to accelerate drug discovery. Currently, pre-training models have achieved significant success in various fields due to their ability to train the model using vast amounts of unlabelled data. However, given the scarcity of drug-target interaction data, pre-training models can only be trained separately on drug and target data, resulting in features that are insufficient for drug-target affinity prediction. To address this issue, a graph neural pre-training-based drug-target affinity prediction method (GNPDTA). This approach comprises three stages. In the first stage, two pre-training models are utilized to extract low-level features from drug atom graphs and target residue graphs, leveraging a large number of unlabelled training samples. In the second stage, two 2D convolutional neural networks are employed to combine the extracted drug atom features and target residue features into high-level representations of drugs and targets. Finally, in the third stage, a predictor is used to predict the drug-target affinity. This approach fully utilizes both unlabelled and labelled training samples, enhancing the effectiveness of pre-training models for drug-target affinity prediction. In our experiments, GNPDTA outperforms other deep learning methods, validating the efficacy of our approaches.",
+        "year": 2026,
+        "authors": [
+          "Komal Jain*",
+          "Shailendra Chawda"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.5281/zenodo.20483778",
+        "doi": "https://doi.org/10.5281/zenodo.20483778",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4417123819",
+        "title": "Graph Neural Networks in Modern AI-aided Drug Discovery",
+        "abstract": "Graph neural networks (GNNs), as topology/structure-aware models within deep learning, have emerged as powerful tools for AI-aided drug discovery (AIDD). By directly operating on molecular graphs, GNNs offer an intuitive and expressive framework for learning the complex topological and geometric features of drug-like molecules, cementing their role in modern molecular modeling. This review provides a comprehensive overview of the methodological foundations and representative applications of GNNs in drug discovery, spanning tasks such as molecular property prediction, virtual screening, molecular generation, biomedical knowledge graph construction, and synthesis planning. Particular attention is given to recent methodological advances, including geometric GNNs, interpretable models, uncertainty quantification, scalable graph architectures, and graph generative frameworks. We also discuss how these models integrate with modern deep learning approaches, such as self-supervised learning, multi-task learning, meta-learning and pre-training. Throughout this review, we highlight the practical challenges and methodological bottlenecks encountered when applying GNNs to real-world drug discovery pipelines, and conclude with a discussion on future directions.",
+        "year": 2025,
+        "authors": [
+          "Odin Zhang",
+          "Haitao Lin",
+          "Xujun Zhang",
+          "Xiaorui Wang",
+          "Zhenxing Wu",
+          "Qing Ye",
+          "Weibo Zhao",
+          "Jike Wang",
+          "Kejun Ying",
+          "Yu Kang",
+          "Chang\u2010Yu Hsieh",
+          "Tingjun Hou"
+        ],
+        "citation_count": 1,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2506.06915",
+        "doi": "https://doi.org/10.48550/arxiv.2506.06915",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7116366360",
+        "title": "What is a Graph Neural Network in Drug Discovery? The AI Revolution in Pharmaceutical Research",
+        "abstract": "What is a Graph Neural Network in Drug Discovery? The AI Revolution in Pharmaceutical Research Introduction: The Challenge of Drug Discovery Drug discov...",
+        "year": 2023,
+        "authors": [
+          "www.rasitdinc.com"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.5281/zenodo.17997297",
+        "doi": "https://doi.org/10.5281/zenodo.17997297",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7162690543",
+        "title": "Molecular Graph Neural Networks in Drug Discovery: A Narrative Review",
+        "abstract": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistry. The modern era began around 2017, when message-passing neural networks demonstrated that molecular representations could be learned directly from graph structures rather than relying on handcrafted features, marking a conceptual shift from encoding chemistry to enabling models to discover task-re",
+        "year": 2025,
+        "authors": [
+          "George Papadopoulos",
+          "Eleni Georgiou"
+        ],
+        "citation_count": 0,
+        "is_review": true,
+        "is_open_access": true,
+        "pdf_url": "https://pharmacophorejournal.com/storage/files/article/dc80ab00-52c9-426f-94b7-b424f3d560e5-ye2OfADoCVclPbyz/1DvW5LqNDnBFQ60.pdf",
+        "doi": "https://doi.org/10.51847/8w12ouixi5",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4417073891",
+        "title": "An Integrated Graph Neural Network and Reinforcement Learning Framework for Intelligent Drug Discovery",
+        "abstract": "The pharmaceutical industry faces substantial challenges in traditional drug discovery, characterized by extensive time requirements and elevated failure rates. This research presents a computational framework synergizing graph neural networks with adaptive reinforcement learning for molecular generation. The methodology employs attention-based message passing for feature extraction, coupled with multi-component reward structures that dynamically adjust during generation. Experimental validation demonstrates superior performance across evaluation metrics, achieving validity rates exceeding 95% while maintaining structural diversity and drug-like properties. The framework introduces hierarchical graph pooling and proximal policy optimization algorithms tailored for chemical space navigation.",
+        "year": 2024,
+        "authors": [
+          "Chuan Wu",
+          "Zhenghao Pan"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://scipublication.com/index.php/JACS/article/download/247/227",
+        "doi": "https://doi.org/10.69987/jacs.2024.40602",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4388042006",
+        "title": "Explainable AI in drug discovery: self-interpretable graph neural network for molecular property prediction using concept whitening",
+        "abstract": "Abstract Molecular property prediction is a fundamental task in the field of drug discovery. Several works use graph neural networks to leverage molecular graph representations. Although they have been successfully applied in a variety of applications, their decision process is not transparent. In this work, we adapt concept whitening to graph neural networks. This approach is an explainability method used to build an inherently interpretable model, which allows identifying the concepts and consequently the structural parts of the molecules that are relevant for the output predictions. We test popular models on several benchmark datasets from MoleculeNet. Starting from previous work, we identify the most significant molecular properties to be used as concepts to perform classification. We show that the addition of concept whitening layers brings an improvement in both classification performance and interpretability. Finally, we provide several structural and conceptual explanations for the predictions.",
+        "year": 2023,
+        "authors": [
+          "Michela Proietti",
+          "Alessio Ragno",
+          "Biagio La Rosa",
+          "Rino Ragno",
+          "Roberto Capobianco"
+        ],
+        "citation_count": 45,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10994-023-06369-y.pdf",
+        "doi": "https://doi.org/10.1007/s10994-023-06369-y",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4391335127",
+        "title": "PepGB: Facilitating peptide drug discovery via graph neural networks",
+        "abstract": "Peptides offer great biomedical potential and serve as promising drug candidates. Currently, the majority of approved peptide drugs are directly derived from well-explored natural human peptides. It is quite necessary to utilize advanced deep learning techniques to identify novel peptide drugs in the vast, unexplored biochemical space. Despite various in silico methods having been developed to accelerate peptide early drug discovery, existing models face challenges of overfitting and lacking generalizability due to the limited size, imbalanced distribution and inconsistent quality of experimental data. In this study, we propose PepGB, a deep learning framework to facilitate peptide early drug discovery by predicting peptide-protein interactions (PepPIs). Employing graph neural networks, PepGB incorporates a fine-grained perturbation module and a dual-view objective with contrastive learning-based peptide pre-trained representation to predict PepPIs. Through rigorous evaluations, we demonstrated that PepGB greatly outperforms baselines and can accurately identify PepPIs for novel targets and peptide hits, thereby contributing to the target identification and hit discovery processes. Next, we derive an extended version, diPepGB, to tackle the bottleneck of modeling highly imbalanced data prevalent in lead generation and optimization processes. Utilizing directed edges to represent relative binding strength between two peptide nodes, diPepGB achieves superior performance in real-world assays. In summary, our proposed frameworks can serve as potent tools to facilitate peptide early drug discovery.",
+        "year": 2024,
+        "authors": [
+          "Yipin Lei",
+          "Xu Wang",
+          "Fang, Meng",
+          "Han Li",
+          "Xiang Li",
+          "Jianyang Zeng"
+        ],
+        "citation_count": 2,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2401.14665",
+        "doi": "https://doi.org/10.48550/arxiv.2401.14665",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4404803126",
+        "title": "Enhancing drug discovery with AI: Predictive modeling of pharmacokinetics using Graph Neural Networks and ensemble learning",
+        "abstract": "Accurately predicting pharmacokinetic (PK) parameters such as absorption, distribution, metabolism, and excretion (ADME) is essential for optimizing drug efficacy, safety, and development timelines. Traditional experimental methods are often slow and expensive, driving the need for advanced AI-based approaches in PK modeling. This study compares cutting-edge machine learning models, including Graph Neural Networks (GNNs), Transformers, and Stacking Ensembles, against traditional models like Random Forest and XGBoost, using a dataset of over 10,000 bioactive compounds from the ChEMBL database. The Stacking Ensemble model achieved the highest accuracy ( R 2 of 0.92, MAE of 0.062), outperforming GNNs ( R 2 of 0.90) and Transformers ( R 2 of 0.89). These AI models excelled in capturing complex molecular interactions and long-range dependencies, significantly improving PK predictions. The high accuracy achieved ( R 2 \u200b= \u200b0.92) by the Stacking Ensemble method indicates that AI models can streamline the drug discovery process by reducing costly in vivo experiments, enabling faster go/no-go decisions during preclinical evaluations, and ultimately accelerating the development of new therapeutics. This reduction in time and cost could facilitate broader industry adoption of AI-driven PK modeling. Furthermore, Bayesian optimization was employed to fine-tune hyperparameters, further enhancing the performance and robustness of these predictive models.",
+        "year": 2024,
+        "authors": [
+          "R. Satheeskumar"
+        ],
+        "citation_count": 30,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1016/j.ipha.2024.11.002",
+        "doi": "https://doi.org/10.1016/j.ipha.2024.11.002",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4308610392",
+        "title": "Deep Surrogate Docking: Accelerating Automated Drug Discovery with Graph Neural Networks",
+        "abstract": "The process of screening molecules for desirable properties is a key step in several applications, ranging from drug discovery to material design. During the process of drug discovery specifically, protein-ligand docking, or chemical docking, is a standard in-silico scoring technique that estimates the binding affinity of molecules with a specific protein target. Recently, however, as the number of virtual molecules available to test has rapidly grown, these classical docking algorithms have created a significant computational bottleneck. We address this problem by introducing Deep Surrogate Docking (DSD), a framework that applies deep learning-based surrogate modeling to accelerate the docking process substantially. DSD can be interpreted as a formalism of several earlier surrogate prefiltering techniques, adding novel metrics and practical training practices. Specifically, we show that graph neural networks (GNNs) can serve as fast and accurate estimators of classical docking algorithms. Additionally, we introduce FiLMv2, a novel GNN architecture which we show outperforms existing state-of-the-art GNN architectures, attaining more accurate and stable performance by allowing the model to filter out irrelevant information from data more efficiently. Through extensive experimentation and analysis, we show that the DSD workflow combined with the FiLMv2 architecture provides a 9.496x speedup in molecule screening with a <3% recall error rate on an example docking task. Our open-source code is available at https://github.com/ryienh/graph-dock.",
+        "year": 2022,
+        "authors": [
+          "Ryien Hosseini",
+          "Filippo Simini",
+          "Austin Clyde",
+          "Arvind Ramanathan"
+        ],
+        "citation_count": 5,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2211.02720",
+        "doi": "https://doi.org/10.48550/arxiv.2211.02720",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7222853523",
+        "title": "Graph Representation Learning for Drug Discovery: Integrating Graph Neural Networks with Molecular Property Prediction and Explainable AI",
+        "abstract": "Graph representation learning has become a central computational paradigm in drug discovery because molecular entities are naturally structured as graphs of atoms, bonds, and stereochemical relationships. This paper examines the integration of graph neural networks, molecular property prediction, and explainable artificial intelligence from a system-level perspective. Rather than treating predictive performance as the sole criterion, the analysis foregrounds architectural trade-offs, data infrastructure, deployment constraints, robustness, fairness, sustainability, and governance. Graph neural networks provide inductive biases suited to molecular topology, but their expressiveness, scalability, and interpretability depend on choices about message passing, pooling, pretraining, and uncertainty estimation. Explainability methods can support medicinal chemistry by identifying substructures and interaction patterns, yet explanations must be validated against domain knowledge and must remain stable under distribution shift. The paper argues that drug discovery platforms require hybrid socio-technical architectures that couple model development with assay data governance, provenance tracking, human oversight, and regulatory documentation. Cross-domain comparisons with materials discovery, protein modeling, and clinical decision support illustrate recurring tensions between accuracy, transparency, and operational efficiency. The discussion also addresses environmental costs of large-scale training, equitable access to computational resources, and policy mechanisms for accountable artificial intelligence in pharmaceutical research. The conclusion proposes that future progress depends less on isolated algorithmic novelty than on interoperable infrastructures, reproducible benchmarks, and institutional arrangements that align graph representation learning with public health goals.",
+        "year": 2026,
+        "authors": [
+          "Eggert Ruppert",
+          "Nedda Antonetti"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.jaair.org/index.php/index/article/view/286",
+        "doi": null,
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7208828033",
+        "title": "Application of Explainable Graph Neural Networks in Drug and Biomarker Discovery for Human Diseases",
+        "abstract": null,
+        "year": 2026,
+        "authors": [
+          "Zanyu Shi"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.7912/5ka6-9430",
+        "doi": "https://doi.org/10.7912/5ka6-9430",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7164175736",
+        "title": "Drug Discovery Using Graph Neural Networks: A Deep Learning Framework for Molecular Property Prediction and Virtual Screening",
+        "abstract": "Abstract Drug discovery is a complex, expensive, and time-consuming process that traditionally requires extensive laboratory experimentation and high-throughput screening. Recent advances in artificial intelligence have enabled computational approaches for accelerating the identification of promising drug candidates. Graph Neural Networks (GNNs) have emerged as powerful models for molecular representation learning because chemical compounds can naturally be represented as graphs where atoms are nodes and chemical bonds are edges. This study proposes a Graph Neural Network-based framework for molecular property prediction and virtual screening in drug discovery. The proposed system utilizes molecular graph representations extracted from public drug databases and applies Graph Convolutional Networks (GCN), Graph Attention Networks (GAT), and Message Passing Neural Networks (MPNN) to predict biological activity and drug-likeness properties. Experimental evaluation on benchmark molecular datasets demonstrates superior predictive performance compared to traditional machine learning approaches including Random Forest, Support Vector Machine, and Deep Neural Networks. Results indicate that the proposed GNN framework achieves an accuracy of 92.8%, ROC-AUC of 0.95, and F1-score of 0.91, outperforming conventional methods by significant margins. The findings highlight the effectiveness of graph-based deep learning in accelerating early-stage drug discovery and reducing experimental costs. Keywords Drug Discovery, Graph Neural Networks, Deep Learning, Molecular Property Prediction, Virtual Screening, Graph Convolution Networks.",
+        "year": 2026,
+        "authors": [
+          "Yogita H. Dhande Sharayu N. Bonde"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.5281/zenodo.20624285",
+        "doi": "https://doi.org/10.5281/zenodo.20624285",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4382317956",
+        "title": "Interpretable Chirality-Aware Graph Neural Network for Quantitative Structure Activity Relationship Modeling in Drug Discovery",
+        "abstract": "Abstract In computer-aided drug discovery, quantitative structure activity relation models are trained to predict biological activity from chemical structure. Despite the recent success of applying graph neural network to this task, important chemical information such as molecular chirality is ignored. To fill this crucial gap, we propose Mol ecular- K ernel G raph N eural N etwork (MolKGNN) for molecular representation learning, which features SE(3)-/conformation invariance, chiralityawareness, and interpretability. For our MolKGNN, we first design a molecular graph convolution to capture the chemical pattern by comparing the atom\u2019s similarity with the learnable molecular kernels. Furthermore, we propagate the similarity score to capture the higher-order chemical pattern. To assess the method, we conduct a comprehensive evaluation with nine well-curated datasets spanning numerous important drug targets that feature realistic high class imbalance and it demonstrates the superiority of MolKGNN over other GNNs in CADD. Meanwhile, the learned kernels identify patterns that agree with domain knowledge, confirming the pragmatic interpretability of this approach. Our codes are publicly available at https://github.com/meilerlab/MolKGNN .",
+        "year": 2023,
+        "authors": [
+          "Yunchao Liu",
+          "Yu Wang",
+          "Oanh Vu",
+          "Rocco Moretti",
+          "Bobby Bodenheimer",
+          "Jens Meiler",
+          "Tyler Derr"
+        ],
+        "citation_count": 35,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://ojs.aaai.org/index.php/AAAI/article/download/26679/26451",
+        "doi": "https://doi.org/10.1609/aaai.v37i12.26679",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4390884937",
+        "title": "Machine learning drug discovery based on graph neural network and large language model",
+        "abstract": "The COVID-19 pandemic has presented an urgent need to understand the long-term health implications faced by survivors. Post-COVID-19 complications, such as acute kidney injury, arrhythmia, and stroke, pose significant challenges to public health. Despite extensive research on COVID-19 complications, a comprehensive understanding of the risk factors remains elusive due to the potential confounding variables present in the data. Traditional statistical models, while insightful, may not fully capture the causal relationships between these risk factors and post-COVID-19 complications. Motivated by this gap in the literature, we propose a novel approach using causal inference models to predict the likelihood of post-COVID-19 complications based on patient demographics and pre-existing conditions. Our model, trained on a dataset of COVID-19 inpatients in Wuhan Province, China, estimates the causal effect of these factors on the likelihood of patients experiencing post-COVID-19 complications. This approach allows us to isolate the causal impact of each factor while accounting for potential confounders, providing a more accurate understanding of the underlying mechanisms driving these relationships. Unlike traditional models that predict the probability of certain outcomes, our model provides insights into the causal relationships between risk factors and complications, offering a more reliable and comprehensive understanding of the underlying mechanisms. This approach can help identify at-risk patients, inform targeted interventions, and contribute to the development of effective prevention and treatment strategies. Our work aims to contribute to the current understanding of the virus and inform public health policies and interventions.",
+        "year": 2024,
+        "authors": [
+          "Tianqi Huang"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.ewadirect.com/proceedings/tns/article/view/9706/pdf",
+        "doi": "https://doi.org/10.54254/2753-8818/29/20240825",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7110847151",
+        "title": "LamNet: an alchemical-path-aware graph neural network to accelerate binding free energy calculations for drug discovery and beyond",
+        "abstract": "Accurate prediction of protein-ligand binding free energies is critical yet computationally demanding in drug discovery. Alchemical free energy methods (AFEMs) offer high accuracy but suffer from significant computational costs and complex modeling setup, such as tuning the \u03bb-schedule of alchemical transformation. While conventional deep learning (DL) models may instantly predict binding affinity, they often require a large training set and exhibit limited generalizability across chemical space. To address these challenges, we introduce LamNet, an alchemical-path-aware graph neural network. LamNet integrates endpoint molecular states and the bridging alchemical path (parametrized by \u03bb) into a physics-informed representation learning framework, explicitly modeling free energy changes along a chosen thermodynamic transformation pathway. Trained on molecular-dynamics-simulated data along alchemical pathways and incorporating data reliability metrics, LamNet accurately predicts relative binding free energies and absolute binding free energies, and optimizes \u03bb-schedules to improve traditional AFEM convergence. Evaluations on diverse datasets (463 ligands, 16 proteins) demonstrate that LamNet achieves superior or comparable performance to state-of-the-art methods, including traditional AFEM, but with up to 1000-fold acceleration. These findings establish LamNet as a generalizable, physics-grounded, and cost-effective tool that not only accelerates computations but also provides a novel framework for integrating rigorous computational physics into modern DL-driven drug discovery workflows.",
+        "year": 2025,
+        "authors": [
+          "Renling Hu",
+          "Jialu Wu",
+          "Qun Su",
+          "Shimeng Li",
+          "Yang Li",
+          "Tianyue Wang",
+          "Yu Kang",
+          "Tong Zhu",
+          "Chang\u2010Yu Hsieh",
+          "Tingjun Hou"
+        ],
+        "citation_count": 2,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://academic.oup.com/nsr/advance-article-pdf/doi/10.1093/nsr/nwaf559/65800157/nwaf559.pdf",
+        "doi": "https://doi.org/10.1093/nsr/nwaf559",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4412202180",
+        "title": "Quantum drug discovery: a hybrid quantum graph neural network\u2013variational quantum eigensolver framework for serine neutralization",
+        "abstract": "Abstract Quantum computing has emerged as a powerful tool for modeling molecular systems with high accuracy, accelerating the search for novel therapeutic targets. In this study, we present a two-stage hybrid workflow that combines a Quantum Graph Neural Network with a Variational Quantum Eigensolver to identify potent serine neutralizers in the QM9 dataset. In the first stage, an advanced quantum graph neural network architecture incorporating attention layers, self-distillation, and an adaptive learning-rate schedule is trained to predict ionization potentials and binding free energies. Across five independent random-seed trials, our adaptive-thresholded QGNN\u2013VQE pipeline achieves an average $$R^2$$ R 2 of $$0.990 \\pm 0.008$$ 0.990 \u00b1 0.008 and a mean absolute error of $$0.034 \\pm 0.001$$ 0.034 \u00b1 0.001 eV ( $$\\approx 0.79 \\pm 0.03$$ \u2248 0.79 \u00b1 0.03 kcal/mol) on the QM9 validation set, demonstrating robust, chemical-accuracy-level predictions. Building on these high-precision predictions, the second stage employs a QAOA-inspired hybrid ranking scheme that merges quantum graph neural network outputs, feature-space similarity (via and cosine similarity), and variational quantum eigensolver-derived energy stability. This $$\\alpha $$ \u03b1 -weighted ( $$\\alpha = 0.95$$ \u03b1 = 0.95 ) scoring framework is applied to over 133,000 molecules, efficiently parsed in parallel. The final ranked list is validated through an improved bijection test, featuring an adaptive similarity threshold to ensure both structural and functional robustness. The top-scoring candidate identified by our pipeline is 5,6,7-tetrahydro-4 H-pyrazolo[4,3-c]pyridin-4-one, highlighting the efficacy of quantum-enhanced modeling in pinpointing complex pharmacological targets. These findings underscore the transformative potential of hybrid quantum-classical workflows in drug discovery, offering a flexible blueprint for advanced screening of other critical biomolecular interactions in the rapidly expanding field of quantum biology. GraphicAbstract VQE for Serine Neutralization",
+        "year": 2025,
+        "authors": [
+          "Javier Villalba-D\u00edez"
+        ],
+        "citation_count": 6,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://link.springer.com/content/pdf/10.1140/epjd/s10053-025-01024-8.pdf",
+        "doi": "https://doi.org/10.1140/epjd/s10053-025-01024-8",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7115904589",
+        "title": "Statistical comparison and uncertainty analysis of graph neural networks and machine learning models for molecular property prediction in drug discovery",
+        "abstract": "Accurate prediction of molecular properties is essential for accelerating drug discovery. While graph neural networks (GNNs) have emerged as a powerful tool for this task, they have not been systematically benchmarked against traditional machine learning methods, particularly regarding the crucial aspects of predictive accuracy, interpretability, and uncertainty. To systematically evaluate state-of-the-art GNN architectures against classical machine learning methods for predicting key physicochemical properties. This study provides a multi-faceted comparison of model performance, statistical robustness, prediction uncertainty, and chemical interpretability. We implemented and compared seven models: Graph Attention Networks (GAT), Graph Convolutional Networks (GCN), Graph Isomorphism Networks (GIN), SimpleGNN, Support Vector Regression (SVR), Random Forest, and ElasticNet. These were evaluated across three MoleculeNet datasets: ESOL (aqueous solubility), FreeSolv (hydration free energy), and Lipophilicity (partition coefficient). The evaluation framework included rigorous statistical testing, bootstrap-based uncertainty quantification, and analysis of GAT attention mechanisms for chemical insight. GAT consistently achieved superior performance, with test RMSE values of 0.1863 (ESOL), 0.1953 (FreeSolv), and 0.4922 (Lipophilicity), outperforming traditional methods by a significant margin. GNNs demonstrated substantial advantages over classical approaches, which showed considerably higher prediction errors. Furthermore, GAT provided the most reliable predictions with the lowest uncertainty and generated chemically relevant insights through its attention mechanism, successfully identifying key functional groups driving molecular properties. This systematic evaluation provides compelling evidence for the superiority of GNNs, particularly GAT, over traditional machine learning for molecular property prediction. GAT\u2019s high accuracy, combined with its robust uncertainty quantification and chemical interpretability, establishes it as a preferred computational approach for pharmaceutical research and development.",
+        "year": 2025,
+        "authors": [
+          "Sarmad Waleed",
+          "Shams ul Islam",
+          "Muhammad Saleem",
+          "Ali Ahmed"
+        ],
+        "citation_count": 1,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1016/j.aichem.2025.100103",
+        "doi": "https://doi.org/10.1016/j.aichem.2025.100103",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4395111046",
+        "title": "Deep learning enhanced drug discovery for novel biomaterials in regenerative medicine utilizing graph neural network approach for predicting cellular responses",
+        "abstract": "This study introduces a novel approach to drug discovery in regenerative medicine through the utilization of a graph neural network (GNN). The research methodology integrates the development and training of the GNN with a subsequent evaluation of its performance metrics. The first phase involves the generation of synthetic data simulating a biological network, employing networkX and NumPy libraries to construct a random graph with Erdos-Renyi topology. The data, representing cellular responses to biomaterials, is then converted into PyTorch tensors for compatibility with the GNN architecture. The GNN model, characterized by two fully connected layers with ReLU and log-softmax activations, captures intricate relationships within the graph-structured data. The second phase employs a stochastic gradient descent algorithm, specifically the Adam optimizer, to train the GNN over 100 epochs using the cross-entropy loss for multi-class classification. The research methodology extends to the evaluation phase, producing three distinct output graphs for analysis: Visualization of the graph structure, a comparison between predicted and true labels, and a plot illustrating training loss over epochs. Performance metrics, including accuracy, precision, recall, and F1-score, are computed to assess the model\u2019s predictive capabilities quantitatively. The study concludes with a discussion on the nuances revealed by each graph and their implications for refining GNN models in the context of drug discovery for regenerative medicine.",
+        "year": 2024,
+        "authors": [
+          "Milindkumar Namdeorao Dandale",
+          "Amar Pal Yadav",
+          "Pentala Srinith Reddy",
+          "Seema G. Kadu",
+          "T Madhusudana",
+          "Manthan S. Manavadaria"
+        ],
+        "citation_count": 2,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://scientifictemper.com/index.php/tst/article/download/1011/861",
+        "doi": "https://doi.org/10.58414/scientifictemper.2024.15.1.04",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4394850168",
+        "title": "Performance and robustness of small molecule retention time prediction with molecular graph neural networks in industrial drug discovery campaigns",
+        "abstract": "This study explores how machine-learning can be used to predict chromatographic retention times (RT) for the analysis of small molecules, with the objective of identifying a machine-learning framework with the robustness required to support a chemical synthesis production platform. We used internally generated data from high-throughput parallel synthesis in context of pharmaceutical drug discovery projects. We tested machine-learning models from the following frameworks: XGBoost, ChemProp, and DeepChem, using a dataset of 7552 small molecules. Our findings show that two specific models, AttentiveFP and ChemProp, performed better than XGBoost and a regular neural network in predicting RT accurately. We also assessed how well these models performed over time and found that molecular graph neural networks consistently gave accurate predictions for new chemical series. In addition, when we applied ChemProp on the publicly available METLIN SMRT dataset, it performed impressively with an average error of 38.70 s. These results highlight the efficacy of molecular graph neural networks, especially ChemProp, in diverse RT prediction scenarios, thereby enhancing the efficiency of chromatographic analysis.",
+        "year": 2024,
+        "authors": [
+          "Daniel Vik",
+          "David Pii",
+          "Chirag Mudaliar",
+          "Mads N\u00f8rregaard\u2010Madsen",
+          "Aleksejs Kontijevskis"
+        ],
+        "citation_count": 12,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.nature.com/articles/s41598-024-59620-4.pdf",
+        "doi": "https://doi.org/10.1038/s41598-024-59620-4",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4393154949",
+        "title": "Empowering Graph Neural Networks with Block-Based Dual Adaptive Deep Adjustment for Drug Resistance-Related NcRNA Discovery",
+        "abstract": "Drug resistance to chemotherapeutic agents remains a formidable challenge in cancer treatment, significantly impacting treatment efficacy. Extensive research has exposed the intimate involvement of noncoding RNAs (ncRNAs) in conferring resistance to cancer drugs. Understanding the intricate associations between ncRNAs and drug resistance is of pivotal importance in advancing clinical interventions and expediting drug development. However, traditional biological experimental methods are hampered by limitations, such as labor intensiveness, time consumption, and constraints in scalability. Addressing these challenges necessitates the development of efficient computational methods for the accurate prediction of potential ncRNA-drug resistance associations (NDRA). However, most existing predictive models primarily focus on known ncRNA-drug resistance associations, often neglecting the critical aspect of similarity information between ncRNAs and drug resistance. This oversight may hinder the accuracy of characterizing these associations. To overcome the limitations of existing computational models, we proposed B-NDRA, a computational framework designed for the discovery of drug resistance-related ncRNA. Initially, we constructed a heterogeneous graph that integrates ncRNA-drug resistance pairs, leveraging both known associations and similarity fusion information between ncRNAs and drug resistance. Subsequently, we employed an attention mechanism to aggregate local features of graph nodes following a dimensionality reduction of node features. Further, a graph neural network (GNN) facilitated the learning of global node embeddings. Notably, the integration of dual adaptive deep adjustment architectures, encompassing intrablock and interblock methodologies, enabled efficient extraction of global features while balancing local and global features. Finally, B-NDRA employed a multilayer perceptron to predict associations between ncRNAs and drug resistance. Through rigorous 5-fold cross-validation, B-NDRA achieved average AUC, AUPR, Accuracy, Precision, Recall, and F1-score values of 92.2%, 91.9%, 84.88%, 86.9%, 82.37%, and 84.44%, respectively. Furthermore, comparative evaluations were conducted on established models, namely, GAEMDA, GRPAMDA, and LRGCPND. The results, obtained through three distinct 5-fold cross-validation strategies, demonstrated a notable performance improvement across almost all metrics for our B-NDRA. Specific case studies targeting Doxorubicin and Imatinib further validated the practicality of our B-NDRA in discovering potential NDRA. These results confirm the potential of our B-NDRA as a valuable tool in advancing cancer research and therapeutic development. The source code and data set of B-NDRA can be found at https://github.com/XuanLi1145/B-NDRA.",
+        "year": 2024,
+        "authors": [
+          "Yi Zhang",
+          "Xuanzhao Li"
+        ],
+        "citation_count": 5,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "http://dx.doi.org/10.1021/acs.jcim.3c01973",
+        "doi": "https://doi.org/10.1021/acs.jcim.3c01973",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4401855817",
+        "title": "Retraction Note: Drug discovery through Covid-19 genome sequencing with siamese graph convolutional neural network",
+        "abstract": null,
+        "year": 2024,
+        "authors": [
+          "Soumen Kumar Pati",
+          "Manan Kumar Gupta",
+          "Ayan Banerjee",
+          "Rinita Shai",
+          "Palaiahnakote Shivakumara"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11042-024-20150-w.pdf",
+        "doi": "https://doi.org/10.1007/s11042-024-20150-w",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4394516146",
+        "title": "Additional file 1 of Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
+        "abstract": "Additional file 1. The datasets for the single tasks.",
+        "year": 2021,
+        "authors": [
+          "Dejun Jiang",
+          "Wu, Zhenxing",
+          "Chang\u2010Yu Hsieh",
+          "Guangyong Chen",
+          "Ben Liao",
+          "Zhe Wang",
+          "Chao Shen",
+          "Dongsheng Cao",
+          "Jian Wu",
+          "Tingjun Hou"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://figshare.com/articles/dataset/Additional_file_1_of_Could_graph_neural_networks_learn_better_molecular_representation_for_drug_discovery_A_comparison_study_of_descriptor-based_and_graph-based_models/14053374",
+        "doi": "https://doi.org/10.6084/m9.figshare.14053374",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4394092224",
+        "title": "Additional file 2 of Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
+        "abstract": "Additional file 2. The python source codes that implement the workflow.",
+        "year": 2021,
+        "authors": [
+          "Dejun Jiang",
+          "Wu, Zhenxing",
+          "Chang\u2010Yu Hsieh",
+          "Guangyong Chen",
+          "Ben Liao",
+          "Zhe Wang",
+          "Chao Shen",
+          "Dongsheng Cao",
+          "Jian Wu",
+          "Tingjun Hou"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://figshare.com/articles/dataset/Additional_file_2_of_Could_graph_neural_networks_learn_better_molecular_representation_for_drug_discovery_A_comparison_study_of_descriptor-based_and_graph-based_models/14053377",
+        "doi": "https://doi.org/10.6084/m9.figshare.14053377",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4386158307",
+        "title": "Risk factors and drug discovery for cognitive impairment in type 2 diabetes mellitus using artificial intelligence interpretation and graph neural networks",
+        "abstract": "Background: Among the 382 million diabetic patients worldwide, approximately 30% experience neuropathy, and one-fifth of these patients eventually develop diabetes cognitive impairment (CI). However, the mechanism underlying diabetes CI remains unknown, and early diagnostic methods or effective treatments are currently not available. Objective: This study aimed to explore the risk factors for CI in patients with type 2 diabetes mellitus (T2DM), screen potential therapeutic drugs for T2DM-CI, and provide evidence for preventing and treating T2DM-CI. Methods: This study focused on the T2DM population admitted to the First Affiliated Hospital of Hunan College of Traditional Chinese Medicine and the First Affiliated Hospital of Hunan University of Chinese Medicine. Sociodemographic data and clinical objective indicators of T2DM patients admitted from January 2018 to December 2022 were collected. Based on the Montreal Cognitive Assessment (MoCA) Scale scores, 719 patients were categorized into two groups, the T2DM-CI group with CI and the T2DM-N group with normal cognition. The survey content included demographic characteristics, laboratory serological indicators, complications, and medication information. Six machine learning algorithms were used to analyze the risk factors of T2DM-CI, and the Shapley method was used to enhance model interpretability. Furthermore, we developed a graph neural network (GNN) model to identify potential drugs associated with T2DM-CI. Results: Our results showed that the T2DM-CI risk prediction model based on Catboost exhibited superior performance with an area under the receiver operating characteristic curve (AUC) of 0.95 (specificity of 93.17% and sensitivity of 78.58%). Diabetes duration, age, education level, aspartate aminotransferase (AST), drinking, and intestinal flora were identified as risk factors for T2DM-CI. The top 10 potential drugs related to T2DM-CI, including Metformin, Liraglutide, and Lixisenatide, were selected by the GNN model. Some herbs, such as licorice and cuscutae semen, were also included. Finally, we discovered the mechanism of herbal medicine interventions in gut microbiota. Conclusion: The method based on Interpreting AI and GNN can identify the risk factors and potential drugs associated with T2DM-CI.",
+        "year": 2023,
+        "authors": [
+          "Xin Zhang",
+          "Jiajia Xie",
+          "Xiong You",
+          "Houwu Gong"
+        ],
+        "citation_count": 14,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.frontiersin.org/articles/10.3389/fendo.2023.1213711/pdf",
+        "doi": "https://doi.org/10.3389/fendo.2023.1213711",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W3188579603",
+        "title": "Graph Neural Networks and Their Current Applications in Bioinformatics",
+        "abstract": "Graph neural networks (GNNs), as a branch of deep learning in non-Euclidean space, perform particularly well in various tasks that process graph structure data. With the rapid accumulation of biological network data, GNNs have also become an important tool in bioinformatics. In this research, a systematic survey of GNNs and their advances in bioinformatics is presented from multiple perspectives. We first introduce some commonly used GNN models and their basic principles. Then, three representative tasks are proposed based on the three levels of structural information that can be learned by GNNs: node classification, link prediction, and graph generation. Meanwhile, according to the specific applications for various omics data, we categorize and discuss the related studies in three aspects: disease prediction, drug discovery, and biomedical imaging. Based on the analysis, we provide an outlook on the shortcomings of current studies and point out their developing prospect. Although GNNs have achieved excellent results in many biological tasks at present, they still face challenges in terms of low-quality data processing, methodology, and interpretability and have a long road ahead. We believe that GNNs are potentially an excellent method that solves various biological problems in bioinformatics research.",
+        "year": 2021,
+        "authors": [
+          "Xiaomeng Zhang",
+          "Liang Li",
+          "Lin Liu",
+          "Mingjing Tang"
+        ],
+        "citation_count": 403,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.frontiersin.org/articles/10.3389/fgene.2021.690049/pdf",
+        "doi": "https://doi.org/10.3389/fgene.2021.690049",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4376142487",
+        "title": "RETRACTED ARTICLE: Drug discovery through Covid-19 genome sequencing with siamese graph convolutional neural network",
+        "abstract": null,
+        "year": 2023,
+        "authors": [
+          "Soumen Kumar Pati",
+          "Manan Kumar Gupta",
+          "Ayan Banerjee",
+          "Rinita Shai",
+          "Palaiahnakote Shivakumara"
+        ],
+        "citation_count": 5,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11042-023-15270-8.pdf",
+        "doi": "https://doi.org/10.1007/s11042-023-15270-8",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4205167309",
+        "title": "MGraphDTA: deep multiscale graph neural network for explainable drug\u2013target binding affinity prediction",
+        "abstract": "Predicting drug-target affinity (DTA) is beneficial for accelerating drug discovery. Graph neural networks (GNNs) have been widely used in DTA prediction. However, existing shallow GNNs are insufficient to capture the global structure of compounds. Besides, the interpretability of the graph-based DTA models highly relies on the graph attention mechanism, which can not reveal the global relationship between each atom of a molecule. In this study, we proposed a deep multiscale graph neural network based on chemical intuition for DTA prediction (MGraphDTA). We introduced a dense connection into the GNN and built a super-deep GNN with 27 graph convolutional layers to capture the local and global structure of the compound simultaneously. We also developed a novel visual explanation method, gradient-weighted affinity activation mapping (Grad-AAM), to analyze a deep learning model from the chemical perspective. We evaluated our approach using seven benchmark datasets and compared the proposed method to the state-of-the-art deep learning (DL) models. MGraphDTA outperforms other DL-based approaches significantly on various datasets. Moreover, we show that Grad-AAM creates explanations that are consistent with pharmacologists, which may help us gain chemical insights directly from data beyond human perception. These advantages demonstrate that the proposed method improves the generalization and interpretation capability of DTA prediction modeling.",
+        "year": 2022,
+        "authors": [
+          "Ziduo Yang",
+          "Weihe Zhong",
+          "Lu Zhao",
+          "Calvin Yu\u2010Chian Chen"
+        ],
+        "citation_count": 347,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://pubs.rsc.org/en/content/articlepdf/2022/sc/d1sc05180f",
+        "doi": "https://doi.org/10.1039/d1sc05180f",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4389131658",
+        "title": "Drug repositioning based on weighted local information augmented graph neural network",
+        "abstract": "Drug repositioning, the strategy of redirecting existing drugs to new therapeutic purposes, is pivotal in accelerating drug discovery. While many studies have engaged in modeling complex drug-disease associations, they often overlook the relevance between different node embeddings. Consequently, we propose a novel weighted local information augmented graph neural network model, termed DRAGNN, for drug repositioning. Specifically, DRAGNN firstly incorporates a graph attention mechanism to dynamically allocate attention coefficients to drug and disease heterogeneous nodes, enhancing the effectiveness of target node information collection. To prevent excessive embedding of information in a limited vector space, we omit self-node information aggregation, thereby emphasizing valuable heterogeneous and homogeneous information. Additionally, average pooling in neighbor information aggregation is introduced to enhance local information while maintaining simplicity. A multi-layer perceptron is then employed to generate the final association predictions. The model's effectiveness for drug repositioning is supported by a 10-times 10-fold cross-validation on three benchmark datasets. Further validation is provided through analysis of the predicted associations using multiple authoritative data sources, molecular docking experiments and drug-disease network analysis, laying a solid foundation for future drug discovery.",
+        "year": 2023,
+        "authors": [
+          "Yajie Meng",
+          "Yi Wang",
+          "Junlin Xu",
+          "Changcheng Lu",
+          "Xianfang Tang",
+          "Tao Peng",
+          "Bengong Zhang",
+          "Geng Tian",
+          "Jialiang Yang"
+        ],
+        "citation_count": 124,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://academic.oup.com/bib/article-pdf/25/1/bbad431/53897041/bbad431.pdf",
+        "doi": "https://doi.org/10.1093/bib/bbad431",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4214868967",
+        "title": "Molecular contrastive learning of representations via graph neural networks",
+        "abstract": null,
+        "year": 2022,
+        "authors": [
+          "Yuyang Wang",
+          "Jianren Wang",
+          "Zhonglin Cao",
+          "Amir Barati Farimani"
+        ],
+        "citation_count": 856,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2102.10056",
+        "doi": "https://doi.org/10.1038/s42256-022-00447-x",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4315767347",
+        "title": "Graph neural networks for conditional de novo drug design",
+        "abstract": "Abstract Drug design is costly in terms of resources and time. Generative deep learning techniques are using increasing amounts of biochemical data and computing power to pave the way for a new generation of tools and methods for drug discovery and optimization. Although early methods used SMILES strings, more recent approaches use molecular graphs to naturally represent chemical entities. Graph neural networks (GNNs) are learning models that can natively process graphs. The use of GNNs in drug discovery is growing exponentially. GNNs for drug design are often coupled with conditioning techniques to steer the generation process towards desired chemical and biological properties. These conditioned graph\u2010based generative models and frameworks hold promise for the routine application of GNNs in drug discovery. This article is categorized under: Data Science > Artificial Intelligence/Machine Learning Data Science > Chemoinformatics Data Science > Computer Algorithms and Programming",
+        "year": 2023,
+        "authors": [
+          "Carlo Abate",
+          "Sergio Decherchi",
+          "Andrea Cavalli"
+        ],
+        "citation_count": 38,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/wcms.1651",
+        "doi": "https://doi.org/10.1002/wcms.1651",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4391782448",
+        "title": "A review on graph neural networks for predicting synergistic drug combinations",
+        "abstract": "Abstract Combinational therapies with synergistic effects provide a powerful treatment strategy for tackling complex diseases, particularly malignancies. Discovering these synergistic combinations, often involving various compounds and structures, necessitates exploring a vast array of compound pairings. However, practical constraints such as cost, feasibility, and complexity hinder exhaustive in vivo and in vitro experimentation. In recent years, machine learning methods have made significant inroads in pharmacology. Among these, Graph Neural Networks (GNNs) have gained increasing attention in drug discovery due to their ability to represent complex molecular structures as networks, capture vital structural information, and seamlessly handle diverse data types. This review aims to provide a comprehensive overview of various GNN models developed for predicting effective drug combinations, examining the limitations and strengths of different models, and comparing their predictive performance. Additionally, we discuss the databases used for drug synergism prediction and the extraction of drug-related information as predictive features. By summarizing the state-of-the-art GNN-driven drug combination prediction, this review aims to offer valuable insights into the promising field of computational pharmacotherapy.",
+        "year": 2024,
+        "authors": [
+          "Milad Besharatifard",
+          "Fatemeh Vafaee"
+        ],
+        "citation_count": 49,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10462-023-10669-z.pdf",
+        "doi": "https://doi.org/10.1007/s10462-023-10669-z",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4402401635",
+        "title": "Survey on Graph Neural Networks",
+        "abstract": "Graph Neural Networks (GNNs) have become a powerful tool in order to learn from graph-structured data. Their ability to capture complex relationships and dependencies within graph structures, allows them to have a great number of applications in various domains, including social network analysis, recommendation systems and drug discovery. The aim of this work is to provide a detailed overview of the models in Graph Neural Networks and propose a new taxonomy of GNNs, including Deep Generative Models for graphs as a distinct category. The works included were selected based on their impact, with recent related papers also considered.",
+        "year": 2024,
+        "authors": [
+          "Georgios Gkarmpounis",
+          "Christos Vranis",
+          "Nicholas Vretos",
+          "Petros Daras"
+        ],
+        "citation_count": 37,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1109/access.2024.3456913",
+        "doi": "https://doi.org/10.1109/access.2024.3456913",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4319762935",
+        "title": "Everything is connected: Graph neural networks",
+        "abstract": null,
+        "year": 2023,
+        "authors": [
+          "Petar Veli\u010dkovi\u0107"
+        ],
+        "citation_count": 304,
+        "is_review": true,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2301.08210",
+        "doi": "https://doi.org/10.1016/j.sbi.2023.102538",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7125808017",
+        "title": "DualPG\u2010DTA: A Large Language Model\u2010Powered Graph Neural Network Framework for Enhanced Drug\u2010Target Affinity Prediction and Discovery of Novel CDK9 Inhibitors Exhibiting In Vivo Anti\u2010Leukemia Activity",
+        "abstract": "Abstract Accurate prediction of drug\u2010target interactions constitutes a crucial foundation for drug discovery. DualPG\u2010DTA is presented, a general framework for binding affinity prediction that integrates two pre\u2010trained language models to generate atomic\u2010level molecular representations and residue\u2010level protein embeddings. The architecture constructs dual molecular\u2010protein graphs processed through dedicated graph neural networks equipped with dynamic attention mechanisms to extract context\u2010aware sequence\u2010level features, which are fused via a multimodal module for affinity predictions. Benchmark results show that DualPG\u2010DTA consistently outperforms existing models across all metrics. Applied to CDK9 inhibitor discovery, the framework is used to develop robust regression/classification models and identified compound C1 as a novel CDK9 inhibitor with an IC 50 of 1.2 nM. C1 demonstrates exceptional CDK family selectivity alongside optimal pharmacokinetic properties, including prolonged half\u2010life, adequate clearance, robust plasma exposure, and oral bioavailability. Notably, oral C1 demonstrated potent antitumor efficacy in a Venetoclax\u2010resistant MV4\u201011 acute myeloid leukemia (AML) xenograft model, with concurrent demonstration of favorable tolerability and safety profiles. Collectively, the study not only establishes a unified framework for precise binding affinity prediction but also identifies C1 as a highly promising therapeutic lead targeting CDK9 to conquer Venetoclax resistance in AML.",
+        "year": 2026,
+        "authors": [
+          "Yihao Chen",
+          "Jindi Huang",
+          "Cong Liu",
+          "Shipeng Zhang",
+          "Xinze Li",
+          "Zhang Zhang",
+          "Tie\u2010Gen Chen",
+          "Ling Wang"
+        ],
+        "citation_count": 4,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/advs.202513099",
+        "doi": "https://doi.org/10.1002/advs.202513099",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4213235856",
+        "title": "Pre-training graph neural networks for link prediction in biomedical networks",
+        "abstract": "MOTIVATION: Graphs or networks are widely utilized to model the interactions between different entities (e.g. proteins, drugs, etc.) for biomedical applications. Predicting potential interactions/links in biomedical networks is important for understanding the pathological mechanisms of various complex human diseases, as well as screening compound targets for drug discovery. Graph neural networks (GNNs) have been utilized for link prediction in various biomedical networks, which rely on the node features extracted from different data sources, e.g. sequence, structure and network data. However, it is challenging to effectively integrate these data sources and automatically extract features for different link prediction tasks. RESULTS: In this article, we propose a novel Pre-Training Graph Neural Networks-based framework named PT-GNN to integrate different data sources for link prediction in biomedical networks. First, we design expressive deep learning methods [e.g. convolutional neural network and graph convolutional network (GCN)] to learn features for individual nodes from sequence and structure data. Second, we further propose a GCN-based encoder to effectively refine the node features by modelling the dependencies among nodes in the network. Third, the node features are pre-trained based on graph reconstruction tasks. The pre-trained features can be used for model initialization in downstream tasks. Extensive experiments have been conducted on two critical link prediction tasks, i.e. synthetic lethality (SL) prediction and drug-target interaction (DTI) prediction. Experimental results demonstrate PT-GNN outperforms the state-of-the-art methods for SL prediction and DTI prediction. In addition, the pre-trained features benefit improving the performance and reduce the training time of existing models. AVAILABILITY AND IMPLEMENTATION: Python codes and dataset are available at: https://github.com/longyahui/PT-GNN. SUPPLEMENTARY INFORMATION: Supplementary data are available at Bioinformatics online.",
+        "year": 2022,
+        "authors": [
+          "Yahui Long",
+          "Min Wu",
+          "Yong Liu",
+          "Yuan Fang",
+          "Chee Keong Kwoh",
+          "Jinmiao Chen",
+          "Jiawei Luo",
+          "Xiaoli Li"
+        ],
+        "citation_count": 95,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://academic.oup.com/bioinformatics/article-pdf/38/8/2254/49009728/btac100.pdf",
+        "doi": "https://doi.org/10.1093/bioinformatics/btac100",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4318150241",
+        "title": "A dual graph neural network for drug\u2013drug interactions prediction based on molecular structure and interactions",
+        "abstract": "Expressive molecular representation plays critical roles in researching drug design, while effective methods are beneficial to learning molecular representations and solving related problems in drug discovery, especially for drug-drug interactions (DDIs) prediction. Recently, a lot of work has been put forward using graph neural networks (GNNs) to forecast DDIs and learn molecular representations. However, under the current GNNs structure, the majority of approaches learn drug molecular representation from one-dimensional string or two-dimensional molecular graph structure, while the interaction information between chemical substructure remains rarely explored, and it is neglected to identify key substructures that contribute significantly to the DDIs prediction. Therefore, we proposed a dual graph neural network named DGNN-DDI to learn drug molecular features by using molecular structure and interactions. Specifically, we first designed a directed message passing neural network with substructure attention mechanism (SA-DMPNN) to adaptively extract substructures. Second, in order to improve the final features, we separated the drug-drug interactions into pairwise interactions between each drug's unique substructures. Then, the features are adopted to predict interaction probability of a DDI tuple. We evaluated DGNN-DDI on real-world dataset. Compared to state-of-the-art methods, the model improved DDIs prediction performance. We also conducted case study on existing drugs aiming to predict drug combinations that may be effective for the novel coronavirus disease 2019 (COVID-19). Moreover, the visual interpretation results proved that the DGNN-DDI was sensitive to the structure information of drugs and able to detect the key substructures for DDIs. These advantages demonstrated that the proposed method enhanced the performance and interpretation capability of DDI prediction modeling.",
+        "year": 2023,
+        "authors": [
+          "Mei Ma",
+          "Xiujuan Lei"
+        ],
+        "citation_count": 113,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1010812&type=printable",
+        "doi": "https://doi.org/10.1371/journal.pcbi.1010812",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4399954566",
+        "title": "Advancing drug discovery with deep attention neural networks",
+        "abstract": "In the dynamic field of drug discovery, deep attention neural networks are revolutionizing our approach to complex data. This review explores the attention mechanism and its extended architectures, including graph attention networks (GATs), transformers, bidirectional encoder representations from transformers (BERT), generative pre-trained transformers (GPTs) and bidirectional and auto-regressive transformers (BART). Delving into their core principles and multifaceted applications, we uncover their pivotal roles in catalyzing de novo drug design, predicting intricate molecular properties and deciphering elusive drug-target interactions. Despite challenges, these attention-based architectures hold unparalleled promise to drive transformative breakthroughs and accelerate progress in pharmaceutical research.",
+        "year": 2024,
+        "authors": [
+          "Antonio Lavecchia"
+        ],
+        "citation_count": 53,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1016/j.drudis.2024.104067",
+        "doi": "https://doi.org/10.1016/j.drudis.2024.104067",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4282835253",
+        "title": "Predicting Protein\u2013Ligand Docking Structure with Graph Neural Network",
+        "abstract": "Modern day drug discovery is extremely expensive and time consuming. Although computational approaches help accelerate and decrease the cost of drug discovery, existing computational software packages for docking-based drug discovery suffer from both low accuracy and high latency. A few recent machine learning-based approaches have been proposed for virtual screening by improving the ability to evaluate protein-ligand binding affinity, but such methods rely heavily on conventional docking software to sample docking poses, which results in excessive execution latencies. Here, we propose and evaluate a novel graph neural network (GNN)-based framework, MedusaGraph, which includes both pose-prediction (sampling) and pose-selection (scoring) models. Unlike the previous machine learning-centric studies, MedusaGraph generates the docking poses directly and achieves from 10 to 100 times speedup compared to state-of-the-art approaches, while having a slightly better docking accuracy.",
+        "year": 2022,
+        "authors": [
+          "Huaipan Jiang",
+          "Jian Wang",
+          "Weilin Cong",
+          "Yihe Huang",
+          "Morteza Ramezani",
+          "Anup Sarma",
+          "Nikolay V. Dokholyan",
+          "Mehrdad Mahdavi",
+          "Mahmut Kandemir"
+        ],
+        "citation_count": 73,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10279412/pdf/nihms-1905637.pdf",
+        "doi": "https://doi.org/10.1021/acs.jcim.2c00127",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4413224864",
+        "title": "Kolmogorov\u2013Arnold graph neural networks for molecular property prediction",
+        "abstract": "Graph neural networks (GNNs) have shown remarkable success in molecular property prediction as key models in geometric deep learning. Meanwhile, Kolmogorov\u2013Arnold networks (KANs) have emerged as powerful alternatives to multi-layer perceptrons, offering improved expressivity, parameter efficiency and interpretability. To combine the strengths of both frameworks, we propose Kolmogorov\u2013Arnold GNNs (KA-GNNs), which integrate KAN modules into the three fundamental components of GNNs: node embedding, message passing and readout. We further introduce Fourier-series-based univariate functions within KAN to enhance function approximation and provide theoretical analysis to support their expressiveness. Two architectural variants, KA-graph convolutional networks and KA-augmented graph attention networks, are developed and evaluated across seven molecular benchmarks. Experimental results show that KA-GNNs consistently outperform conventional GNNs in terms of both prediction accuracy and computational efficiency. Moreover, our models exhibit improved interpretability by highlighting chemically meaningful substructures. These findings demonstrate that KA-GNNs offer a powerful and generalizable framework for molecular data modelling, drug discovery and beyond. Li et al. developed KA-GNNs, graph neural network architectures enhanced by Kolmogorov\u2013Arnold networks, which improve accuracy and interpretability in molecular property prediction and extend geometric deep learning to scientific domains.",
+        "year": 2025,
+        "authors": [
+          "Longlong Li",
+          "Yipeng Zhang",
+          "Guanghui Wang",
+          "Kelin Xia"
+        ],
+        "citation_count": 97,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.nature.com/articles/s42256-025-01087-7.pdf",
+        "doi": "https://doi.org/10.1038/s42256-025-01087-7",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4392157869",
+        "title": "Transfer learning with graph neural networks for improved molecular property prediction in the multi-fidelity setting",
+        "abstract": "We investigate the potential of graph neural networks for transfer learning and improving molecular property prediction on sparse and expensive to acquire high-fidelity data by leveraging low-fidelity measurements as an inexpensive proxy for a targeted property of interest. This problem arises in discovery processes that rely on screening funnels for trading off the overall costs against throughput and accuracy. Typically, individual stages in these processes are loosely connected and each one generates data at different scale and fidelity. We consider this setup holistically and demonstrate empirically that existing transfer learning techniques for graph neural networks are generally unable to harness the information from multi-fidelity cascades. Here, we propose several effective transfer learning strategies and study them in transductive and inductive settings. Our analysis involves a collection of more than 28 million unique experimental protein-ligand interactions across 37 targets from drug discovery by high-throughput screening and 12 quantum properties from the dataset QMugs. The results indicate that transfer learning can improve the performance on sparse tasks by up to eight times while using an order of magnitude less high-fidelity training data. Moreover, the proposed methods consistently outperform existing transfer learning strategies for graph-structured data on drug discovery and quantum mechanics datasets.",
+        "year": 2024,
+        "authors": [
+          "David Buterez",
+          "Jon Paul Janet",
+          "Steven John Kiddle",
+          "Dino Ogli\u0107",
+          "P\u00edetro Li\u00f3"
+        ],
+        "citation_count": 136,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.nature.com/articles/s41467-024-45566-8.pdf",
+        "doi": "https://doi.org/10.1038/s41467-024-45566-8",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4220788456",
+        "title": "BridgeDPI: a novel Graph Neural Network for predicting drug\u2013protein interactions",
+        "abstract": "MOTIVATION: Exploring drug-protein interactions (DPIs) provides a rapid and precise approach to assist in laboratory experiments for discovering new drugs. Network-based methods usually utilize a drug-protein association network and predict DPIs by the information of its associated proteins or drugs, called 'guilt-by-association' principle. However, the 'guilt-by-association' principle is not always true because sometimes similar proteins cannot interact with similar drugs. Recently, learning-based methods learn molecule properties underlying DPIs by utilizing existing databases of characterized interactions but neglect the network-level information. RESULTS: We propose a novel method, namely BridgeDPI. We devise a class of virtual nodes to bridge the gap between drugs and proteins and construct a learnable drug-protein association network. The network is optimized based on the supervised signals from the downstream task-the DPI prediction. Through information passing on this drug-protein association network, a Graph Neural Network can capture the network-level information among diverse drugs and proteins. By combining the network-level information and the learning-based method, BridgeDPI achieves significant improvement in three real-world DPI datasets. Moreover, the case study further verifies the effectiveness and reliability of BridgeDPI. AVAILABILITY AND IMPLEMENTATION: The source code of BridgeDPI can be accessed at https://github.com/SenseTime-Knowledge-Mining/BridgeDPI. The source data used in this study is available on the https://github.com/IBM/InterpretableDTIP (for the BindingDB dataset), https://github.com/masashitsubaki/CPI_prediction (for the C.ELEGANS and HUMAN) datasets, http://dude.docking.org/ (for the DUD-E dataset), repectively.",
+        "year": 2022,
+        "authors": [
+          "Yifan Wu",
+          "Min Gao",
+          "Min Zeng",
+          "Jie Zhang",
+          "Min Li"
+        ],
+        "citation_count": 114,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://arxiv.org/pdf/2101.12547",
+        "doi": "https://doi.org/10.1093/bioinformatics/btac155",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7150938383",
+        "title": "Convolutional Neural Networks For Advanced Drug Discovery And Development",
+        "abstract": "The integration of artificial intelligence into pharmaceutical research has ushered in a transformative era for drug discovery and development. Among various deep learning architectures, Convolutional Neural Networks (CNNs) have emerged as particularly powerful tools for modeling complex biological and chemical data. This paper provides a comprehensive review of CNN-based approaches in drug discovery, examining their applications in drug-target interaction prediction, adverse drug reaction forecasting, and de novo drug design. Through a systematic analysis of recent literature and experimental studies, we demonstrate that CNN architectures achieve superior performance across multiple pharmaceutical applications, with drug-target interaction prediction accuracies reaching 93-95% and adverse drug reaction detection rates of 78%. The review synthesizes findings from 2018-2025, highlighting how CNNs effectively extract spatial patterns from molecular representations, identify critical features from protein sequences, and integrate with complementary architectures such as graph neural networks and long short-term memory networks. We also address key challenges including data quality limitations, model interpretability concerns, and regulatory integration pathways. This paper concludes by outlining future research directions, emphasizing the potential of hybrid architectures, multi-modal learning, and explainable AI in advancing CNN-driven drug discovery toward clinical implementation.",
+        "year": 2026,
+        "authors": [
+          "Dr. D. J. Anusha",
+          "B. Uma",
+          "Suchitra Deviprasad",
+          "Jakkapu Nagalakshmidevi",
+          "Dr. T. Vengatesh",
+          "C. Kasthuri",
+          "Dr. V. Yamuna",
+          "Brindha G",
+          "Venkateswara Rao Cheekati",
+          "Dr. B. Anbuselvan"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.25258/ijddt.16.5s.107",
+        "doi": "https://doi.org/10.25258/ijddt.16.5s.107",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4377968189",
+        "title": "GraphscoreDTA: optimized graph neural network for protein\u2013ligand binding affinity prediction",
+        "abstract": "MOTIVATION: Computational approaches for identifying the protein-ligand binding affinity can greatly facilitate drug discovery and development. At present, many deep learning-based models are proposed to predict the protein-ligand binding affinity and achieve significant performance improvement. However, protein-ligand binding affinity prediction still has fundamental challenges. One challenge is that the mutual information between proteins and ligands is hard to capture. Another challenge is how to find and highlight the important atoms of the ligands and residues of the proteins. RESULTS: To solve these limitations, we develop a novel graph neural network strategy with the Vina distance optimization terms (GraphscoreDTA) for predicting protein-ligand binding affinity, which takes the combination of graph neural network, bitransport information mechanism and physics-based distance terms into account for the first time. Unlike other methods, GraphscoreDTA can not only effectively capture the protein-ligand pairs' mutual information but also highlight the important atoms of the ligands and residues of the proteins. The results show that GraphscoreDTA significantly outperforms existing methods on multiple test sets. Furthermore, the tests of drug-target selectivity on the cyclin-dependent kinase and the homologous protein families demonstrate that GraphscoreDTA is a reliable tool for protein-ligand binding affinity prediction. AVAILABILITY AND IMPLEMENTATION: The resource codes are available at https://github.com/CSUBioGroup/GraphscoreDTA.",
+        "year": 2023,
+        "authors": [
+          "Kaili Wang",
+          "Renyi Zhou",
+          "Jing Ping Tang",
+          "Min Li"
+        ],
+        "citation_count": 92,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://academic.oup.com/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btad340/50439496/btad340.pdf",
+        "doi": "https://doi.org/10.1093/bioinformatics/btad340",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4415615042",
+        "title": "Dual-route embedding-aware graph neural networks for drug repositioning",
+        "abstract": "Drug repositioning presents a compelling strategy to accelerate therapeutic development by uncovering new indications for existing compounds. However, current computational methods are often limited in their ability to integrate heterogeneous biomedical data and model the intricate, multiscale relationships underlying drug-disease associations, while large-scale experimental validation remains prohibitively resource-intensive. Here, we present DREAM-GNN (Dual-Route Embedding-Aware Model for Graph Neural Networks), a multiview deep graph learning framework that incorporates biomedical domain knowledge with two complementary graphs capturing both topological structure and feature similarity to enable accurate and biologically meaningful prediction of drug-disease associations. Extensive experiments on benchmark datasets demonstrate that DREAM-GNN significantly outperforms current state-of-the-art methods in recovering artificially removed repositioning candidates, including in scenarios involving unseen drugs and diseases. These results establish DREAM-GNN as a robust and generalizable computational framework with broad potential to streamline drug discovery and advance precision medicine.",
+        "year": 2025,
+        "authors": [
+          "Yanlong Zhao",
+          "Yixiao Chen",
+          "Jiawen Du",
+          "Jun Wen",
+          "Quan Sun",
+          "Ren Wang",
+          "Can Chen"
+        ],
+        "citation_count": 6,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1093/bib/bbaf555",
+        "doi": "https://doi.org/10.1093/bib/bbaf555",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7167703255",
+        "title": "Using Graph Neural Networks in Network Pharmacology for Predicting Drug Disease Associations",
+        "abstract": "In this paper new interactions between genes, diseases, and drugs prediction is done using Graph Neural Networks to help advance precision medicine and expedite drug discovery. In the first step, we construct a GRN on the GLDS-4 dataset to find significant gene regulatory relationships. In GDKG building, we use 50 most frequently correlated genes with gene disease associations from SPOKE. By modelling it as a bipartite graph using GNNs, it predicts new gene-disease links, which provides enhanced understanding at the gene disease level of interaction. A drug-disease knowledge graph, DDKG, based on DrugBank data, is further formulated to predict new drug candidates for diseases with minimal treatment options. This opens avenues for drug repurposing. GNN models, as shown above, in both GDKG and DDKG phases have been demonstrated by AUC-ROC and average precision. This work thus shows the capability of GNNs to demonstrate versatility in modelling complex biological networks and discovering new therapeutic relationships with a wide range of applications towards research into disease mechanisms and therapeutic interventions.",
+        "year": 2026,
+        "authors": [
+          "Khushboo Jain",
+          "Richa Makhijani",
+          "Ruchira Selote",
+          "Shubhada V Mangrulkar",
+          "Umesh Manikanta Dhulipalla",
+          "Rishikesh Dwivedi",
+          "Pawanraje Ukarde"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.sciencedirect.com/science/article/pii/S1877050926018338/pdf",
+        "doi": "https://doi.org/10.1016/j.procs.2026.06.201",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4380136659",
+        "title": "Comprehensive evaluation of deep and graph learning on drug\u2013drug interactions prediction",
+        "abstract": "Recent advances and achievements of artificial intelligence (AI) as well as deep and graph learning models have established their usefulness in biomedical applications, especially in drug-drug interactions (DDIs). DDIs refer to a change in the effect of one drug to the presence of another drug in the human body, which plays an essential role in drug discovery and clinical research. DDIs prediction through traditional clinical trials and experiments is an expensive and time-consuming process. To correctly apply the advanced AI and deep learning, the developer and user meet various challenges such as the availability and encoding of data resources, and the design of computational methods. This review summarizes chemical structure based, network based, natural language processing based and hybrid methods, providing an updated and accessible guide to the broad researchers and development community with different domain knowledge. We introduce widely used molecular representation and describe the theoretical frameworks of graph neural network models for representing molecular structures. We present the advantages and disadvantages of deep and graph learning methods by performing comparative experiments. We discuss the potential technical challenges and highlight future directions of deep and graph learning models for accelerating DDIs prediction.",
+        "year": 2023,
+        "authors": [
+          "Xuan Lin",
+          "Lichang Dai",
+          "Yafang Zhou",
+          "Zu\u2010Guo Yu",
+          "Wen Zhang",
+          "Jian\u2010Yu Shi",
+          "Dongsheng Cao",
+          "Zeng Li",
+          "Haowen Chen",
+          "Bosheng Song",
+          "Philip S. Yu",
+          "Xiangxiang Zeng"
+        ],
+        "citation_count": 113,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://academic.oup.com/bib/article-pdf/24/4/bbad235/50916980/bbad235.pdf",
+        "doi": "https://doi.org/10.1093/bib/bbad235",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4392186151",
+        "title": "Applying Graph Neural Networks in Pharmacology",
+        "abstract": "Objective: Techniques that are based on artificial intelligence, specifically machine learning, have played a major role in the enhancement of pharmacological methodologies and development of medical treatments, especially those that are individualized or those which fall in the province of precision medicine. In this article, we attempt to examine how graph neural networks have revolutionized certain important aspects of pharmacology. Background: Pharmacological data is replete with unidirectional as well as bidirectional associations, with regards to, for example, drug interactions, patient-centered medicine, precision medicine, multi-omics data analysis, drug discovery, and optimization of experimental processes, and other fields. These associations can be more readily modeled using advanced computational methods and machine learning techniques like graph neural networks. The revolutionary advancements in the field of data mining have further fueled the need to create models that can resolve pharmacological correlations and dependencies into facilely interpretable outcomes. Methods: We conducted a literature review to find those documents which provide relevant information about our objectives. With a comprehensive search plan in place, we sequestered applicable articles and studied them to identify pertinent points that assisted our understanding of graph neural networks as a tool to improvise, automate, and simplify the practical applications in pharmacology and pharmacotherapeutics. Conclusion: The review of relevant research has confirmed our hypothesis that graph neural networks can be used to create an innovative, lasting, and radical departure in pharmaceutical therapeutics. Graph Neural Networks can automate and simplify many tasks based on large and complex datasets which are inherent in pharmacological science. Such techniques can help us achieve innovative methods in therapeutics using extant pharmaceuticals and in the development of new drugs, and therefore bode well for the future of healthcare.",
+        "year": 2024,
+        "authors": [
+          "Ritwik Raj Saxena",
+          "Ritcha Saxena",
+          "Ritcha Saxena",
+          "Ritcha Saxena"
+        ],
+        "citation_count": 6,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.170906927.71541956",
+        "doi": "https://doi.org/10.36227/techrxiv.170906927.71541956/v1",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W7153548746",
+        "title": "A Survey on AI-Powered Drug Repurposing using Graph Neural Networks",
+        "abstract": "Abstract - Drug repurposing has emerged as a cost-effective alternative to traditional drug discovery, particularly for rare and orphan diseases. With the rapid growth of biomedical data, artificial intelligence (AI) techniques have gained prominence in identifying novel drug - disease associations. Among these, Graph Neural Networks (GNNs) have shown remarkable potential due to their ability to model complex biological relationships. This survey presents a comprehensive review of AI-powered drug repurposing approaches, with a particular focus on graph- based and deep learning methods.",
+        "year": 2026,
+        "authors": [
+          "Ms.  Preethi N P",
+          "Alan Antony",
+          "Alen Bigi",
+          "Alen Chacko",
+          "Anju Augustine"
+        ],
+        "citation_count": 0,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.5281/zenodo.19511563",
+        "doi": "https://doi.org/10.5281/zenodo.19511563",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4408957790",
+        "title": "Network-based multi-omics integrative analysis methods in drug discovery: a systematic review",
+        "abstract": "The integration of multi-omics data from diverse high-throughput technologies has revolutionized drug discovery. While various network-based methods have been developed to integrate multi-omics data, systematic evaluation and comparison of these methods remain challenging. This review aims to analyze network-based approaches for multi-omics integration and evaluate their applications in drug discovery. We conducted a comprehensive review of literature (2015-2024) on network-based multi-omics integration methods in drug discovery, and categorized methods into four primary types: network propagation/diffusion, similarity-based approaches, graph neural networks, and network inference models. We also discussed the applications of the methods in three scenario of drug discovery, including drug target identification, drug response prediction, and drug repurposing, and finally evaluated the performance of the methods by highlighting their advantages and limitations in specific applications. While network-based multi-omics integration has shown promise in drug discovery, challenges remain in computational scalability, data integration, and biological interpretation. Future developments should focus on incorporating temporal and spatial dynamics, improving model interpretability, and establishing standardized evaluation frameworks.",
+        "year": 2025,
+        "authors": [
+          "Wei Jiang",
+          "Weicai Ye",
+          "Xiaoming Tan",
+          "Yun\u2010Juan Bao"
+        ],
+        "citation_count": 102,
+        "is_review": true,
+        "is_open_access": true,
+        "pdf_url": "https://doi.org/10.1186/s13040-025-00442-z",
+        "doi": "https://doi.org/10.1186/s13040-025-00442-z",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4402808474",
+        "title": "Graph pooling in graph neural networks: methods and their applications in omics studies",
+        "abstract": "Graph neural networks (GNNs) process the graph-structured data using neural networks and have proven successful in various graph processing tasks. Currently, graph pooling operators have emerged as crucial components that bridge the gap between node representation learning and diverse graph-level tasks by transforming node representations into graph representations. Given the rapid growth and widespread adoption of graph pooling, this review aims to summarize the existing graph pooling operators for GNNs and their representative applications in omics. Specifically, we first present a comprehensive taxonomy of existing graph pooling algorithms, expanding the categorization for both global and hierarchical pooling operators, and for the first time reviewing the inverse operation of graph pooling, named unpooling. Next, we describe the general evaluation framework for graph pooling operators, encompassing three fundamental aspects: experimental setup, ablation analysis, and model interpretation. We also discuss open issues that significantly influence the design of graph pooling operators, including complexity, connectivity, adaptability, additional loss, and attention mechanisms. Finally, we summarize bioinformatics applications of graph pooling operators in omics, including graphs of gene interaction, medical images, and protein structures for drug discovery and disease diagnosis. Furthermore, we showcase the impact of graph pooling operators on research in specific real-world domains, with a focus on prediction performance and model interpretability. This review provides methodological insights in machine learning based graph modeling and related omics research, as well as an ongoing resource by gathering related papers and code in a dedicated GitHub repository ( https://github.com/Hou-WJ/Graph-Pooling-Operators-and-Bioinformatics-Applications ).",
+        "year": 2024,
+        "authors": [
+          "Yan Wang",
+          "Wenju Hou",
+          "Nan Sheng",
+          "Ziqi Zhao",
+          "Jialin Liu",
+          "Lan Huang",
+          "Juexin Wang"
+        ],
+        "citation_count": 24,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10462-024-10918-9.pdf",
+        "doi": "https://doi.org/10.1007/s10462-024-10918-9",
+        "source": "openalex",
+        "full_text": null
+      },
+      {
+        "id": "W4416716785",
+        "title": "An interpretable geometric graph neural network for enhancing the generalizability of drug\u2013target interaction prediction",
+        "abstract": "BACKGROUND: Accurate prediction of drug-target interactions (DTIs) is essential for advancing drug discovery. Although numerous computational methods have been proposed, many exhibit limited generalization, particularly when dealing with unseen drugs or targets. RESULTS: To address this challenge, we introduce GPS-DTI, a deep learning framework designed to capture both local and global features of drugs and proteins, thereby enhancing predictive robustness. Specifically, GPS-DTI employs a graph isomorphism network with edge features (GINE)-based graph neural network, combined with a multi-head attention mechanism (MHAM), to effectively model the structural characteristics of drug molecules. For proteins, representations are derived from the pre-trained Evolutionary Scale Model (ESM-2) model and further refined through convolutional neural networks (CNNs), yielding rich feature embeddings. A cross-attention module integrates drug and protein features, uncovering biologically meaningful interactions and improving model interpretability. CONCLUSIONS: Comprehensive benchmarking across in-domain and cross-domain DTI prediction tasks demonstrates that GPS-DTI outperforms existing methods, underscoring its strong generalization capability. Notably, the model achieves state-of-the-art performance on drug-target affinity (DTA) tasks and shows robust adaptability when evaluated on an independent Coronavirus Disease 2019 (COVID-19)-related test set. Furthermore, visualization of cross-attention maps offers interpretable insights into key molecular interactions, highlighting the potential of GPS-DTI in real-world drug discovery applications.",
+        "year": 2025,
+        "authors": [
+          "An Xiong",
+          "Zhenjie Luo",
+          "Yan Xia",
+          "Quan Zou",
+          "Leyi Wei",
+          "Leyi Wei",
+          "Zilong Zhang",
+          "Tao Wang",
+          "Lesong Wei",
+          "Lesong Wei",
+          "Feifei Cui"
+        ],
+        "citation_count": 11,
+        "is_review": false,
+        "is_open_access": true,
+        "pdf_url": "https://link.springer.com/content/pdf/10.1186/s12915-025-02456-9.pdf",
+        "doi": "https://doi.org/10.1186/s12915-025-02456-9",
+        "source": "openalex",
+        "full_text": null
+      }
+    ],
+    "clusters": [
+      {
+        "id": "C1",
+        "label": "Sample theme 1",
+        "paper_ids": [
+          "W3110933132",
+          "W4396806998",
+          "W4416931215",
+          "W7163006540",
+          "W7162690543",
+          "W4391335127",
+          "W7222853523",
+          "W4382317956",
+          "W4412202180",
+          "W4394850168",
+          "W4394516146",
+          "W3188579603",
+          "W4389131658",
+          "W4391782448",
+          "W7125808017",
+          "W4399954566",
+          "W4392157869",
+          "W4377968189",
+          "W4380136659",
+          "W4408957790"
+        ],
+        "rationale": "Sample mode: placeholder grouping, not real clustering"
+      },
+      {
+        "id": "C2",
+        "label": "Sample theme 2",
+        "paper_ids": [
+          "W4415320025",
+          "W3116202926",
+          "W4406017182",
+          "W4417123819",
+          "W4417073891",
+          "W4404803126",
+          "W7208828033",
+          "W4390884937",
+          "W7115904589",
+          "W4393154949",
+          "W4394092224",
+          "W4376142487",
+          "W4214868967",
+          "W4402401635",
+          "W4213235856",
+          "W4282835253",
+          "W4220788456",
+          "W4415615042",
+          "W4392186151",
+          "W4402808474"
+        ],
+        "rationale": "Sample mode: placeholder grouping, not real clustering"
+      },
+      {
+        "id": "C3",
+        "label": "Sample theme 3",
+        "paper_ids": [
+          "W3120618935",
+          "W3216638646",
+          "W4416068517",
+          "W7116366360",
+          "W4388042006",
+          "W4308610392",
+          "W7164175736",
+          "W7110847151",
+          "W4395111046",
+          "W4401855817",
+          "W4386158307",
+          "W4205167309",
+          "W4315767347",
+          "W4319762935",
+          "W4318150241",
+          "W4413224864",
+          "W7150938383",
+          "W7167703255",
+          "W7153548746",
+          "W4416716785"
+        ],
+        "rationale": "Sample mode: placeholder grouping, not real clustering"
+      }
+    ],
+    "connections": [
+      {
+        "id": "C1-K1",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W3110933132",
+          "W4396806998"
+        ],
+        "cluster_ids": [
+          "C1"
+        ],
+        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "evidence": [
+          {
+            "paper_id": "W3110933132",
+            "quote": "Molecular generative Graph Neural Networks for Drug Discovery"
+          },
+          {
+            "paper_id": "W4396806998",
+            "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+          }
+        ]
+      },
+      {
+        "id": "C2-K1",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4415320025",
+          "W3116202926"
+        ],
+        "cluster_ids": [
+          "C2"
+        ],
+        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "evidence": [
+          {
+            "paper_id": "W4415320025",
+            "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+          },
+          {
+            "paper_id": "W3116202926",
+            "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+          }
+        ]
+      },
+      {
+        "id": "C3-K1",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W3120618935",
+          "W3216638646"
+        ],
+        "cluster_ids": [
+          "C3"
+        ],
+        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "evidence": [
+          {
+            "paper_id": "W3120618935",
+            "quote": "MOTIVATION: Properties of molecules are indicative of their functions and thus are useful in many applications."
+          },
+          {
+            "paper_id": "W3216638646",
+            "quote": "The concern of overconfident mis-predictions under distributional shift demands extensive reliability research on Graph Neural Networks used in critical tasks in drug discovery."
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "C1-G1",
+        "cluster_id": "C1",
+        "description": "Sample mode: placeholder gap between the first two papers of this group.",
+        "between_paper_ids": [
+          "W3110933132",
+          "W4396806998"
+        ],
+        "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+        "evidence": [
+          {
+            "paper_id": "W3110933132",
+            "quote": "Molecular generative Graph Neural Networks for Drug Discovery"
+          }
+        ]
+      },
+      {
+        "id": "C2-G1",
+        "cluster_id": "C2",
+        "description": "Sample mode: placeholder gap between the first two papers of this group.",
+        "between_paper_ids": [
+          "W4415320025",
+          "W3116202926"
+        ],
+        "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+        "evidence": [
+          {
+            "paper_id": "W4415320025",
+            "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+          }
+        ]
+      },
+      {
+        "id": "C3-G1",
+        "cluster_id": "C3",
+        "description": "Sample mode: placeholder gap between the first two papers of this group.",
+        "between_paper_ids": [
+          "W3120618935",
+          "W3216638646"
+        ],
+        "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+        "evidence": [
+          {
+            "paper_id": "W3120618935",
+            "quote": "MOTIVATION: Properties of molecules are indicative of their functions and thus are useful in many applications."
+          }
+        ]
+      }
+    ],
+    "warnings": [],
+    "paper_map": {
+      "nodes": [
+        {
+          "id": "W3110933132",
+          "type": "paper",
+          "title": "Molecular generative Graph Neural Networks for Drug Discovery",
+          "year": 2021
+        },
+        {
+          "id": "W4415320025",
+          "type": "paper",
+          "title": "Graph neural networks driven acceleration in drug discovery",
+          "year": 2025
+        },
+        {
+          "id": "W3120618935",
+          "type": "paper",
+          "title": "Advanced graph and sequence neural networks for molecular property prediction and drug discovery",
+          "year": 2022
+        },
+        {
+          "id": "W4396806998",
+          "type": "paper",
+          "title": "Knowledge mapping of graph neural networks for drug discovery: a bibliometric and visualized analysis",
+          "year": 2024
+        },
+        {
+          "id": "W3116202926",
+          "type": "paper",
+          "title": "Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
+          "year": 2021
+        },
+        {
+          "id": "W3216638646",
+          "type": "paper",
+          "title": "Reliable Graph Neural Networks for Drug Discovery Under Distributional Shift",
+          "year": 2021
+        },
+        {
+          "id": "W4416931215",
+          "type": "paper",
+          "title": "Intelligence on the graph: Graph neural networks for mechanistic drug target discovery",
+          "year": 2025
+        },
+        {
+          "id": "W4406017182",
+          "type": "paper",
+          "title": "Drug discovery and mechanism prediction with explainable graph neural networks",
+          "year": 2025
+        },
+        {
+          "id": "W4416068517",
+          "type": "paper",
+          "title": "A Survey of Graph Neural Networks for Drug Discovery: Recent Developments and Challenges",
+          "year": 2025
+        },
+        {
+          "id": "W7163006540",
+          "type": "paper",
+          "title": "\"GRAPH NEURAL NETWORKS (GNNS) IN DRUG DISCOVERY AND DRUG TARGET AFFINITY (DTA) PREDICTION\"",
+          "year": 2026
+        },
+        {
+          "id": "W4417123819",
+          "type": "paper",
+          "title": "Graph Neural Networks in Modern AI-aided Drug Discovery",
+          "year": 2025
+        },
+        {
+          "id": "W7116366360",
+          "type": "paper",
+          "title": "What is a Graph Neural Network in Drug Discovery? The AI Revolution in Pharmaceutical Research",
+          "year": 2023
+        },
+        {
+          "id": "W7162690543",
+          "type": "paper",
+          "title": "Molecular Graph Neural Networks in Drug Discovery: A Narrative Review",
+          "year": 2025
+        },
+        {
+          "id": "W4417073891",
+          "type": "paper",
+          "title": "An Integrated Graph Neural Network and Reinforcement Learning Framework for Intelligent Drug Discovery",
+          "year": 2024
+        },
+        {
+          "id": "W4388042006",
+          "type": "paper",
+          "title": "Explainable AI in drug discovery: self-interpretable graph neural network for molecular property prediction using concept whitening",
+          "year": 2023
+        },
+        {
+          "id": "W4391335127",
+          "type": "paper",
+          "title": "PepGB: Facilitating peptide drug discovery via graph neural networks",
+          "year": 2024
+        },
+        {
+          "id": "W4404803126",
+          "type": "paper",
+          "title": "Enhancing drug discovery with AI: Predictive modeling of pharmacokinetics using Graph Neural Networks and ensemble learning",
+          "year": 2024
+        },
+        {
+          "id": "W4308610392",
+          "type": "paper",
+          "title": "Deep Surrogate Docking: Accelerating Automated Drug Discovery with Graph Neural Networks",
+          "year": 2022
+        },
+        {
+          "id": "W7222853523",
+          "type": "paper",
+          "title": "Graph Representation Learning for Drug Discovery: Integrating Graph Neural Networks with Molecular Property Prediction and Explainable AI",
+          "year": 2026
+        },
+        {
+          "id": "W7208828033",
+          "type": "paper",
+          "title": "Application of Explainable Graph Neural Networks in Drug and Biomarker Discovery for Human Diseases",
+          "year": 2026
+        },
+        {
+          "id": "W7164175736",
+          "type": "paper",
+          "title": "Drug Discovery Using Graph Neural Networks: A Deep Learning Framework for Molecular Property Prediction and Virtual Screening",
+          "year": 2026
+        },
+        {
+          "id": "W4382317956",
+          "type": "paper",
+          "title": "Interpretable Chirality-Aware Graph Neural Network for Quantitative Structure Activity Relationship Modeling in Drug Discovery",
+          "year": 2023
+        },
+        {
+          "id": "W4390884937",
+          "type": "paper",
+          "title": "Machine learning drug discovery based on graph neural network and large language model",
+          "year": 2024
+        },
+        {
+          "id": "W7110847151",
+          "type": "paper",
+          "title": "LamNet: an alchemical-path-aware graph neural network to accelerate binding free energy calculations for drug discovery and beyond",
+          "year": 2025
+        },
+        {
+          "id": "W4412202180",
+          "type": "paper",
+          "title": "Quantum drug discovery: a hybrid quantum graph neural network\u2013variational quantum eigensolver framework for serine neutralization",
+          "year": 2025
+        },
+        {
+          "id": "W7115904589",
+          "type": "paper",
+          "title": "Statistical comparison and uncertainty analysis of graph neural networks and machine learning models for molecular property prediction in drug discovery",
+          "year": 2025
+        },
+        {
+          "id": "W4395111046",
+          "type": "paper",
+          "title": "Deep learning enhanced drug discovery for novel biomaterials in regenerative medicine utilizing graph neural network approach for predicting cellular responses",
+          "year": 2024
+        },
+        {
+          "id": "W4394850168",
+          "type": "paper",
+          "title": "Performance and robustness of small molecule retention time prediction with molecular graph neural networks in industrial drug discovery campaigns",
+          "year": 2024
+        },
+        {
+          "id": "W4393154949",
+          "type": "paper",
+          "title": "Empowering Graph Neural Networks with Block-Based Dual Adaptive Deep Adjustment for Drug Resistance-Related NcRNA Discovery",
+          "year": 2024
+        },
+        {
+          "id": "W4401855817",
+          "type": "paper",
+          "title": "Retraction Note: Drug discovery through Covid-19 genome sequencing with siamese graph convolutional neural network",
+          "year": 2024
+        },
+        {
+          "id": "W4394516146",
+          "type": "paper",
+          "title": "Additional file 1 of Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
+          "year": 2021
+        },
+        {
+          "id": "W4394092224",
+          "type": "paper",
+          "title": "Additional file 2 of Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
+          "year": 2021
+        },
+        {
+          "id": "W4386158307",
+          "type": "paper",
+          "title": "Risk factors and drug discovery for cognitive impairment in type 2 diabetes mellitus using artificial intelligence interpretation and graph neural networks",
+          "year": 2023
+        },
+        {
+          "id": "W3188579603",
+          "type": "paper",
+          "title": "Graph Neural Networks and Their Current Applications in Bioinformatics",
+          "year": 2021
+        },
+        {
+          "id": "W4376142487",
+          "type": "paper",
+          "title": "RETRACTED ARTICLE: Drug discovery through Covid-19 genome sequencing with siamese graph convolutional neural network",
+          "year": 2023
+        },
+        {
+          "id": "W4205167309",
+          "type": "paper",
+          "title": "MGraphDTA: deep multiscale graph neural network for explainable drug\u2013target binding affinity prediction",
+          "year": 2022
+        },
+        {
+          "id": "W4389131658",
+          "type": "paper",
+          "title": "Drug repositioning based on weighted local information augmented graph neural network",
+          "year": 2023
+        },
+        {
+          "id": "W4214868967",
+          "type": "paper",
+          "title": "Molecular contrastive learning of representations via graph neural networks",
+          "year": 2022
+        },
+        {
+          "id": "W4315767347",
+          "type": "paper",
+          "title": "Graph neural networks for conditional de novo drug design",
+          "year": 2023
+        },
+        {
+          "id": "W4391782448",
+          "type": "paper",
+          "title": "A review on graph neural networks for predicting synergistic drug combinations",
+          "year": 2024
+        },
+        {
+          "id": "W4402401635",
+          "type": "paper",
+          "title": "Survey on Graph Neural Networks",
+          "year": 2024
+        },
+        {
+          "id": "W4319762935",
+          "type": "paper",
+          "title": "Everything is connected: Graph neural networks",
+          "year": 2023
+        },
+        {
+          "id": "W7125808017",
+          "type": "paper",
+          "title": "DualPG\u2010DTA: A Large Language Model\u2010Powered Graph Neural Network Framework for Enhanced Drug\u2010Target Affinity Prediction and Discovery of Novel CDK9 Inhibitors Exhibiting In Vivo Anti\u2010Leukemia Activity",
+          "year": 2026
+        },
+        {
+          "id": "W4213235856",
+          "type": "paper",
+          "title": "Pre-training graph neural networks for link prediction in biomedical networks",
+          "year": 2022
+        },
+        {
+          "id": "W4318150241",
+          "type": "paper",
+          "title": "A dual graph neural network for drug\u2013drug interactions prediction based on molecular structure and interactions",
+          "year": 2023
+        },
+        {
+          "id": "W4399954566",
+          "type": "paper",
+          "title": "Advancing drug discovery with deep attention neural networks",
+          "year": 2024
+        },
+        {
+          "id": "W4282835253",
+          "type": "paper",
+          "title": "Predicting Protein\u2013Ligand Docking Structure with Graph Neural Network",
+          "year": 2022
+        },
+        {
+          "id": "W4413224864",
+          "type": "paper",
+          "title": "Kolmogorov\u2013Arnold graph neural networks for molecular property prediction",
+          "year": 2025
+        },
+        {
+          "id": "W4392157869",
+          "type": "paper",
+          "title": "Transfer learning with graph neural networks for improved molecular property prediction in the multi-fidelity setting",
+          "year": 2024
+        },
+        {
+          "id": "W4220788456",
+          "type": "paper",
+          "title": "BridgeDPI: a novel Graph Neural Network for predicting drug\u2013protein interactions",
+          "year": 2022
+        },
+        {
+          "id": "W7150938383",
+          "type": "paper",
+          "title": "Convolutional Neural Networks For Advanced Drug Discovery And Development",
+          "year": 2026
+        },
+        {
+          "id": "W4377968189",
+          "type": "paper",
+          "title": "GraphscoreDTA: optimized graph neural network for protein\u2013ligand binding affinity prediction",
+          "year": 2023
+        },
+        {
+          "id": "W4415615042",
+          "type": "paper",
+          "title": "Dual-route embedding-aware graph neural networks for drug repositioning",
+          "year": 2025
+        },
+        {
+          "id": "W7167703255",
+          "type": "paper",
+          "title": "Using Graph Neural Networks in Network Pharmacology for Predicting Drug Disease Associations",
+          "year": 2026
+        },
+        {
+          "id": "W4380136659",
+          "type": "paper",
+          "title": "Comprehensive evaluation of deep and graph learning on drug\u2013drug interactions prediction",
+          "year": 2023
+        },
+        {
+          "id": "W4392186151",
+          "type": "paper",
+          "title": "Applying Graph Neural Networks in Pharmacology",
+          "year": 2024
+        },
+        {
+          "id": "W7153548746",
+          "type": "paper",
+          "title": "A Survey on AI-Powered Drug Repurposing using Graph Neural Networks",
+          "year": 2026
+        },
+        {
+          "id": "W4408957790",
+          "type": "paper",
+          "title": "Network-based multi-omics integrative analysis methods in drug discovery: a systematic review",
+          "year": 2025
+        },
+        {
+          "id": "W4402808474",
+          "type": "paper",
+          "title": "Graph pooling in graph neural networks: methods and their applications in omics studies",
+          "year": 2024
+        },
+        {
+          "id": "W4416716785",
+          "type": "paper",
+          "title": "An interpretable geometric graph neural network for enhancing the generalizability of drug\u2013target interaction prediction",
+          "year": 2025
+        },
+        {
+          "id": "C1",
+          "type": "cluster",
+          "label": "Sample theme 1",
+          "rationale": "Sample mode: placeholder grouping, not real clustering"
+        },
+        {
+          "id": "C2",
+          "type": "cluster",
+          "label": "Sample theme 2",
+          "rationale": "Sample mode: placeholder grouping, not real clustering"
+        },
+        {
+          "id": "C3",
+          "type": "cluster",
+          "label": "Sample theme 3",
+          "rationale": "Sample mode: placeholder grouping, not real clustering"
+        },
+        {
+          "id": "C1-G1",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between the first two papers of this group.",
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+        },
+        {
+          "id": "C2-G1",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between the first two papers of this group.",
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+        },
+        {
+          "id": "C3-G1",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between the first two papers of this group.",
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+        }
+      ],
+      "edges": [
+        {
+          "source": "W3110933132",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4396806998",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4416931215",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7163006540",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7162690543",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4391335127",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7222853523",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4382317956",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4412202180",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4394850168",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4394516146",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W3188579603",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4389131658",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4391782448",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7125808017",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4399954566",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4392157869",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4377968189",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4380136659",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4408957790",
+          "target": "C1",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4415320025",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W3116202926",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4406017182",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4417123819",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4417073891",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4404803126",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7208828033",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4390884937",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7115904589",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4393154949",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4394092224",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4376142487",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4214868967",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4402401635",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4213235856",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4282835253",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4220788456",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4415615042",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4392186151",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4402808474",
+          "target": "C2",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W3120618935",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W3216638646",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4416068517",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7116366360",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4388042006",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4308610392",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7164175736",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7110847151",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4395111046",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4401855817",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4386158307",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4205167309",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4315767347",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4319762935",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4318150241",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4413224864",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7150938383",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7167703255",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W7153548746",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W4416716785",
+          "target": "C3",
+          "type": "belongs_to"
+        },
+        {
+          "source": "W3110933132",
+          "target": "W4396806998",
+          "type": "within_cluster",
+          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "evidence": [
+            {
+              "paper_id": "W3110933132",
+              "quote": "Molecular generative Graph Neural Networks for Drug Discovery"
+            },
+            {
+              "paper_id": "W4396806998",
+              "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+            }
+          ]
+        },
+        {
+          "source": "W4415320025",
+          "target": "W3116202926",
+          "type": "within_cluster",
+          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "evidence": [
+            {
+              "paper_id": "W4415320025",
+              "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+            },
+            {
+              "paper_id": "W3116202926",
+              "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+            }
+          ]
+        },
+        {
+          "source": "W3120618935",
+          "target": "W3216638646",
+          "type": "within_cluster",
+          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "evidence": [
+            {
+              "paper_id": "W3120618935",
+              "quote": "MOTIVATION: Properties of molecules are indicative of their functions and thus are useful in many applications."
+            },
+            {
+              "paper_id": "W3216638646",
+              "quote": "The concern of overconfident mis-predictions under distributional shift demands extensive reliability research on Graph Neural Networks used in critical tasks in drug discovery."
+            }
+          ]
+        },
+        {
+          "source": "C1-G1",
+          "target": "W3110933132",
+          "type": "gap_near"
+        },
+        {
+          "source": "C1-G1",
+          "target": "W4396806998",
+          "type": "gap_near"
+        },
+        {
+          "source": "C2-G1",
+          "target": "W4415320025",
+          "type": "gap_near"
+        },
+        {
+          "source": "C2-G1",
+          "target": "W3116202926",
+          "type": "gap_near"
+        },
+        {
+          "source": "C3-G1",
+          "target": "W3120618935",
+          "type": "gap_near"
+        },
+        {
+          "source": "C3-G1",
+          "target": "W3216638646",
+          "type": "gap_near"
+        }
+      ]
+    }
+  }
+}

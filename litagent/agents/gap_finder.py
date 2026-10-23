@@ -6,6 +6,7 @@ set range (related enough to be comparable, different enough to leave room for a
 
 from __future__ import annotations
 
+from litagent.agents.connection_finder import first_sentence
 from litagent.config import Settings
 from litagent.schemas import Cluster, Connection, Evidence, Gap, Paper
 
@@ -20,8 +21,8 @@ def find_gaps(
     settings: Settings,
     fix: str | None = None,
 ) -> list[Gap]:
-    if settings.dry_run:
-        return _fake_gaps(clusters)
+    if settings.sample_mode:
+        return _fake_gaps(papers, clusters)
 
     # TODO: for each cluster, pick paper pairs inside SIMILARITY_RANGE.
     # TODO: ask the LLM (prompts/gap_finder.md) what is missing between them, with quotes.
@@ -29,15 +30,17 @@ def find_gaps(
     raise NotImplementedError
 
 
-def _fake_gaps(clusters: list[Cluster]) -> list[Gap]:
+def _fake_gaps(papers: list[Paper], clusters: list[Cluster]) -> list[Gap]:
+    """Sample mode: one placeholder gap per cluster, with a verbatim quote from its first paper."""
+    by_id = {p.id: p for p in papers}
     return [
         Gap(
             id=f"{c.id}-G1",
             cluster_id=c.id,
-            description="Dry run: no study combines method X with setting Y.",
+            description="Sample mode: placeholder gap between the first two papers of this group.",
             between_paper_ids=c.paper_ids[:2],
-            why_it_matters="Dry run",
-            evidence=[Evidence(paper_id=c.paper_ids[0], quote="fake quote")],
+            why_it_matters="Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+            evidence=[Evidence(paper_id=c.paper_ids[0], quote=first_sentence(by_id.get(c.paper_ids[0])))],
         )
         for c in clusters
         if c.paper_ids

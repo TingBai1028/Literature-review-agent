@@ -18,4 +18,4 @@ Code: `litagent/agents/connection_finder.py` · Prompt: `prompts/connection_find
 **Research TODO:** which connection types to show (builds on, same method / different data, same question / different method, ...).
 
 **Input:** papers, clusters · **Output:** `list[Connection]`
-**Owner:** TODO · **Status:** Dry run only
+**Owner:** TODO · **Status:** Sample mode only

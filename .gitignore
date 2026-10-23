@@ -12,7 +12,7 @@ venv/
 .pytest_cache/
 
 # Run output and downloaded data (regenerate with scripts/)
-runs/
+logs/
 data/raw/
 data/pdfs/
 data/cache/

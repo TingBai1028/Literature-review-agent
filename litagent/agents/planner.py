@@ -17,13 +17,13 @@ NEED_TOPIC_MESSAGE = (
 
 
 def plan(question: str, effort: Effort, settings: Settings, feedback: str | None = None) -> PlannerResult:
-    if settings.dry_run:
+    if settings.sample_mode:
         return _fake_plan(question, effort, settings)
 
     # TODO: call the LLM with prompts/planner.md. Include the user's feedback from a
     # human review (if any) so the new plan changes what the user asked to change.
     user_message = f"Question: {question}\nEffort: {effort.value}\nUser feedback on previous results: {feedback or 'none'}"
-    result = complete_json(load_prompt("planner"), user_message, PlannerResult)
+    result = complete_json(load_prompt("planner"), user_message, PlannerResult, settings=settings, agent_name="planner")
     if result.status == "ok" and result.plan:
         result.plan = apply_defaults(result.plan, settings)
     return result

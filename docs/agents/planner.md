@@ -17,4 +17,4 @@ Code: `litagent/agents/planner.py` · Prompt: `prompts/planner.md`
 8. **Guardrails:** never invent a topic. TODO: token cap per call.
 
 **Input:** question (str), Effort, optional feedback · **Output:** `PlannerResult`
-**Owner:** TODO · **Status:** Dry run only
+**Owner:** TODO · **Status:** Sample mode only

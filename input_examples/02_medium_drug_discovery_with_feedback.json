@@ -1,0 +1,8 @@
+{
+  "run_id": "example-02",
+  "input": {
+    "query": "What are graph neural networks being used for in drug discovery?",
+    "effort": "medium",
+    "feedback": "Only papers from 2023 onward, and include more review papers."
+  }
+}

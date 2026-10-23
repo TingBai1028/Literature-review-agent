@@ -7,7 +7,7 @@ For Track 02, findings carry Evidence: every claim points back to a paper and a 
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -128,7 +128,7 @@ class HumanFeedback(BaseModel):
 
 class RunResult(BaseModel):
     run_id: str
-    status: Literal["done", "need_topic", "max_replans_reached"]
+    status: Literal["done", "need_topic", "max_replans_reached", "partial"]  # partial = run time limit hit
     message_to_user: str | None = None
     plan: SearchPlan | None = None
     papers: list[Paper] = Field(default_factory=list)
@@ -136,3 +136,4 @@ class RunResult(BaseModel):
     connections: list[Connection] = Field(default_factory=list)
     gaps: list[Gap] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)  # e.g. a stage that never passed grading
+    paper_map: dict[str, Any] | None = None  # Meterless world model graph (nodes + edges) for the front end

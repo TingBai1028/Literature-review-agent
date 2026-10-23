@@ -14,7 +14,7 @@ from litagent.schemas import Cluster, Paper
 
 def cluster(papers: list[Paper], effort: Effort, settings: Settings, fix: str | None = None) -> list[Cluster]:
     """`fix` is the grading agent's one suggested fix when the previous attempt failed."""
-    if settings.dry_run:
+    if settings.sample_mode:
         return _fake_clusters(papers)
 
     use_full_text = EFFORT_PROFILES[effort].use_full_text
@@ -67,8 +67,12 @@ def _text_for(paper: Paper, use_full_text: bool) -> str:
 
 
 def _fake_clusters(papers: list[Paper]) -> list[Cluster]:
+    """Sample mode: split papers round-robin into 3 placeholder groups (no embeddings, no LLM)."""
     k = 3
     return [
-        Cluster(id=f"C{i + 1}", label=f"Fake theme {i + 1}", paper_ids=[p.id for p in papers[i::k]], rationale="Dry run")
+        Cluster(
+            id=f"C{i + 1}", label=f"Sample theme {i + 1}", paper_ids=[p.id for p in papers[i::k]],
+            rationale="Sample mode: placeholder grouping, not real clustering",
+        )
         for i in range(k)
     ]

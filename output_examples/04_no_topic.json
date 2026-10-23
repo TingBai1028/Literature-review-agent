@@ -1,0 +1,16 @@
+{
+  "run_id": "example-04",
+  "status": "success",
+  "output": {
+    "run_id": "example-04",
+    "status": "need_topic",
+    "message_to_user": "Happy to help with your literature review! What topic or research question would you like me to look into?",
+    "plan": null,
+    "papers": [],
+    "clusters": [],
+    "connections": [],
+    "gaps": [],
+    "warnings": [],
+    "paper_map": null
+  }
+}
