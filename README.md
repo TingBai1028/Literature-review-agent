@@ -58,6 +58,7 @@ Each sponsor integration sits behind its own adapter class, so an outage in one 
 
 - Python 3.11+
 - For real runs: Meterless Nightshift with a Nemotron model, and Zetaris running locally in Docker (see `.env.example`). Sample mode needs neither.
+- Recommended: a free OpenAlex API key (`OPENALEX_API_KEY`). Without one, OpenAlex allows about 100 searches a day; with one, about 1,000.
 - No GPU needed.
 
 ### Setup
@@ -93,6 +94,7 @@ Request: `{"run_id": optional, "input": {"query": str, "effort": "normal|medium|
 - Success: `{"run_id": ..., "status": "success", "output": {plan, papers, clusters, connections, gaps, paper_map, usage, warnings, ...}}`
 - Failure: `{"run_id": ..., "status": "error", "error": {"type": ..., "message": ...}}` (HTTP 422 for bad input, 500 for a failed stage)
 - No topic in the query: `status: "success"` with `output.status: "need_topic"` and a friendly `message_to_user`.
+- Nothing found: `output.status: "no_results"`, with a `message_to_user` naming the filters used and suggesting broader terms.
 - Human reviews never wait for input through `/run`. Both are approved unless you pass `feedback`, which sends that comment back to the Planner once (Human review 1).
 - `output.status: "partial"` means the run hit `RUN_TIMEOUT_S` (default 600 s) or its token budget, and returned what it had finished (the reason is in `warnings`).
 - `output.usage` gives the run's LLM tokens (`prompt_tokens`, `completion_tokens`, `llm_calls`) against the effort level's `budget`.

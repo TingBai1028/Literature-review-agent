@@ -85,6 +85,10 @@ def run_pipeline(
                 stage = "retriever"
                 check_time(stage)
                 papers = retriever.retrieve(plan, settings, signed_in=signed_in)
+                if not papers:
+                    message = retriever.no_results_message(plan)
+                    trace.log("retriever", "retrieve", "0 papers", next_step="ask user to broaden", why=message)
+                    return finish(RunResult(run_id=trace.run_id, status="no_results", plan=plan, message_to_user=message))
                 store.save_papers(papers)
                 world.add_papers(papers)
                 trace.log("retriever", "retrieve", f"{len(papers)} papers", next_step="human review 1",

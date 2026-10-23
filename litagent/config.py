@@ -80,6 +80,9 @@ class Settings:
     # Whole run: stop between stages and return a partial result after this many seconds
     run_timeout_s: float = field(default_factory=lambda: float(os.getenv("RUN_TIMEOUT_S", "600")))
 
+    # Retriever ranking: share of relevance vs citations per year (team decision, 24 Oct)
+    rank_relevance_weight: float = 0.7
+
     # Clustering
     cluster_similarity_threshold: float = 0.7  # TODO: check against your embedding model on a sample
 

@@ -54,13 +54,15 @@ Plan first and show me the plan before writing code.
 
 ## 2. Retriever
 
+Done for OpenAlex (zero results → `no_results` status). Remaining: Semantic Scholar / arXiv, full-text PDFs, and checking the LLM summary on Nightshift.
+
 ```
 Implement the real Retriever in litagent/agents/retriever.py and the search tools in litagent/tools/, following docs/agents/retriever.md.
 
 Decisions:
-- Sources: OpenAlex + ______ (Semantic Scholar / arXiv)
-- Ranking before cutting to max_papers: ______ (e.g. relevance rank from the API, then citations per year)
-- Full text at High/Ultra: PDF library ______ (e.g. pypdf); skip papers whose PDF fails to download
+- Sources: OpenAlex only for now (Semantic Scholar / arXiv later)
+- Ranking before cutting to max_papers: 70% relevance (rank fusion across queries) / 30% citations per year; papers without an abstract dropped
+- Full text at High/Ultra: later (logged as skipped)
 - School-account access: leave as a TODO for now (licence check pending)
 
 Requirements:

@@ -1,0 +1,3193 @@
+{
+ "meta": {
+  "count": 69919,
+  "page": 1,
+  "per_page": 6
+ },
+ "results": [
+  {
+   "id": "https://openalex.org/W4205167309",
+   "doi": "https://doi.org/10.1039/d1sc05180f",
+   "display_name": "MGraphDTA: deep multiscale graph neural network for explainable drug–target binding affinity prediction",
+   "publication_year": 2022,
+   "type": "article",
+   "cited_by_count": 348,
+   "open_access": {
+    "is_oa": true,
+    "oa_status": "diamond",
+    "oa_url": "https://pubs.rsc.org/en/content/articlepdf/2022/sc/d1sc05180f",
+    "any_repository_has_fulltext": true
+   },
+   "authorships": [
+    {
+     "author": {
+      "display_name": "Ziduo Yang"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Weihe Zhong"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Lu Zhao"
+     }
+    }
+   ],
+   "abstract_inverted_index": {
+    "Predicting": [
+     0
+    ],
+    "drug-target": [
+     1
+    ],
+    "affinity": [
+     2,
+     119
+    ],
+    "(DTA)": [
+     3
+    ],
+    "is": [
+     4
+    ],
+    "beneficial": [
+     5
+    ],
+    "for": [
+     6,
+     77
+    ],
+    "accelerating": [
+     7
+    ],
+    "drug": [
+     8
+    ],
+    "discovery.": [
+     9
+    ],
+    "Graph": [
+     10
+    ],
+    "neural": [
+     11,
+     71
+    ],
+    "networks": [
+     12
+    ],
+    "(GNNs)": [
+     13
+    ],
+    "have": [
+     14
+    ],
+    "been": [
+     15
+    ],
+    "widely": [
+     16
+    ],
+    "used": [
+     17
+    ],
+    "in": [
+     18
+    ],
+    "DTA": [
+     19,
+     40,
+     78,
+     201
+    ],
+    "prediction.": [
+     20
+    ],
+    "However,": [
+     21
+    ],
+    "existing": [
+     22
+    ],
+    "shallow": [
+     23
+    ],
+    "GNNs": [
+     24
+    ],
+    "are": [
+     25,
+     170
+    ],
+    "insufficient": [
+     26
+    ],
+    "to": [
+     27,
+     99,
+     123,
+     146
+    ],
+    "capture": [
+     28,
+     100
+    ],
+    "the": [
+     29,
+     35,
+     38,
+     45,
+     53,
+     87,
+     101,
+     107,
+     130,
+     143,
+     147,
+     191,
+     195
+    ],
+    "global": [
+     30,
+     54,
+     104
+    ],
+    "structure": [
+     31,
+     105
+    ],
+    "of": [
+     32,
+     37,
+     59,
+     106,
+     200
+    ],
+    "compounds.": [
+     33
+    ],
+    "Besides,": [
+     34
+    ],
+    "interpretability": [
+     36
+    ],
+    "graph-based": [
+     39
+    ],
+    "models": [
+     41
+    ],
+    "highly": [
+     42
+    ],
+    "relies": [
+     43
+    ],
+    "on": [
+     44,
+     74,
+     159
+    ],
+    "graph": [
+     46,
+     70,
+     96
+    ],
+    "attention": [
+     47
+    ],
+    "mechanism,": [
+     48
+    ],
+    "which": [
+     49,
+     174
+    ],
+    "can": [
+     50
+    ],
+    "not": [
+     51
+    ],
+    "reveal": [
+     52
+    ],
+    "relationship": [
+     55
+    ],
+    "between": [
+     56
+    ],
+    "each": [
+     57
+    ],
+    "atom": [
+     58
+    ],
+    "a": [
+     60,
+     67,
+     83,
+     91,
+     113,
+     125
+    ],
+    "molecule.": [
+     61
+    ],
+    "In": [
+     62
+    ],
+    "this": [
+     63
+    ],
+    "study,": [
+     64
+    ],
+    "we": [
+     65,
+     163
+    ],
+    "proposed": [
+     66,
+     144,
+     192
+    ],
+    "deep": [
+     68,
+     126,
+     149
+    ],
+    "multiscale": [
+     69
+    ],
+    "network": [
+     72
+    ],
+    "based": [
+     73
+    ],
+    "chemical": [
+     75,
+     131,
+     179
+    ],
+    "intuition": [
+     76
+    ],
+    "prediction": [
+     79,
+     202
+    ],
+    "(MGraphDTA).": [
+     80
+    ],
+    "We": [
+     81,
+     110,
+     133
+    ],
+    "introduced": [
+     82
+    ],
+    "dense": [
+     84
+    ],
+    "connection": [
+     85
+    ],
+    "into": [
+     86
+    ],
+    "GNN": [
+     88,
+     93
+    ],
+    "and": [
+     89,
+     103,
+     141,
+     197
+    ],
+    "built": [
+     90
+    ],
+    "super-deep": [
+     92
+    ],
+    "with": [
+     94,
+     172
+    ],
+    "27": [
+     95
+    ],
+    "convolutional": [
+     97
+    ],
+    "layers": [
+     98
+    ],
+    "local": [
+     102
+    ],
+    "compound": [
+     108
+    ],
+    "simultaneously.": [
+     109
+    ],
+    "also": [
+     111
+    ],
+    "developed": [
+     112
+    ],
+    "novel": [
+     114
+    ],
+    "visual": [
+     115
+    ],
+    "explanation": [
+     116
+    ],
+    "method,": [
+     117
+    ],
+    "gradient-weighted": [
+     118
+    ],
+    "activation": [
+     120
+    ],
+    "mapping": [
+     121
+    ],
+    "(Grad-AAM),": [
+     122
+    ],
+    "analyze": [
+     124
+    ],
+    "learning": [
+     127,
+     150
+    ],
+    "model": [
+     128
+    ],
+    "from": [
+     129,
+     182
+    ],
+    "perspective.": [
+     132
+    ],
+    "evaluated": [
+     134
+    ],
+    "our": [
+     135
+    ],
+    "approach": [
+     136
+    ],
+    "using": [
+     137
+    ],
+    "seven": [
+     138
+    ],
+    "benchmark": [
+     139
+    ],
+    "datasets": [
+     140
+    ],
+    "compared": [
+     142
+    ],
+    "method": [
+     145,
+     193
+    ],
+    "state-of-the-art": [
+     148
+    ],
+    "(DL)": [
+     151
+    ],
+    "models.": [
+     152
+    ],
+    "MGraphDTA": [
+     153
+    ],
+    "outperforms": [
+     154
+    ],
+    "other": [
+     155
+    ],
+    "DL-based": [
+     156
+    ],
+    "approaches": [
+     157
+    ],
+    "significantly": [
+     158
+    ],
+    "various": [
+     160
+    ],
+    "datasets.": [
+     161
+    ],
+    "Moreover,": [
+     162
+    ],
+    "show": [
+     164
+    ],
+    "that": [
+     165,
+     169,
+     190
+    ],
+    "Grad-AAM": [
+     166
+    ],
+    "creates": [
+     167
+    ],
+    "explanations": [
+     168
+    ],
+    "consistent": [
+     171
+    ],
+    "pharmacologists,": [
+     173
+    ],
+    "may": [
+     175
+    ],
+    "help": [
+     176
+    ],
+    "us": [
+     177
+    ],
+    "gain": [
+     178
+    ],
+    "insights": [
+     180
+    ],
+    "directly": [
+     181
+    ],
+    "data": [
+     183
+    ],
+    "beyond": [
+     184
+    ],
+    "human": [
+     185
+    ],
+    "perception.": [
+     186
+    ],
+    "These": [
+     187
+    ],
+    "advantages": [
+     188
+    ],
+    "demonstrate": [
+     189
+    ],
+    "improves": [
+     194
+    ],
+    "generalization": [
+     196
+    ],
+    "interpretation": [
+     198
+    ],
+    "capability": [
+     199
+    ],
+    "modeling.": [
+     203
+    ]
+   },
+   "relevance_score": 131.64662
+  },
+  {
+   "id": "https://openalex.org/W3015490653",
+   "doi": null,
+   "display_name": "GraphDTA: Predicting drug target binding affinity with graph neural networks",
+   "publication_year": 2024,
+   "type": "article",
+   "cited_by_count": 65,
+   "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://figshare.com/articles/journal_contribution/GraphDTA_Predicting_drug_target_binding_affinity_with_graph_neural_networks/20684878",
+    "any_repository_has_fulltext": true
+   },
+   "authorships": [
+    {
+     "author": {
+      "display_name": "Thin Nguyen"
+     }
+    },
+    {
+     "author": {
+      "display_name": "H Le (13305396)"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Thomas P. Quinn"
+     }
+    }
+   ],
+   "abstract_inverted_index": {
+    "Abstract": [
+     0
+    ],
+    "Summary": [
+     1
+    ],
+    "The": [
+     2,
+     170
+    ],
+    "development": [
+     3,
+     28
+    ],
+    "of": [
+     4,
+     26,
+     62,
+     168
+    ],
+    "new": [
+     5,
+     31,
+     63,
+     101
+    ],
+    "drugs": [
+     6,
+     41,
+     86,
+     107,
+     159
+    ],
+    "is": [
+     7,
+     44,
+     90
+    ],
+    "costly,": [
+     8
+    ],
+    "time": [
+     9
+    ],
+    "consuming": [
+     10
+    ],
+    "and": [
+     11,
+     23,
+     110,
+     156,
+     181,
+     191
+    ],
+    "often": [
+     12
+    ],
+    "accompanied": [
+     13
+    ],
+    "with": [
+     14
+    ],
+    "safety": [
+     15
+    ],
+    "issues.": [
+     16
+    ],
+    "Drug": [
+     17
+    ],
+    "repurposing": [
+     18
+    ],
+    "can": [
+     19,
+     162
+    ],
+    "avoid": [
+     20
+    ],
+    "the": [
+     21,
+     59,
+     67,
+     85,
+     196
+    ],
+    "expensive": [
+     22
+    ],
+    "lengthy": [
+     24
+    ],
+    "process": [
+     25
+    ],
+    "drug": [
+     27,
+     71
+    ],
+    "by": [
+     29,
+     52
+    ],
+    "finding": [
+     30
+    ],
+    "uses": [
+     32,
+     111
+    ],
+    "for": [
+     33,
+     78,
+     151
+    ],
+    "already": [
+     34
+    ],
+    "approved": [
+     35
+    ],
+    "drugs.": [
+     36,
+     54
+    ],
+    "In": [
+     37
+    ],
+    "order": [
+     38
+    ],
+    "to": [
+     39,
+     46,
+     69,
+     95,
+     115,
+     164,
+     194
+    ],
+    "repurpose": [
+     40
+    ],
+    "effectively,": [
+     42
+    ],
+    "it": [
+     43
+    ],
+    "useful": [
+     45
+    ],
+    "know": [
+     47
+    ],
+    "which": [
+     48,
+     53,
+     89
+    ],
+    "proteins": [
+     49
+    ],
+    "are": [
+     50,
+     149,
+     173,
+     184,
+     201,
+     209
+    ],
+    "targeted": [
+     51
+    ],
+    "Computational": [
+     55
+    ],
+    "models": [
+     56,
+     74,
+     83,
+     148,
+     172,
+     180
+    ],
+    "that": [
+     57,
+     105,
+     121,
+     145,
+     157
+    ],
+    "estimate": [
+     58
+    ],
+    "interaction": [
+     60
+    ],
+    "strength": [
+     61
+    ],
+    "drug–target": [
+     64,
+     117,
+     128,
+     152
+    ],
+    "pairs": [
+     65
+    ],
+    "have": [
+     66,
+     75
+    ],
+    "potential": [
+     68
+    ],
+    "expedite": [
+     70
+    ],
+    "repurposing.": [
+     72
+    ],
+    "Several": [
+     73
+    ],
+    "been": [
+     76
+    ],
+    "proposed": [
+     77,
+     171
+    ],
+    "this": [
+     79
+    ],
+    "task.": [
+     80
+    ],
+    "However,": [
+     81
+    ],
+    "these": [
+     82
+    ],
+    "represent": [
+     84,
+     96
+    ],
+    "as": [
+     87,
+     108,
+     160
+    ],
+    "strings,": [
+     88
+    ],
+    "not": [
+     91,
+     125
+    ],
+    "a": [
+     92,
+     100
+    ],
+    "natural": [
+     93
+    ],
+    "way": [
+     94
+    ],
+    "molecules.": [
+     97
+    ],
+    "We": [
+     98,
+     119
+    ],
+    "propose": [
+     99
+    ],
+    "model": [
+     102
+    ],
+    "called": [
+     103
+    ],
+    "GraphDTA": [
+     104
+    ],
+    "represents": [
+     106
+    ],
+    "graphs": [
+     109,
+     161
+    ],
+    "graph": [
+     112,
+     122
+    ],
+    "neural": [
+     113,
+     123
+    ],
+    "networks": [
+     114,
+     124
+    ],
+    "predict": [
+     116,
+     127
+    ],
+    "affinity.": [
+     118
+    ],
+    "show": [
+     120
+    ],
+    "only": [
+     126
+    ],
+    "affinity": [
+     129,
+     154
+    ],
+    "better": [
+     130
+    ],
+    "than": [
+     131
+    ],
+    "non-deep": [
+     132
+    ],
+    "learning": [
+     133,
+     140,
+     147
+    ],
+    "models,": [
+     134
+    ],
+    "but": [
+     135
+    ],
+    "also": [
+     136
+    ],
+    "outperform": [
+     137
+    ],
+    "competing": [
+     138
+    ],
+    "deep": [
+     139,
+     146
+    ],
+    "methods.": [
+     141
+    ],
+    "Our": [
+     142
+    ],
+    "results": [
+     143
+    ],
+    "confirm": [
+     144
+    ],
+    "appropriate": [
+     150
+    ],
+    "binding": [
+     153
+    ],
+    "prediction,": [
+     155
+    ],
+    "representing": [
+     158
+    ],
+    "lead": [
+     163
+    ],
+    "further": [
+     165
+    ],
+    "improvements.": [
+     166
+    ],
+    "Availability": [
+     167
+    ],
+    "implementation": [
+     169
+    ],
+    "implemented": [
+     174
+    ],
+    "in": [
+     175
+    ],
+    "Python.": [
+     176
+    ],
+    "Related": [
+     177
+    ],
+    "data,": [
+     178
+    ],
+    "pre-trained": [
+     179
+    ],
+    "source": [
+     182
+    ],
+    "code": [
+     183
+    ],
+    "publicly": [
+     185
+    ],
+    "available": [
+     186,
+     202,
+     210
+    ],
+    "at": [
+     187,
+     211
+    ],
+    "https://github.com/thinng/GraphDTA.": [
+     188
+    ],
+    "All": [
+     189
+    ],
+    "scripts": [
+     190
+    ],
+    "data": [
+     192,
+     208
+    ],
+    "needed": [
+     193
+    ],
+    "reproduce": [
+     195
+    ],
+    "post": [
+     197
+    ],
+    "hoc": [
+     198
+    ],
+    "statistical": [
+     199
+    ],
+    "analysis": [
+     200
+    ],
+    "from": [
+     203
+    ],
+    "https://doi.org/10.5281/zenodo.3603523.": [
+     204
+    ],
+    "Supplementary": [
+     205,
+     207
+    ],
+    "information": [
+     206
+    ],
+    "Bioinformatics": [
+     212
+    ],
+    "online.": [
+     213
+    ]
+   },
+   "relevance_score": 126.86742
+  },
+  {
+   "id": "https://openalex.org/W4283010692",
+   "doi": "https://doi.org/10.1186/s12864-022-08648-9",
+   "display_name": "Sequence-based drug-target affinity prediction using weighted graph neural networks",
+   "publication_year": 2022,
+   "type": "article",
+   "cited_by_count": 81,
+   "open_access": {
+    "is_oa": true,
+    "oa_status": "gold",
+    "oa_url": "https://bmcgenomics.biomedcentral.com/counter/pdf/10.1186/s12864-022-08648-9",
+    "any_repository_has_fulltext": true
+   },
+   "authorships": [
+    {
+     "author": {
+      "display_name": "Mingjian Jiang"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Shuang Wang"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Shugang Zhang"
+     }
+    }
+   ],
+   "abstract_inverted_index": {
+    "BACKGROUND:": [
+     0
+    ],
+    "Affinity": [
+     1
+    ],
+    "prediction": [
+     2,
+     34,
+     87
+    ],
+    "between": [
+     3
+    ],
+    "molecule": [
+     4
+    ],
+    "and": [
+     5,
+     46,
+     83,
+     113,
+     135,
+     149,
+     154,
+     178,
+     206
+    ],
+    "protein": [
+     6,
+     41,
+     59,
+     148
+    ],
+    "is": [
+     7,
+     15,
+     44,
+     73,
+     173,
+     188
+    ],
+    "an": [
+     8
+    ],
+    "important": [
+     9
+    ],
+    "step": [
+     10
+    ],
+    "of": [
+     11,
+     28,
+     58,
+     97,
+     111,
+     142,
+     168,
+     204
+    ],
+    "virtual": [
+     12
+    ],
+    "screening,": [
+     13
+    ],
+    "which": [
+     14,
+     43,
+     72,
+     104,
+     187
+    ],
+    "usually": [
+     16
+    ],
+    "called": [
+     17,
+     74,
+     189
+    ],
+    "drug-target": [
+     18,
+     32,
+     80,
+     194
+    ],
+    "affinity": [
+     19,
+     33,
+     38,
+     81,
+     182,
+     195
+    ],
+    "(DTA)": [
+     20,
+     82
+    ],
+    "prediction.": [
+     21
+    ],
+    "Its": [
+     22
+    ],
+    "accuracy": [
+     23,
+     63
+    ],
+    "directly": [
+     24
+    ],
+    "influences": [
+     25
+    ],
+    "the": [
+     26,
+     37,
+     56,
+     62,
+     95,
+     98,
+     109,
+     140,
+     164,
+     180,
+     185,
+     202
+    ],
+    "progress": [
+     27
+    ],
+    "drug": [
+     29
+    ],
+    "development.": [
+     30
+    ],
+    "Sequence-based": [
+     31
+    ],
+    "can": [
+     35,
+     47,
+     76,
+     136,
+     157
+    ],
+    "predict": [
+     36,
+     179
+    ],
+    "according": [
+     39
+    ],
+    "to": [
+     40,
+     50,
+     55,
+     65,
+     93,
+     175
+    ],
+    "sequence,": [
+     42
+    ],
+    "fast": [
+     45,
+     132
+    ],
+    "be": [
+     48,
+     66,
+     77,
+     137
+    ],
+    "applied": [
+     49
+    ],
+    "large": [
+     51,
+     143
+    ],
+    "datasets.": [
+     52
+    ],
+    "However,": [
+     53
+    ],
+    "due": [
+     54
+    ],
+    "lack": [
+     57
+    ],
+    "structure": [
+     60
+    ],
+    "information,": [
+     61
+    ],
+    "needs": [
+     64
+    ],
+    "improved.": [
+     67
+    ],
+    "RESULTS:": [
+     68
+    ],
+    "The": [
+     69,
+     198
+    ],
+    "proposed": [
+     70,
+     99,
+     199
+    ],
+    "model": [
+     71
+    ],
+    "WGNN-DTA": [
+     75,
+     107
+    ],
+    "competent": [
+     78
+    ],
+    "in": [
+     79,
+     101
+    ],
+    "compound-protein": [
+     84
+    ],
+    "interaction": [
+     85
+    ],
+    "(CPI)": [
+     86
+    ],
+    "tasks.": [
+     88
+    ],
+    "Various": [
+     89
+    ],
+    "experiments": [
+     90
+    ],
+    "are": [
+     91
+    ],
+    "designed": [
+     92
+    ],
+    "verify": [
+     94
+    ],
+    "performance": [
+     96
+    ],
+    "method": [
+     100,
+     200
+    ],
+    "different": [
+     102
+    ],
+    "scenarios,": [
+     103
+    ],
+    "proves": [
+     105
+    ],
+    "that": [
+     106,
+     156
+    ],
+    "has": [
+     108,
+     131,
+     201
+    ],
+    "advantages": [
+     110,
+     203
+    ],
+    "simplicity": [
+     112,
+     205
+    ],
+    "high": [
+     114,
+     207
+    ],
+    "accuracy.": [
+     115,
+     208
+    ],
+    "Moreover,": [
+     116
+    ],
+    "because": [
+     117
+    ],
+    "it": [
+     118,
+     130
+    ],
+    "does": [
+     119
+    ],
+    "not": [
+     120
+    ],
+    "need": [
+     121
+    ],
+    "complex": [
+     122
+    ],
+    "steps": [
+     123
+    ],
+    "such": [
+     124
+    ],
+    "as": [
+     125
+    ],
+    "multiple": [
+     126
+    ],
+    "sequence": [
+     127,
+     153
+    ],
+    "alignment": [
+     128
+    ],
+    "(MSA),": [
+     129
+    ],
+    "execution": [
+     133
+    ],
+    "speed,": [
+     134
+    ],
+    "suitable": [
+     138
+    ],
+    "for": [
+     139
+    ],
+    "screening": [
+     141
+    ],
+    "databases.": [
+     144
+    ],
+    "CONCLUSION:": [
+     145
+    ],
+    "We": [
+     146
+    ],
+    "construct": [
+     147
+    ],
+    "molecular": [
+     150
+    ],
+    "graphs": [
+     151
+    ],
+    "through": [
+     152
+    ],
+    "SMILES": [
+     155
+    ],
+    "effectively": [
+     158
+    ],
+    "reflect": [
+     159
+    ],
+    "their": [
+     160
+    ],
+    "structures.": [
+     161
+    ],
+    "To": [
+     162
+    ],
+    "utilize": [
+     163
+    ],
+    "detail": [
+     165
+    ],
+    "contact": [
+     166
+    ],
+    "information": [
+     167
+    ],
+    "protein,": [
+     169
+    ],
+    "graph": [
+     170,
+     191
+    ],
+    "neural": [
+     171,
+     192
+    ],
+    "network": [
+     172
+    ],
+    "used": [
+     174
+    ],
+    "extract": [
+     176
+    ],
+    "features": [
+     177
+    ],
+    "binding": [
+     181
+    ],
+    "based": [
+     183
+    ],
+    "on": [
+     184
+    ],
+    "graphs,": [
+     186
+    ],
+    "weighted": [
+     190
+    ],
+    "networks": [
+     193
+    ],
+    "predictor": [
+     196
+    ],
+    "(WGNN-DTA).": [
+     197
+    ]
+   },
+   "relevance_score": 125.26095
+  },
+  {
+   "id": "https://openalex.org/W4280572290",
+   "doi": "https://doi.org/10.7717/peerj.13163",
+   "display_name": "DeepNC: a framework for drug-target interaction prediction with graph neural networks",
+   "publication_year": 2022,
+   "type": "article",
+   "cited_by_count": 39,
+   "open_access": {
+    "is_oa": true,
+    "oa_status": "gold",
+    "oa_url": "https://doi.org/10.7717/peerj.13163",
+    "any_repository_has_fulltext": true
+   },
+   "authorships": [
+    {
+     "author": {
+      "display_name": "Huu Ngoc Tran Tran"
+     }
+    },
+    {
+     "author": {
+      "display_name": "J. Joshua Thomas"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Nurul Hashimah Ahamed Hassain Malim"
+     }
+    }
+   ],
+   "abstract_inverted_index": {
+    "The": [
+     0,
+     188
+    ],
+    "exploration": [
+     1
+    ],
+    "of": [
+     2,
+     19,
+     70,
+     92,
+     156,
+     163,
+     172,
+     190,
+     217,
+     226,
+     243
+    ],
+    "drug-target": [
+     3
+    ],
+    "interactions": [
+     4
+    ],
+    "(DTI)": [
+     5
+    ],
+    "is": [
+     6,
+     81,
+     129
+    ],
+    "an": [
+     7,
+     82,
+     110,
+     114
+    ],
+    "essential": [
+     8
+    ],
+    "stage": [
+     9
+    ],
+    "in": [
+     10,
+     23,
+     57,
+     241
+    ],
+    "the": [
+     11,
+     17,
+     24,
+     34,
+     66,
+     87,
+     103,
+     154,
+     161,
+     173,
+     184,
+     214,
+     224,
+     232,
+     239
+    ],
+    "drug": [
+     12
+    ],
+    "development": [
+     13
+    ],
+    "pipeline.": [
+     14
+    ],
+    "Thanks": [
+     15
+    ],
+    "to": [
+     16,
+     32,
+     112,
+     182,
+     206,
+     223,
+     237
+    ],
+    "assistance": [
+     18
+    ],
+    "computational": [
+     20
+    ],
+    "models,": [
+     21
+    ],
+    "notably": [
+     22
+    ],
+    "deep": [
+     25,
+     42,
+     116
+    ],
+    "learning": [
+     26,
+     43,
+     86
+    ],
+    "approach,": [
+     27
+    ],
+    "scientists": [
+     28
+    ],
+    "have": [
+     29
+    ],
+    "been": [
+     30
+    ],
+    "able": [
+     31
+    ],
+    "shorten": [
+     33
+    ],
+    "time": [
+     35
+    ],
+    "spent": [
+     36
+    ],
+    "on": [
+     37,
+     194,
+     231
+    ],
+    "this": [
+     38
+    ],
+    "stage.": [
+     39
+    ],
+    "Widely": [
+     40
+    ],
+    "practiced": [
+     41
+    ],
+    "algorithms": [
+     44
+    ],
+    "such": [
+     45
+    ],
+    "as": [
+     46,
+     99
+    ],
+    "convolutional": [
+     47
+    ],
+    "neural": [
+     48,
+     52,
+     78
+    ],
+    "networks": [
+     49,
+     53
+    ],
+    "and": [
+     50,
+     89,
+     101,
+     144,
+     158,
+     165,
+     175,
+     200,
+     219,
+     247
+    ],
+    "recurrent": [
+     51
+    ],
+    "are": [
+     54,
+     177,
+     210
+    ],
+    "commonly": [
+     55
+    ],
+    "employed": [
+     56
+    ],
+    "DTI": [
+     58,
+     120
+    ],
+    "prediction": [
+     59
+    ],
+    "projects.": [
+     60
+    ],
+    "However,": [
+     61
+    ],
+    "they": [
+     62,
+     209
+    ],
+    "can": [
+     63
+    ],
+    "hardly": [
+     64
+    ],
+    "utilize": [
+     65
+    ],
+    "natural": [
+     67
+    ],
+    "graph": [
+     68,
+     77
+    ],
+    "structure": [
+     69
+    ],
+    "molecular": [
+     71,
+     97
+    ],
+    "inputs.": [
+     72
+    ],
+    "For": [
+     73
+    ],
+    "that": [
+     74,
+     208,
+     229
+    ],
+    "reason,": [
+     75
+    ],
+    "a": [
+     76,
+     130
+    ],
+    "network": [
+     79
+    ],
+    "(GNN)": [
+     80
+    ],
+    "applicable": [
+     83
+    ],
+    "choice": [
+     84
+    ],
+    "for": [
+     85,
+     119,
+     212
+    ],
+    "chemical": [
+     88
+    ],
+    "structural": [
+     90
+    ],
+    "characteristics": [
+     91
+    ],
+    "molecules": [
+     93
+    ],
+    "when": [
+     94
+    ],
+    "it": [
+     95
+    ],
+    "represents": [
+     96
+    ],
+    "compounds": [
+     98
+    ],
+    "graphs": [
+     100
+    ],
+    "learns": [
+     102,
+     153
+    ],
+    "compound": [
+     104
+    ],
+    "features": [
+     105,
+     155
+    ],
+    "from": [
+     106
+    ],
+    "those": [
+     107
+    ],
+    "graphs.": [
+     108
+    ],
+    "In": [
+     109,
+     149
+    ],
+    "effort": [
+     111
+    ],
+    "construct": [
+     113
+    ],
+    "advanced": [
+     115
+    ],
+    "learning-based": [
+     117
+    ],
+    "model": [
+     118
+    ],
+    "prediction,": [
+     121
+    ],
+    "we": [
+     122
+    ],
+    "propose": [
+     123
+    ],
+    "Deep": [
+     124
+    ],
+    "Neural": [
+     125
+    ],
+    "Computation": [
+     126
+    ],
+    "(DeepNC),": [
+     127
+    ],
+    "which": [
+     128
+    ],
+    "framework": [
+     131,
+     152
+    ],
+    "utilizing": [
+     132
+    ],
+    "three": [
+     133
+    ],
+    "GNN": [
+     134,
+     164
+    ],
+    "algorithms:": [
+     135
+    ],
+    "Generalized": [
+     136
+    ],
+    "Aggregation": [
+     137
+    ],
+    "Networks": [
+     138,
+     142
+    ],
+    "(GENConv),": [
+     139
+    ],
+    "Graph": [
+     140
+    ],
+    "Convolutional": [
+     141
+    ],
+    "(GCNConv),": [
+     143
+    ],
+    "Hypergraph": [
+     145
+    ],
+    "Convolution-Hypergraph": [
+     146
+    ],
+    "Attention": [
+     147
+    ],
+    "(HypergraphConv).": [
+     148
+    ],
+    "short,": [
+     150
+    ],
+    "our": [
+     151
+    ],
+    "drugs": [
+     157,
+     174,
+     218
+    ],
+    "targets": [
+     159,
+     176
+    ],
+    "by": [
+     160
+    ],
+    "layers": [
+     162,
+     181
+    ],
+    "1-D": [
+     166
+    ],
+    "convolution": [
+     167
+    ],
+    "network,": [
+     168
+    ],
+    "respectively.": [
+     169
+    ],
+    "Then,": [
+     170
+    ],
+    "representations": [
+     171
+    ],
+    "fed": [
+     178
+    ],
+    "into": [
+     179
+    ],
+    "fully-connected": [
+     180
+    ],
+    "predict": [
+     183
+    ],
+    "binding": [
+     185,
+     215
+    ],
+    "affinity": [
+     186,
+     216
+    ],
+    "values.": [
+     187
+    ],
+    "models": [
+     189
+    ],
+    "DeepNC": [
+     191,
+     235
+    ],
+    "were": [
+     192
+    ],
+    "evaluated": [
+     193
+    ],
+    "two": [
+     195
+    ],
+    "benchmarked": [
+     196
+    ],
+    "datasets": [
+     197
+    ],
+    "(Davis,": [
+     198
+    ],
+    "Kiba)": [
+     199
+    ],
+    "one": [
+     201
+    ],
+    "independently": [
+     202
+    ],
+    "proposed": [
+     203
+    ],
+    "dataset": [
+     204
+    ],
+    "(Allergy)": [
+     205
+    ],
+    "confirm": [
+     207
+    ],
+    "suitable": [
+     211
+    ],
+    "predicting": [
+     213
+    ],
+    "targets.": [
+     220
+    ],
+    "Moreover,": [
+     221
+    ],
+    "compared": [
+     222
+    ],
+    "results": [
+     225
+    ],
+    "baseline": [
+     227
+    ],
+    "methods": [
+     228
+    ],
+    "worked": [
+     230
+    ],
+    "same": [
+     233
+    ],
+    "problem,": [
+     234
+    ],
+    "proves": [
+     236
+    ],
+    "improve": [
+     238
+    ],
+    "performance": [
+     240
+    ],
+    "terms": [
+     242
+    ],
+    "mean": [
+     244
+    ],
+    "square": [
+     245
+    ],
+    "error": [
+     246
+    ],
+    "concordance": [
+     248
+    ],
+    "index.": [
+     249
+    ]
+   },
+   "relevance_score": 122.26804
+  },
+  {
+   "id": "https://openalex.org/W4313423934",
+   "doi": "https://doi.org/10.1093/bib/bbac578",
+   "display_name": "Metapath-aggregated heterogeneous graph neural network for drug–target interaction prediction",
+   "publication_year": 2023,
+   "type": "article",
+   "cited_by_count": 79,
+   "open_access": {
+    "is_oa": true,
+    "oa_status": "bronze",
+    "oa_url": "https://academic.oup.com/bib/article-pdf/24/1/bbac578/48782113/bbac578.pdf",
+    "any_repository_has_fulltext": false
+   },
+   "authorships": [
+    {
+     "author": {
+      "display_name": "Li Mei"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Xiangrui Cai"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Sihan Xu"
+     }
+    }
+   ],
+   "abstract_inverted_index": {
+    "Drug-target": [
+     0
+    ],
+    "interaction": [
+     1
+    ],
+    "(DTI)": [
+     2
+    ],
+    "prediction": [
+     3,
+     23
+    ],
+    "is": [
+     4,
+     150
+    ],
+    "an": [
+     5
+    ],
+    "essential": [
+     6
+    ],
+    "step": [
+     7
+    ],
+    "in": [
+     8,
+     40,
+     54,
+     78
+    ],
+    "drug": [
+     9
+    ],
+    "repositioning.": [
+     10
+    ],
+    "A": [
+     11
+    ],
+    "few": [
+     12
+    ],
+    "graph": [
+     13,
+     67,
+     82,
+     90,
+     117
+    ],
+    "neural": [
+     14,
+     68
+    ],
+    "network": [
+     15,
+     46,
+     69
+    ],
+    "(GNN)-based": [
+     16
+    ],
+    "methods": [
+     17,
+     31,
+     136
+    ],
+    "have": [
+     18
+    ],
+    "been": [
+     19
+    ],
+    "proposed": [
+     20
+    ],
+    "for": [
+     21,
+     83,
+     145
+    ],
+    "DTI": [
+     22,
+     84,
+     146
+    ],
+    "using": [
+     24
+    ],
+    "heterogeneous": [
+     25,
+     57,
+     66,
+     81,
+     89,
+     129
+    ],
+    "biological": [
+     26,
+     56,
+     80,
+     128
+    ],
+    "data.": [
+     27
+    ],
+    "However,": [
+     28
+    ],
+    "existing": [
+     29
+    ],
+    "GNN-based": [
+     30
+    ],
+    "only": [
+     32
+    ],
+    "aggregate": [
+     33
+    ],
+    "information": [
+     34
+    ],
+    "from": [
+     35
+    ],
+    "directly": [
+     36
+    ],
+    "connected": [
+     37
+    ],
+    "nodes": [
+     38
+    ],
+    "restricted": [
+     39
+    ],
+    "a": [
+     41,
+     44,
+     64,
+     114
+    ],
+    "drug-related": [
+     42
+    ],
+    "or": [
+     43
+    ],
+    "target-related": [
+     45
+    ],
+    "and": [
+     47,
+     75,
+     93
+    ],
+    "are": [
+     48
+    ],
+    "incapable": [
+     49
+    ],
+    "of": [
+     50
+    ],
+    "capturing": [
+     51
+    ],
+    "high-order": [
+     52,
+     94,
+     99,
+     106
+    ],
+    "dependencies": [
+     53
+    ],
+    "the": [
+     55,
+     79
+    ],
+    "graph.": [
+     58
+    ],
+    "In": [
+     59
+    ],
+    "this": [
+     60
+    ],
+    "paper,": [
+     61
+    ],
+    "we": [
+     62
+    ],
+    "propose": [
+     63
+    ],
+    "metapath-aggregated": [
+     65
+    ],
+    "(MHGNN)": [
+     70
+    ],
+    "to": [
+     71
+    ],
+    "capture": [
+     72
+    ],
+    "complex": [
+     73
+    ],
+    "structures": [
+     74
+    ],
+    "rich": [
+     76
+    ],
+    "semantics": [
+     77,
+     95
+    ],
+    "prediction.": [
+     85,
+     147
+    ],
+    "Specifically,": [
+     86
+    ],
+    "MHGNN": [
+     87,
+     104,
+     131
+    ],
+    "enhances": [
+     88
+    ],
+    "structure": [
+     91
+    ],
+    "learning": [
+     92,
+     96
+    ],
+    "by": [
+     97,
+     112
+    ],
+    "modeling": [
+     98
+    ],
+    "relations": [
+     100
+    ],
+    "via": [
+     101
+    ],
+    "metapaths.": [
+     102
+    ],
+    "Additionally,": [
+     103
+    ],
+    "enriches": [
+     105
+    ],
+    "correlations": [
+     107
+    ],
+    "between": [
+     108
+    ],
+    "drug-target": [
+     109
+    ],
+    "pairs": [
+     110
+    ],
+    "(DTPs)": [
+     111
+    ],
+    "constructing": [
+     113
+    ],
+    "DTP": [
+     115
+    ],
+    "correlation": [
+     116
+    ],
+    "with": [
+     118
+    ],
+    "DTPs": [
+     119
+    ],
+    "as": [
+     120
+    ],
+    "nodes.": [
+     121
+    ],
+    "We": [
+     122
+    ],
+    "conduct": [
+     123
+    ],
+    "extensive": [
+     124
+    ],
+    "experiments": [
+     125
+    ],
+    "on": [
+     126
+    ],
+    "three": [
+     127
+    ],
+    "datasets.": [
+     130
+    ],
+    "favorably": [
+     132
+    ],
+    "surpasses": [
+     133
+    ],
+    "17": [
+     134
+    ],
+    "state-of-the-art": [
+     135
+    ],
+    "over": [
+     137
+    ],
+    "6": [
+     138
+    ],
+    "evaluation": [
+     139
+    ],
+    "metrics,": [
+     140
+    ],
+    "which": [
+     141
+    ],
+    "verifies": [
+     142
+    ],
+    "its": [
+     143
+    ],
+    "efficacy": [
+     144
+    ],
+    "The": [
+     148
+    ],
+    "code": [
+     149
+    ],
+    "available": [
+     151
+    ],
+    "at": [
+     152
+    ],
+    "https://github.com/Zora-LM/MHGNN-DTI.": [
+     153
+    ]
+   },
+   "relevance_score": 119.68836
+  },
+  {
+   "id": "https://openalex.org/W4416931215",
+   "doi": "https://doi.org/10.1016/j.jpha.2025.101508",
+   "display_name": "Intelligence on the graph: Graph neural networks for mechanistic drug target discovery",
+   "publication_year": 2025,
+   "type": "article",
+   "cited_by_count": 8,
+   "open_access": {
+    "is_oa": true,
+    "oa_status": "gold",
+    "oa_url": "https://doi.org/10.1016/j.jpha.2025.101508",
+    "any_repository_has_fulltext": true
+   },
+   "authorships": [
+    {
+     "author": {
+      "display_name": "Jing Chen"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Nini Fan"
+     }
+    },
+    {
+     "author": {
+      "display_name": "Yuqing Lu"
+     }
+    }
+   ],
+   "abstract_inverted_index": {
+    "Drug": [
+     0
+    ],
+    "discovery": [
+     1,
+     42,
+     212,
+     232
+    ],
+    "is": [
+     2
+    ],
+    "increasingly": [
+     3
+    ],
+    "challenged": [
+     4
+    ],
+    "by": [
+     5
+    ],
+    "rising": [
+     6
+    ],
+    "costs,": [
+     7
+    ],
+    "long": [
+     8
+    ],
+    "development": [
+     9,
+     225
+    ],
+    "cycles": [
+     10
+    ],
+    "and": [
+     11,
+     54,
+     67,
+     89,
+     93,
+     98,
+     105,
+     121,
+     134,
+     152,
+     170,
+     195,
+     199,
+     220,
+     229
+    ],
+    "high": [
+     12
+    ],
+    "attrition": [
+     13
+    ],
+    "rates,": [
+     14
+    ],
+    "with": [
+     15,
+     209
+    ],
+    "accurate": [
+     16
+    ],
+    "target": [
+     17,
+     41,
+     180
+    ],
+    "identification": [
+     18
+    ],
+    "remaining": [
+     19
+    ],
+    "a": [
+     20,
+     52,
+     164
+    ],
+    "critical": [
+     21
+    ],
+    "bottleneck.": [
+     22
+    ],
+    "Although": [
+     23
+    ],
+    "artificial": [
+     24
+    ],
+    "intelligence": [
+     25
+    ],
+    "(AI)": [
+     26
+    ],
+    "has": [
+     27
+    ],
+    "demonstrated": [
+     28
+    ],
+    "transformative": [
+     29
+    ],
+    "potential,": [
+     30
+    ],
+    "the": [
+     31,
+     74,
+     126,
+     224
+    ],
+    "systematic": [
+     32
+    ],
+    "application": [
+     33
+    ],
+    "of": [
+     34,
+     57,
+     77,
+     128,
+     158,
+     226
+    ],
+    "graph": [
+     35,
+     81,
+     85,
+     90,
+     119,
+     197
+    ],
+    "neural": [
+     36
+    ],
+    "networks": [
+     37,
+     83,
+     87
+    ],
+    "(GNNs)": [
+     38
+    ],
+    "to": [
+     39,
+     143
+    ],
+    "drug": [
+     40,
+     179,
+     211,
+     231
+    ],
+    "remains": [
+     43
+    ],
+    "underexplored.": [
+     44
+    ],
+    "To": [
+     45
+    ],
+    "address": [
+     46
+    ],
+    "this": [
+     47,
+     49,
+     146,
+     159,
+     215
+    ],
+    "gap,": [
+     48
+    ],
+    "paper": [
+     50,
+     147,
+     160
+    ],
+    "provides": [
+     51,
+     217
+    ],
+    "comprehensive": [
+     53
+    ],
+    "structured": [
+     55
+    ],
+    "analysis": [
+     56
+    ],
+    "recent": [
+     58
+    ],
+    "advances": [
+     59
+    ],
+    "in": [
+     60,
+     101,
+     178,
+     188
+    ],
+    "GNN-based": [
+     61
+    ],
+    "methods": [
+     62
+    ],
+    "for": [
+     63
+    ],
+    "drug-target": [
+     64,
+     68
+    ],
+    "interaction": [
+     65
+    ],
+    "(DTI)": [
+     66
+    ],
+    "affinity": [
+     69
+    ],
+    "(DTA)": [
+     70
+    ],
+    "prediction.": [
+     71
+    ],
+    "We": [
+     72
+    ],
+    "dissect": [
+     73
+    ],
+    "methodological": [
+     75,
+     141
+    ],
+    "foundations": [
+     76
+    ],
+    "representative": [
+     78,
+     202
+    ],
+    "architectures": [
+     79,
+     174
+    ],
+    "including": [
+     80
+    ],
+    "convolutional": [
+     82
+    ],
+    "(GCNs),": [
+     84
+    ],
+    "attention": [
+     86
+    ],
+    "(GATs)": [
+     88
+    ],
+    "autoencoders": [
+     91
+    ],
+    "(GAEs),": [
+     92
+    ],
+    "compare": [
+     94
+    ],
+    "their": [
+     95
+    ],
+    "mechanisms,": [
+     96
+    ],
+    "advantages": [
+     97
+    ],
+    "applicable": [
+     99
+    ],
+    "scenarios": [
+     100
+    ],
+    "modeling": [
+     102
+    ],
+    "complex": [
+     103
+    ],
+    "molecular": [
+     104
+    ],
+    "biological": [
+     106,
+     136,
+     144
+    ],
+    "systems.": [
+     107
+    ],
+    "Also,": [
+     108
+    ],
+    "we": [
+     109
+    ],
+    "synthesize": [
+     110
+    ],
+    "frontier": [
+     111
+    ],
+    "paradigms": [
+     112,
+     185
+    ],
+    "such": [
+     113,
+     191
+    ],
+    "as": [
+     114,
+     192
+    ],
+    "multimodal": [
+     115,
+     193
+    ],
+    "data": [
+     116
+    ],
+    "fusion,": [
+     117
+    ],
+    "high-order": [
+     118,
+     196
+    ],
+    "reasoning": [
+     120
+    ],
+    "dynamic": [
+     122
+    ],
+    "GNNs,": [
+     123
+    ],
+    "which": [
+     124
+    ],
+    "enable": [
+     125
+    ],
+    "capture": [
+     127
+    ],
+    "atom-residue": [
+     129
+    ],
+    "interactions,": [
+     130
+    ],
+    "multi-target": [
+     131
+    ],
+    "coordination": [
+     132
+    ],
+    "mechanisms": [
+     133
+    ],
+    "cross-scale": [
+     135
+    ],
+    "features.": [
+     137
+    ],
+    "By": [
+     138
+    ],
+    "systematically": [
+     139
+    ],
+    "mapping": [
+     140
+    ],
+    "innovations": [
+     142
+    ],
+    "applications,": [
+     145
+    ],
+    "offers": [
+     148
+    ],
+    "both": [
+     149
+    ],
+    "theoretical": [
+     150
+    ],
+    "guidance": [
+     151
+    ],
+    "translational": [
+     153
+    ],
+    "insights.": [
+     154
+    ],
+    "The": [
+     155
+    ],
+    "key": [
+     156
+    ],
+    "contributions": [
+     157
+    ],
+    "include:": [
+     161
+    ],
+    "(1)": [
+     162
+    ],
+    "establishing": [
+     163
+    ],
+    "comparative": [
+     165
+    ],
+    "framework": [
+     166
+    ],
+    "that": [
+     167,
+     205
+    ],
+    "clarifies": [
+     168
+    ],
+    "when": [
+     169
+    ],
+    "how": [
+     171
+    ],
+    "different": [
+     172
+    ],
+    "GNNs": [
+     173
+    ],
+    "can": [
+     175
+    ],
+    "be": [
+     176
+    ],
+    "applied": [
+     177
+    ],
+    "discovery;": [
+     181
+    ],
+    "(2)": [
+     182
+    ],
+    "integrating": [
+     183
+    ],
+    "cutting-edge": [
+     184
+    ],
+    "rarely": [
+     186
+    ],
+    "addressed": [
+     187
+    ],
+    "prior": [
+     189
+    ],
+    "reviews,": [
+     190
+    ],
+    "fusion": [
+     194
+    ],
+    "modeling;": [
+     198
+    ],
+    "(3)": [
+     200
+    ],
+    "highlighting": [
+     201
+    ],
+    "case": [
+     203
+    ],
+    "studies": [
+     204
+    ],
+    "bridge": [
+     206
+    ],
+    "algorithmic": [
+     207
+    ],
+    "innovation": [
+     208
+    ],
+    "practical": [
+     210
+    ],
+    "outcomes.": [
+     213
+    ],
+    "Collectively,": [
+     214
+    ],
+    "work": [
+     216
+    ],
+    "an": [
+     218
+    ],
+    "authoritative": [
+     219
+    ],
+    "forward-looking": [
+     221
+    ],
+    "reference,": [
+     222
+    ],
+    "promoting": [
+     223
+    ],
+    "AI-driven,": [
+     227
+    ],
+    "efficient": [
+     228
+    ],
+    "interpretable": [
+     230
+    ],
+    "pipelines.": [
+     233
+    ]
+   },
+   "relevance_score": 117.91998
+  }
+ ],
+ "group_by": []
+}

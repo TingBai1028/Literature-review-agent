@@ -1,64 +1,204 @@
 """2. Retriever agent. Spec: docs/agents/retriever.md
 
-Runs the Planner's queries against scholarly APIs, removes duplicates, caps the number
-of papers by effort level, and builds the summary shown at Human review 1.
+Runs the Planner's queries against scholarly APIs, merges and deduplicates the results,
+drops papers without an abstract (later agents quote them as evidence), ranks by a blend of
+relevance and citations per year, caps the number of papers by effort level, and builds the
+summary shown at Human review 1.
 """
 
 from __future__ import annotations
 
 import json
 import re
+from bisect import bisect_left
+from datetime import date
 from pathlib import Path
 
+from openai import OpenAIError
+from pydantic import BaseModel, Field
+
 from litagent.config import EFFORT_PROFILES, Settings
-from litagent.schemas import Paper, RetrievalSummary, SearchPlan
-from litagent.tools.openalex import search_openalex
+from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
+from litagent.schemas import Paper, RetrievalSummary, SearchCriteria, SearchPlan
+from litagent.tools.openalex import OpenAlexError, search_openalex
+from litagent.trace import current_trace
 
 SAMPLE_DIR = Path(__file__).resolve().parents[2] / "data" / "sample"
+RRF_K = 60  # standard reciprocal-rank-fusion constant: one query adds 1 / (RRF_K + rank) to a paper's relevance
+SUMMARY_SAMPLE_SIZE = 30  # papers the LLM sees when it writes the summary
+
+
+class RetrievalError(RuntimeError):
+    """Every search failed (as opposed to searches that ran and found nothing)."""
+
+
+class SummaryDraft(BaseModel):
+    summary: str = Field(description="2-4 plain sentences for the user")
 
 
 def retrieve(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> list[Paper]:
+    """Returns [] when the searches ran but found nothing; raises RetrievalError when every search failed."""
     if settings.sample_mode:
         return _sample_papers(plan)
 
-    papers: list[Paper] = []
+    results: list[list[Paper]] = []
+    failures: list[str] = []
     for query in plan.queries:
-        papers += search_openalex(query, plan.criteria, limit=plan.max_papers, open_access_only=not signed_in)
+        try:
+            found = search_openalex(query, plan.criteria, limit=plan.max_papers, open_access_only=not signed_in)
+        except OpenAlexError as e:
+            failures.append(str(e))
+            _log("search openalex", "failed", query, "next query", str(e))
+            continue
+        results.append(found)
+        _log("search openalex", f"{len(found)} papers", query, "next query")
         # TODO: add search_semantic_scholar / search_arxiv and merge the results
+    if not results:
+        raise RetrievalError("Every search failed: " + " | ".join(dict.fromkeys(failures)))
 
     if signed_in:
         # TODO: institutional access. Check your university's licence terms first:
         # publisher licences usually forbid automated bulk downloading.
         pass
 
-    papers = deduplicate(papers)
-    # TODO: rank by relevance to the question and citations per year before cutting
-    papers = papers[: plan.max_papers]
+    found_total = sum(len(r) for r in results)
+    merged = merge_ranked(results)
+    with_abstract = [(p, s) for p, s in merged if p.abstract]
+    kept = [(p, s) for p, s in with_abstract if _meets_citation_rate(p, plan.criteria.min_citations_per_year)]
+    papers = rank(kept, settings.rank_relevance_weight)[: plan.max_papers]
+    w = settings.rank_relevance_weight
+    _log(
+        "merge, filter, rank", f"{len(papers)} papers kept", f"limit {plan.max_papers}", "summarise",
+        f"{found_total} found by {len(results)} queries; removed {found_total - len(merged)} duplicates, "
+        f"{len(merged) - len(with_abstract)} without abstract, {len(with_abstract) - len(kept)} below the citations-per-year "
+        f"minimum; ranked {w:.0%} relevance / {1 - w:.0%} citations per year",
+    )
 
     if EFFORT_PROFILES[plan.effort].use_full_text:
         # TODO: download PDFs for open-access papers and fill paper.full_text
-        pass
+        _log("full text", "skipped", next_step="use abstracts", why="Full-text PDF reading is not implemented yet")
     return papers
 
 
-def deduplicate(papers: list[Paper]) -> list[Paper]:
-    """Same paper from two sources, or preprint + published version: keep the first."""
-    seen: set[str] = set()
-    unique = []
-    for p in papers:
-        key = (p.doi or p.title).lower().strip()
-        if key and key not in seen:
-            seen.add(key)
-            unique.append(p)
-    return unique
+def merge_ranked(results: list[list[Paper]]) -> list[tuple[Paper, float]]:
+    """Merge per-query result lists (each in relevance order) and remove duplicates.
+
+    Duplicates share a DOI or a normalised title: the same paper found by two queries, or a preprint
+    and its published version. Relevance is the reciprocal-rank-fusion score summed over every query
+    that found the paper, so papers several queries agree on rank higher.
+    """
+    merged: list[list] = []  # [paper, relevance], first-seen version kept
+    index: dict[str, int] = {}
+    for found in results:
+        for position, paper in enumerate(found, start=1):
+            keys = _dedupe_keys(paper)
+            i = next((index[k] for k in keys if k in index), None)
+            if i is None:
+                i = len(merged)
+                merged.append([paper, 0.0])
+            for k in keys:
+                index.setdefault(k, i)
+            merged[i][1] += 1 / (RRF_K + position)
+    return [(p, s) for p, s in merged]
+
+
+def rank(scored: list[tuple[Paper, float]], relevance_weight: float) -> list[Paper]:
+    """Blend relevance and citations per year, each as a percentile (0-1) so the scales match.
+    Ties keep the merged (relevance) order."""
+    if not scored:
+        return []
+    relevance = _percentiles([s for _, s in scored])
+    citations = _percentiles([citations_per_year(p) for p, _ in scored])
+    blend = [relevance_weight * r + (1 - relevance_weight) * c for r, c in zip(relevance, citations)]
+    order = sorted(range(len(scored)), key=lambda i: blend[i], reverse=True)
+    return [scored[i][0] for i in order]
+
+
+def citations_per_year(paper: Paper) -> float:
+    """Citations divided by years since publication (counting the current year), so new papers aren't penalised."""
+    this_year = date.today().year
+    age = max(1, this_year - (paper.year or this_year) + 1)
+    return (paper.citation_count or 0) / age
+
+
+def _percentiles(values: list[float]) -> list[float]:
+    """Each value's position in the sorted list as a fraction 0-1 (ties share the lower position)."""
+    if len(values) == 1:
+        return [1.0]
+    ordered = sorted(values)
+    return [bisect_left(ordered, v) / (len(values) - 1) for v in values]
+
+
+def _meets_citation_rate(paper: Paper, minimum: float | None) -> bool:
+    return minimum is None or citations_per_year(paper) >= minimum
+
+
+def _dedupe_keys(paper: Paper) -> list[str]:
+    keys = []
+    if paper.doi:
+        keys.append("doi:" + paper.doi.lower().removeprefix("https://doi.org/"))
+    title = re.sub(r"[^a-z0-9]+", "", paper.title.lower())
+    if len(title) > 20:  # very short titles ("Introduction", "Editorial") would merge unrelated papers
+        keys.append("title:" + title)
+    return keys or ["id:" + paper.id]
 
 
 def summarise(papers: list[Paper], plan: SearchPlan, settings: Settings) -> RetrievalSummary:
-    if settings.sample_mode:
-        text = f"Found {len(papers)} papers on '{plan.criteria.topic}' from {plan.criteria.year_from} onward."
-        return RetrievalSummary(papers=papers, summary=text)
-    # TODO: short LLM summary of what was found (main themes, year range, review vs primary split)
-    raise NotImplementedError
+    """Summary for Human review 1: an LLM paragraph, or a plain one written in code if the LLM fails."""
+    facts = _facts(papers, plan.criteria)
+    text = _plain_summary(facts)
+    if papers and not settings.sample_mode:
+        message = json.dumps({
+            "question": plan.question,
+            "facts": facts,
+            "papers": [{"title": p.title, "year": p.year, "review": p.is_review} for p in papers[:SUMMARY_SAMPLE_SIZE]],
+        }, ensure_ascii=False)
+        try:
+            text = complete_json(load_prompt("retrieval_summary"), message, SummaryDraft, settings=settings, agent_name="retriever").summary
+        except TokenBudgetExceeded:
+            raise
+        except (LLMError, OpenAIError) as e:
+            _log("summarise", "LLM summary failed", next_step="use plain summary", why=f"{type(e).__name__}: {e}")
+    return RetrievalSummary(papers=papers, summary=text)
+
+
+def no_results_message(plan: SearchPlan) -> str:
+    """Shown when the searches found nothing: name the filters so the user knows what to loosen."""
+    c = plan.criteria
+    filters = []
+    if c.year_from or c.year_to:
+        filters.append(f"published {c.year_from or '...'}–{c.year_to or 'now'}")
+    if c.paper_types in (["review"], ["primary"]):
+        filters.append("reviews only" if c.paper_types == ["review"] else "original studies only")
+    if c.min_citations:
+        filters.append(f"at least {c.min_citations} citations")
+    text = f"I couldn't find any papers on '{c.topic}'"
+    if filters:
+        text += " with these filters: " + ", ".join(filters)
+    return text + ". Try broader or different terms" + (", or relax the filters." if filters else ".")
+
+
+def _facts(papers: list[Paper], criteria: SearchCriteria) -> dict:
+    years = [p.year for p in papers if p.year]
+    reviews = sum(1 for p in papers if p.is_review)
+    return {
+        "topic": criteria.topic,
+        "papers": len(papers),
+        "year_range": f"{min(years)}–{max(years)}" if years else None,
+        "reviews": reviews,
+        "original_studies": len(papers) - reviews,
+    }
+
+
+def _plain_summary(facts: dict) -> str:
+    years = f", published {facts['year_range']}" if facts["year_range"] else ""
+    return (f"Found {facts['papers']} papers on '{facts['topic']}'{years}: "
+            f"{facts['reviews']} reviews and {facts['original_studies']} original studies.")
+
+
+def _log(action: str, decision: str, result=None, next_step: str = "", why: str = "") -> None:
+    if trace := current_trace():
+        trace.log("retriever", action, decision, result, next_step, why)
 
 
 def _sample_papers(plan: SearchPlan) -> list[Paper]:

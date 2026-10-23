@@ -22,7 +22,9 @@ from typing import Any
 logger = logging.getLogger("litagent")
 
 # Values of these variables are replaced with *** wherever they appear in a log line
-SECRET_ENV_VARS = ("METERLESS_RUNTIME_TOKEN", "ZETARIS_API_KEY", "ZETARIS_PASSWORD", "SEMANTIC_SCHOLAR_API_KEY")
+SECRET_ENV_VARS = (
+    "METERLESS_RUNTIME_TOKEN", "ZETARIS_API_KEY", "ZETARIS_PASSWORD", "OPENALEX_API_KEY", "SEMANTIC_SCHOLAR_API_KEY",
+)
 _SECRET_PATTERNS = [
     re.compile(r"(?i)(bearer\s+)[A-Za-z0-9._~+/=-]{8,}"),
     re.compile(r"()\bsk-[A-Za-z0-9_-]{8,}"),
