@@ -134,6 +134,12 @@ python -m litagent "How do large language models handle low-resource languages?"
 python -m litagent "TODO your question" --effort medium      # real run, human reviews asked in the terminal
 ```
 
+To try only the Planner, Retriever and summary on a real question (Nightshift + OpenAlex, no Zetaris):
+
+```bash
+python scripts/try_search.py "your question" --effort medium --feedback "only review papers"
+```
+
 ### Logs
 
 Every run writes `logs/trace-<run_id>.jsonl` (one JSON object per line) and prints readable `[INFO]` lines to stdout. Each event has `timestamp, run_id, agent_name, action, decision, result, next, why`. LLM calls add the model that handled the request and token usage. Zetaris queries, Meterless World Model writes, grades, redos, fallbacks and errors are all logged. Tokens and keys are masked.
