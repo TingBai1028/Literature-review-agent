@@ -5,7 +5,7 @@ Required in the submission: how we used Meterless (Nightshift + an Engine), Zeta
 ## Meterless Nightshift: primary AI provider
 
 - **What it does for us:** every LLM call (Planner, cluster labels, Connection finder, Gap finder, grading agent) goes through Nightshift. It accepts OpenAI-format requests, so `complete_json` uses the official OpenAI client with `base_url=METERLESS_BASE_URL` and `api_key=METERLESS_RUNTIME_TOKEN`.
-- **Model:** Nemotron 3.5 Super VL (`nvidia/nemotron-3.5-super-vl-120b-a12b`), set explicitly in `litagent/config.py` (`NIGHTSHIFT_MODEL`), no automatic routing, so a non-NVIDIA model is never picked. Chosen for speed (12B active parameters) and long context; it replaced Nemotron 3 Super, which NVIDIA's hosted API no longer serves. Vision support leaves room to read figures in full-text PDFs later. Reasoning is on by default, so `<think>` blocks are removed before JSON parsing.
+- **Model:** Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`) through Nightshift's NVIDIA provider, set explicitly in `litagent/config.py` (`NIGHTSHIFT_MODEL`), no automatic routing, so a non-NVIDIA model is never picked. Chosen after testing every Nemotron model Nightshift lists (24 Oct): Ultra answered quickly; Nemotron 3 Super and Llama 3.1 Nemotron Ultra aren't available to our NVIDIA account, Llama 3.3 Nemotron Super is retired, and Nightshift excludes 3.5 Super VL for unreliable responses. Fallback: Nemotron 3.5 Lightning. `<think>` blocks are removed before JSON parsing in case reasoning is returned.
 - **Where in the code:** `litagent/integrations/llm.py` (JSON output validated with Pydantic, one retry with the validation error, 60 s timeout, model name + token usage logged per call)
 - **Screenshot / evidence:** TODO
 
