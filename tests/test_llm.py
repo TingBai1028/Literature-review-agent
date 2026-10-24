@@ -92,3 +92,18 @@ def test_no_call_once_budget_is_used_up():
         with pytest.raises(TokenBudgetExceeded):
             complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client)
     assert client.calls == []
+
+
+def test_each_run_gets_its_own_nightshift_cache_partition(tmp_path):
+    client = FakeClient(['{"approved": true}'])
+    with Trace(str(tmp_path), run_id="run-42"):
+        complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client)
+    assert client.calls[0]["extra_headers"] == {"x-title": "litagent-run-42"}
+
+
+def test_nightshift_cache_status_is_logged(tmp_path):
+    client = FakeClient(['{"approved": true}'])
+    client.receipt = {"cache": {"status": "exact"}}
+    with Trace(str(tmp_path)) as trace:
+        complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client)
+    assert trace.events[-1]["nightshift_cache"] == "exact"

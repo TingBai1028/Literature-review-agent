@@ -4,6 +4,12 @@ Primary provider: Meterless Nightshift, which accepts OpenAI-format requests, so
 official OpenAI client pointed at METERLESS_BASE_URL. NVIDIA Nemotron models are connected
 through Nightshift (the NVIDIA key lives in Nightshift's Providers tab, never in this app).
 The model is set explicitly in config.NIGHTSHIFT_MODEL.
+
+Nightshift caches answers, keyed on the user message and the calling app (not the system prompt),
+and replays semantically similar messages. A stale or near-duplicate replay would be wrong for us
+(an edited prompt ignored, or one paper pair answered with another pair's quotes), so every request
+names its app per run (`x-title: litagent-<run_id>`): each run gets its own cache partition.
+The cache status Nightshift reports is logged with every call.
 """
 
 from __future__ import annotations
@@ -130,16 +136,18 @@ def complete_json(
             model=model,
             messages=messages,
             response_format={"type": "json_object"},
+            extra_headers={"x-title": _app_name()},
         )
         text = response.choices[0].message.content or ""
         tokens = _tokens(response.usage, messages, text)
+        cache = _cache_status(response)
         if meter:
             meter.add(tokens["prompt"], tokens["completion"], estimated=tokens.get("estimated", False))
         try:
             parsed = output_model.model_validate_json(_clean_json_text(text))
         except ValidationError as e:
             _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "invalid JSON",
-                 "retry with error" if attempt == 1 else "raise", str(e), response.model or model, tokens, start)
+                 "retry with error" if attempt == 1 else "raise", str(e), response.model or model, tokens, start, cache)
             if attempt == 2:
                 raise LLMError(f"{output_model.__name__}: model output failed validation twice") from e
             messages += [
@@ -148,9 +156,23 @@ def complete_json(
             ]
             continue
         _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "valid JSON",
-             "return", "", response.model or model, tokens, start)
+             "return", "", response.model or model, tokens, start, cache)
         return parsed
     raise AssertionError("unreachable")
+
+
+def _app_name() -> str:
+    """Nightshift partitions its answer cache by app; one partition per run means no replays across runs."""
+    trace = current_trace()
+    return f"litagent-{trace.run_id}" if trace else "litagent"
+
+
+def _cache_status(response) -> str | None:
+    """Nightshift's compute receipt says whether the answer was computed or replayed ("miss", "exact", ...)."""
+    receipt = getattr(response, "meterless", None)
+    if isinstance(receipt, dict):
+        return (receipt.get("cache") or {}).get("status")
+    return None
 
 
 def _tokens(usage, messages: list[dict], reply: str) -> dict:
@@ -177,7 +199,8 @@ def _clean_json_text(text: str) -> str:
     return text
 
 
-def _log(agent: str, action: str, decision: str, next_step: str, why: str, model: str, tokens, start: float) -> None:
+def _log(agent: str, action: str, decision: str, next_step: str, why: str, model: str, tokens, start: float,
+         cache: str | None = None) -> None:
     if trace := current_trace():
         trace.log(agent, action, decision, next_step=next_step, why=why, model=model, tokens=tokens,
-                  duration_ms=round((time.monotonic() - start) * 1000))
+                  duration_ms=round((time.monotonic() - start) * 1000), nightshift_cache=cache)

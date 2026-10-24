@@ -11,13 +11,16 @@ from __future__ import annotations
 
 import json
 from datetime import date
-from typing import Literal
+from typing import Literal, get_args
 
 from pydantic import BaseModel, Field, model_validator
 
 from litagent.config import EFFORT_PROFILES, Effort, Settings
 from litagent.integrations.llm import complete_json, load_prompt
 from litagent.schemas import PlannerResult, SearchCriteria, SearchPlan
+from litagent.trace import current_trace
+
+CriterionName = Literal["year_from", "year_to", "min_citations", "min_citations_per_year", "paper_types"]
 
 NEED_TOPIC_MESSAGE = (
     "Happy to help with your literature review! What topic or research question "
@@ -33,6 +36,9 @@ class PlannerDraft(BaseModel):
     criteria: SearchCriteria | None = Field(default=None, description="Only what the user stated; leave other fields empty")
     queries: list[str] = Field(default_factory=list, description="Search strings for scholarly APIs")
     rationale: str = Field(default="", description="One sentence: why these criteria and queries, or why there is no topic")
+    removed_criteria: list[CriterionName] = Field(
+        default_factory=list, description="Only on a re-plan: criteria the feedback explicitly asks to remove"
+    )
 
     @model_validator(mode="after")
     def _complete(self) -> PlannerDraft:
@@ -65,6 +71,8 @@ def plan(
     draft = complete_json(load_prompt("planner"), user_message, PlannerDraft, settings=settings, agent_name="planner")
     if draft.status == "need_topic":
         return PlannerResult(status="need_topic", message_to_user=draft.message_to_user)
+    if previous_plan is not None:
+        _keep_stated_criteria(draft, previous_plan)
 
     search_plan = SearchPlan(
         question=question,
@@ -89,6 +97,24 @@ def _user_message(question: str, num_queries: int, feedback: str | None, previou
     if feedback:
         payload["feedback"] = feedback
     return json.dumps(payload, ensure_ascii=False)
+
+
+def _keep_stated_criteria(draft: PlannerDraft, previous_plan: SearchPlan) -> None:
+    """On a re-plan, put back criteria the user stated earlier if the model dropped them without
+    listing them in removed_criteria. Models tend to copy the prompt's example rather than the
+    previous plan, which silently loses e.g. a "since 2020" the user asked for."""
+    defaulted = {d.split("=", 1)[0] for d in previous_plan.used_defaults}
+    restored = []
+    for name in get_args(CriterionName):
+        before = getattr(previous_plan.criteria, name)
+        if before in (None, []) or name in defaulted or name in draft.removed_criteria:
+            continue
+        if getattr(draft.criteria, name) in (None, []):
+            setattr(draft.criteria, name, before)
+            restored.append(f"{name}={before}")
+    if restored and (trace := current_trace()):
+        trace.log("planner", "re-plan check", "restored dropped criteria", restored, "retriever",
+                  why="The user stated these before and the feedback didn't ask to remove them")
 
 
 def _clean_queries(queries: list[str], limit: int) -> list[str]:

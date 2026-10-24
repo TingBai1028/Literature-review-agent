@@ -14,6 +14,7 @@ with grading agents after the last three and two human reviews.
 - Log each important decision with `trace.log(...)`, including why. Traces go to `logs/trace-<run_id>.jsonl`; never log secrets.
 - Keep the sample-mode branch in each agent working (`SAMPLE_MODE=true`: no Zetaris, Nightshift or network); `pytest` runs the pipeline in sample mode.
 - Every external call has a timeout; a judge's run must never wait for keyboard input.
+- Nightshift caches answers by user message + app (not the system prompt) and replays similar messages. `llm.py` gives each run its own cache partition (`x-title: litagent-<run_id>`); keep it, or prompt edits and similar requests get stale answers. The trace's `nightshift_cache` field shows hits.
 - Never commit keys. Read secrets from `.env` via environment variables.
 
 ## Commands
