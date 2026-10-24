@@ -8,6 +8,9 @@ pytest>=8.0
 # LLM: Meterless Nightshift is OpenAI-compatible, so we use the official OpenAI client
 openai>=1.40
 
+# Paper store that Zetaris reads (docker-compose.yml)
+psycopg[binary]>=3.2
+
 # POST /run API (run.py)
 fastapi>=0.110
 uvicorn>=0.29

@@ -65,7 +65,7 @@ def run_pipeline(
 
         try:
             stage = "zetaris"
-            store = ZetarisStore(sample_mode=settings.sample_mode, timeout_s=settings.zetaris_timeout_s)
+            store = ZetarisStore(sample_mode=settings.sample_mode, timeout_s=settings.zetaris_timeout_s, run_id=trace.run_id)
             feedback: str | None = None
             previous_plan = None
 
@@ -105,6 +105,8 @@ def run_pipeline(
                 papers = store.get_papers()
 
                 result = RunResult(run_id=trace.run_id, status="done", plan=plan, papers=papers)
+                if store.fallback_reason:
+                    result.warnings.append(f"Zetaris unavailable, used the in-memory papers instead ({store.fallback_reason})")
 
                 # ----- 3. Clusterer + grading -----
                 stage = "clusterer"

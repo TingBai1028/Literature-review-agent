@@ -22,4 +22,5 @@ with grading agents after the last three and two human reviews.
 - `pytest`
 - `SAMPLE_MODE=true python run.py` then `curl -X POST localhost:8000/run -H 'Content-Type: application/json' -d @input_examples/01_normal_low_resource_languages.json`
 - `python -m litagent "your question" --effort normal --sample-mode`
+- Real runs need Zetaris + the paper store: `docker compose up -d`, then `python scripts/setup_zetaris.py` once
 - After changing sample-mode output, regenerate `output_examples/` (README, "Examples").

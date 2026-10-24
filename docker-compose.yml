@@ -1,0 +1,25 @@
+# Our own paper store. scripts/setup_zetaris.py registers it in Zetaris as the `litagent_db`
+# data source; the Retriever writes papers here and every later agent reads them through Zetaris SQL.
+#
+# Run these from this repo's root (not the Zetaris bundle folder, which has its own compose file):
+#   docker compose up -d        # start
+#   docker compose down         # stop (data is kept in the litagent-db volume)
+services:
+  litagent-db:
+    image: postgres:16-alpine
+    container_name: litagent-db
+    environment:
+      POSTGRES_DB: litagent
+      POSTGRES_USER: litagent
+      POSTGRES_PASSWORD: ${PAPERS_DB_PASSWORD:-litagent-local}
+    ports:
+      - "127.0.0.1:5433:5432"  # localhost only; Zetaris reaches it via host.docker.internal
+    volumes:
+      - litagent-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litagent -d litagent"]
+      interval: 2s
+      retries: 15
+
+volumes:
+  litagent-db:

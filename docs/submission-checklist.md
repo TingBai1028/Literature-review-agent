@@ -21,7 +21,7 @@ Source: participant onboarding deck. Final requirements are in the Official Rule
 - [ ] `SAMPLE_MODE=true` runs end to end with no Zetaris, Nightshift or network
 - [ ] Meterless Nightshift is the primary AI provider; Nemotron model ID set in `litagent/config.py`
 - [ ] A Meterless Engine works in a user-facing feature with a passing test: World Model → `paper_map` (`tests/test_meterless_world_model.py`). TODO: connect the real engine
-- [ ] Zetaris running locally in Docker is the data layer (`ZETARIS_REST_URL`, `ZETARIS_ORG_ID`, `ZETARIS_API_KEY`)
+- [x] Zetaris running locally in Docker is the data layer: papers served from `litagent_db.papers` (`scripts/setup_zetaris.py`)
 - [ ] `logs/trace-<run_id>.jsonl` written for every run, with model names and no secrets
 - [ ] Timeouts on every external call; full run within 5–10 minutes (`RUN_TIMEOUT_S`)
 - [ ] `docker build` works and the container runs in sample mode; no model downloads at runtime, no local GPU

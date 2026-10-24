@@ -46,7 +46,7 @@ See [docs/sponsor-tech.md](docs/sponsor-tech.md) for the full write-up.
 | --- | --- | --- |
 | Meterless Nightshift | Primary AI provider: every LLM call goes through it (`litagent/integrations/llm.py`, OpenAI-compatible client) | Wired; confirm model ID in Providers tab |
 | NVIDIA | Nemotron 3.5 Super VL (`NIGHTSHIFT_MODEL`), connected through Nightshift (the NVIDIA key lives in Nightshift's Providers tab). The trace logs the model that handled each request. | Nemotron 3.5 Super VL |
-| Zetaris | Shared paper data layer, running locally in Docker (`litagent/integrations/zetaris.py`) | REST client wired; paper table TODO |
+| Zetaris | Shared paper data layer, running locally in Docker: the Retriever writes papers to our paper store, which Zetaris serves as the `litagent_db` data source, and every later agent reads them through Zetaris SQL (`litagent/integrations/zetaris.py`) | Working (live round trip) |
 | Meterless World Model | Shared findings graph (clusters, connections, gaps), returned as `paper_map` for the paper map (`litagent/integrations/meterless.py`) | Interface + test ready; real engine not yet connected |
 | Cursor (with SpaceX XAI) | Optional: development environment, project rules in `.cursor/rules/` | Optional |
 
@@ -57,7 +57,7 @@ Each sponsor integration sits behind its own adapter class, so an outage in one 
 ### Requirements
 
 - Python 3.11+
-- For real runs: Meterless Nightshift with a Nemotron model, and Zetaris running locally in Docker (see `.env.example`). Sample mode needs neither.
+- For real runs: Meterless Nightshift with a Nemotron model, and Zetaris running locally in Docker (setup: [docs/setup-zetaris.md](docs/setup-zetaris.md)). Sample mode needs neither.
 - Recommended: a free OpenAlex API key (`OPENALEX_API_KEY`). Without one, OpenAlex allows about 100 searches a day; with one, about 1,000.
 - No GPU needed.
 
@@ -70,6 +70,13 @@ python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env             # then fill in your values
+```
+
+Set up the Zetaris paper store once (Zetaris must already be running in Docker):
+
+```bash
+docker compose up -d                 # our paper store (Postgres, localhost:5433)
+python scripts/setup_zetaris.py      # creates the table, registers it in Zetaris, checks a round trip
 ```
 
 Confirm the Nemotron model ID in `litagent/config.py` (`NIGHTSHIFT_MODEL`), then check the connection with one tiny call:
@@ -125,7 +132,7 @@ docker run --rm -p 8000:8000 -e SAMPLE_MODE=true litagent
 docker run --rm -p 8000:8000 --env-file .env litagent
 ```
 
-Inside the container, `localhost` is the container itself: point `ZETARIS_REST_URL` and `METERLESS_BASE_URL` at `host.docker.internal` instead (on Linux, add `--add-host=host.docker.internal:host-gateway`). Dependencies are installed at build time; nothing is downloaded at runtime.
+Inside the container, `localhost` is the container itself: point `ZETARIS_REST_URL`, `METERLESS_BASE_URL` and `PAPERS_DB_URL` at `host.docker.internal` instead (on Linux, add `--add-host=host.docker.internal:host-gateway`). Dependencies are installed at build time; nothing is downloaded at runtime.
 
 ### Command line
 
