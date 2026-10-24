@@ -11,14 +11,14 @@ The hackathon technical-requirements prompt (Nightshift, Zetaris, `/run`, sample
 
 ## 0. LLM wrapper (do this first: every agent uses it)
 
-Done: `complete_json` calls Nightshift (Nemotron 3 Super), counts tokens per run (`TokenMeter`) and enforces the effort level's token budget. Use this prompt only to change or extend it. Check the live connection with `python scripts/check_nightshift.py`.
+Done: `complete_json` calls Nightshift (Nemotron 3.5 Super VL), counts tokens per run (`TokenMeter`) and enforces the effort level's token budget. Use this prompt only to change or extend it. Check the live connection with `python scripts/check_nightshift.py`.
 
 ```
 Review and extend complete_json in litagent/integrations/llm.py.
 
 Decisions:
 - Provider: Meterless Nightshift (fixed by the hackathon rules; OpenAI-compatible, official OpenAI client)
-- Model: Nemotron 3 Super (NIGHTSHIFT_MODEL in litagent/config.py, no automatic routing; confirm the ID in Nightshift's Providers tab)
+- Model: Nemotron 3.5 Super VL (NIGHTSHIFT_MODEL in litagent/config.py, no automatic routing; confirm the ID in Nightshift's Providers tab)
 - Structured output method: response_format json_object + schema in the system prompt, unless Nightshift supports json_schema for this model
 
 Requirements:
@@ -54,13 +54,15 @@ Plan first and show me the plan before writing code.
 
 ## 2. Retriever
 
+Done for OpenAlex (zero results → `no_results` status). Remaining: Semantic Scholar / arXiv, full-text PDFs, and checking the LLM summary on Nightshift.
+
 ```
 Implement the real Retriever in litagent/agents/retriever.py and the search tools in litagent/tools/, following docs/agents/retriever.md.
 
 Decisions:
-- Sources: OpenAlex + ______ (Semantic Scholar / arXiv)
-- Ranking before cutting to max_papers: ______ (e.g. relevance rank from the API, then citations per year)
-- Full text at High/Ultra: PDF library ______ (e.g. pypdf); skip papers whose PDF fails to download
+- Sources: OpenAlex only for now (Semantic Scholar / arXiv later)
+- Ranking before cutting to max_papers: 70% relevance (rank fusion across queries) / 30% citations per year; papers without an abstract dropped
+- Full text at High/Ultra: later (logged as skipped)
 - School-account access: leave as a TODO for now (licence check pending)
 
 Requirements:

@@ -45,7 +45,7 @@ See [docs/sponsor-tech.md](docs/sponsor-tech.md) for the full write-up.
 | Sponsor | How we use it | Status |
 | --- | --- | --- |
 | Meterless Nightshift | Primary AI provider: every LLM call goes through it (`litagent/integrations/llm.py`, OpenAI-compatible client) | Wired; confirm model ID in Providers tab |
-| NVIDIA | Nemotron 3 Super (`NIGHTSHIFT_MODEL`), connected through Nightshift (the NVIDIA key lives in Nightshift's Providers tab). The trace logs the model that handled each request. | Nemotron 3 Super |
+| NVIDIA | Nemotron 3.5 Super VL (`NIGHTSHIFT_MODEL`), connected through Nightshift (the NVIDIA key lives in Nightshift's Providers tab). The trace logs the model that handled each request. | Nemotron 3.5 Super VL |
 | Zetaris | Shared paper data layer, running locally in Docker (`litagent/integrations/zetaris.py`) | REST client wired; paper table TODO |
 | Meterless World Model | Shared findings graph (clusters, connections, gaps), returned as `paper_map` for the paper map (`litagent/integrations/meterless.py`) | Interface + test ready; real engine not yet connected |
 | Cursor (with SpaceX XAI) | Optional: development environment, project rules in `.cursor/rules/` | Optional |
@@ -58,6 +58,7 @@ Each sponsor integration sits behind its own adapter class, so an outage in one 
 
 - Python 3.11+
 - For real runs: Meterless Nightshift with a Nemotron model, and Zetaris running locally in Docker (see `.env.example`). Sample mode needs neither.
+- Recommended: a free OpenAlex API key (`OPENALEX_API_KEY`). Without one, OpenAlex allows about 100 searches a day; with one, about 1,000.
 - No GPU needed.
 
 ### Setup
@@ -93,6 +94,7 @@ Request: `{"run_id": optional, "input": {"query": str, "effort": "normal|medium|
 - Success: `{"run_id": ..., "status": "success", "output": {plan, papers, clusters, connections, gaps, paper_map, usage, warnings, ...}}`
 - Failure: `{"run_id": ..., "status": "error", "error": {"type": ..., "message": ...}}` (HTTP 422 for bad input, 500 for a failed stage)
 - No topic in the query: `status: "success"` with `output.status: "need_topic"` and a friendly `message_to_user`.
+- Nothing found: `output.status: "no_results"`, with a `message_to_user` naming the filters used and suggesting broader terms.
 - Human reviews never wait for input through `/run`. Both are approved unless you pass `feedback`, which sends that comment back to the Planner once (Human review 1).
 - `output.status: "partial"` means the run hit `RUN_TIMEOUT_S` (default 600 s) or its token budget, and returned what it had finished (the reason is in `warnings`).
 - `output.usage` gives the run's LLM tokens (`prompt_tokens`, `completion_tokens`, `llm_calls`) against the effort level's `budget`.
@@ -140,7 +142,7 @@ Every run writes `logs/trace-<run_id>.jsonl` (one JSON object per line) and prin
 
 Every external call has a timeout (model requests 60 s, Zetaris SQL 45 s, OpenAlex 30 s), redos and replans are capped in `litagent/config.py`, and the run stops between stages after `RUN_TIMEOUT_S` (default 600 s). The target is 5–10 minutes; Ultra (~150 papers, full text) may hit the cap and return a partial result.
 
-Each effort level also has a token budget (`EFFORT_PROFILES` in `litagent/config.py`). Every LLM call's tokens are counted, retries included, and once the budget is used up the run stops before the next call and returns a partial result. Nemotron 3 Super's reasoning counts as completion tokens, so tune the budgets after measuring real runs.
+Each effort level also has a token budget (`EFFORT_PROFILES` in `litagent/config.py`). Every LLM call's tokens are counted, retries included, and once the budget is used up the run stops before the next call and returns a partial result. Nemotron 3.5 Super VL's reasoning counts as completion tokens, so tune the budgets after measuring real runs.
 
 ### Tests
 

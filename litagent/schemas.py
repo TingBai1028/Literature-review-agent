@@ -146,7 +146,8 @@ class TokenUsage(BaseModel):
 
 class RunResult(BaseModel):
     run_id: str
-    status: Literal["done", "need_topic", "max_replans_reached", "partial"]  # partial = time limit or token budget hit
+    # partial = time limit or token budget hit; no_results = the searches ran but found no papers
+    status: Literal["done", "need_topic", "no_results", "max_replans_reached", "partial"]
     message_to_user: str | None = None
     plan: SearchPlan | None = None
     papers: list[Paper] = Field(default_factory=list)

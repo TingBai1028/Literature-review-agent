@@ -55,10 +55,13 @@ class DefaultCriteria:
 
 # Nightshift model for every agent. Must be an NVIDIA Nemotron model, set explicitly
 # (no automatic routing, which could pick a non-NVIDIA model).
-# Nemotron 3 Super (120B total / 12B active MoE): fast enough for many calls per run, long context.
-# TODO: confirm the exact ID string in Nightshift's Providers tab (this is OpenRouter's spelling).
-# Reasoning is on by default for this model; llm.py strips <think> blocks before parsing JSON.
-NIGHTSHIFT_MODEL = "nvidia/nemotron-3-super-120b-a12b"
+# Nemotron 3 Ultra (550B total / 55B active MoE) through Nightshift's NVIDIA provider (the route the
+# NVIDIA award needs). Tested 24 Oct through Nightshift: Ultra answers (0.8 s for a tiny call);
+# Nemotron 3 Super and Llama 3.1 Nemotron Ultra return 404 for our NVIDIA account, Llama 3.3 Nemotron
+# Super is retired (410), and 3.5 Super VL is excluded by Nightshift for unreliable responses.
+# Fallback that also works: "nvidia/nemotron-3.5-lightning-30b-a3b" (slower here, reasons at length).
+# llm.py strips <think> blocks before parsing JSON in case reasoning is returned.
+NIGHTSHIFT_MODEL = "nvidia/nemotron-3-ultra-550b-a55b"
 
 
 def _env_bool(name: str, default: str = "false") -> bool:
@@ -79,6 +82,9 @@ class Settings:
 
     # Whole run: stop between stages and return a partial result after this many seconds
     run_timeout_s: float = field(default_factory=lambda: float(os.getenv("RUN_TIMEOUT_S", "600")))
+
+    # Retriever ranking: share of relevance vs citations per year (team decision, 24 Oct)
+    rank_relevance_weight: float = 0.7
 
     # Clustering
     cluster_similarity_threshold: float = 0.7  # TODO: check against your embedding model on a sample
