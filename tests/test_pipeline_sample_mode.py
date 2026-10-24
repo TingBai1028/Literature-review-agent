@@ -3,7 +3,7 @@
 import numpy as np
 
 from litagent.agents import connection_finder
-from litagent.agents.clusterer import cosine_similarity_matrix, group_by_threshold
+from litagent.agents.clusterer import average_linkage, cosine_similarity_matrix
 from litagent.agents.grader import check_cluster_sizes
 from litagent.config import Effort, Settings
 from litagent.human_review import AutoApproveReviewer
@@ -59,10 +59,10 @@ def test_human_feedback_replans(tmp_path):
     assert reviewer.calls == 2
 
 
-def test_group_by_threshold():
+def test_average_linkage_groups_similar_papers():
     emb = np.array([[1.0, 0.0], [0.99, 0.1], [0.0, 1.0]])
-    groups = group_by_threshold(cosine_similarity_matrix(emb), 0.7)
-    assert sorted(map(sorted, groups)) == [[0, 1], [2]]
+    groups = average_linkage(cosine_similarity_matrix(emb), 0.7)
+    assert sorted(groups) == [[0, 1], [2]]
 
 
 def test_cluster_size_check():

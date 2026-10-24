@@ -1319,6 +1319,7 @@
         "rationale": "Sample mode: placeholder grouping, not real clustering"
       }
     ],
+    "unclustered_paper_ids": [],
     "connections": [
       {
         "id": "C1-K1",
@@ -2979,6 +2980,7 @@
           "by": "gap_finder"
         }
       ],
+      "unclustered": [],
       "world": {
         "run_id": "example-02",
         "attempt": 2,

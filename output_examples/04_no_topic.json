@@ -8,6 +8,7 @@
     "plan": null,
     "papers": [],
     "clusters": [],
+    "unclustered_paper_ids": [],
     "connections": [],
     "gaps": [],
     "warnings": [],
