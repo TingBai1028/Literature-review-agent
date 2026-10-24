@@ -167,7 +167,8 @@ def test_summary_from_llm_gets_the_facts(monkeypatch):
     assert result.summary == "Three papers on GNNs."
     assert result.papers == PAPERS
     facts = sent[0]["facts"]
-    assert facts == {"topic": "GNNs for drug-target interaction", "papers": 3, "year_range": "2021–2024", "reviews": 1, "original_studies": 2}
+    assert facts == {"topic": "GNNs for drug-target interaction", "filters_chosen_by_user": [], "papers": 3,
+                     "year_range": "2021–2024", "reviews": 1, "original_studies": 2}
     assert len(sent[0]["papers"]) == 3
 
 
@@ -196,3 +197,13 @@ def test_sample_mode_summary_makes_no_llm_call(monkeypatch):
     settings = Settings()
     settings.sample_mode = True
     assert "Found 3 papers" in summarise(PAPERS, make_plan(), settings).summary
+
+
+def test_summary_lists_only_filters_the_user_chose(monkeypatch):
+    sent = []
+    monkeypatch.setattr(retriever, "complete_json",
+                        lambda s, m, model, **k: sent.append(json.loads(m)) or model(summary="ok"))
+    plan = make_plan(year_from=2021, paper_types=["review"], min_citations=50)
+    plan.used_defaults = ["year_from=2021"]  # the year was a default, the rest the user's choice
+    summarise(PAPERS, plan, real_settings())
+    assert sent[0]["facts"]["filters_chosen_by_user"] == ["reviews only", "at least 50 citations"]

@@ -13,6 +13,7 @@ from litagent.human_review import AutoApproveReviewer
 from litagent.integrations.llm import complete_json
 from litagent.orchestrator import run_pipeline
 from litagent.schemas import HumanFeedback, SearchCriteria, SearchPlan
+from litagent.trace import Trace
 from tests.fakes import FakeClient
 
 QUESTION = "How do graph neural networks predict drug-target interactions?"
@@ -114,6 +115,41 @@ def test_replan_sends_previous_plan_and_feedback(monkeypatch):
     assert message["previous_plan"]["queries"] == ["gnn drug target"]
     assert message["previous_plan"]["filled_by_defaults"] == ["year_from=2021", "paper_types=primary+review"]
     assert message["previous_plan"]["criteria"]["year_from"] == 2021
+
+
+def previous_plan_since_2020() -> SearchPlan:
+    """The user said "since 2020"; paper types were a default."""
+    return SearchPlan(
+        question=QUESTION, criteria=SearchCriteria(topic="GNNs", year_from=2020, paper_types=["primary", "review"]),
+        queries=["gnn drug target"], effort=Effort.NORMAL, max_papers=30, token_budget=50_000,
+        used_defaults=["paper_types=primary+review"],
+    )
+
+
+def test_replan_restores_user_criteria_the_model_dropped(monkeypatch, tmp_path):
+    fake_llm(monkeypatch, ok_draft(paper_types=["review"]))  # model forgot year_from=2020
+    with Trace(str(tmp_path)) as trace:
+        plan = planner.plan(QUESTION, Effort.NORMAL, real_settings(), "only reviews", previous_plan_since_2020()).plan
+    assert plan.criteria.year_from == 2020
+    assert plan.criteria.paper_types == ["review"]
+    assert plan.used_defaults == []
+    assert any(e["decision"] == "restored dropped criteria" for e in trace.events)
+
+
+def test_replan_can_remove_a_criterion_on_purpose(monkeypatch):
+    draft = ok_draft()
+    draft.removed_criteria = ["year_from"]  # feedback: "any year is fine"
+    fake_llm(monkeypatch, draft)
+    plan = planner.plan(QUESTION, Effort.NORMAL, real_settings(), "any year is fine", previous_plan_since_2020()).plan
+    assert plan.criteria.year_from == real_settings().defaults.year_from
+    assert any(d.startswith("year_from=") for d in plan.used_defaults)
+
+
+def test_replan_does_not_restore_defaults(monkeypatch):
+    previous = previous_plan_since_2020()
+    fake_llm(monkeypatch, ok_draft(year_from=2020))  # paper_types empty again: was a default, so not restored
+    plan = planner.plan(QUESTION, Effort.NORMAL, real_settings(), "more queries", previous).plan
+    assert plan.used_defaults == ["paper_types=primary+review"]
 
 
 def test_first_plan_has_no_previous_plan_or_feedback(monkeypatch):

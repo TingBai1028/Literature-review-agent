@@ -22,8 +22,12 @@ A JSON object with:
    - Citations: fill `min_citations` only when the user gives a number ("at least 50 citations"). Vague wording like "well-cited" or "influential" sets nothing.
    - Paper type: `["review"]` for "reviews / surveys only", `["primary"]` for "original studies / no reviews". Otherwise `[]`.
    - `topic`: a short noun phrase for the subject, in the user's terms.
-3. **Write exactly `number_of_queries` search queries.** Each is 2–6 keywords, not a sentence. Cover different phrasings researchers use for the same idea (synonyms, abbreviations, the method name and the problem name). Don't put years, citation counts or "review" in the queries; those are filters.
-4. **On a re-plan, change only what the feedback asks for.** Copy every other criterion and query from `previous_plan`, except criteria listed in `filled_by_defaults`: leave those empty unless the feedback is about them.
+3. **Write exactly `number_of_queries` search queries for this question.** Each is 2–6 keywords, not a sentence. Cover different phrasings researchers use for the same idea (synonyms, abbreviations, the method name and the problem name). Don't put years, citation counts or "review" in the queries; those are filters. The examples below show the format only: never reuse their queries for a different question.
+4. **On a re-plan, change only what the feedback asks for.**
+   - Keep every criterion the user stated before, i.e. every criterion in `previous_plan.criteria` that is **not** listed in `filled_by_defaults`. Copy its value unchanged.
+   - Criteria listed in `filled_by_defaults` stay empty unless the feedback is about them.
+   - Keep the previous queries unless the feedback is about the topic or the search terms.
+   - If the feedback explicitly asks to drop a criterion ("any year is fine", "include reviews again"), leave it empty and list its name in `removed_criteria`.
 5. **Write a one-sentence `rationale`** that a user could read: why these criteria and queries (or why there is no topic).
 
 ## Output
@@ -36,7 +40,7 @@ One JSON object matching the schema given below. No extra text.
 
 Input:
 ```json
-{"question": "What do we know about using graph neural networks to predict drug-target interactions? Only papers since 2020 please.", "current_year": 2026, "number_of_queries": 3}
+{"question": "What's known about microplastics accumulating in freshwater fish? Only papers since 2019 please.", "current_year": 2026, "number_of_queries": 3}
 ```
 
 Output:
@@ -44,9 +48,10 @@ Output:
 {
   "status": "ok",
   "message_to_user": null,
-  "criteria": {"topic": "graph neural networks for drug-target interaction prediction", "year_from": 2020, "year_to": null, "min_citations": null, "min_citations_per_year": null, "paper_types": []},
-  "queries": ["graph neural network drug-target interaction", "GNN binding affinity prediction", "molecular graph learning drug target"],
-  "rationale": "The user asked for papers since 2020 on GNNs for drug-target interaction, so the queries cover the method, the binding-affinity framing and molecular graph learning."
+  "criteria": {"topic": "microplastic accumulation in freshwater fish", "year_from": 2019, "year_to": null, "min_citations": null, "min_citations_per_year": null, "paper_types": []},
+  "queries": ["microplastics freshwater fish", "microplastic ingestion bioaccumulation fish", "plastic particles riverine fish tissue"],
+  "rationale": "The user asked for papers since 2019 on microplastics in freshwater fish, so the queries cover ingestion, bioaccumulation and tissue contamination.",
+  "removed_criteria": []
 }
 ```
 
@@ -64,22 +69,25 @@ Output:
   "message_to_user": "Happy to help! What topic or research question would you like me to look into?",
   "criteria": null,
   "queries": [],
-  "rationale": "The message asks for papers but doesn't name a subject, so I shouldn't guess one."
+  "rationale": "The message asks for papers but doesn't name a subject, so I shouldn't guess one.",
+  "removed_criteria": []
 }
 ```
 
 ### A re-plan with feedback
 
+The user stated the year (2018), so it is kept; paper type was a default, and the feedback changes it.
+
 Input:
 ```json
 {
-  "question": "How do large language models handle low-resource languages?",
+  "question": "How does remote work affect employee productivity? Papers from 2018 onward.",
   "current_year": 2026,
   "number_of_queries": 2,
   "previous_plan": {
-    "criteria": {"topic": "large language models for low-resource languages", "year_from": 2021, "year_to": null, "min_citations": null, "min_citations_per_year": null, "paper_types": ["primary", "review"]},
-    "queries": ["large language models low-resource languages", "multilingual LLM underrepresented languages"],
-    "filled_by_defaults": ["year_from=2021", "paper_types=primary+review"]
+    "criteria": {"topic": "remote work and employee productivity", "year_from": 2018, "year_to": null, "min_citations": null, "min_citations_per_year": null, "paper_types": ["primary", "review"]},
+    "queries": ["remote work employee productivity", "telework performance outcomes"],
+    "filled_by_defaults": ["paper_types=primary+review"]
   },
   "feedback": "Only review papers, please."
 }
@@ -90,10 +98,11 @@ Output:
 {
   "status": "ok",
   "message_to_user": null,
-  "criteria": {"topic": "large language models for low-resource languages", "year_from": null, "year_to": null, "min_citations": null, "min_citations_per_year": null, "paper_types": ["review"]},
-  "queries": ["large language models low-resource languages", "multilingual LLM underrepresented languages"],
-  "rationale": "The user asked for review papers only, so I changed the paper type and kept the topic and queries; the year range stays at the default."
+  "criteria": {"topic": "remote work and employee productivity", "year_from": 2018, "year_to": null, "min_citations": null, "min_citations_per_year": null, "paper_types": ["review"]},
+  "queries": ["remote work employee productivity", "telework performance outcomes"],
+  "rationale": "The user asked for review papers only, so I changed the paper type and kept the topic, the queries and their 2018 start year.",
+  "removed_criteria": []
 }
 ```
 
-<!-- TODO: refine after testing on real questions through Nightshift -->
+<!-- TODO: refine after testing on more real questions through Nightshift -->

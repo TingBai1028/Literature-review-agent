@@ -145,7 +145,7 @@ def _dedupe_keys(paper: Paper) -> list[str]:
 
 def summarise(papers: list[Paper], plan: SearchPlan, settings: Settings) -> RetrievalSummary:
     """Summary for Human review 1: an LLM paragraph, or a plain one written in code if the LLM fails."""
-    facts = _facts(papers, plan.criteria)
+    facts = _facts(papers, plan)
     text = _plain_summary(facts)
     if papers and not settings.sample_mode:
         message = json.dumps({
@@ -164,25 +164,35 @@ def summarise(papers: list[Paper], plan: SearchPlan, settings: Settings) -> Retr
 
 def no_results_message(plan: SearchPlan) -> str:
     """Shown when the searches found nothing: name the filters so the user knows what to loosen."""
-    c = plan.criteria
-    filters = []
-    if c.year_from or c.year_to:
-        filters.append(f"published {c.year_from or '...'}–{c.year_to or 'now'}")
-    if c.paper_types in (["review"], ["primary"]):
-        filters.append("reviews only" if c.paper_types == ["review"] else "original studies only")
-    if c.min_citations:
-        filters.append(f"at least {c.min_citations} citations")
-    text = f"I couldn't find any papers on '{c.topic}'"
+    filters = _describe_filters(plan.criteria)
+    text = f"I couldn't find any papers on '{plan.criteria.topic}'"
     if filters:
         text += " with these filters: " + ", ".join(filters)
     return text + ". Try broader or different terms" + (", or relax the filters." if filters else ".")
 
 
-def _facts(papers: list[Paper], criteria: SearchCriteria) -> dict:
+def _describe_filters(c: SearchCriteria, skip: frozenset[str] = frozenset()) -> list[str]:
+    """Human-readable filters, leaving out the criteria named in `skip`."""
+    filters = []
+    if (c.year_from and "year_from" not in skip) or (c.year_to and "year_to" not in skip):
+        start = c.year_from if "year_from" not in skip else None
+        filters.append(f"published {start or '...'}–{c.year_to or 'now'}")
+    if c.paper_types in (["review"], ["primary"]) and "paper_types" not in skip:
+        filters.append("reviews only" if c.paper_types == ["review"] else "original studies only")
+    if c.min_citations and "min_citations" not in skip:
+        filters.append(f"at least {c.min_citations} citations")
+    if c.min_citations_per_year and "min_citations_per_year" not in skip:
+        filters.append(f"at least {c.min_citations_per_year} citations per year")
+    return filters
+
+
+def _facts(papers: list[Paper], plan: SearchPlan) -> dict:
     years = [p.year for p in papers if p.year]
     reviews = sum(1 for p in papers if p.is_review)
+    defaulted = frozenset(d.split("=", 1)[0] for d in plan.used_defaults)
     return {
-        "topic": criteria.topic,
+        "topic": plan.criteria.topic,
+        "filters_chosen_by_user": _describe_filters(plan.criteria, skip=defaulted),
         "papers": len(papers),
         "year_range": f"{min(years)}–{max(years)}" if years else None,
         "reviews": reviews,
