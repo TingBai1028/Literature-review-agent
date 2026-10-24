@@ -24,7 +24,7 @@ Source: participant onboarding deck. Final requirements are in the Official Rule
 - [x] Zetaris running locally in Docker is the data layer: papers served from `litagent_db.papers` (`scripts/setup_zetaris.py`)
 - [ ] `logs/trace-<run_id>.jsonl` written for every run, with model names and no secrets
 - [ ] Timeouts on every external call; full run within 5–10 minutes (`RUN_TIMEOUT_S`)
-- [ ] `docker build` works and the container runs in sample mode; no model downloads at runtime, no local GPU
+- [x] `docker build` works and the container runs in sample mode; no model downloads at runtime (embedding model checked with `--network none`), no local GPU (image 761 MB, checked 24 Oct)
 - [ ] `.env.example` has placeholders only
 - [ ] `metadata.json` filled in and checked against the Submission Form Preview
 - [ ] `pytest` passes
