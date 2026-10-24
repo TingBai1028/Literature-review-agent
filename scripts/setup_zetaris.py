@@ -5,7 +5,9 @@
 
 Needs ZETARIS_* and PAPERS_DB_* in .env (see .env.example). Ends with a round trip: writes two test
 papers to the store, reads them back through Zetaris SQL, checks they match, then deletes them.
-To undo: run `DROP DATASOURCE litagent_db` in Zetaris and `docker compose down -v`.
+To undo: run `DROP DATASOURCE litagent_db` in Zetaris's SQL Editor, then, from THIS repo's root only,
+`docker compose down` (add `-v` to also delete the stored papers). Never run `down -v` in the Zetaris
+bundle folder: there it deletes Zetaris's metastore, keys and data.
 """
 
 from __future__ import annotations

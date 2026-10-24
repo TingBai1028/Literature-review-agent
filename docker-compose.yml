@@ -1,6 +1,7 @@
 # Our own paper store. scripts/setup_zetaris.py registers it in Zetaris as the `litagent_db`
 # data source; the Retriever writes papers here and every later agent reads them through Zetaris SQL.
 #
+# Run these from this repo's root (not the Zetaris bundle folder, which has its own compose file):
 #   docker compose up -d        # start
 #   docker compose down         # stop (data is kept in the litagent-db volume)
 services:

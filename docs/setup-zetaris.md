@@ -118,6 +118,22 @@ This `.env` is the bundle's own file in `~/zetaris/zetaris-platform`, not the re
 
 Never commit either `.env` file.
 
+## 7. Set up the paper store
+
+The Retriever writes papers to our own small Postgres database, which Zetaris serves as the `litagent_db` data source; the later agents read papers back through Zetaris SQL. From the **repo root** (not `~/zetaris/zetaris-platform`):
+
+1. Make sure the repo's `.env` has the `PAPERS_DB_*` lines from `.env.example`.
+2. Start the database and run the one-time setup:
+
+   ```bash
+   docker compose up -d                          # starts litagent-db on localhost:5433
+   .venv/bin/python scripts/setup_zetaris.py     # safe to run again
+   ```
+
+   Expect four lines ending in `Round trip OK`. The script creates the `papers` table, registers it in Zetaris (`CREATE DATASOURCE litagent_db`, `REGISTER DATASOURCE TABLE`), then writes two test papers, reads them back through Zetaris and deletes them.
+
+The repo's `docker compose` commands only touch `litagent-db`. To stop it: `docker compose down` from the repo root.
+
 ## Daily use
 
 Run these from `~/zetaris/zetaris-platform`:
