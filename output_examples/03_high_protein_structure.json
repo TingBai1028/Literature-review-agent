@@ -1418,723 +1418,1410 @@
       "nodes": [
         {
           "id": "W3165545667",
+          "world_id": "paper:openalex:W3165545667",
           "type": "paper",
           "title": "Deep Learning-Based Advances in Protein Structure Prediction",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.3390/ijms22115553",
+          "citation_count": 117,
+          "is_review": false,
+          "authors": [
+            "Subash Chandra Pakhrin",
+            "Badri Adhikari",
+            "Bikash Shrestha",
+            "Dukka B. KC"
+          ]
         },
         {
           "id": "W4401209403",
+          "world_id": "paper:openalex:W4401209403",
           "type": "paper",
           "title": "AI-Driven Deep Learning Techniques in Protein Structure Prediction",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.3390/ijms25158426",
+          "citation_count": 139,
+          "is_review": false,
+          "authors": [
+            "Qiaomu Li",
+            "Jiawei Chen",
+            "Yixin Xie",
+            "Zhiyu Dai",
+            "Ying Xie",
+            "Shuteng Niu",
+            "Kazi Fahim Ahmad Nasif",
+            "Lingtao Chen",
+            "Bobin Deng",
+            "Seyedamin Pouriyeh"
+          ]
         },
         {
           "id": "W3163965514",
+          "world_id": "paper:openalex:W3163965514",
           "type": "paper",
           "title": "Improved protein structure prediction by deep learning irrespective of co-evolution information",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1038/s42256-021-00348-5",
+          "citation_count": 256,
+          "is_review": false,
+          "authors": [
+            "Matt McPartlon",
+            "Jin Li",
+            "Jinbo Xu"
+          ]
         },
         {
           "id": "W4300861364",
+          "world_id": "paper:openalex:W4300861364",
           "type": "paper",
           "title": "Single-sequence protein structure prediction using a language model and deep learning",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1038/s41587-022-01432-w",
+          "citation_count": 454,
+          "is_review": false,
+          "authors": [
+            "Anant Kharkar",
+            "Koushik Roy",
+            "Nazim Bouatta",
+            "Ratul Chowdhury",
+            "George McDonald Church",
+            "Christina Floristean",
+            "Surojit Biswas",
+            "Gustaf Ahdritz",
+            "Charlotte Rochereau",
+            "Joanna T. Zhang"
+          ]
         },
         {
           "id": "W4402753025",
+          "world_id": "paper:openalex:W4402753025",
           "type": "paper",
           "title": "Deep learning methods for protein structure prediction",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1002/mef2.96",
+          "citation_count": 29,
+          "is_review": false,
+          "authors": [
+            "Tian Zhong",
+            "Zihan Chen",
+            "Yiming Qin",
+            "Peng Ye",
+            "Ying Xiao",
+            "Xi Yu"
+          ]
         },
         {
           "id": "W3132448805",
+          "world_id": "paper:openalex:W3132448805",
           "type": "paper",
           "title": "Deep learning techniques have significantly impacted protein structure prediction and protein design",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1016/j.sbi.2021.01.007",
+          "citation_count": 127,
+          "is_review": true,
+          "authors": [
+            "Robin Pearce",
+            "Yang Zhang"
+          ]
         },
         {
           "id": "W4391338754",
+          "world_id": "paper:openalex:W4391338754",
           "type": "paper",
           "title": "Deep learning for protein structure prediction and design\u2014progress and applications",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1038/s44320-024-00016-x",
+          "citation_count": 69,
+          "is_review": false,
+          "authors": [
+            "Pedro Beltr\u00e3o",
+            "J\u00fcrgen J\u00e4nes"
+          ]
         },
         {
           "id": "W4409112594",
+          "world_id": "paper:openalex:W4409112594",
           "type": "paper",
           "title": "Protein structure prediction via deep learning: an in-depth review",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.3389/fphar.2025.1498662",
+          "citation_count": 43,
+          "is_review": false,
+          "authors": [
+            "Jialiang Yang",
+            "Chang Zhou",
+            "Yajie Meng",
+            "Zhuang Zhang",
+            "Yuhua Yao",
+            "Xianfang Tang",
+            "Xinrong Hu",
+            "Geng Tian"
+          ]
         },
         {
           "id": "W4328048207",
+          "world_id": "paper:openalex:W4328048207",
           "type": "paper",
           "title": "Protein structure prediction with in-cell photo-crosslinking mass spectrometry and deep learning",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1038/s41587-023-01704-z",
+          "citation_count": 163,
+          "is_review": false,
+          "authors": [
+            "Andrea Graziadei",
+            "Therese Dau",
+            "Kolja Stahl",
+            "Oliver Brock",
+            "Juri Rappsilber"
+          ]
         },
         {
           "id": "W4318716433",
+          "world_id": "paper:openalex:W4318716433",
           "type": "paper",
           "title": "Deep learning for protein complex structure prediction",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1016/j.sbi.2023.102529",
+          "citation_count": 52,
+          "is_review": true,
+          "authors": [
+            "Patrick Bryant"
+          ]
         },
         {
           "id": "W3184615727",
+          "world_id": "paper:openalex:W3184615727",
           "type": "paper",
           "title": "Protein\u2013RNA interaction prediction with deep learning: structure matters",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1093/bib/bbab540",
+          "citation_count": 92,
+          "is_review": false,
+          "authors": [
+            "Siyuan Chen",
+            "Licheng Zong",
+            "Junkang Wei",
+            "Xin Gao",
+            "Yu Li"
+          ]
         },
         {
           "id": "W3186340132",
+          "world_id": "paper:openalex:W3186340132",
           "type": "paper",
           "title": "Improving protein tertiary structure prediction by deep learning and distance prediction in CASP14",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1002/prot.26186",
+          "citation_count": 31,
+          "is_review": false,
+          "authors": [
+            "Tianqi Wu",
+            "Jianlin Jack Cheng",
+            "Zhiye Guo",
+            "Jie Hou",
+            "Jian Liu"
+          ]
         },
         {
           "id": "W4205835872",
+          "world_id": "paper:openalex:W4205835872",
           "type": "paper",
           "title": "A Review of Protein Structure Prediction using Deep Learning",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1051/bioconf/20214104003",
+          "citation_count": 1,
+          "is_review": false,
+          "authors": [
+            "Rukman Hertadi",
+            "Tati Latifah Erawati Rajab",
+            "Meredita Susanty"
+          ]
         },
         {
           "id": "W4367156817",
+          "world_id": "paper:openalex:W4367156817",
           "type": "paper",
           "title": "Application of deep learning methods for protein structure prediction",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.47533/2020.1606-146x.192",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Aisulu Ismailova",
+            "Yekaterina Golenko",
+            "R.N. Moldasheva"
+          ]
         },
         {
           "id": "W4410621619",
+          "world_id": "paper:openalex:W4410621619",
           "type": "paper",
           "title": "Deep-learning-based single-domain and multidomain protein structure prediction with D-I-TASSER",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1038/s41587-025-02654-4",
+          "citation_count": 103,
+          "is_review": false,
+          "authors": [
+            "Chunxiang Peng",
+            "Qiqige Wuyun",
+            "Yang Li",
+            "Lydia Freddolino",
+            "Xiaogen Zhou",
+            "Yiheng Zhu",
+            "Yang Zhang",
+            "Wei Hui Zheng",
+            "Quancheng Liu"
+          ]
         },
         {
           "id": "W4406537183",
+          "world_id": "paper:openalex:W4406537183",
           "type": "paper",
           "title": "Structure-Based Approaches for Protein\u2013Protein Interaction Prediction Using Machine Learning and Deep Learning",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.3390/biom15010141",
+          "citation_count": 27,
+          "is_review": false,
+          "authors": [
+            "Christos T. Chasapis",
+            "Georgios Batsis",
+            "Despoina P. Kiouri"
+          ]
         },
         {
           "id": "W4367301305",
+          "world_id": "paper:openalex:W4367301305",
           "type": "paper",
           "title": "Deep Learning for Protein Structure Prediction: Advancements in Structural Bioinformatics",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1101/2023.04.26.538026",
+          "citation_count": 5,
+          "is_review": false,
+          "authors": [
+            "Daniel Szelogowski"
+          ]
         },
         {
           "id": "W4389480950",
+          "world_id": "paper:openalex:W4389480950",
           "type": "paper",
           "title": "DeepMainmast: integrated protocol of protein structure modeling for cryo-EM with deep learning and structure prediction",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1038/s41592-023-02099-0",
+          "citation_count": 68,
+          "is_review": false,
+          "authors": [
+            "Genki Terashi",
+            "Devashish Prasad",
+            "Tsukasa Nakamura",
+            "Xiao Wang",
+            "Daisuke Kihara"
+          ]
         },
         {
           "id": "W4229031603",
+          "world_id": "paper:openalex:W4229031603",
           "type": "paper",
           "title": "ScanNet: an interpretable geometric deep learning model for structure-based protein binding site prediction",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1038/s41592-022-01490-7",
+          "citation_count": 274,
+          "is_review": false,
+          "authors": [
+            "Dina Schneidman\u2010Duhovny",
+            "Haim J. Wolfson",
+            "J\u00e9r\u00f4me Tubiana"
+          ]
         },
         {
           "id": "W4390536911",
+          "world_id": "paper:openalex:W4390536911",
           "type": "paper",
           "title": "Structure-based, deep-learning models for protein-ligand binding affinity prediction",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1186/s13321-023-00795-9",
+          "citation_count": 49,
+          "is_review": false,
+          "authors": [
+            "Debby D. Wang",
+            "Wenhui Wu",
+            "Ran Wang"
+          ]
         },
         {
           "id": "W4390501271",
+          "world_id": "paper:openalex:W4390501271",
           "type": "paper",
           "title": "Improving deep learning protein monomer and complex structure prediction using DeepMSA2 with huge metagenomics data",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1038/s41592-023-02130-4",
+          "citation_count": 131,
+          "is_review": false,
+          "authors": [
+            "Wei Hui Zheng",
+            "Yang Zhang",
+            "Lydia Freddolino",
+            "Yang Li",
+            "Chengxin Zhang",
+            "Qiqige Wuyun"
+          ]
         },
         {
           "id": "W4214530112",
+          "world_id": "paper:openalex:W4214530112",
           "type": "paper",
           "title": "Structure-Aware Multimodal Deep Learning for Drug\u2013Protein Interaction Prediction",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1021/acs.jcim.2c00060",
+          "citation_count": 75,
+          "is_review": false,
+          "authors": [
+            "Dahong Qian",
+            "Shuangjia Zheng",
+            "Penglei Wang",
+            "Chang Wen",
+            "Junhong Liu",
+            "Atanas Patronov",
+            "Hongming Chen",
+            "Chengtao Li",
+            "Yize Jiang",
+            "Yuedong Yang"
+          ]
         },
         {
           "id": "W4225919313",
+          "world_id": "paper:openalex:W4225919313",
           "type": "paper",
           "title": "A Deep Learning Approach for Prediction of Protein Secondary Structure",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.32604/cmc.2022.026408",
+          "citation_count": 2,
+          "is_review": false,
+          "authors": [
+            "Muhammad Umer Sarwar",
+            "Muhammad Irfan Khan",
+            "Muhammad Faizan Zubair",
+            "Yazeed Yasin Ghadi",
+            "Ayesha Hanif",
+            "Muhammad Kashif Hanif",
+            "Eatedal A. Alabdulkreem"
+          ]
         },
         {
           "id": "W4409170867",
+          "world_id": "paper:openalex:W4409170867",
           "type": "paper",
           "title": "Applications of Deep Learning in Protein Structure Prediction for Drug Discovery",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.2139/ssrn.5203752",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Muhammad Abubakar"
+          ]
         },
         {
           "id": "W3169629772",
+          "world_id": "paper:openalex:W3169629772",
           "type": "paper",
           "title": "Protein Secondary Structure Prediction With a Reductive Deep Learning Method",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.3389/fbioe.2021.687426",
+          "citation_count": 39,
+          "is_review": false,
+          "authors": [
+            "Fangfang Luo",
+            "Jianwei Shuai",
+            "Yandong Huang",
+            "Zhijin Wang",
+            "Zhiliang Lyu"
+          ]
         },
         {
           "id": "W3167623110",
+          "world_id": "paper:openalex:W3167623110",
           "type": "paper",
           "title": "Recent Applications of Deep Learning Methods on Evolution- and Contact-Based Protein Structure Prediction",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.3390/ijms22116032",
+          "citation_count": 25,
+          "is_review": false,
+          "authors": [
+            "Sun Choi",
+            "Donghyuk Suh",
+            "Jai Woo Lee",
+            "Yoonji Lee"
+          ]
         },
         {
           "id": "W4308930019",
+          "world_id": "paper:openalex:W4308930019",
           "type": "paper",
           "title": "Deep learning for protein secondary structure prediction: Pre and post-AlphaFold",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1016/j.csbj.2022.11.012",
+          "citation_count": 50,
+          "is_review": false,
+          "authors": [
+            "Reza Pulungan",
+            "Dewi Pramudi Ismi",
+            "Afiahayati"
+          ]
         },
         {
           "id": "W7165660686",
+          "world_id": "paper:openalex:W7165660686",
           "type": "paper",
           "title": "Deep Learning Models for Protein Structure Prediction: A Comprehensive Survey",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.58482/ijeresm.v5i2.7",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "C Srushti",
+            "P M Prathibhavani",
+            "K R. Venugopal"
+          ]
         },
         {
           "id": "W3183921815",
+          "world_id": "paper:openalex:W3183921815",
           "type": "paper",
           "title": "Protein structure prediction using deep learning distance and hydrogen\u2010bonding restraints in CASP14",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1002/prot.26193",
+          "citation_count": 60,
+          "is_review": false,
+          "authors": [
+            "Xiaogen Zhou",
+            "Yang Zhang",
+            "Chengxin Zhang",
+            "Xiaoqiang Huang",
+            "Eric W. Bell",
+            "Robin Pearce",
+            "Wei Hui Zheng",
+            "Yang Li"
+          ]
         },
         {
           "id": "W4405153727",
+          "world_id": "paper:openalex:W4405153727",
           "type": "paper",
           "title": "Protein Structure Prediction, Structural Bioinformatics and Deep Learning",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.20546/ijcmas.2024.1308.023",
+          "citation_count": 1,
+          "is_review": false,
+          "authors": [
+            "Tejas Agarwal"
+          ]
         },
         {
           "id": "W4312518579",
+          "world_id": "paper:openalex:W4312518579",
           "type": "paper",
           "title": "Understanding by design: Implementing deep learning from protein structure prediction to protein design",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1002/mef2.22",
+          "citation_count": 3,
+          "is_review": false,
+          "authors": [
+            "Jiangshan Zhan",
+            "Yuanxu Gao",
+            "Albert Cheung\u2010Hoi Yu"
+          ]
         },
         {
           "id": "W4399595373",
+          "world_id": "paper:openalex:W4399595373",
           "type": "paper",
           "title": "Deep Learning Prediction of Protein Complex Structures",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.2172/2371241",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Univ. of Missouri, Columbia, MO (United States)",
+            "Jianlin Jack Cheng"
+          ]
         },
         {
           "id": "W4283013935",
+          "world_id": "paper:openalex:W4283013935",
           "type": "paper",
           "title": "Scoring Functions for Protein-Ligand Binding Affinity Prediction Using Structure-based Deep Learning: A Review",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.3389/fbinf.2022.885983",
+          "citation_count": 155,
+          "is_review": false,
+          "authors": [
+            "Garrett M. Morris",
+            "Rocco Meli",
+            "Philip Charles Biggin"
+          ]
         },
         {
           "id": "W7116299005",
+          "world_id": "paper:openalex:W7116299005",
           "type": "paper",
           "title": "Deep Learning for Protein Structure Prediction: A New Era in Drug Design",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.5281/zenodo.17996538",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "www.rasitdinc.com"
+          ]
         },
         {
           "id": "W4311253683",
+          "world_id": "paper:openalex:W4311253683",
           "type": "paper",
           "title": "Applying deep reinforcement learning to the HP model for protein structure prediction",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1016/j.physa.2022.128395",
+          "citation_count": 15,
+          "is_review": false,
+          "authors": [
+            "Fujia Tian",
+            "Houjing Huang",
+            "Kaiyuan Yang",
+            "Liang Dai",
+            "Roland H. C. Yap",
+            "Olafs Vandans",
+            "Adithya Murali"
+          ]
         },
         {
           "id": "W3185577893",
+          "world_id": "paper:openalex:W3185577893",
           "type": "paper",
           "title": "AI3SD Video: Deep Learning enhanced prediction of protein structure and dynamics",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.5258/soton/p0099",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Martina Audagnotto"
+          ]
         },
         {
           "id": "W7213516358",
+          "world_id": "paper:openalex:W7213516358",
           "type": "paper",
           "title": "Deep Learning-Based Prediction of Protein Structure from Sequence Data",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.5281/zenodo.22688030",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Fernandez, Astrid",
+            "Claire Havlicek",
+            "Petr Dubois"
+          ]
         },
         {
           "id": "W7220302866",
+          "world_id": "paper:openalex:W7220302866",
           "type": "paper",
           "title": "Deep Learning Approaches for Protein Structure Prediction in Regenerative Therapies",
-          "year": 2024
+          "year": 2024,
+          "doi": null,
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Jonas Hansen"
+          ]
         },
         {
           "id": "W4417148774",
+          "world_id": "paper:openalex:W4417148774",
           "type": "paper",
           "title": "Advanced Deep Learning Methods for Protein Structure Prediction and Design",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.48550/arxiv.2503.13522",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Qian Niu",
+            "Ningyuan Deng",
+            "Ming Li",
+            "Xinyuan Song",
+            "Tianyang Wang",
+            "Zheyu Yao",
+            "Ziqian Bi",
+            "Junyu Liu",
+            "Zhang, Yichao",
+            "Keyu Chen"
+          ]
         },
         {
           "id": "W4200213155",
+          "world_id": "paper:openalex:W4200213155",
           "type": "paper",
           "title": "High-Performance Deep Learning Toolbox for Genome-Scale Prediction of Protein Structure and Function",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1109/mlhpc54614.2021.00010",
+          "citation_count": 11,
+          "is_review": false,
+          "authors": [
+            "Mu Gao",
+            "Peik K. Lund-Andersen",
+            "Farhan Quadir",
+            "Chen Chen",
+            "T. Chad Effler",
+            "Nabin Giri",
+            "Xiao Chen",
+            "Alex Morehead",
+            "Sajid Mahmud",
+            "Raj S. Roy"
+          ]
         },
         {
           "id": "W4417496152",
+          "world_id": "paper:openalex:W4417496152",
           "type": "paper",
           "title": "Advances in Protein Structure Prediction through Deep Learning Models",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.61173/rsjk7x31",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Xinyang Zhang"
+          ]
         },
         {
           "id": "W4224939843",
+          "world_id": "paper:openalex:W4224939843",
           "type": "paper",
           "title": "LM-GVP: an extensible sequence and structure informed deep learning framework for protein property prediction",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1038/s41598-022-10775-y",
+          "citation_count": 85,
+          "is_review": false,
+          "authors": [
+            "George Price",
+            "Zichen Wang",
+            "Colby J. Wise",
+            "Emmanuel Oluwatobi Salawu",
+            "Nataliya Golovach",
+            "Ryan M. Brand",
+            "Panpan Xu",
+            "Miguel Romero Calvo",
+            "Sri Priya Ponnapalli",
+            "Steven A. Combs"
+          ]
         },
         {
           "id": "W7142067576",
+          "world_id": "paper:openalex:W7142067576",
           "type": "paper",
           "title": "Role of Deep Learning in Protein Structure Prediction: Current Progress and Open Challenges",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.52783/cana.v32.4850",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "S P Deshpande Bhushan Wakode"
+          ]
         },
         {
           "id": "W4311293038",
+          "world_id": "paper:openalex:W4311293038",
           "type": "paper",
           "title": "DLBLS_SS: protein secondary structure prediction using deep learning and broad learning system",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1039/d2ra06433b",
+          "citation_count": 14,
+          "is_review": false,
+          "authors": [
+            "Yuming Ma",
+            "Lu Yuan",
+            "Yihui Liu",
+            "Xiaopei Hu"
+          ]
         },
         {
           "id": "W3111382885",
+          "world_id": "paper:openalex:W3111382885",
           "type": "paper",
           "title": "On the performance of deep learning for numerical optimization: An application to protein structure prediction",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1016/j.asoc.2021.107596",
+          "citation_count": 9,
+          "is_review": false,
+          "authors": [
+            "Lhassane Idoumghar",
+            "Hojjat Rakhshani",
+            "Mathieu Br\u00e9villiers",
+            "Soheila Ghambari",
+            "Julien Lepagnot"
+          ]
         },
         {
           "id": "W4411723436",
+          "world_id": "paper:openalex:W4411723436",
           "type": "paper",
           "title": "Harnessing the Potential of Deep Learning to Improve Protein Structure Prediction: Challenges and Strategies",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.54097/8n774f38",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Yishuai Cheng"
+          ]
         },
         {
           "id": "W4400315590",
+          "world_id": "paper:openalex:W4400315590",
           "type": "paper",
           "title": "The State-of-the-Art Overview to Application of Deep Learning in Accurate Protein Design and Structure Prediction",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1007/s41061-024-00469-6",
+          "citation_count": 6,
+          "is_review": false,
+          "authors": [
+            "Marzieh Ramezani Farani",
+            "Iraj Alipourfard",
+            "Shayan Khalilollah",
+            "Shiva Karimian",
+            "Mehrnaz Mostafavi",
+            "Yun Suk Huh",
+            "Yalda Yazdani",
+            "Amin Birashk",
+            "Sohrab Jaferian",
+            "Saber Saharkhiz"
+          ]
         },
         {
           "id": "W7214551647",
+          "world_id": "paper:openalex:W7214551647",
           "type": "paper",
           "title": "Protein Structure Prediction Using AlphaFold: A Deep Learning Approach.",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.5281/zenodo.22994642",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Mridhula Muthukumar"
+          ]
         },
         {
           "id": "W4413579388",
+          "world_id": "paper:openalex:W4413579388",
           "type": "paper",
           "title": "Prediction of the hydration structures at the protein\u2013protein Interface of dimers using deep learning",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1016/j.cplett.2025.142372",
+          "citation_count": 3,
+          "is_review": false,
+          "authors": [
+            "Yuki Ito",
+            "Takashi Yoshidome"
+          ]
         },
         {
           "id": "W4409190911",
+          "world_id": "paper:openalex:W4409190911",
           "type": "paper",
           "title": "Advancements in one-dimensional protein structure prediction using machine learning and deep learning",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1016/j.csbj.2025.04.005",
+          "citation_count": 8,
+          "is_review": false,
+          "authors": [
+            "Di Meng",
+            "Gianluca Pollastri",
+            "Wafa  T Alanazi"
+          ]
         },
         {
           "id": "W4375863182",
+          "world_id": "paper:openalex:W4375863182",
           "type": "paper",
           "title": "Protein structure prediction with energy minimization and deep learning approaches",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1007/s11047-023-09943-4",
+          "citation_count": 11,
+          "is_review": false,
+          "authors": [
+            "Jos\u00e9 Carlos Almeida Santos",
+            "Daniel Varela",
+            "Juan Luis Filgueiras"
+          ]
         },
         {
           "id": "W4407173261",
+          "world_id": "paper:openalex:W4407173261",
           "type": "paper",
           "title": "Protein ligand structure prediction: From empirical to deep learning approaches",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1016/j.sbi.2025.102998",
+          "citation_count": 8,
+          "is_review": true,
+          "authors": [
+            "Guangfeng Zhou",
+            "Frank DiMaio"
+          ]
         },
         {
           "id": "W4399982595",
+          "world_id": "paper:openalex:W4399982595",
           "type": "paper",
           "title": "Protein\u2013Protein Interaction Prediction via Structure\u2010Based Deep Learning",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1002/prot.26721",
+          "citation_count": 9,
+          "is_review": false,
+          "authors": [
+            "Yucong Liu",
+            "Zhenhai Li",
+            "Yijun Liu"
+          ]
         },
         {
           "id": "W3159267658",
+          "world_id": "paper:openalex:W3159267658",
           "type": "paper",
           "title": "Study of real-valued distance prediction for protein structure prediction with deep learning",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1093/bioinformatics/btab333",
+          "citation_count": 18,
+          "is_review": false,
+          "authors": [
+            "Jin Li",
+            "Jinbo Xu"
+          ]
         },
         {
           "id": "W4321613637",
+          "world_id": "paper:openalex:W4321613637",
           "type": "paper",
           "title": "New methods for protein structure prediction using machine learning and deep learning",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.32469/10355/94265",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Junlin Wang"
+          ]
         },
         {
           "id": "W7170043904",
+          "world_id": "paper:openalex:W7170043904",
           "type": "paper",
           "title": "AI-Driven Protein Structure Prediction: A Review of Deep Learning Methods for Protein Folding and Drug Design",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.71143/y3ptrr62",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Simran",
+            "Neha Sharma",
+            "Hardik",
+            "Yash",
+            "Sahil"
+          ]
         },
         {
           "id": "W4382401741",
+          "world_id": "paper:openalex:W4382401741",
           "type": "paper",
           "title": "Prediction of CD44 Structure by Deep Learning-Based Protein Modeling",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.3390/biom13071047",
+          "citation_count": 9,
+          "is_review": false,
+          "authors": [
+            "Benedetta Righino",
+            "Chiara Camponeschi",
+            "Davide Pirolli",
+            "Alessandro Semeraro",
+            "Francesco Ria",
+            "Maria Cristina De Rosa"
+          ]
         },
         {
           "id": "W7202087238",
+          "world_id": "paper:openalex:W7202087238",
           "type": "paper",
           "title": "Deep Learning for Protein Structure Prediction: From AlphaFold to the Next Frontier",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.31033/abjar/5.3.2026.122",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Everest Shiwach",
+            "Sandeep Kumar"
+          ]
         },
         {
           "id": "W4246182489",
+          "world_id": "paper:openalex:W4246182489",
           "type": "paper",
           "title": "MULTICOM2: an open-source protein structure prediction system powered by deep learning and distance prediction",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.21203/rs.3.rs-339464/v1",
+          "citation_count": 9,
+          "is_review": false,
+          "authors": [
+            "Jianlin Jack Cheng",
+            "Zhiye Guo",
+            "Jian Liu",
+            "Tianqi Wu",
+            "Jie Hou"
+          ]
         },
         {
           "id": "W4296164039",
+          "world_id": "paper:openalex:W4296164039",
           "type": "paper",
           "title": "Fast and accurate Ab Initio Protein structure prediction using deep learning potentials",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1371/journal.pcbi.1010539",
+          "citation_count": 44,
+          "is_review": false,
+          "authors": [
+            "Robin Pearce",
+            "Yang Li",
+            "Gilbert S. Omenn",
+            "Yang Zhang"
+          ]
         },
         {
           "id": "C1",
+          "world_id": "cluster:litagent:example-03:1:C1",
           "type": "cluster",
           "label": "Sample theme 1",
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
           "id": "C2",
+          "world_id": "cluster:litagent:example-03:1:C2",
           "type": "cluster",
           "label": "Sample theme 2",
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
           "id": "C3",
+          "world_id": "cluster:litagent:example-03:1:C3",
           "type": "cluster",
           "label": "Sample theme 3",
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
           "id": "C1-G1",
+          "world_id": "gap:litagent:example-03:1:C1-G1",
           "type": "gap",
           "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
-        },
-        {
-          "id": "C2-G1",
-          "type": "gap",
-          "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
-        },
-        {
-          "id": "C3-G1",
-          "type": "gap",
-          "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
-        }
-      ],
-      "edges": [
-        {
-          "source": "W3165545667",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4300861364",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4391338754",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4318716433",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4205835872",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4406537183",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4229031603",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4214530112",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3169629772",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7165660686",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4312518579",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7116299005",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7213516358",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4200213155",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7142067576",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4411723436",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4413579388",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4407173261",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4321613637",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7202087238",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4401209403",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4402753025",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4409112594",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3184615727",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4367156817",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4367301305",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4390536911",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4225919313",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3167623110",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3183921815",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4399595373",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4311253683",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7220302866",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4417496152",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4311293038",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4400315590",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4409190911",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4399982595",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7170043904",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4246182489",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3163965514",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3132448805",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4328048207",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3186340132",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4410621619",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4389480950",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4390501271",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4409170867",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4308930019",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4405153727",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4283013935",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3185577893",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4417148774",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4224939843",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3111382885",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7214551647",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4375863182",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3159267658",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4382401741",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4296164039",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3165545667",
-          "target": "W4300861364",
-          "type": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+          "cluster_ref": "C1",
           "evidence": [
             {
               "paper_id": "W3165545667",
               "quote": "Obtaining an accurate description of protein structure is a fundamental step toward understanding the underpinning of biology."
-            },
-            {
-              "paper_id": "W4300861364",
-              "quote": "Single-sequence protein structure prediction using a language model and deep learning"
             }
           ]
         },
         {
+          "id": "C2-G1",
+          "world_id": "gap:litagent:example-03:1:C2-G1",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between the first two papers of this group.",
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+          "cluster_ref": "C2",
+          "evidence": [
+            {
+              "paper_id": "W4401209403",
+              "quote": "Protein structure prediction is important for understanding their function and behavior."
+            }
+          ]
+        },
+        {
+          "id": "C3-G1",
+          "world_id": "gap:litagent:example-03:1:C3-G1",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between the first two papers of this group.",
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+          "cluster_ref": "C3",
+          "evidence": [
+            {
+              "paper_id": "W3163965514",
+              "quote": "Improved protein structure prediction by deep learning irrespective of co-evolution information"
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "source": "W4391338754",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4225919313",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4311293038",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4407173261",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3184615727",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4413579388",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4389480950",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4229031603",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4400315590",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4205835872",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7214551647",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4224939843",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4321613637",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4367156817",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7142067576",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3163965514",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4283013935",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3167623110",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4417148774",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4406537183",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3183921815",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7170043904",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4405153727",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4300861364",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7220302866",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3185577893",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4382401741",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4367301305",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7116299005",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4401209403",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4399982595",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4246182489",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4214530112",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3186340132",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3132448805",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4409190911",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4311253683",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4390536911",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4417496152",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3165545667",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4318716433",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4312518579",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4296164039",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4200213155",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4410621619",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4409170867",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4375863182",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4308930019",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4390501271",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4402753025",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7202087238",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4409112594",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4328048207",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7165660686",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4399595373",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3169629772",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4411723436",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7213516358",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3111382885",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3159267658",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
           "source": "W4401209403",
           "target": "W4402753025",
-          "type": "within_cluster",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
           "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "cluster_refs": [
+            "C2"
+          ],
           "evidence": [
             {
               "paper_id": "W4401209403",
@@ -2147,10 +2834,36 @@
           ]
         },
         {
+          "source": "W3165545667",
+          "target": "W4300861364",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "cluster_refs": [
+            "C1"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3165545667",
+              "quote": "Obtaining an accurate description of protein structure is a fundamental step toward understanding the underpinning of biology."
+            },
+            {
+              "paper_id": "W4300861364",
+              "quote": "Single-sequence protein structure prediction using a language model and deep learning"
+            }
+          ]
+        },
+        {
           "source": "W3163965514",
           "target": "W3132448805",
-          "type": "within_cluster",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
           "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "cluster_refs": [
+            "C3"
+          ],
           "evidence": [
             {
               "paper_id": "W3163965514",
@@ -2163,36 +2876,48 @@
           ]
         },
         {
-          "source": "C1-G1",
-          "target": "W3165545667",
-          "type": "gap_near"
-        },
-        {
-          "source": "C1-G1",
-          "target": "W4300861364",
-          "type": "gap_near"
-        },
-        {
           "source": "C2-G1",
           "target": "W4401209403",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "C1-G1",
+          "target": "W3165545667",
+          "type": "between",
+          "by": "gap_finder"
         },
         {
           "source": "C2-G1",
           "target": "W4402753025",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
         },
         {
           "source": "C3-G1",
           "target": "W3163965514",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
         },
         {
           "source": "C3-G1",
           "target": "W3132448805",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "C1-G1",
+          "target": "W4300861364",
+          "type": "between",
+          "by": "gap_finder"
         }
-      ]
+      ],
+      "world": {
+        "run_id": "example-03",
+        "attempt": 1,
+        "events": 709,
+        "pending_merges": 0
+      }
     },
     "usage": {
       "prompt_tokens": 0,

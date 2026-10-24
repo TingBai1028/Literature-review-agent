@@ -21,7 +21,7 @@ from litagent.agents import clusterer, connection_finder, gap_finder, grader, pl
 from litagent.config import EFFORT_PROFILES, Effort, Settings
 from litagent.human_review import Reviewer
 from litagent.integrations.llm import TokenBudgetExceeded, TokenMeter
-from litagent.integrations.meterless import WorldModel
+from litagent.integrations.meterless import ResearchWorld
 from litagent.integrations.zetaris import ZetarisStore
 from litagent.schemas import RunResult
 from litagent.trace import Trace
@@ -57,7 +57,7 @@ def run_pipeline(
         deadline = time.monotonic() + settings.run_timeout_s
         stage = "orchestrator"
         result: RunResult | None = None
-        world = WorldModel()
+        world = ResearchWorld(run_id=trace.run_id, directory=settings.logs_dir)
 
         def check_time(next_stage: str) -> None:
             if time.monotonic() > deadline:
@@ -78,6 +78,7 @@ def run_pipeline(
                     trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic")
                     return finish(RunResult(run_id=trace.run_id, status="need_topic", message_to_user=planned.message_to_user))
                 plan = previous_plan = planned.plan
+                world.start_attempt(attempt, question, plan.queries)
                 trace.log("planner", f"plan (attempt {attempt})", "plan created", plan, "retriever",
                           why=f"{plan.rationale or 'no rationale given'}; defaults used: {plan.used_defaults}")
 
@@ -112,7 +113,7 @@ def run_pipeline(
                 stage = "clusterer"
                 check_time(stage)
                 result.clusters = _graded_stage(
-                    "clusters", lambda fix: clusterer.cluster(papers, effort, settings, fix), papers, settings, trace, result
+                    "clusters", lambda fix: clusterer.cluster(papers, effort, settings, fix), papers, settings, trace, result, world
                 )
                 world.write_clusters(result.clusters)
 
@@ -122,7 +123,7 @@ def run_pipeline(
                 result.connections = _graded_stage(
                     "connections",
                     lambda fix: connection_finder.find_connections(papers, result.clusters, settings, fix),
-                    papers, settings, trace, result,
+                    papers, settings, trace, result, world,
                 )
                 world.write_connections(result.connections)
 
@@ -132,7 +133,7 @@ def run_pipeline(
                 result.gaps = _graded_stage(
                     "gaps",
                     lambda fix: gap_finder.find_gaps(papers, result.clusters, result.connections, settings, fix),
-                    papers, settings, trace, result,
+                    papers, settings, trace, result, world,
                 )
                 world.write_gaps(result.gaps)
                 result.paper_map = world.to_graph_json()
@@ -172,12 +173,14 @@ def _graded_stage(
     settings: Settings,
     trace: Trace,
     result: RunResult,
+    world: ResearchWorld,
 ) -> list[T]:
     fix: str | None = None
     for attempt in range(settings.max_redo_per_stage + 1):
         output = produce(fix)
         g = grader.grade(stage, output, papers, settings)
         ok = grader.passed(g, settings)
+        world.record_grade(stage, g)
         trace.log(
             "grader", f"grade {stage} (attempt {attempt + 1})", f"{g.total}/9 {'pass' if ok else 'fail'}",
             g, "next stage" if ok else f"redo {stage}", why=g.fix or g.reasoning,

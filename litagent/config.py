@@ -38,6 +38,10 @@ EFFORT_PROFILES: dict[Effort, EffortProfile] = {
 }
 
 
+# Meterless World Model: authors recorded per paper (consortium papers can list hundreds)
+WORLD_MODEL_MAX_AUTHORS = 10
+
+
 @dataclass(frozen=True)
 class DefaultCriteria:
     """Used by the Planner when the user doesn't say otherwise (team decision, 22 Oct)."""

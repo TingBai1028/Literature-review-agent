@@ -47,7 +47,7 @@ See [docs/sponsor-tech.md](docs/sponsor-tech.md) for the full write-up.
 | Meterless Nightshift | Primary AI provider: every LLM call goes through it (`litagent/integrations/llm.py`, OpenAI-compatible client) | Wired; confirm model ID in Providers tab |
 | NVIDIA | Nemotron 3.5 Super VL (`NIGHTSHIFT_MODEL`), connected through Nightshift (the NVIDIA key lives in Nightshift's Providers tab). The trace logs the model that handled each request. | Nemotron 3.5 Super VL |
 | Zetaris | Shared paper data layer, running locally in Docker: the Retriever writes papers to our paper store, which Zetaris serves as the `litagent_db` data source, and every later agent reads them through Zetaris SQL (`litagent/integrations/zetaris.py`) | Working (live round trip) |
-| Meterless World Model | Shared findings graph (clusters, connections, gaps), returned as `paper_map` for the paper map (`litagent/integrations/meterless.py`) | Interface + test ready; real engine not yet connected |
+| Meterless World Model | Implemented in Python from Meterless's spec and reference (`litagent/integrations/world_model/`). Holds every run's papers, authors, clusters, connections (with evidence) and gaps; later agents read from it, `/run` returns it as `paper_map`, `GET /world/{run_id}` returns the full world | Working: all 8 Meterless conformance checks pass |
 | Cursor (with SpaceX XAI) | Optional: development environment, project rules in `.cursor/rules/` | Optional |
 
 Each sponsor integration sits behind its own adapter class, so an outage in one doesn't break the whole project, and sample mode runs without any of them.
@@ -149,7 +149,7 @@ python scripts/try_search.py "your question" --effort medium --feedback "only re
 
 ### Logs
 
-Every run writes `logs/trace-<run_id>.jsonl` (one JSON object per line) and prints readable `[INFO]` lines to stdout. Each event has `timestamp, run_id, agent_name, action, decision, result, next, why`. LLM calls add the model that handled the request and token usage. Zetaris queries, Meterless World Model writes, grades, redos, fallbacks and errors are all logged. Tokens and keys are masked.
+Every run also saves its Meterless World Model to `logs/world-<run_id>.json` (served by `GET /world/{run_id}`). Every run writes `logs/trace-<run_id>.jsonl` (one JSON object per line) and prints readable `[INFO]` lines to stdout. Each event has `timestamp, run_id, agent_name, action, decision, result, next, why`. LLM calls add the model that handled the request and token usage. Zetaris queries, Meterless World Model writes, grades, redos, fallbacks and errors are all logged. Tokens and keys are masked.
 
 ### Run time
 

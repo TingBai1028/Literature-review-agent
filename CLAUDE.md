@@ -9,7 +9,7 @@ with grading agents after the last three and two human reviews.
 - Agents exchange the Pydantic models in `litagent/schemas.py`. Don't pass free text between agents.
 - Every connection and gap must carry Evidence (paper id + verbatim quote).
 - All LLM calls go through `litagent/integrations/llm.py` (Meterless Nightshift, OpenAI-compatible; the Nemotron model is set in `config.py`).
-- Paper data goes through `litagent/integrations/zetaris.py`; agent findings go to the Meterless world model in `litagent/integrations/meterless.py`. Keep each sponsor integration behind its adapter class.
+- Paper data goes through `litagent/integrations/zetaris.py`; agent findings go to the Meterless World Model through `litagent/integrations/meterless.py` (engine in `litagent/integrations/world_model/`; keep `tests/test_world_model_conformance.py` green). Keep each sponsor integration behind its adapter class.
 - Tunable numbers live in `litagent/config.py`, not inside agents.
 - Log each important decision with `trace.log(...)`, including why. Traces go to `logs/trace-<run_id>.jsonl`; never log secrets.
 - Keep the sample-mode branch in each agent working (`SAMPLE_MODE=true`: no Zetaris, Nightshift or network); `pytest` runs the pipeline in sample mode.
