@@ -11,8 +11,8 @@ Required in the submission: how we used Meterless (Nightshift + an Engine), Zeta
 
 ## Zetaris: shared paper data layer
 
-- **What it does for us:** TODO. Draft: the Retriever writes every paper it finds to Zetaris; every later agent reads papers through Zetaris instead of calling the APIs again, so all agents work from one source of truth.
-- **Where in the code:** `litagent/integrations/zetaris.py`. `ZetarisRestClient.run_sql` calls the documented REST API (`POST {ZETARIS_REST_URL}/sql-editor/sqls/run`, same as `scripts/zetaris_sql.py` in [zetaris/getting-started](https://github.com/zetaris/getting-started)) with a 45 s timeout. TODO: create the papers table and implement `save_papers` / `get_papers` on top of it.
+- **What it does for us:** the Retriever writes each run's papers to our Postgres paper store (`docker-compose.yml`), which Zetaris serves as the `litagent_db` data source. Every later agent reads papers back with Zetaris SQL (`SELECT … FROM litagent_db.papers WHERE run_id = …`) instead of calling the APIs again, so all agents work from one source of truth. Every query is logged with its row count. If Zetaris fails mid-run, the run continues on an in-memory copy with a warning.
+- **Where in the code:** `litagent/integrations/zetaris.py`. `ZetarisRestClient.run_sql` calls the documented REST API (`POST {ZETARIS_REST_URL}/sql-editor/sqls/run`, same as `scripts/zetaris_sql.py` in [zetaris/getting-started](https://github.com/zetaris/getting-started)) with a 45 s timeout. Setup: `scripts/setup_zetaris.py` creates the table, registers the data source and table (`CREATE DATASOURCE`, `REGISTER DATASOURCE TABLE`) and checks a live round trip.
 - **Settings:** `ZETARIS_REST_URL`, `ZETARIS_ORG_ID`, `ZETARIS_API_KEY` (use `host.docker.internal` from inside our container).
 - **Stretch goal:** join the user's own library (uploaded PDFs or a reference-manager export) with public metadata in one query, without copying private data.
 - **Screenshot / evidence:** TODO
