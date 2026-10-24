@@ -19,15 +19,17 @@ Required in the submission: how we used Meterless (Nightshift + an Engine), Zeta
 
 ## Meterless: world model and Markovian engine
 
-- **World model (our required working Meterless Engine feature):** each agent writes its findings (clusters, connections, gaps) to one shared graph; the next agent reads from it, and `/run` returns it as `output.paper_map`, which the front end renders as the paper map. Test: `tests/test_meterless_world_model.py`.
-  - **Status:** `WorldModel` is currently our in-memory stand-in with the same interface. TODO: back it with the real World Model from the Resources tab; the test then covers the real engine. Until then, don't claim the engine itself is integrated.
+- **World Model (our required working Meterless Engine):** Meterless ships the World Model as an implementation spec (`engines/world-model/AGENTS.md`) with a TypeScript reference and a conformance suite. We implemented it in Python (`litagent/integrations/world_model/`), ported from the reference: event-sourced store with an audit log, content-derived stable IDs, entity resolution with merge bands and an operator review queue, bitemporal relationships, facts with a conflict policy, and the canonical ingest pipeline.
+  - **Conformance:** `tests/test_world_model_conformance.py` ports all 8 checks of Meterless's suite (stable IDs, merge bands, provenance, idempotent ingest, bitemporal edges, audit order), plus parity tests: IDs and similarity scores match values computed by running Meterless's own reference (their reference passes their suite 8/8; ours passes the same checks).
+  - **How the agents use it (user-facing):** the run is a context and each planning attempt a child context. Papers, authors, clusters and gaps are entities; `found-by`, `authored-by`, `member-of`, `connects-to` (with evidence quotes) and `between` are relationships; grader scores are facts. Every write carries provenance (agent, run, time). Later agents read from it (`read_clusters`, `cluster_context`, `shared_authors`); `/run` returns it as `output.paper_map` for the paper map, and `GET /world/{run_id}` returns the whole saved world (entities, relationships, facts, review queue, audit log) from `logs/world-<run_id>.json`. Tests: `tests/test_meterless_world_model.py`.
+  - **Two typed-graph choices** (spec §6.1 allows per-type constraints): `authored-by`, `connects-to` and `between` keep several current targets instead of superseding; and authors never auto-merge on name similarity. On real OpenAlex data the default 0.85 band merged different people with short names ("Liang Li" / "Xiang Li"), so author near-matches go to the operator review queue (spec §7.1: never auto-destructive). Identical normalized names ("José García" / "Jose Garcia") are still one author.
 - **Markovian engine:** TODO. Draft: reads full-text PDFs in chunks at High / Ultra effort, carrying compressed state between chunks.
-- **Where in the code:** `litagent/integrations/meterless.py`
-- **Screenshot / evidence:** TODO
+- **Where in the code:** `litagent/integrations/world_model/` (engine), `litagent/integrations/meterless.py` (how litagent uses it)
+- **Screenshot / evidence:** TODO (e.g. `GET /world/<run_id>` output, or the paper map)
 
 ## NVIDIA
 
-- **Nemotron through Nightshift:** all agents use Nemotron 3.5 Super VL, connected in Nightshift's Providers tab (the NVIDIA key lives there, never in our app or `.env`).
+- **Nemotron through Nightshift:** all agents use Nemotron 3 Ultra, connected in Nightshift's Providers tab (the NVIDIA key lives there, never in our app or `.env`).
 - **Evidence:** every LLM event in `logs/trace-<run_id>.jsonl` records the `model` that handled the request, as reported by Nightshift.
 - No local GPU is used.
 

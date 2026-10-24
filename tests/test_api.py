@@ -104,3 +104,21 @@ def test_invalid_input_returns_structured_error(client, payload):
     body = r.json()
     assert body["status"] == "error"
     assert body["error"]["type"] == "InvalidInput"
+
+
+def test_world_endpoint_returns_the_runs_world_model(client):
+    client.post("/run", json={"run_id": "t-world", "input": {"query": "graph neural networks for drug discovery"}})
+    body = client.get("/world/t-world").json()
+    assert body["status"] == "success"
+    out = body["output"]
+    types = {e["type"] for e in out["entities"]}
+    assert {"paper", "author", "cluster", "gap", "search", "stage"} <= types
+    assert {r["type"] for r in out["relationships"]} >= {"found-by", "authored-by", "member-of", "connects-to", "between"}
+    assert out["facts"] and out["audit"] and out["events"] > 0
+
+
+@pytest.mark.parametrize("run_id, status", [("never-ran", 404), ("bad id!", 422)])
+def test_world_endpoint_errors_are_structured(client, run_id, status):
+    r = client.get(f"/world/{run_id}")
+    assert r.status_code == status
+    assert r.json()["status"] == "error"

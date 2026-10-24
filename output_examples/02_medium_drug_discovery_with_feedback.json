@@ -1442,707 +1442,1453 @@
       "nodes": [
         {
           "id": "W3110933132",
+          "world_id": "paper:openalex:W3110933132",
           "type": "paper",
           "title": "Molecular generative Graph Neural Networks for Drug Discovery",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1016/j.neucom.2021.04.039",
+          "citation_count": 181,
+          "is_review": false,
+          "authors": [
+            "Franco Scarselli",
+            "Monica Bianchini",
+            "Pietro Bongini"
+          ]
         },
         {
           "id": "W4415320025",
+          "world_id": "paper:openalex:W4415320025",
           "type": "paper",
           "title": "Graph neural networks driven acceleration in drug discovery",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1016/j.apsb.2025.10.011",
+          "citation_count": 29,
+          "is_review": false,
+          "authors": [
+            "Rui Wang",
+            "Chunlin Zhuang"
+          ]
         },
         {
           "id": "W3120618935",
+          "world_id": "paper:openalex:W3120618935",
           "type": "paper",
           "title": "Advanced graph and sequence neural networks for molecular property prediction and drug discovery",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1093/bioinformatics/btac112",
+          "citation_count": 123,
+          "is_review": false,
+          "authors": [
+            "Tianbao Yang",
+            "Zhuoning Yuan",
+            "Qi Qi",
+            "Limei Wang",
+            "Youzhi Luo",
+            "Yaochen Xie",
+            "Lei Cai",
+            "Zhengyang Wang",
+            "Meng Liu",
+            "Xu Zhao"
+          ]
         },
         {
           "id": "W4396806998",
+          "world_id": "paper:openalex:W4396806998",
           "type": "paper",
           "title": "Knowledge mapping of graph neural networks for drug discovery: a bibliometric and visualized analysis",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.3389/fphar.2024.1393415",
+          "citation_count": 33,
+          "is_review": false,
+          "authors": [
+            "Guixia Ling",
+            "Zhenhua Shen",
+            "Tingyan Song",
+            "Rufan Yao",
+            "Xinyi Xu",
+            "Rongwu Xiang",
+            "Fei Zhai",
+            "Yuxuan Zhai"
+          ]
         },
         {
           "id": "W3116202926",
+          "world_id": "paper:openalex:W3116202926",
           "type": "paper",
           "title": "Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.1186/s13321-020-00479-8",
+          "citation_count": 660,
+          "is_review": false,
+          "authors": [
+            "Zhe Wang",
+            "Chao Shen",
+            "Dongsheng Cao",
+            "Guangyong Chen",
+            "Ben Liao",
+            "Jian Wu",
+            "Tingjun Hou",
+            "Dejun Jiang",
+            "Chang\u2010Yu Hsieh",
+            "Zhenxing Wu"
+          ]
         },
         {
           "id": "W3216638646",
+          "world_id": "paper:openalex:W3216638646",
           "type": "paper",
           "title": "Reliable Graph Neural Networks for Drug Discovery Under Distributional Shift",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.48550/arxiv.2111.12951",
+          "citation_count": 14,
+          "is_review": false,
+          "authors": [
+            "Jeremiah T. Liu",
+            "Kehang Han",
+            "Balaji Lakshminarayanan"
+          ]
         },
         {
           "id": "W4416931215",
+          "world_id": "paper:openalex:W4416931215",
           "type": "paper",
           "title": "Intelligence on the graph: Graph neural networks for mechanistic drug target discovery",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1016/j.jpha.2025.101508",
+          "citation_count": 8,
+          "is_review": false,
+          "authors": [
+            "Nini Fan",
+            "Haiyang Sheng",
+            "Jinghui Wang",
+            "Wenchao Song",
+            "Sirui Chen",
+            "Yinfeng Yang",
+            "Jing Chen",
+            "Yuqing Lu",
+            "Jianhua Yang"
+          ]
         },
         {
           "id": "W4406017182",
+          "world_id": "paper:openalex:W4406017182",
           "type": "paper",
           "title": "Drug discovery and mechanism prediction with explainable graph neural networks",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1038/s41598-024-83090-3",
+          "citation_count": 58,
+          "is_review": false,
+          "authors": [
+            "Gaurav Asok Kumar",
+            "Conghao Wang",
+            "Jagath Chandana Rajapakse"
+          ]
         },
         {
           "id": "W4416068517",
+          "world_id": "paper:openalex:W4416068517",
           "type": "paper",
           "title": "A Survey of Graph Neural Networks for Drug Discovery: Recent Developments and Challenges",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.48550/arxiv.2509.07887",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Liang Cheng",
+            "Berry, Katherine"
+          ]
         },
         {
           "id": "W7163006540",
+          "world_id": "paper:openalex:W7163006540",
           "type": "paper",
           "title": "\"GRAPH NEURAL NETWORKS (GNNS) IN DRUG DISCOVERY AND DRUG TARGET AFFINITY (DTA) PREDICTION\"",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.5281/zenodo.20483778",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Shailendra Chawda",
+            "Komal Jain*"
+          ]
         },
         {
           "id": "W4417123819",
+          "world_id": "paper:openalex:W4417123819",
           "type": "paper",
           "title": "Graph Neural Networks in Modern AI-aided Drug Discovery",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.48550/arxiv.2506.06915",
+          "citation_count": 1,
+          "is_review": false,
+          "authors": [
+            "Haitao Lin",
+            "Kejun Ying",
+            "Zhenxing Wu",
+            "Weibo Zhao",
+            "Yu Kang",
+            "Odin Zhang",
+            "Xiaorui Wang",
+            "Xujun Zhang",
+            "Qing Ye",
+            "Jike Wang"
+          ]
         },
         {
           "id": "W7116366360",
+          "world_id": "paper:openalex:W7116366360",
           "type": "paper",
           "title": "What is a Graph Neural Network in Drug Discovery? The AI Revolution in Pharmaceutical Research",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.5281/zenodo.17997297",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "www.rasitdinc.com"
+          ]
         },
         {
           "id": "W7162690543",
+          "world_id": "paper:openalex:W7162690543",
           "type": "paper",
           "title": "Molecular Graph Neural Networks in Drug Discovery: A Narrative Review",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.51847/8w12ouixi5",
+          "citation_count": 0,
+          "is_review": true,
+          "authors": [
+            "Eleni Georgiou",
+            "George Papadopoulos"
+          ]
         },
         {
           "id": "W4417073891",
+          "world_id": "paper:openalex:W4417073891",
           "type": "paper",
           "title": "An Integrated Graph Neural Network and Reinforcement Learning Framework for Intelligent Drug Discovery",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.69987/jacs.2024.40602",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Chuan Wu",
+            "Zhenghao Pan"
+          ]
         },
         {
           "id": "W4388042006",
+          "world_id": "paper:openalex:W4388042006",
           "type": "paper",
           "title": "Explainable AI in drug discovery: self-interpretable graph neural network for molecular property prediction using concept whitening",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1007/s10994-023-06369-y",
+          "citation_count": 45,
+          "is_review": false,
+          "authors": [
+            "Biagio La Rosa",
+            "Alessio Ragno",
+            "Rino Ragno",
+            "Roberto Capobianco",
+            "Michela Proietti"
+          ]
         },
         {
           "id": "W4391335127",
+          "world_id": "paper:openalex:W4391335127",
           "type": "paper",
           "title": "PepGB: Facilitating peptide drug discovery via graph neural networks",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.48550/arxiv.2401.14665",
+          "citation_count": 2,
+          "is_review": false,
+          "authors": [
+            "Yipin Lei",
+            "Han Li",
+            "Jianyang Zeng",
+            "Xu Wang",
+            "Xiang Li",
+            "Fang, Meng"
+          ]
         },
         {
           "id": "W4404803126",
+          "world_id": "paper:openalex:W4404803126",
           "type": "paper",
           "title": "Enhancing drug discovery with AI: Predictive modeling of pharmacokinetics using Graph Neural Networks and ensemble learning",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1016/j.ipha.2024.11.002",
+          "citation_count": 30,
+          "is_review": false,
+          "authors": [
+            "R. Satheeskumar"
+          ]
         },
         {
           "id": "W4308610392",
+          "world_id": "paper:openalex:W4308610392",
           "type": "paper",
           "title": "Deep Surrogate Docking: Accelerating Automated Drug Discovery with Graph Neural Networks",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.48550/arxiv.2211.02720",
+          "citation_count": 5,
+          "is_review": false,
+          "authors": [
+            "Filippo Simini",
+            "Ryien Hosseini",
+            "Austin Clyde",
+            "Arvind Ramanathan"
+          ]
         },
         {
           "id": "W7222853523",
+          "world_id": "paper:openalex:W7222853523",
           "type": "paper",
           "title": "Graph Representation Learning for Drug Discovery: Integrating Graph Neural Networks with Molecular Property Prediction and Explainable AI",
-          "year": 2026
+          "year": 2026,
+          "doi": null,
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Nedda Antonetti",
+            "Eggert Ruppert"
+          ]
         },
         {
           "id": "W7208828033",
+          "world_id": "paper:openalex:W7208828033",
           "type": "paper",
           "title": "Application of Explainable Graph Neural Networks in Drug and Biomarker Discovery for Human Diseases",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.7912/5ka6-9430",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Zanyu Shi"
+          ]
         },
         {
           "id": "W7164175736",
+          "world_id": "paper:openalex:W7164175736",
           "type": "paper",
           "title": "Drug Discovery Using Graph Neural Networks: A Deep Learning Framework for Molecular Property Prediction and Virtual Screening",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.5281/zenodo.20624285",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Yogita H. Dhande Sharayu N. Bonde"
+          ]
         },
         {
           "id": "W4382317956",
+          "world_id": "paper:openalex:W4382317956",
           "type": "paper",
           "title": "Interpretable Chirality-Aware Graph Neural Network for Quantitative Structure Activity Relationship Modeling in Drug Discovery",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1609/aaai.v37i12.26679",
+          "citation_count": 35,
+          "is_review": false,
+          "authors": [
+            "Yunchao Liu",
+            "Bobby Bodenheimer",
+            "Rocco Moretti",
+            "Yu Wang",
+            "Tyler Derr",
+            "Jens Meiler",
+            "Oanh Vu"
+          ]
         },
         {
           "id": "W4390884937",
+          "world_id": "paper:openalex:W4390884937",
           "type": "paper",
           "title": "Machine learning drug discovery based on graph neural network and large language model",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.54254/2753-8818/29/20240825",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Tianqi Huang"
+          ]
         },
         {
           "id": "W7110847151",
+          "world_id": "paper:openalex:W7110847151",
           "type": "paper",
           "title": "LamNet: an alchemical-path-aware graph neural network to accelerate binding free energy calculations for drug discovery and beyond",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1093/nsr/nwaf559",
+          "citation_count": 2,
+          "is_review": false,
+          "authors": [
+            "Yang Li",
+            "Jialu Wu",
+            "Shimeng Li",
+            "Chang\u2010Yu Hsieh",
+            "Qun Su",
+            "Tingjun Hou",
+            "Tianyue Wang",
+            "Yu Kang",
+            "Tong Zhu",
+            "Renling Hu"
+          ]
         },
         {
           "id": "W4412202180",
+          "world_id": "paper:openalex:W4412202180",
           "type": "paper",
           "title": "Quantum drug discovery: a hybrid quantum graph neural network\u2013variational quantum eigensolver framework for serine neutralization",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1140/epjd/s10053-025-01024-8",
+          "citation_count": 6,
+          "is_review": false,
+          "authors": [
+            "Javier Villalba-D\u00edez"
+          ]
         },
         {
           "id": "W7115904589",
+          "world_id": "paper:openalex:W7115904589",
           "type": "paper",
           "title": "Statistical comparison and uncertainty analysis of graph neural networks and machine learning models for molecular property prediction in drug discovery",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1016/j.aichem.2025.100103",
+          "citation_count": 1,
+          "is_review": false,
+          "authors": [
+            "Shams ul Islam",
+            "Sarmad Waleed",
+            "Muhammad Saleem",
+            "Ali Ahmed"
+          ]
         },
         {
           "id": "W4395111046",
+          "world_id": "paper:openalex:W4395111046",
           "type": "paper",
           "title": "Deep learning enhanced drug discovery for novel biomaterials in regenerative medicine utilizing graph neural network approach for predicting cellular responses",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.58414/scientifictemper.2024.15.1.04",
+          "citation_count": 2,
+          "is_review": false,
+          "authors": [
+            "T Madhusudana",
+            "Pentala Srinith Reddy",
+            "Milindkumar Namdeorao Dandale",
+            "Seema G. Kadu",
+            "Manthan S. Manavadaria",
+            "Amar Pal Yadav"
+          ]
         },
         {
           "id": "W4394850168",
+          "world_id": "paper:openalex:W4394850168",
           "type": "paper",
           "title": "Performance and robustness of small molecule retention time prediction with molecular graph neural networks in industrial drug discovery campaigns",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1038/s41598-024-59620-4",
+          "citation_count": 12,
+          "is_review": false,
+          "authors": [
+            "David Pii",
+            "Chirag Mudaliar",
+            "Daniel Vik",
+            "Mads N\u00f8rregaard\u2010Madsen",
+            "Aleksejs Kontijevskis"
+          ]
         },
         {
           "id": "W4393154949",
+          "world_id": "paper:openalex:W4393154949",
           "type": "paper",
           "title": "Empowering Graph Neural Networks with Block-Based Dual Adaptive Deep Adjustment for Drug Resistance-Related NcRNA Discovery",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1021/acs.jcim.3c01973",
+          "citation_count": 5,
+          "is_review": false,
+          "authors": [
+            "Yi Zhang",
+            "Xuanzhao Li"
+          ]
         },
         {
           "id": "W4401855817",
+          "world_id": "paper:openalex:W4401855817",
           "type": "paper",
           "title": "Retraction Note: Drug discovery through Covid-19 genome sequencing with siamese graph convolutional neural network",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1007/s11042-024-20150-w",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Palaiahnakote Shivakumara",
+            "Soumen Kumar Pati",
+            "Manan Kumar Gupta",
+            "Rinita Shai",
+            "Ayan Banerjee"
+          ]
         },
         {
           "id": "W4394516146",
+          "world_id": "paper:openalex:W4394516146",
           "type": "paper",
           "title": "Additional file 1 of Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.6084/m9.figshare.14053374",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Guangyong Chen",
+            "Dongsheng Cao",
+            "Chao Shen",
+            "Tingjun Hou",
+            "Zhe Wang",
+            "Jian Wu",
+            "Dejun Jiang",
+            "Wu, Zhenxing",
+            "Chang\u2010Yu Hsieh",
+            "Ben Liao"
+          ]
         },
         {
           "id": "W4394092224",
+          "world_id": "paper:openalex:W4394092224",
           "type": "paper",
           "title": "Additional file 2 of Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.6084/m9.figshare.14053377",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Dongsheng Cao",
+            "Guangyong Chen",
+            "Chao Shen",
+            "Dejun Jiang",
+            "Wu, Zhenxing",
+            "Ben Liao",
+            "Tingjun Hou",
+            "Jian Wu",
+            "Chang\u2010Yu Hsieh",
+            "Zhe Wang"
+          ]
         },
         {
           "id": "W4386158307",
+          "world_id": "paper:openalex:W4386158307",
           "type": "paper",
           "title": "Risk factors and drug discovery for cognitive impairment in type 2 diabetes mellitus using artificial intelligence interpretation and graph neural networks",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.3389/fendo.2023.1213711",
+          "citation_count": 14,
+          "is_review": false,
+          "authors": [
+            "Jiajia Xie",
+            "Xiong You",
+            "Xin Zhang",
+            "Houwu Gong"
+          ]
         },
         {
           "id": "W3188579603",
+          "world_id": "paper:openalex:W3188579603",
           "type": "paper",
           "title": "Graph Neural Networks and Their Current Applications in Bioinformatics",
-          "year": 2021
+          "year": 2021,
+          "doi": "https://doi.org/10.3389/fgene.2021.690049",
+          "citation_count": 403,
+          "is_review": false,
+          "authors": [
+            "Xiaomeng Zhang",
+            "Mingjing Tang",
+            "Liang Li",
+            "Lin Liu"
+          ]
         },
         {
           "id": "W4376142487",
+          "world_id": "paper:openalex:W4376142487",
           "type": "paper",
           "title": "RETRACTED ARTICLE: Drug discovery through Covid-19 genome sequencing with siamese graph convolutional neural network",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1007/s11042-023-15270-8",
+          "citation_count": 5,
+          "is_review": false,
+          "authors": [
+            "Manan Kumar Gupta",
+            "Ayan Banerjee",
+            "Rinita Shai",
+            "Palaiahnakote Shivakumara",
+            "Soumen Kumar Pati"
+          ]
         },
         {
           "id": "W4205167309",
+          "world_id": "paper:openalex:W4205167309",
           "type": "paper",
           "title": "MGraphDTA: deep multiscale graph neural network for explainable drug\u2013target binding affinity prediction",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1039/d1sc05180f",
+          "citation_count": 347,
+          "is_review": false,
+          "authors": [
+            "Ziduo Yang",
+            "Calvin Yu\u2010Chian Chen",
+            "Weihe Zhong",
+            "Lu Zhao"
+          ]
         },
         {
           "id": "W4389131658",
+          "world_id": "paper:openalex:W4389131658",
           "type": "paper",
           "title": "Drug repositioning based on weighted local information augmented graph neural network",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1093/bib/bbad431",
+          "citation_count": 124,
+          "is_review": false,
+          "authors": [
+            "Jialiang Yang",
+            "Junlin Xu",
+            "Yajie Meng",
+            "Xianfang Tang",
+            "Changcheng Lu",
+            "Tao Peng",
+            "Geng Tian",
+            "Yi Wang",
+            "Bengong Zhang"
+          ]
         },
         {
           "id": "W4214868967",
+          "world_id": "paper:openalex:W4214868967",
           "type": "paper",
           "title": "Molecular contrastive learning of representations via graph neural networks",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1038/s42256-022-00447-x",
+          "citation_count": 856,
+          "is_review": false,
+          "authors": [
+            "Jianren Wang",
+            "Amir Barati Farimani",
+            "Zhonglin Cao",
+            "Yuyang Wang"
+          ]
         },
         {
           "id": "W4315767347",
+          "world_id": "paper:openalex:W4315767347",
           "type": "paper",
           "title": "Graph neural networks for conditional de novo drug design",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1002/wcms.1651",
+          "citation_count": 38,
+          "is_review": false,
+          "authors": [
+            "Carlo Abate",
+            "Sergio Decherchi",
+            "Andrea Cavalli"
+          ]
         },
         {
           "id": "W4391782448",
+          "world_id": "paper:openalex:W4391782448",
           "type": "paper",
           "title": "A review on graph neural networks for predicting synergistic drug combinations",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1007/s10462-023-10669-z",
+          "citation_count": 49,
+          "is_review": false,
+          "authors": [
+            "Fatemeh Vafaee",
+            "Milad Besharatifard"
+          ]
         },
         {
           "id": "W4402401635",
+          "world_id": "paper:openalex:W4402401635",
           "type": "paper",
           "title": "Survey on Graph Neural Networks",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1109/access.2024.3456913",
+          "citation_count": 37,
+          "is_review": false,
+          "authors": [
+            "Georgios Gkarmpounis",
+            "Petros Daras",
+            "Nicholas Vretos",
+            "Christos Vranis"
+          ]
         },
         {
           "id": "W4319762935",
+          "world_id": "paper:openalex:W4319762935",
           "type": "paper",
           "title": "Everything is connected: Graph neural networks",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1016/j.sbi.2023.102538",
+          "citation_count": 304,
+          "is_review": true,
+          "authors": [
+            "Petar Veli\u010dkovi\u0107"
+          ]
         },
         {
           "id": "W7125808017",
+          "world_id": "paper:openalex:W7125808017",
           "type": "paper",
           "title": "DualPG\u2010DTA: A Large Language Model\u2010Powered Graph Neural Network Framework for Enhanced Drug\u2010Target Affinity Prediction and Discovery of Novel CDK9 Inhibitors Exhibiting In Vivo Anti\u2010Leukemia Activity",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.1002/advs.202513099",
+          "citation_count": 4,
+          "is_review": false,
+          "authors": [
+            "Shipeng Zhang",
+            "Tie\u2010Gen Chen",
+            "Xinze Li",
+            "Cong Liu",
+            "Zhang Zhang",
+            "Ling Wang",
+            "Yihao Chen",
+            "Jindi Huang"
+          ]
         },
         {
           "id": "W4213235856",
+          "world_id": "paper:openalex:W4213235856",
           "type": "paper",
           "title": "Pre-training graph neural networks for link prediction in biomedical networks",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1093/bioinformatics/btac100",
+          "citation_count": 95,
+          "is_review": false,
+          "authors": [
+            "Chee Keong Kwoh",
+            "Jinmiao Chen",
+            "Yahui Long",
+            "Yong Liu",
+            "Jiawei Luo",
+            "Xiaoli Li",
+            "Min Wu",
+            "Yuan Fang"
+          ]
         },
         {
           "id": "W4318150241",
+          "world_id": "paper:openalex:W4318150241",
           "type": "paper",
           "title": "A dual graph neural network for drug\u2013drug interactions prediction based on molecular structure and interactions",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1371/journal.pcbi.1010812",
+          "citation_count": 113,
+          "is_review": false,
+          "authors": [
+            "Xiujuan Lei",
+            "Mei Ma"
+          ]
         },
         {
           "id": "W4399954566",
+          "world_id": "paper:openalex:W4399954566",
           "type": "paper",
           "title": "Advancing drug discovery with deep attention neural networks",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1016/j.drudis.2024.104067",
+          "citation_count": 53,
+          "is_review": false,
+          "authors": [
+            "Antonio Lavecchia"
+          ]
         },
         {
           "id": "W4282835253",
+          "world_id": "paper:openalex:W4282835253",
           "type": "paper",
           "title": "Predicting Protein\u2013Ligand Docking Structure with Graph Neural Network",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1021/acs.jcim.2c00127",
+          "citation_count": 73,
+          "is_review": false,
+          "authors": [
+            "Yihe Huang",
+            "Mehrdad Mahdavi",
+            "Anup Sarma",
+            "Nikolay V. Dokholyan",
+            "Mahmut Kandemir",
+            "Huaipan Jiang",
+            "Morteza Ramezani",
+            "Jian Wang",
+            "Weilin Cong"
+          ]
         },
         {
           "id": "W4413224864",
+          "world_id": "paper:openalex:W4413224864",
           "type": "paper",
           "title": "Kolmogorov\u2013Arnold graph neural networks for molecular property prediction",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1038/s42256-025-01087-7",
+          "citation_count": 97,
+          "is_review": false,
+          "authors": [
+            "Kelin Xia",
+            "Guanghui Wang",
+            "Yipeng Zhang",
+            "Longlong Li"
+          ]
         },
         {
           "id": "W4392157869",
+          "world_id": "paper:openalex:W4392157869",
           "type": "paper",
           "title": "Transfer learning with graph neural networks for improved molecular property prediction in the multi-fidelity setting",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1038/s41467-024-45566-8",
+          "citation_count": 136,
+          "is_review": false,
+          "authors": [
+            "David Buterez",
+            "P\u00edetro Li\u00f3",
+            "Steven John Kiddle",
+            "Dino Ogli\u0107",
+            "Jon Paul Janet"
+          ]
         },
         {
           "id": "W4220788456",
+          "world_id": "paper:openalex:W4220788456",
           "type": "paper",
           "title": "BridgeDPI: a novel Graph Neural Network for predicting drug\u2013protein interactions",
-          "year": 2022
+          "year": 2022,
+          "doi": "https://doi.org/10.1093/bioinformatics/btac155",
+          "citation_count": 114,
+          "is_review": false,
+          "authors": [
+            "Min Gao",
+            "Jie Zhang",
+            "Yifan Wu",
+            "Min Li",
+            "Min Zeng"
+          ]
         },
         {
           "id": "W7150938383",
+          "world_id": "paper:openalex:W7150938383",
           "type": "paper",
           "title": "Convolutional Neural Networks For Advanced Drug Discovery And Development",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.25258/ijddt.16.5s.107",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "B. Uma",
+            "Dr. V. Yamuna",
+            "Jakkapu Nagalakshmidevi",
+            "Dr. B. Anbuselvan",
+            "Brindha G",
+            "Dr. T. Vengatesh",
+            "Venkateswara Rao Cheekati",
+            "Suchitra Deviprasad",
+            "Dr. D. J. Anusha",
+            "C. Kasthuri"
+          ]
         },
         {
           "id": "W4377968189",
+          "world_id": "paper:openalex:W4377968189",
           "type": "paper",
           "title": "GraphscoreDTA: optimized graph neural network for protein\u2013ligand binding affinity prediction",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1093/bioinformatics/btad340",
+          "citation_count": 92,
+          "is_review": false,
+          "authors": [
+            "Jing Ping Tang",
+            "Renyi Zhou",
+            "Min Li",
+            "Kaili Wang"
+          ]
         },
         {
           "id": "W4415615042",
+          "world_id": "paper:openalex:W4415615042",
           "type": "paper",
           "title": "Dual-route embedding-aware graph neural networks for drug repositioning",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1093/bib/bbaf555",
+          "citation_count": 6,
+          "is_review": false,
+          "authors": [
+            "Jun Wen",
+            "Yanlong Zhao",
+            "Ren Wang",
+            "Quan Sun",
+            "Jiawen Du",
+            "Can Chen",
+            "Yixiao Chen"
+          ]
         },
         {
           "id": "W7167703255",
+          "world_id": "paper:openalex:W7167703255",
           "type": "paper",
           "title": "Using Graph Neural Networks in Network Pharmacology for Predicting Drug Disease Associations",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.1016/j.procs.2026.06.201",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Richa Makhijani",
+            "Ruchira Selote",
+            "Umesh Manikanta Dhulipalla",
+            "Rishikesh Dwivedi",
+            "Khushboo Jain",
+            "Shubhada V Mangrulkar",
+            "Pawanraje Ukarde"
+          ]
         },
         {
           "id": "W4380136659",
+          "world_id": "paper:openalex:W4380136659",
           "type": "paper",
           "title": "Comprehensive evaluation of deep and graph learning on drug\u2013drug interactions prediction",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.1093/bib/bbad235",
+          "citation_count": 113,
+          "is_review": false,
+          "authors": [
+            "Dongsheng Cao",
+            "Lichang Dai",
+            "Xuan Lin",
+            "Bosheng Song",
+            "Zeng Li",
+            "Zu\u2010Guo Yu",
+            "Wen Zhang",
+            "Haowen Chen",
+            "Jian\u2010Yu Shi",
+            "Yafang Zhou"
+          ]
         },
         {
           "id": "W4392186151",
+          "world_id": "paper:openalex:W4392186151",
           "type": "paper",
           "title": "Applying Graph Neural Networks in Pharmacology",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.36227/techrxiv.170906927.71541956/v1",
+          "citation_count": 6,
+          "is_review": false,
+          "authors": [
+            "Ritwik Raj Saxena",
+            "Ritcha Saxena"
+          ]
         },
         {
           "id": "W7153548746",
+          "world_id": "paper:openalex:W7153548746",
           "type": "paper",
           "title": "A Survey on AI-Powered Drug Repurposing using Graph Neural Networks",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.5281/zenodo.19511563",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Anju Augustine",
+            "Alen Chacko",
+            "Alen Bigi",
+            "Alan Antony",
+            "Ms.  Preethi N P"
+          ]
         },
         {
           "id": "W4408957790",
+          "world_id": "paper:openalex:W4408957790",
           "type": "paper",
           "title": "Network-based multi-omics integrative analysis methods in drug discovery: a systematic review",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1186/s13040-025-00442-z",
+          "citation_count": 102,
+          "is_review": true,
+          "authors": [
+            "Xiaoming Tan",
+            "Yun\u2010Juan Bao",
+            "Weicai Ye",
+            "Wei Jiang"
+          ]
         },
         {
           "id": "W4402808474",
+          "world_id": "paper:openalex:W4402808474",
           "type": "paper",
           "title": "Graph pooling in graph neural networks: methods and their applications in omics studies",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1007/s10462-024-10918-9",
+          "citation_count": 24,
+          "is_review": false,
+          "authors": [
+            "Jialin Liu",
+            "Ziqi Zhao",
+            "Juexin Wang",
+            "Yan Wang",
+            "Wenju Hou",
+            "Lan Huang",
+            "Nan Sheng"
+          ]
         },
         {
           "id": "W4416716785",
+          "world_id": "paper:openalex:W4416716785",
           "type": "paper",
           "title": "An interpretable geometric graph neural network for enhancing the generalizability of drug\u2013target interaction prediction",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1186/s12915-025-02456-9",
+          "citation_count": 11,
+          "is_review": false,
+          "authors": [
+            "Lesong Wei",
+            "Leyi Wei",
+            "An Xiong",
+            "Zhenjie Luo",
+            "Zilong Zhang",
+            "Quan Zou",
+            "Tao Wang",
+            "Yan Xia"
+          ]
         },
         {
           "id": "C1",
+          "world_id": "cluster:litagent:example-02:2:C1",
           "type": "cluster",
           "label": "Sample theme 1",
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
           "id": "C2",
+          "world_id": "cluster:litagent:example-02:2:C2",
           "type": "cluster",
           "label": "Sample theme 2",
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
           "id": "C3",
+          "world_id": "cluster:litagent:example-02:2:C3",
           "type": "cluster",
           "label": "Sample theme 3",
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
           "id": "C1-G1",
+          "world_id": "gap:litagent:example-02:2:C1-G1",
           "type": "gap",
           "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+          "cluster_ref": "C1",
+          "evidence": [
+            {
+              "paper_id": "W3110933132",
+              "quote": "Molecular generative Graph Neural Networks for Drug Discovery"
+            }
+          ]
         },
         {
           "id": "C2-G1",
+          "world_id": "gap:litagent:example-02:2:C2-G1",
           "type": "gap",
           "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+          "cluster_ref": "C2",
+          "evidence": [
+            {
+              "paper_id": "W4415320025",
+              "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+            }
+          ]
         },
         {
           "id": "C3-G1",
+          "world_id": "gap:litagent:example-02:2:C3-G1",
           "type": "gap",
           "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+          "cluster_ref": "C3",
+          "evidence": [
+            {
+              "paper_id": "W3120618935",
+              "quote": "MOTIVATION: Properties of molecules are indicative of their functions and thus are useful in many applications."
+            }
+          ]
         }
       ],
       "edges": [
         {
-          "source": "W3110933132",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4396806998",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4416931215",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7163006540",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7162690543",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4391335127",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7222853523",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4382317956",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4412202180",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4394850168",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4394516146",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3188579603",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4389131658",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4391782448",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7125808017",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4399954566",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4392157869",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4377968189",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4380136659",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4408957790",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4415320025",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3116202926",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4406017182",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4417123819",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4417073891",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4404803126",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7208828033",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4390884937",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7115904589",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4393154949",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4394092224",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4376142487",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4214868967",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4402401635",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4213235856",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4282835253",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4220788456",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4415615042",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4392186151",
-          "target": "C2",
-          "type": "belongs_to"
+          "source": "W7153548746",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W4402808474",
           "target": "C2",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W3120618935",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W3216638646",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4416068517",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7116366360",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4388042006",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4308610392",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7164175736",
-          "target": "C3",
-          "type": "belongs_to"
+          "source": "W7222853523",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W7110847151",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W4395111046",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4401855817",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4386158307",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4205167309",
-          "target": "C3",
-          "type": "belongs_to"
+          "source": "W4416931215",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W4315767347",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W4319762935",
-          "target": "C3",
-          "type": "belongs_to"
+          "source": "W3116202926",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W4318150241",
+          "source": "W3110933132",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3188579603",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4220788456",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4377968189",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4404803126",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7164175736",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4386158307",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4415320025",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4382317956",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7162690543",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W4413224864",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W7150938383",
+          "source": "W3216638646",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W7167703255",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W7153548746",
-          "target": "C3",
-          "type": "belongs_to"
+          "source": "W4380136659",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4417073891",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W4416716785",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7125808017",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4392186151",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7163006540",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4401855817",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4282835253",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4376142487",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4394092224",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4392157869",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4396806998",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4319762935",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4415615042",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4213235856",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W3120618935",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7116366360",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4417123819",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4394850168",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4308610392",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4214868967",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4391782448",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4406017182",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7150938383",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4391335127",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7115904589",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4393154949",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4389131658",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4399954566",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4408957790",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4412202180",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4390884937",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4318150241",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4205167309",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4394516146",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7208828033",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4395111046",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4388042006",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4402401635",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4416068517",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W3110933132",
           "target": "W4396806998",
-          "type": "within_cluster",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
           "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "cluster_refs": [
+            "C1"
+          ],
           "evidence": [
             {
               "paper_id": "W3110933132",
@@ -2157,8 +2903,13 @@
         {
           "source": "W4415320025",
           "target": "W3116202926",
-          "type": "within_cluster",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
           "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "cluster_refs": [
+            "C2"
+          ],
           "evidence": [
             {
               "paper_id": "W4415320025",
@@ -2173,8 +2924,13 @@
         {
           "source": "W3120618935",
           "target": "W3216638646",
-          "type": "within_cluster",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
           "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "cluster_refs": [
+            "C3"
+          ],
           "evidence": [
             {
               "paper_id": "W3120618935",
@@ -2189,34 +2945,46 @@
         {
           "source": "C1-G1",
           "target": "W3110933132",
-          "type": "gap_near"
-        },
-        {
-          "source": "C1-G1",
-          "target": "W4396806998",
-          "type": "gap_near"
-        },
-        {
-          "source": "C2-G1",
-          "target": "W4415320025",
-          "type": "gap_near"
-        },
-        {
-          "source": "C2-G1",
-          "target": "W3116202926",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
         },
         {
           "source": "C3-G1",
           "target": "W3120618935",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "C1-G1",
+          "target": "W4396806998",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "C2-G1",
+          "target": "W3116202926",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "C2-G1",
+          "target": "W4415320025",
+          "type": "between",
+          "by": "gap_finder"
         },
         {
           "source": "C3-G1",
           "target": "W3216638646",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
         }
-      ]
+      ],
+      "world": {
+        "run_id": "example-02",
+        "attempt": 2,
+        "events": 1513,
+        "pending_merges": 7
+      }
     },
     "usage": {
       "prompt_tokens": 0,

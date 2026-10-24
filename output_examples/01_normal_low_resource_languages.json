@@ -775,377 +775,727 @@
       "nodes": [
         {
           "id": "W7154856337",
+          "world_id": "paper:openalex:W7154856337",
           "type": "paper",
           "title": "Contextual Learning Support for Low-Resource Language Large Language Models: Efficient Training Strategies for Zero-Shot and Few-Shot Learning",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.71222/gkj3aw70",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Tanya Xiang"
+          ]
         },
         {
           "id": "W4402389783",
+          "world_id": "paper:openalex:W4402389783",
           "type": "paper",
           "title": "Performance of Recent Large Language Models for a Low-Resourced Language",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.1109/ialp63756.2024.10661169",
+          "citation_count": 19,
+          "is_review": false,
+          "authors": [
+            "Gihan Dias",
+            "Ravindu Jayakody"
+          ]
         },
         {
           "id": "W7155356580",
+          "world_id": "paper:openalex:W7155356580",
           "type": "paper",
           "title": "Employing large language models in Swahili, a low-resource language",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.1016/j.nlp.2026.100209",
+          "citation_count": 2,
+          "is_review": false,
+          "authors": [
+            "Dietram Efrem Mgeni -"
+          ]
         },
         {
           "id": "W4405173107",
+          "world_id": "paper:openalex:W4405173107",
           "type": "paper",
           "title": "Opportunities and Challenges of Large Language Models for Low-Resource Languages in Humanities Research",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.48550/arxiv.2412.04497",
+          "citation_count": 12,
+          "is_review": false,
+          "authors": [
+            "Yiheng Liu",
+            "Pan, Yi",
+            "Yiwei Li",
+            "Zhengliang Liu",
+            "Yifan Zhou",
+            "You, Weihang",
+            "Zhang, Ruidong",
+            "Haiyang Sun",
+            "Tianyang Zhong",
+            "Zhenyuan Yang"
+          ]
         },
         {
           "id": "W4407393353",
+          "world_id": "paper:openalex:W4407393353",
           "type": "paper",
           "title": "Fine-tuning large language models for improved health communication in low-resource languages",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1016/j.cmpb.2025.108655",
+          "citation_count": 27,
+          "is_review": false,
+          "authors": [
+            "Nhat Bui",
+            "Bao Vo",
+            "Arthur Tang",
+            "Van Nhiem Tran",
+            "Tuyen Huynh",
+            "Giang Nguyen",
+            "Huy Quang Nguyen",
+            "Luan Vo",
+            "Nguyen Nguyen",
+            "Tom Huynh"
+          ]
         },
         {
           "id": "W4392637283",
+          "world_id": "paper:openalex:W4392637283",
           "type": "paper",
           "title": "Large Language Models and Low-Resource Languages: An Examination of Armenian NLP",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.18653/v1/2023.findings-ijcnlp.18",
+          "citation_count": 4,
+          "is_review": false,
+          "authors": [
+            "David Broneske",
+            "Hayastan Avetisyan"
+          ]
         },
         {
           "id": "W4408280927",
+          "world_id": "paper:openalex:W4408280927",
           "type": "paper",
           "title": "Toward Low-Resource Languages Machine Translation: A Language-Specific Fine-Tuning With LoRA for Specialized Large Language Models",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1109/access.2025.3549795",
+          "citation_count": 33,
+          "is_review": false,
+          "authors": [
+            "Xiao LIANG",
+            "Tien-Ping Tan",
+            "Soung\u2010Yue Liew",
+            "Donghong Qin",
+            "Yen-Min Jasmina Khaw"
+          ]
         },
         {
           "id": "W7115677253",
+          "world_id": "paper:openalex:W7115677253",
           "type": "paper",
           "title": "Adaptive and Efficient Large Language Models for Low-Resource African Languages",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.5281/zenodo.17952587",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Emmanuel, Datti Useni",
+            "Ajuji, Mohammed",
+            "Waziri, Saifullahi Ibrahim"
+          ]
         },
         {
           "id": "W7165482954",
+          "world_id": "paper:openalex:W7165482954",
           "type": "paper",
           "title": "Large Language Models Adaptation for Low-resource Languages: The Case for African Languages",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.82308/55922",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Peter Yu"
+          ]
         },
         {
           "id": "W7155373379",
+          "world_id": "paper:openalex:W7155373379",
           "type": "paper",
           "title": "Continual-learning for Modelling Low-Resource Languages from Large Language Models",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.48448/aq48-r240",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Varun Reddy Padala",
+            "Santosh Srinath K",
+            "Association for Computational Linguistics 2026",
+            "Prajna Upadhyay",
+            "Mudit Somani",
+            "DAS DAS"
+          ]
         },
         {
           "id": "W7123296616",
+          "world_id": "paper:openalex:W7123296616",
           "type": "paper",
           "title": "Continual-learning for Modelling Low-Resource Languages from Large Language Models",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.48550/arxiv.2601.05874",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Santosh Srinath K",
+            "Mudit Somani",
+            "Prajna Upadhyay",
+            "Das, Abhijit",
+            "Varun Reddy Padala"
+          ]
         },
         {
           "id": "W7123371404",
+          "world_id": "paper:openalex:W7123371404",
           "type": "paper",
           "title": "Continual-learning for Modelling Low-Resource Languages from Large Language Models",
-          "year": 2026
+          "year": 2026,
+          "doi": null,
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Abhijit Das",
+            "Prajna Upadhyay",
+            "Santosh Srinath K",
+            "Varun Reddy Padala",
+            "Mudit Somani"
+          ]
         },
         {
           "id": "W4416249530",
+          "world_id": "paper:openalex:W4416249530",
           "type": "paper",
           "title": "Large Language Models for Toxic Language Detection in Low-Resource Balkan Languages",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1109/cyber-ai66431.2025.11233432",
+          "citation_count": 2,
+          "is_review": false,
+          "authors": [
+            "A Muminovic"
+          ]
         },
         {
           "id": "W4410184664",
+          "world_id": "paper:openalex:W4410184664",
           "type": "paper",
           "title": "Interactive Machine Translation with Large Language Models for Low-Resourced Languages",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.2139/ssrn.5244227",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Sergio G\u00f3mez-Gonz\u00e1lez",
+            "Francisco Casacuberta",
+            "Miguel Domingo",
+            "\u00c1ngel Navarro"
+          ]
         },
         {
           "id": "W7162479607",
+          "world_id": "paper:openalex:W7162479607",
           "type": "paper",
           "title": "Enhancing Low-Resource Language Data Using Large Language Models",
-          "year": 2026
+          "year": 2026,
+          "doi": null,
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Cheyenne Wing"
+          ]
         },
         {
           "id": "W7134895265",
+          "world_id": "paper:openalex:W7134895265",
           "type": "paper",
           "title": "Interactive Machine Translation with Large Language Models for Low-resource Languages",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.2139/ssrn.6385139",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Francisco Casacuberta",
+            "Sergio G\u00f3mez-Gonz\u00e1lez",
+            "\u00c1ngel Navarro",
+            "Miguel Domingo"
+          ]
         },
         {
           "id": "W4402671168",
+          "world_id": "paper:openalex:W4402671168",
           "type": "paper",
           "title": "Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.18653/v1/2024.acl-short.59",
+          "citation_count": 14,
+          "is_review": false,
+          "authors": [
+            "Akintunde Oladipo",
+            "Ronak Pradeep",
+            "Mofetoluwa Adeyemi",
+            "Jimmy Lin"
+          ]
         },
         {
           "id": "W4407385098",
+          "world_id": "paper:openalex:W4407385098",
           "type": "paper",
           "title": "Large multimodal models for low-resource languages: A survey",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.1016/j.inffus.2026.104189",
+          "citation_count": 11,
+          "is_review": false,
+          "authors": [
+            "Ana-Cristina Rogoz",
+            "Mihai\u2010Sorin Stupariu",
+            "Radu Tudor Ionescu",
+            "Marian Lupa\u015fcu"
+          ]
         },
         {
           "id": "W4392669965",
+          "world_id": "paper:openalex:W4392669965",
           "type": "paper",
           "title": "Large Language Models As Annotators: A Preliminary Evaluation For Annotating Low-Resource Language Content",
-          "year": 2023
+          "year": 2023,
+          "doi": "https://doi.org/10.18653/v1/2023.eval4nlp-1.8",
+          "citation_count": 11,
+          "is_review": false,
+          "authors": [
+            "Vasudeva Varma",
+            "Savita Bhat"
+          ]
         },
         {
           "id": "W4416034203",
+          "world_id": "paper:openalex:W4416034203",
           "type": "paper",
           "title": "FormosanBench: Benchmarking Low-Resource Austronesian Languages in the Era of Large Language Models",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.18653/v1/2025.findings-emnlp.897",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Hsi-Yu Chen",
+            "Kaiying Kevin Lin",
+            "Haopeng Zhang"
+          ]
         },
         {
           "id": "W4409178241",
+          "world_id": "paper:openalex:W4409178241",
           "type": "paper",
           "title": "Large Language Models With Contrastive Decoding Algorithm for Hallucination Mitigation in Low\u2010Resource Languages",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1049/cit2.70004",
+          "citation_count": 8,
+          "is_review": false,
+          "authors": [
+            "Javed Rashid",
+            "Hongying Zan",
+            "Muhammad Rehan Faheem",
+            "Muhammad Ashif Khan Abdullah",
+            "Arifa Javed"
+          ]
         },
         {
           "id": "W4404389841",
+          "world_id": "paper:openalex:W4404389841",
           "type": "paper",
           "title": "Evaluating and Adapting Large Language Models to Represent Folktales in Low-Resource Languages",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.48550/arxiv.2411.05593",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "William Lamb",
+            "J. A. Meaney",
+            "Beatrice Alex"
+          ]
         },
         {
           "id": "W7165392193",
+          "world_id": "paper:openalex:W7165392193",
           "type": "paper",
           "title": "Fine-Tuning Challenges of Large Language Models for Low-Resource Languages: an Analysis Based on the Azerbaijani Language",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.51582/interconf.19-20.05.2026.015",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Zarda Salim",
+            "Gular Huseynova",
+            "Daniz Karimova"
+          ]
         },
         {
           "id": "W4416223637",
+          "world_id": "paper:openalex:W4416223637",
           "type": "paper",
           "title": "Multimodal Large Language Models for Low-Resource Languages: A Case Study for Basque",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.63317/2ry23e89ew5v",
+          "citation_count": 1,
+          "is_review": false,
+          "authors": [
+            "Gorka Azkune",
+            "Ander Salaberria",
+            "Lukas Arana",
+            "Julen Etxaniz"
+          ]
         },
         {
           "id": "W4412862878",
+          "world_id": "paper:openalex:W4412862878",
           "type": "paper",
           "title": "Evaluating quantized Large Language Models for code generation on low-resource language benchmarks",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.1016/j.cola.2025.101351",
+          "citation_count": 11,
+          "is_review": false,
+          "authors": [
+            "Enkhbold Nyamsuren"
+          ]
         },
         {
           "id": "W4417133178",
+          "world_id": "paper:openalex:W4417133178",
           "type": "paper",
           "title": "Instructing Large Language Models for Low-Resource Languages: A Systematic Study for Basque",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.48550/arxiv.2506.07597",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "Zabala, Aimar",
+            "Joseba Fernandez de Landa Aguirre",
+            "Julen Etxaniz",
+            "Naiara P\u00e9rez",
+            "Eneko Agirre",
+            "Oscar Sainz",
+            "Ekhi Azurmendi",
+            "Itziar Aldabe",
+            "Iker Garc\u00eda-Ferrero",
+            "Germ\u00e1n Rigau"
+          ]
         },
         {
           "id": "W4403364915",
+          "world_id": "paper:openalex:W4403364915",
           "type": "paper",
           "title": "NusaMT-7B: Machine Translation for Low-Resource Indonesian Languages with Large Language Models",
-          "year": 2024
+          "year": 2024,
+          "doi": "https://doi.org/10.48550/arxiv.2410.07830",
+          "citation_count": 1,
+          "is_review": false,
+          "authors": [
+            "Kevin Zhu",
+            "William Tan"
+          ]
         },
         {
           "id": "W4412889388",
+          "world_id": "paper:openalex:W4412889388",
           "type": "paper",
           "title": "Evaluating Tokenizer Adaptation Methods for Large Language Models on Low-Resource Programming Languages",
-          "year": 2025
+          "year": 2025,
+          "doi": "https://doi.org/10.18653/v1/2025.acl-srw.57",
+          "citation_count": 2,
+          "is_review": false,
+          "authors": [
+            "Vladimir Vladimirovich Ivanov",
+            "Georgy Andryushchenko"
+          ]
         },
         {
           "id": "W7197036362",
+          "world_id": "paper:openalex:W7197036362",
           "type": "paper",
           "title": "Large Language Models for Low-Resource Languages: A Conceptual Framework for an Electronic Explanatory Dictionary of the Tajik Language",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.48550/arxiv.2608.04186",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "B. Sultonov",
+            "Saidali M. Pirzoda",
+            "Mullosharaf K. Arabov"
+          ]
         },
         {
           "id": "W7168097912",
+          "world_id": "paper:openalex:W7168097912",
           "type": "paper",
           "title": "THE ALGORITHMIC TRANSLATOR Using Large Language Models to Revive Low-Resource Programming Languages",
-          "year": 2026
+          "year": 2026,
+          "doi": "https://doi.org/10.5281/zenodo.21320355",
+          "citation_count": 0,
+          "is_review": false,
+          "authors": [
+            "m el-rakhawi"
+          ]
         },
         {
           "id": "C1",
+          "world_id": "cluster:litagent:example-01:1:C1",
           "type": "cluster",
           "label": "Sample theme 1",
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
           "id": "C2",
+          "world_id": "cluster:litagent:example-01:1:C2",
           "type": "cluster",
           "label": "Sample theme 2",
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
           "id": "C3",
+          "world_id": "cluster:litagent:example-01:1:C3",
           "type": "cluster",
           "label": "Sample theme 3",
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
           "id": "C1-G1",
+          "world_id": "gap:litagent:example-01:1:C1-G1",
           "type": "gap",
           "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+          "cluster_ref": "C1",
+          "evidence": [
+            {
+              "paper_id": "W7154856337",
+              "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+            }
+          ]
         },
         {
           "id": "C2-G1",
+          "world_id": "gap:litagent:example-01:1:C2-G1",
           "type": "gap",
           "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+          "cluster_ref": "C2",
+          "evidence": [
+            {
+              "paper_id": "W4402389783",
+              "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+            }
+          ]
         },
         {
           "id": "C3-G1",
+          "world_id": "gap:litagent:example-01:1:C3-G1",
           "type": "gap",
           "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet"
+          "why_it_matters": "Sample mode: shows the output shape; the real Gap finder is not implemented yet",
+          "cluster_ref": "C3",
+          "evidence": [
+            {
+              "paper_id": "W7155356580",
+              "quote": "The article is potentially destined to examine the efficacy of Large Language Models (LLMs) in Swahili (standard dialect spoken in Tanzania), a relatively less privileged and Low-resource Language (LR"
+            }
+          ]
         }
       ],
       "edges": [
         {
-          "source": "W7154856337",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4405173107",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4408280927",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7155373379",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4416249530",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7134895265",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4392669965",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4404389841",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4412862878",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4412889388",
-          "target": "C1",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4402389783",
+          "source": "W7197036362",
           "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4407393353",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7115677253",
-          "target": "C2",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W7123296616",
           "target": "C2",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W4410184664",
           "target": "C2",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W4402671168",
-          "target": "C2",
-          "type": "belongs_to"
+          "source": "W7155373379",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W4416034203",
+          "source": "W4402389783",
           "target": "C2",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W7165392193",
           "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4417133178",
-          "target": "C2",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7197036362",
-          "target": "C2",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W7155356580",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W4392637283",
-          "target": "C3",
-          "type": "belongs_to"
+          "source": "W4405173107",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W7165482954",
           "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W7123371404",
-          "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W7162479607",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W4407385098",
-          "target": "C3",
-          "type": "belongs_to"
+          "source": "W7154856337",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
-          "source": "W4409178241",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4416223637",
-          "target": "C3",
-          "type": "belongs_to"
-        },
-        {
-          "source": "W4403364915",
-          "target": "C3",
-          "type": "belongs_to"
+          "source": "W4402671168",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W7168097912",
           "target": "C3",
-          "type": "belongs_to"
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7115677253",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4416223637",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4412889388",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4416249530",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4392669965",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4407393353",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4403364915",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4404389841",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4392637283",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4409178241",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4416034203",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7123371404",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4407385098",
+          "target": "C3",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4412862878",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4408280927",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W4417133178",
+          "target": "C2",
+          "type": "member-of",
+          "by": "clusterer"
+        },
+        {
+          "source": "W7134895265",
+          "target": "C1",
+          "type": "member-of",
+          "by": "clusterer"
         },
         {
           "source": "W7154856337",
           "target": "W4405173107",
-          "type": "within_cluster",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
           "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "cluster_refs": [
+            "C1"
+          ],
           "evidence": [
             {
               "paper_id": "W7154856337",
@@ -1158,26 +1508,15 @@
           ]
         },
         {
-          "source": "W4402389783",
-          "target": "W4407393353",
-          "type": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
-          "evidence": [
-            {
-              "paper_id": "W4402389783",
-              "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
-            },
-            {
-              "paper_id": "W4407393353",
-              "quote": "BACKGROUND: The reported study illustrates a methodology for compiling training datasets to fine-tune Large Language Models (LLMs) for healthcare information in Vietnamese, a low-resource language."
-            }
-          ]
-        },
-        {
           "source": "W7155356580",
           "target": "W4392637283",
-          "type": "within_cluster",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
           "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "cluster_refs": [
+            "C3"
+          ],
           "evidence": [
             {
               "paper_id": "W7155356580",
@@ -1190,36 +1529,69 @@
           ]
         },
         {
-          "source": "C1-G1",
-          "target": "W7154856337",
-          "type": "gap_near"
+          "source": "W4402389783",
+          "target": "W4407393353",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "cluster_refs": [
+            "C2"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4402389783",
+              "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+            },
+            {
+              "paper_id": "W4407393353",
+              "quote": "BACKGROUND: The reported study illustrates a methodology for compiling training datasets to fine-tune Large Language Models (LLMs) for healthcare information in Vietnamese, a low-resource language."
+            }
+          ]
         },
         {
           "source": "C1-G1",
-          "target": "W4405173107",
-          "type": "gap_near"
+          "target": "W7154856337",
+          "type": "between",
+          "by": "gap_finder"
         },
         {
           "source": "C2-G1",
           "target": "W4402389783",
-          "type": "gap_near"
-        },
-        {
-          "source": "C2-G1",
-          "target": "W4407393353",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
         },
         {
           "source": "C3-G1",
           "target": "W7155356580",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "C2-G1",
+          "target": "W4407393353",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "C1-G1",
+          "target": "W4405173107",
+          "type": "between",
+          "by": "gap_finder"
         },
         {
           "source": "C3-G1",
           "target": "W4392637283",
-          "type": "gap_near"
+          "type": "between",
+          "by": "gap_finder"
         }
-      ]
+      ],
+      "world": {
+        "run_id": "example-01",
+        "attempt": 1,
+        "events": 335,
+        "pending_merges": 0
+      }
     },
     "usage": {
       "prompt_tokens": 0,
