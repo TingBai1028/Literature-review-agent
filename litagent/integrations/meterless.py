@@ -10,7 +10,7 @@ ResearchWorld records the agents' findings in the Meterless World Model
                               "Jose Garcia"); near-matches only queue for review, never auto-merge,
                               because short names collide ("Liang Li" vs "Xiang Li" scored 0.875);
                               paper -authored-by-> author
-    cluster                -> entity;  paper -member-of-> cluster
+    cluster                -> entity;  paper -member-of-> cluster;  unclustered paper -unclustered-in-> search
     connection             -> edge paper -connects-to-> paper, with description and evidence quotes
     gap                    -> entity;  gap -between-> paper,  gap -in-cluster-> cluster
     grader score           -> fact `grade` about the stage (most recent wins, history kept)
@@ -105,6 +105,15 @@ class ResearchWorld:
         self.world.flush()
         _log("write clusters", f"{len(clusters)} clusters", "paper -member-of-> cluster edges")
 
+    def write_unclustered(self, refs: list[str]) -> None:
+        """Papers that fit no group; kept in the world so the Gap finder can look at them."""
+        src = self._src("clusterer")
+        for ref in refs:
+            if ref in self._papers:
+                self.world.relate(self._papers[ref], "unclustered-in", self._search, source=src, context=self.context)
+        self.world.flush()
+        _log("write unclustered", f"{len(refs)} papers fit no group", "paper -unclustered-in-> search edges")
+
     def write_connections(self, connections: list[Connection]) -> None:
         src = self._src("connection_finder")
         written = 0
@@ -190,6 +199,7 @@ class ResearchWorld:
         return {
             "nodes": nodes,
             "edges": edges,
+            "unclustered": sorted(self._ref(rel["from"]) for rel in self._edges("unclustered-in")),
             "world": {"run_id": self.run_id, "attempt": self.attempt, "events": len(self.world.events()),
                       "pending_merges": sum(1 for p in self.world.merge_queue() if p["status"] == "pending")},
         }

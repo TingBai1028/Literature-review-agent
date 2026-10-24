@@ -152,6 +152,7 @@ class RunResult(BaseModel):
     plan: SearchPlan | None = None
     papers: list[Paper] = Field(default_factory=list)
     clusters: list[Cluster] = Field(default_factory=list)
+    unclustered_paper_ids: list[str] = Field(default_factory=list)  # papers that fit no group (the Gap finder may use them)
     connections: list[Connection] = Field(default_factory=list)
     gaps: list[Gap] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)  # e.g. a stage that never passed grading

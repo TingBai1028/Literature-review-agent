@@ -38,6 +38,12 @@ EFFORT_PROFILES: dict[Effort, EffortProfile] = {
 }
 
 
+# Embeddings for the Clusterer. Nightshift doesn't serve /v1/embeddings (501, tested 24 Oct), so this
+# small ONNX model runs locally through fastembed (no PyTorch, no GPU). The Docker image downloads it at
+# build time into EMBEDDING_CACHE_DIR; nothing is downloaded at runtime there.
+EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
+EMBEDDING_MAX_CHARS = 2000  # title + abstract; the model reads at most 512 tokens anyway
+
 # Meterless World Model: authors recorded per paper (consortium papers can list hundreds)
 WORLD_MODEL_MAX_AUTHORS = 10
 
@@ -90,8 +96,14 @@ class Settings:
     # Retriever ranking: share of relevance vs citations per year (team decision, 24 Oct)
     rank_relevance_weight: float = 0.7
 
-    # Clustering
-    cluster_similarity_threshold: float = 0.7  # TODO: check against your embedding model on a sample
+    # Clustering (team decision, 24 Oct): average-linkage grouping on cosine similarity of title + abstract
+    # embeddings, mean-centered per run. Every paper in a run shares the topic, so raw similarities sit in
+    # one dense band (one giant cluster or many outliers at any fixed threshold); subtracting the run's mean
+    # vector leaves what separates sub-themes. Calibrated with scripts/check_threshold.py on 3 topics x 30/60
+    # papers: 0.05 gives 6-9 clusters, largest 16-30%, at most 1 paper unclustered.
+    cluster_similarity_threshold: float = 0.05
+    min_cluster_size: int = 2  # smaller groups are set aside as "unclustered" (the Gap finder can use them)
+    cluster_threshold_step: float = 0.05  # a redo moves the threshold by this much when the grader's fix asks
 
     # Grading agents: rubric is 3 criteria x 0-3 points = 9 points (Day 4 workshop)
     grade_pass_mark: int = 7

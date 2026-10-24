@@ -116,6 +116,10 @@ def run_pipeline(
                     "clusters", lambda fix: clusterer.cluster(papers, effort, settings, fix), papers, settings, trace, result, world
                 )
                 world.write_clusters(result.clusters)
+                clustered = {pid for c in result.clusters for pid in c.paper_ids}
+                result.unclustered_paper_ids = [p.id for p in papers if p.id not in clustered]
+                if result.unclustered_paper_ids:
+                    world.write_unclustered(result.unclustered_paper_ids)
 
                 # ----- 4. Connection finder + grading -----
                 stage = "connection_finder"

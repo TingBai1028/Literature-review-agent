@@ -78,14 +78,16 @@ Plan first and show me the plan before writing code.
 
 ## 3. Clusterer
 
+Done. Remaining: full text at High/Ultra (Markovian engine), if time allows.
+
 ```
 Implement the real Clusterer in litagent/agents/clusterer.py, following docs/agents/clusterer.md and prompts/cluster_labeler.md.
 
 Decisions:
-- Embedding model: ______ (e.g. SPECTER2 via sentence-transformers)
-- Text to embed: ______ (title + abstract, or extracted key claims)
-- Single-paper groups (outliers): ______ (keep as "unclustered" for the Gap finder, or drop)
-- Threshold: start at 0.7 (config.cluster_similarity_threshold)
+- Embedding model: BAAI/bge-small-en-v1.5 via fastembed (Nightshift has no embeddings endpoint)
+- Text to embed: title + abstract, mean-centered per run
+- Single-paper groups (outliers): kept as "unclustered" for the Gap finder
+- Threshold: 0.05 on mean-centered cosine with average linkage (calibrated)
 
 Requirements:
 - Use the existing cosine_similarity_matrix and group_by_threshold.
