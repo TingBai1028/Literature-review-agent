@@ -7044,6 +7044,558 @@
     ],
     "connections": [
       {
+        "id": "CITE-W3165545667-W3159267658",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3159267658",
+          "W3165545667"
+        ],
+        "cluster_ids": [
+          "SIDE-014f3604415e7034",
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W3165545667 cites W3159267658 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3159267658",
+            "quote": "MOTIVATION: Inter-residue distance prediction by convolutional residual neural network (deep ResNet) has greatly advanced protein structure prediction."
+          },
+          {
+            "paper_id": "W3165545667",
+            "quote": "Obtaining an accurate description of protein structure is a fundamental step toward understanding the underpinning of biology."
+          }
+        ],
+        "reason_short": "Sample mode: W3165545667 cites W3159267658 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W3165545667 cites W3159267658"
+        ]
+      },
+      {
+        "id": "CITE-W3165545667-W3186340132",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3186340132",
+          "W3165545667"
+        ],
+        "cluster_ids": [
+          "SIDE-014f3604415e7034",
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W3165545667 cites W3186340132 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3186340132",
+            "quote": "Substantial progresses in protein structure prediction have been made by utilizing deep-learning and residue-residue distance prediction since CASP13."
+          },
+          {
+            "paper_id": "W3165545667",
+            "quote": "Obtaining an accurate description of protein structure is a fundamental step toward understanding the underpinning of biology."
+          }
+        ],
+        "reason_short": "Sample mode: W3165545667 cites W3186340132 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W3165545667 cites W3186340132"
+        ]
+      },
+      {
+        "id": "CITE-W4401209403-W4296164039",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4296164039",
+          "W4401209403"
+        ],
+        "cluster_ids": [
+          "SIDE-08a616ce761b260c",
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4401209403 cites W4296164039 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4296164039",
+            "quote": "Despite the immense progress recently witnessed in protein structure prediction, the modeling accuracy for proteins that lack sequence and/or structure homologs remains to be improved."
+          },
+          {
+            "paper_id": "W4401209403",
+            "quote": "Protein structure prediction is important for understanding their function and behavior."
+          }
+        ],
+        "reason_short": "Sample mode: W4401209403 cites W4296164039 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4401209403 cites W4296164039"
+        ]
+      },
+      {
+        "id": "CITE-W4402753025-W3167623110",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W3167623110",
+          "W4402753025"
+        ],
+        "cluster_ids": [
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4402753025 cites W3167623110 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3167623110",
+            "quote": "The new advances in deep learning methods have influenced many aspects of scientific research, including the study of the protein system."
+          },
+          {
+            "paper_id": "W4402753025",
+            "quote": "Abstract Protein structure prediction (PSP) has been a prominent topic in bioinformatics and computational biology, aiming to predict protein function and structure from sequence data."
+          }
+        ],
+        "reason_short": "Sample mode: W4402753025 cites W3167623110 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4402753025 cites W3167623110"
+        ]
+      },
+      {
+        "id": "CITE-W4391338754-W4328048207",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4328048207",
+          "W4391338754"
+        ],
+        "cluster_ids": [
+          "SIDE-08a616ce761b260c",
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4391338754 cites W4328048207 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4328048207",
+            "quote": "While AlphaFold2 can predict accurate protein structures from the primary sequence, challenges remain for proteins that undergo conformational changes or for which few homologous sequences are known."
+          },
+          {
+            "paper_id": "W4391338754",
+            "quote": "Proteins are the key molecular machines that orchestrate all biological processes of the cell."
+          }
+        ],
+        "reason_short": "Sample mode: W4391338754 cites W4328048207 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4391338754 cites W4328048207"
+        ]
+      },
+      {
+        "id": "CITE-W4409112594-W3183921815",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3183921815",
+          "W4409112594"
+        ],
+        "cluster_ids": [
+          "SIDE-014f3604415e7034",
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4409112594 cites W3183921815 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3183921815",
+            "quote": "In this article, we report 3D structure prediction results by two of our best server groups (\"Zhang-Server\" and \"QUARK\") in CASP14."
+          },
+          {
+            "paper_id": "W4409112594",
+            "quote": "The application of deep learning algorithms in protein structure prediction has greatly influenced drug discovery and development."
+          }
+        ],
+        "reason_short": "Sample mode: W4409112594 cites W3183921815 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4409112594 cites W3183921815"
+        ]
+      },
+      {
+        "id": "CITE-W4409112594-W4328048207",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4328048207",
+          "W4409112594"
+        ],
+        "cluster_ids": [
+          "SIDE-08a616ce761b260c",
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4409112594 cites W4328048207 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4328048207",
+            "quote": "While AlphaFold2 can predict accurate protein structures from the primary sequence, challenges remain for proteins that undergo conformational changes or for which few homologous sequences are known."
+          },
+          {
+            "paper_id": "W4409112594",
+            "quote": "The application of deep learning algorithms in protein structure prediction has greatly influenced drug discovery and development."
+          }
+        ],
+        "reason_short": "Sample mode: W4409112594 cites W4328048207 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4409112594 cites W4328048207"
+        ]
+      },
+      {
+        "id": "CITE-W4409112594-W4367301305",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4367301305",
+          "W4409112594"
+        ],
+        "cluster_ids": [
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4409112594 cites W4367301305 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4367301305",
+            "quote": "Abstract Motivation Accurate prediction of protein structures is crucial for understanding protein function, stability, and interactions, with far-reaching implications in drug discovery and protein e"
+          },
+          {
+            "paper_id": "W4409112594",
+            "quote": "The application of deep learning algorithms in protein structure prediction has greatly influenced drug discovery and development."
+          }
+        ],
+        "reason_short": "Sample mode: W4409112594 cites W4367301305 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4409112594 cites W4367301305"
+        ]
+      },
+      {
+        "id": "CITE-W4409112594-W4390501271",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4390501271",
+          "W4409112594"
+        ],
+        "cluster_ids": [
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4409112594 cites W4390501271 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4390501271",
+            "quote": "Leveraging iterative alignment search through genomic and metagenome sequence databases, we report the DeepMSA2 pipeline for uniform protein single- and multichain multiple-sequence alignment (MSA) co"
+          },
+          {
+            "paper_id": "W4409112594",
+            "quote": "The application of deep learning algorithms in protein structure prediction has greatly influenced drug discovery and development."
+          }
+        ],
+        "reason_short": "Sample mode: W4409112594 cites W4390501271 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4409112594 cites W4390501271"
+        ]
+      },
+      {
+        "id": "CITE-W3186340132-W3186340132",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W3186340132",
+          "W3186340132"
+        ],
+        "cluster_ids": [
+          "SIDE-014f3604415e7034"
+        ],
+        "description": "Sample mode: W3186340132 cites W3186340132 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3186340132",
+            "quote": "Substantial progresses in protein structure prediction have been made by utilizing deep-learning and residue-residue distance prediction since CASP13."
+          },
+          {
+            "paper_id": "W3186340132",
+            "quote": "Substantial progresses in protein structure prediction have been made by utilizing deep-learning and residue-residue distance prediction since CASP13."
+          }
+        ],
+        "reason_short": "Sample mode: W3186340132 cites W3186340132 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W3186340132 cites W3186340132"
+        ]
+      },
+      {
+        "id": "CITE-W4410621619-W4296164039",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4296164039",
+          "W4410621619"
+        ],
+        "cluster_ids": [
+          "SIDE-08a616ce761b260c"
+        ],
+        "description": "Sample mode: W4410621619 cites W4296164039 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4296164039",
+            "quote": "Despite the immense progress recently witnessed in protein structure prediction, the modeling accuracy for proteins that lack sequence and/or structure homologs remains to be improved."
+          },
+          {
+            "paper_id": "W4410621619",
+            "quote": "The dominant success of deep learning techniques on protein structure prediction has challenged the necessity and usefulness of traditional force field-based folding simulations."
+          }
+        ],
+        "reason_short": "Sample mode: W4410621619 cites W4296164039 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4410621619 cites W4296164039"
+        ]
+      },
+      {
+        "id": "CITE-W4410621619-W4390501271",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4390501271",
+          "W4410621619"
+        ],
+        "cluster_ids": [
+          "SIDE-08a616ce761b260c",
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4410621619 cites W4390501271 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4390501271",
+            "quote": "Leveraging iterative alignment search through genomic and metagenome sequence databases, we report the DeepMSA2 pipeline for uniform protein single- and multichain multiple-sequence alignment (MSA) co"
+          },
+          {
+            "paper_id": "W4410621619",
+            "quote": "The dominant success of deep learning techniques on protein structure prediction has challenged the necessity and usefulness of traditional force field-based folding simulations."
+          }
+        ],
+        "reason_short": "Sample mode: W4410621619 cites W4390501271 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4410621619 cites W4390501271"
+        ]
+      },
+      {
+        "id": "CITE-W4367301305-W4401209403",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4401209403",
+          "W4367301305"
+        ],
+        "cluster_ids": [
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4367301305 cites W4401209403 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4401209403",
+            "quote": "Protein structure prediction is important for understanding their function and behavior."
+          },
+          {
+            "paper_id": "W4367301305",
+            "quote": "Abstract Motivation Accurate prediction of protein structures is crucial for understanding protein function, stability, and interactions, with far-reaching implications in drug discovery and protein e"
+          }
+        ],
+        "reason_short": "Sample mode: W4367301305 cites W4401209403 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4367301305 cites W4401209403"
+        ]
+      },
+      {
+        "id": "CITE-W4308930019-W3169629772",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3169629772",
+          "W4308930019"
+        ],
+        "cluster_ids": [
+          "SIDE-30705aec3552bd3f",
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4308930019 cites W3169629772 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3169629772",
+            "quote": "Protein secondary structures have been identified as the links in the physical processes of primary sequences, typically random coils, folding into functional tertiary structures that enable proteins "
+          },
+          {
+            "paper_id": "W4308930019",
+            "quote": "This paper aims to provide a comprehensive review of the trends and challenges of deep neural networks for protein secondary structure prediction (PSSP)."
+          }
+        ],
+        "reason_short": "Sample mode: W4308930019 cites W3169629772 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4308930019 cites W3169629772"
+        ]
+      },
+      {
+        "id": "CITE-W4311293038-W3169629772",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W3169629772",
+          "W4311293038"
+        ],
+        "cluster_ids": [
+          "SIDE-30705aec3552bd3f"
+        ],
+        "description": "Sample mode: W4311293038 cites W3169629772 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3169629772",
+            "quote": "Protein secondary structures have been identified as the links in the physical processes of primary sequences, typically random coils, folding into functional tertiary structures that enable proteins "
+          },
+          {
+            "paper_id": "W4311293038",
+            "quote": "Protein secondary structure prediction (PSSP) is not only beneficial to the study of protein structure and function but also to the development of drugs."
+          }
+        ],
+        "reason_short": "Sample mode: W4311293038 cites W3169629772 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4311293038 cites W3169629772"
+        ]
+      },
+      {
+        "id": "CITE-W4411723436-W3184615727",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3184615727",
+          "W4411723436"
+        ],
+        "cluster_ids": [
+          "SIDE-913a93f043c79243",
+          "SIDE-bf8e021563550f90"
+        ],
+        "description": "Sample mode: W4411723436 cites W3184615727 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3184615727",
+            "quote": "Protein-RNA interactions are of vital importance to a variety of cellular activities."
+          },
+          {
+            "paper_id": "W4411723436",
+            "quote": "Proteins serve as the essential functional units of life, and understanding their three-dimensional structures is crucial for uncovering the biological mechanisms at play."
+          }
+        ],
+        "reason_short": "Sample mode: W4411723436 cites W3184615727 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4411723436 cites W3184615727"
+        ]
+      },
+      {
+        "id": "CITE-W4411723436-W4296164039",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4296164039",
+          "W4411723436"
+        ],
+        "cluster_ids": [
+          "SIDE-08a616ce761b260c",
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4411723436 cites W4296164039 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4296164039",
+            "quote": "Despite the immense progress recently witnessed in protein structure prediction, the modeling accuracy for proteins that lack sequence and/or structure homologs remains to be improved."
+          },
+          {
+            "paper_id": "W4411723436",
+            "quote": "Proteins serve as the essential functional units of life, and understanding their three-dimensional structures is crucial for uncovering the biological mechanisms at play."
+          }
+        ],
+        "reason_short": "Sample mode: W4411723436 cites W4296164039 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4411723436 cites W4296164039"
+        ]
+      },
+      {
+        "id": "CITE-W4409190911-W4308930019",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4308930019",
+          "W4409190911"
+        ],
+        "cluster_ids": [
+          "SIDE-913a93f043c79243"
+        ],
+        "description": "Sample mode: W4409190911 cites W4308930019 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4308930019",
+            "quote": "This paper aims to provide a comprehensive review of the trends and challenges of deep neural networks for protein secondary structure prediction (PSSP)."
+          },
+          {
+            "paper_id": "W4409190911",
+            "quote": "The accurate prediction of protein structures remains a cornerstone challenge in structural bioinformatics, essential for understanding the intricate relationship between protein sequence, structure, "
+          }
+        ],
+        "reason_short": "Sample mode: W4409190911 cites W4308930019 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4409190911 cites W4308930019"
+        ]
+      },
+      {
+        "id": "CITE-W4382401741-W3183921815",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3183921815",
+          "W4382401741"
+        ],
+        "cluster_ids": [
+          "SIDE-014f3604415e7034",
+          "SIDE-bf8e021563550f90"
+        ],
+        "description": "Sample mode: W4382401741 cites W3183921815 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3183921815",
+            "quote": "In this article, we report 3D structure prediction results by two of our best server groups (\"Zhang-Server\" and \"QUARK\") in CASP14."
+          },
+          {
+            "paper_id": "W4382401741",
+            "quote": "CD44 is a cell surface glycoprotein transmembrane receptor that is involved in cell-cell and cell-matrix interactions."
+          }
+        ],
+        "reason_short": "Sample mode: W4382401741 cites W3183921815 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4382401741 cites W3183921815"
+        ]
+      },
+      {
+        "id": "CITE-W4296164039-W3183921815",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3183921815",
+          "W4296164039"
+        ],
+        "cluster_ids": [
+          "SIDE-014f3604415e7034",
+          "SIDE-08a616ce761b260c"
+        ],
+        "description": "Sample mode: W4296164039 cites W3183921815 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3183921815",
+            "quote": "In this article, we report 3D structure prediction results by two of our best server groups (\"Zhang-Server\" and \"QUARK\") in CASP14."
+          },
+          {
+            "paper_id": "W4296164039",
+            "quote": "Despite the immense progress recently witnessed in protein structure prediction, the modeling accuracy for proteins that lack sequence and/or structure homologs remains to be improved."
+          }
+        ],
+        "reason_short": "Sample mode: W4296164039 cites W3183921815 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4296164039 cites W3183921815"
+        ]
+      },
+      {
         "id": "MAIN-K1",
         "kind": "within_cluster",
         "paper_ids": [
@@ -7053,7 +7605,7 @@
         "cluster_ids": [
           "MAIN"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W7214551647",
@@ -7063,7 +7615,10 @@
             "paper_id": "W7116299005",
             "quote": "Keywords: Deep Learning, Protein Structure Prediction, Drug Design, AlphaFold, Artificial Intelligence, Computational Biochemistry, Drug Discovery"
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-913a93f043c79243-K1",
@@ -7075,7 +7630,7 @@
         "cluster_ids": [
           "SIDE-913a93f043c79243"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W3165545667",
@@ -7085,7 +7640,10 @@
             "paper_id": "W3167623110",
             "quote": "The new advances in deep learning methods have influenced many aspects of scientific research, including the study of the protein system."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-30705aec3552bd3f-K1",
@@ -7097,7 +7655,7 @@
         "cluster_ids": [
           "SIDE-30705aec3552bd3f"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W3169629772",
@@ -7107,7 +7665,10 @@
             "paper_id": "W4225919313",
             "quote": "The secondary structure of a protein is critical for establishing a link between the protein primary and tertiary structures."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-014f3604415e7034-K1",
@@ -7119,7 +7680,7 @@
         "cluster_ids": [
           "SIDE-014f3604415e7034"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W3159267658",
@@ -7129,7 +7690,10 @@
             "paper_id": "W3183921815",
             "quote": "In this article, we report 3D structure prediction results by two of our best server groups (\"Zhang-Server\" and \"QUARK\") in CASP14."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-bf8e021563550f90-K1",
@@ -7141,7 +7705,7 @@
         "cluster_ids": [
           "SIDE-bf8e021563550f90"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W3184615727",
@@ -7151,7 +7715,10 @@
             "paper_id": "W4283013935",
             "quote": "prediction of protein-ligand binding free energies or binding affinities has the potential to transform drug discovery."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-08a616ce761b260c-K1",
@@ -7163,7 +7730,7 @@
         "cluster_ids": [
           "SIDE-08a616ce761b260c"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W3185577893",
@@ -7173,7 +7740,10 @@
             "paper_id": "W4224939843",
             "quote": "Proteins perform many essential functions in biological systems and can be successfully developed as bio-therapeutics."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-38ce5ca0a44e7a8f-K1",
@@ -7185,7 +7755,7 @@
         "cluster_ids": [
           "SIDE-38ce5ca0a44e7a8f"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W4214530112",
@@ -7195,7 +7765,10 @@
             "paper_id": "W4399982595",
             "quote": "Protein-protein interactions (PPIs) play an essential role in life activities."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       }
     ],
     "gaps": [
@@ -13289,12 +13862,91 @@
           "reason": "Mean content similarity to 3 final members: 0.6350; minimum: 0.6141. Side complete admission score 0.6141; cutoff 0.7000. Main membership takes priority. A numerical hint, not additional membership or a verified scientific connection."
         },
         {
+          "source": "W4296164039",
+          "target": "W4410621619",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4410621619 cites W4296164039 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-08a616ce761b260c"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4296164039",
+              "quote": "Despite the immense progress recently witnessed in protein structure prediction, the modeling accuracy for proteins that lack sequence and/or structure homologs remains to be improved."
+            },
+            {
+              "paper_id": "W4410621619",
+              "quote": "The dominant success of deep learning techniques on protein structure prediction has challenged the necessity and usefulness of traditional force field-based folding simulations."
+            }
+          ],
+          "reason_short": "Sample mode: W4410621619 cites W4296164039 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4410621619 cites W4296164039"
+          ]
+        },
+        {
+          "source": "W4390501271",
+          "target": "W4409112594",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4409112594 cites W4390501271 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4390501271",
+              "quote": "Leveraging iterative alignment search through genomic and metagenome sequence databases, we report the DeepMSA2 pipeline for uniform protein single- and multichain multiple-sequence alignment (MSA) co"
+            },
+            {
+              "paper_id": "W4409112594",
+              "quote": "The application of deep learning algorithms in protein structure prediction has greatly influenced drug discovery and development."
+            }
+          ],
+          "reason_short": "Sample mode: W4409112594 cites W4390501271 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4409112594 cites W4390501271"
+          ]
+        },
+        {
+          "source": "W4296164039",
+          "target": "W4401209403",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4401209403 cites W4296164039 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-08a616ce761b260c",
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4296164039",
+              "quote": "Despite the immense progress recently witnessed in protein structure prediction, the modeling accuracy for proteins that lack sequence and/or structure homologs remains to be improved."
+            },
+            {
+              "paper_id": "W4401209403",
+              "quote": "Protein structure prediction is important for understanding their function and behavior."
+            }
+          ],
+          "reason_short": "Sample mode: W4401209403 cites W4296164039 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4401209403 cites W4296164039"
+          ]
+        },
+        {
           "source": "W3184615727",
           "target": "W4283013935",
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-bf8e021563550f90"
           ],
@@ -13307,6 +13959,36 @@
               "paper_id": "W4283013935",
               "quote": "prediction of protein-ligand binding free energies or binding affinities has the potential to transform drug discovery."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W4328048207",
+          "target": "W4391338754",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4391338754 cites W4328048207 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-08a616ce761b260c",
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4328048207",
+              "quote": "While AlphaFold2 can predict accurate protein structures from the primary sequence, challenges remain for proteins that undergo conformational changes or for which few homologous sequences are known."
+            },
+            {
+              "paper_id": "W4391338754",
+              "quote": "Proteins are the key molecular machines that orchestrate all biological processes of the cell."
+            }
+          ],
+          "reason_short": "Sample mode: W4391338754 cites W4328048207 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4391338754 cites W4328048207"
           ]
         },
         {
@@ -13315,7 +13997,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-08a616ce761b260c"
           ],
@@ -13328,6 +14010,62 @@
               "paper_id": "W4224939843",
               "quote": "Proteins perform many essential functions in biological systems and can be successfully developed as bio-therapeutics."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W3169629772",
+          "target": "W4311293038",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4311293038 cites W3169629772 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-30705aec3552bd3f"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3169629772",
+              "quote": "Protein secondary structures have been identified as the links in the physical processes of primary sequences, typically random coils, folding into functional tertiary structures that enable proteins "
+            },
+            {
+              "paper_id": "W4311293038",
+              "quote": "Protein secondary structure prediction (PSSP) is not only beneficial to the study of protein structure and function but also to the development of drugs."
+            }
+          ],
+          "reason_short": "Sample mode: W4311293038 cites W3169629772 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4311293038 cites W3169629772"
+          ]
+        },
+        {
+          "source": "W4390501271",
+          "target": "W4410621619",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4410621619 cites W4390501271 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-08a616ce761b260c",
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4390501271",
+              "quote": "Leveraging iterative alignment search through genomic and metagenome sequence databases, we report the DeepMSA2 pipeline for uniform protein single- and multichain multiple-sequence alignment (MSA) co"
+            },
+            {
+              "paper_id": "W4410621619",
+              "quote": "The dominant success of deep learning techniques on protein structure prediction has challenged the necessity and usefulness of traditional force field-based folding simulations."
+            }
+          ],
+          "reason_short": "Sample mode: W4410621619 cites W4390501271 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4410621619 cites W4390501271"
           ]
         },
         {
@@ -13336,7 +14074,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "MAIN"
           ],
@@ -13349,6 +14087,63 @@
               "paper_id": "W7116299005",
               "quote": "Keywords: Deep Learning, Protein Structure Prediction, Drug Design, AlphaFold, Artificial Intelligence, Computational Biochemistry, Drug Discovery"
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W3159267658",
+          "target": "W3165545667",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W3165545667 cites W3159267658 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-014f3604415e7034",
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3159267658",
+              "quote": "MOTIVATION: Inter-residue distance prediction by convolutional residual neural network (deep ResNet) has greatly advanced protein structure prediction."
+            },
+            {
+              "paper_id": "W3165545667",
+              "quote": "Obtaining an accurate description of protein structure is a fundamental step toward understanding the underpinning of biology."
+            }
+          ],
+          "reason_short": "Sample mode: W3165545667 cites W3159267658 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W3165545667 cites W3159267658"
+          ]
+        },
+        {
+          "source": "W3169629772",
+          "target": "W4308930019",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4308930019 cites W3169629772 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-30705aec3552bd3f",
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3169629772",
+              "quote": "Protein secondary structures have been identified as the links in the physical processes of primary sequences, typically random coils, folding into functional tertiary structures that enable proteins "
+            },
+            {
+              "paper_id": "W4308930019",
+              "quote": "This paper aims to provide a comprehensive review of the trends and challenges of deep neural networks for protein secondary structure prediction (PSSP)."
+            }
+          ],
+          "reason_short": "Sample mode: W4308930019 cites W3169629772 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4308930019 cites W3169629772"
           ]
         },
         {
@@ -13357,7 +14152,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-30705aec3552bd3f"
           ],
@@ -13370,6 +14165,35 @@
               "paper_id": "W4225919313",
               "quote": "The secondary structure of a protein is critical for establishing a link between the protein primary and tertiary structures."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W4401209403",
+          "target": "W4367301305",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4367301305 cites W4401209403 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4401209403",
+              "quote": "Protein structure prediction is important for understanding their function and behavior."
+            },
+            {
+              "paper_id": "W4367301305",
+              "quote": "Abstract Motivation Accurate prediction of protein structures is crucial for understanding protein function, stability, and interactions, with far-reaching implications in drug discovery and protein e"
+            }
+          ],
+          "reason_short": "Sample mode: W4367301305 cites W4401209403 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4367301305 cites W4401209403"
           ]
         },
         {
@@ -13378,7 +14202,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-913a93f043c79243"
           ],
@@ -13391,6 +14215,63 @@
               "paper_id": "W3167623110",
               "quote": "The new advances in deep learning methods have influenced many aspects of scientific research, including the study of the protein system."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W3183921815",
+          "target": "W4409112594",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4409112594 cites W3183921815 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-014f3604415e7034",
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3183921815",
+              "quote": "In this article, we report 3D structure prediction results by two of our best server groups (\"Zhang-Server\" and \"QUARK\") in CASP14."
+            },
+            {
+              "paper_id": "W4409112594",
+              "quote": "The application of deep learning algorithms in protein structure prediction has greatly influenced drug discovery and development."
+            }
+          ],
+          "reason_short": "Sample mode: W4409112594 cites W3183921815 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4409112594 cites W3183921815"
+          ]
+        },
+        {
+          "source": "W3186340132",
+          "target": "W3165545667",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W3165545667 cites W3186340132 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-014f3604415e7034",
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3186340132",
+              "quote": "Substantial progresses in protein structure prediction have been made by utilizing deep-learning and residue-residue distance prediction since CASP13."
+            },
+            {
+              "paper_id": "W3165545667",
+              "quote": "Obtaining an accurate description of protein structure is a fundamental step toward understanding the underpinning of biology."
+            }
+          ],
+          "reason_short": "Sample mode: W3165545667 cites W3186340132 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W3165545667 cites W3186340132"
           ]
         },
         {
@@ -13399,7 +14280,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-38ce5ca0a44e7a8f"
           ],
@@ -13412,6 +14293,88 @@
               "paper_id": "W4399982595",
               "quote": "Protein-protein interactions (PPIs) play an essential role in life activities."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W3183921815",
+          "target": "W4382401741",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4382401741 cites W3183921815 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-014f3604415e7034",
+            "SIDE-bf8e021563550f90"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3183921815",
+              "quote": "In this article, we report 3D structure prediction results by two of our best server groups (\"Zhang-Server\" and \"QUARK\") in CASP14."
+            },
+            {
+              "paper_id": "W4382401741",
+              "quote": "CD44 is a cell surface glycoprotein transmembrane receptor that is involved in cell-cell and cell-matrix interactions."
+            }
+          ],
+          "reason_short": "Sample mode: W4382401741 cites W3183921815 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4382401741 cites W3183921815"
+          ]
+        },
+        {
+          "source": "W4308930019",
+          "target": "W4409190911",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4409190911 cites W4308930019 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4308930019",
+              "quote": "This paper aims to provide a comprehensive review of the trends and challenges of deep neural networks for protein secondary structure prediction (PSSP)."
+            },
+            {
+              "paper_id": "W4409190911",
+              "quote": "The accurate prediction of protein structures remains a cornerstone challenge in structural bioinformatics, essential for understanding the intricate relationship between protein sequence, structure, "
+            }
+          ],
+          "reason_short": "Sample mode: W4409190911 cites W4308930019 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4409190911 cites W4308930019"
+          ]
+        },
+        {
+          "source": "W3186340132",
+          "target": "W3186340132",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W3186340132 cites W3186340132 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-014f3604415e7034"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3186340132",
+              "quote": "Substantial progresses in protein structure prediction have been made by utilizing deep-learning and residue-residue distance prediction since CASP13."
+            },
+            {
+              "paper_id": "W3186340132",
+              "quote": "Substantial progresses in protein structure prediction have been made by utilizing deep-learning and residue-residue distance prediction since CASP13."
+            }
+          ],
+          "reason_short": "Sample mode: W3186340132 cites W3186340132 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W3186340132 cites W3186340132"
           ]
         },
         {
@@ -13420,7 +14383,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-014f3604415e7034"
           ],
@@ -13433,6 +14396,169 @@
               "paper_id": "W3183921815",
               "quote": "In this article, we report 3D structure prediction results by two of our best server groups (\"Zhang-Server\" and \"QUARK\") in CASP14."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W3183921815",
+          "target": "W4296164039",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4296164039 cites W3183921815 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-014f3604415e7034",
+            "SIDE-08a616ce761b260c"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3183921815",
+              "quote": "In this article, we report 3D structure prediction results by two of our best server groups (\"Zhang-Server\" and \"QUARK\") in CASP14."
+            },
+            {
+              "paper_id": "W4296164039",
+              "quote": "Despite the immense progress recently witnessed in protein structure prediction, the modeling accuracy for proteins that lack sequence and/or structure homologs remains to be improved."
+            }
+          ],
+          "reason_short": "Sample mode: W4296164039 cites W3183921815 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4296164039 cites W3183921815"
+          ]
+        },
+        {
+          "source": "W3167623110",
+          "target": "W4402753025",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4402753025 cites W3167623110 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3167623110",
+              "quote": "The new advances in deep learning methods have influenced many aspects of scientific research, including the study of the protein system."
+            },
+            {
+              "paper_id": "W4402753025",
+              "quote": "Abstract Protein structure prediction (PSP) has been a prominent topic in bioinformatics and computational biology, aiming to predict protein function and structure from sequence data."
+            }
+          ],
+          "reason_short": "Sample mode: W4402753025 cites W3167623110 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4402753025 cites W3167623110"
+          ]
+        },
+        {
+          "source": "W4328048207",
+          "target": "W4409112594",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4409112594 cites W4328048207 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-08a616ce761b260c",
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4328048207",
+              "quote": "While AlphaFold2 can predict accurate protein structures from the primary sequence, challenges remain for proteins that undergo conformational changes or for which few homologous sequences are known."
+            },
+            {
+              "paper_id": "W4409112594",
+              "quote": "The application of deep learning algorithms in protein structure prediction has greatly influenced drug discovery and development."
+            }
+          ],
+          "reason_short": "Sample mode: W4409112594 cites W4328048207 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4409112594 cites W4328048207"
+          ]
+        },
+        {
+          "source": "W4296164039",
+          "target": "W4411723436",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4411723436 cites W4296164039 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-08a616ce761b260c",
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4296164039",
+              "quote": "Despite the immense progress recently witnessed in protein structure prediction, the modeling accuracy for proteins that lack sequence and/or structure homologs remains to be improved."
+            },
+            {
+              "paper_id": "W4411723436",
+              "quote": "Proteins serve as the essential functional units of life, and understanding their three-dimensional structures is crucial for uncovering the biological mechanisms at play."
+            }
+          ],
+          "reason_short": "Sample mode: W4411723436 cites W4296164039 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4411723436 cites W4296164039"
+          ]
+        },
+        {
+          "source": "W4367301305",
+          "target": "W4409112594",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4409112594 cites W4367301305 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-913a93f043c79243"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4367301305",
+              "quote": "Abstract Motivation Accurate prediction of protein structures is crucial for understanding protein function, stability, and interactions, with far-reaching implications in drug discovery and protein e"
+            },
+            {
+              "paper_id": "W4409112594",
+              "quote": "The application of deep learning algorithms in protein structure prediction has greatly influenced drug discovery and development."
+            }
+          ],
+          "reason_short": "Sample mode: W4409112594 cites W4367301305 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4409112594 cites W4367301305"
+          ]
+        },
+        {
+          "source": "W3184615727",
+          "target": "W4411723436",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4411723436 cites W3184615727 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-913a93f043c79243",
+            "SIDE-bf8e021563550f90"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3184615727",
+              "quote": "Protein-RNA interactions are of vital importance to a variety of cellular activities."
+            },
+            {
+              "paper_id": "W4411723436",
+              "quote": "Proteins serve as the essential functional units of life, and understanding their three-dimensional structures is crucial for uncovering the biological mechanisms at play."
+            }
+          ],
+          "reason_short": "Sample mode: W4411723436 cites W3184615727 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4411723436 cites W3184615727"
           ]
         },
         {
@@ -13704,7 +14830,7 @@
       "world": {
         "run_id": "example-03",
         "attempt": 1,
-        "events": 974,
+        "events": 994,
         "pending_merges": 0
       }
     },

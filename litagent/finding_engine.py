@@ -96,6 +96,7 @@ def choose_pairs(stage: str, papers, clusters, settings: Settings, context: Find
     owner = {pid: c for c in clusters for pid in c.paper_ids}
     dup = {pid: n for n, group in enumerate(duplicate_components(papers)) for pid in group}
     indices = {p.id: i for i, p in enumerate(papers)}
+    references = {p.id: set(p.references or ()) for p in papers}
     skipped, within, between = 0, [], []
     for a, b in itertools.combinations(sorted(body_ids), 2):
         if dup[a] == dup[b]:
@@ -103,14 +104,18 @@ def choose_pairs(stage: str, papers, clusters, settings: Settings, context: Find
             continue
         same = owner[a].id == owner[b].id
         score = float(context.similarity[indices[a], indices[b]])
-        if score < settings.connection_similarity_min:
+        # A citation from the OpenAlex reference lists is a concrete link (relation directly_cites), so the pair
+        # is a candidate even below the similarity floor.
+        cited = b if b in references[a] else a if a in references[b] else None
+        if score < settings.connection_similarity_min and cited is None:
             continue
         cids = sorted({owner[a].id, owner[b].id})
         pair = {"pair_id": "PAIR-" + digest([a, b])[:16], "paper_ids": [a, b], "cluster_ids": cids,
                 "kind": "within_cluster" if same else "between_clusters", "similarity": score,
+                "citation": f"{a if cited == b else b} cites {cited}" if cited else None, "cited": cited,
                 "main": any(getattr(owner[pid], "kind", "side") == "main" for pid in (a, b))}
         (within if same else between).append(pair)
-    order = lambda p: (not p["main"], -p["similarity"], p["paper_ids"])
+    order = lambda p: (not p["main"], p["cited"] is None, -p["similarity"], p["paper_ids"])
     within.sort(key=order)
     between.sort(key=order)
     selected, counts, cluster_counts, seen_cross = [], Counter(), Counter(), set()
@@ -134,7 +139,8 @@ def choose_pairs(stage: str, papers, clusters, settings: Settings, context: Find
     if trace := current_trace():
         trace.log(stage + "_finder", "select scientific pairs", f"{len(selected)} bounded comparisons",
                   result={"duplicate_pairs_skipped": skipped, "papers_with_body": len(body_ids), "pairs": selected},
-                  why="Question main pairs first; original-source availability, deterministic cosine ranking, duplicate-study exclusion and per-paper/group caps")
+                  why="Main-cluster pairs first, then citation links, then cosine; original-source availability, "
+                      "duplicate-study exclusion and per-paper/group caps")
     return selected, skipped
 
 

@@ -28,7 +28,7 @@ from tests.test_cluster_regeneration import snapshot
 @pytest.fixture
 def model(monkeypatch):
     state = {"calls": [], "searches": [], "abstain": False, "reject": False, "covered": None, "search_error": False,
-             "bad_refs": False, "fail_after": None, "hits": []}
+             "bad_refs": False, "fail_after": None, "hits": [], "generic": 0}
     def complete(prompt, message, schema, **kwargs):
         data = json.loads(message)
         state["calls"].append((schema, data))
@@ -36,15 +36,21 @@ def model(monkeypatch):
             raise TokenBudgetExceeded("Test model budget exhausted")
         if schema is ConnectionDecisions:
             return ConnectionDecisions(decisions=[ConnectionDecision(pair_id=p["pair_id"],
-                decision="abstain" if state["abstain"] else "supported", relation=None if state["abstain"] else "shared_task",
-                description="" if state["abstain"] else "Both papers report controlled experiments on a scientific task.",
+                decision="abstain" if state["abstain"] else "supported",
+                relation=None if state["abstain"] else "same_problem_different_method",
+                reason_short="" if state["abstain"] else "Both papers run controlled experiments on the same scientific task.",
+                reason_long="" if state["abstain"] else "Each paper reports direct measurements from controlled experiments on its task.",
+                evidence_notes=[] if state["abstain"] else ["same task: controlled scientific experiments"],
                 reason="Selected original text supports the bounded task statement.",
                 evidence=[] if state["abstain"] else [EvidenceReference(paper_id=x["id"],
                     span_id="invented" if state["bad_refs"] else x["spans"][0]["span_id"]) for x in p["papers"]]) for p in data["pairs"]])
         if schema is FindingVerifications:
             assert all("reason" not in c and "decision" not in c and "similarity" not in c for c in data["claims"])
+            generic = state["generic"] > 0
+            state["generic"] -= generic
             return FindingVerifications(verdicts=[FindingVerification(pair_id=c["pair_id"],
-                verdict="insufficient" if state["reject"] else "supported", reason="Independent source check.") for c in data["claims"]])
+                verdict="insufficient" if state["reject"] else "generic" if generic else "supported",
+                reason="Independent source check.") for c in data["claims"]])
         if schema is GapDrafts:
             spans = {x["id"]: x["spans"][0]["span_id"] for x in data["papers"]}
             return GapDrafts(drafts=[GapDraft(gap_id=c["gap_id"], decision="write",
@@ -256,7 +262,7 @@ def test_analysis_api_commits_child_without_touching_source_and_idempotent_retry
             child = out.json()["output"]
             assert child["stage"] == "findings" and child["analysis"]["completed_stages"] == ["connections", "gaps"]
             assert child["connections"] and child["gaps"] and child["parent_run_id"] == "root"
-            assert child["connections"][0]["relation"] == "shared_task" and child["gaps"][0]["label"] == "novel"
+            assert child["connections"][0]["relation"] == "same_problem_different_method" and child["gaps"][0]["label"] == "novel"
             assert path_for(cfg, "cluster-map", "root").read_bytes() == before
             assert head("root", cfg)["run_id"] == child["run_id"]
             count = len(model["calls"])

@@ -41,11 +41,15 @@ export interface Cluster {
 export interface Connection {
   id: string;
   kind: string;
-  paper_ids: string[];
+  paper_ids: string[]; // [source, target]
   cluster_ids: string[];
   description: string;
   evidence: Evidence[];
   relation?: string;
+  similarity?: number;
+  reason_short?: string | null;
+  reason_long?: string | null;
+  evidence_notes?: string[];
 }
 export interface Gap {
   id: string;

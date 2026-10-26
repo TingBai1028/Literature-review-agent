@@ -6785,6 +6785,560 @@
     ],
     "connections": [
       {
+        "id": "CITE-W4415320025-W4282835253",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4282835253",
+          "W4415320025"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5",
+          "SIDE-ee770297abeea332"
+        ],
+        "description": "Sample mode: W4415320025 cites W4282835253 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4282835253",
+            "quote": "Modern day drug discovery is extremely expensive and time consuming."
+          },
+          {
+            "paper_id": "W4415320025",
+            "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+          }
+        ],
+        "reason_short": "Sample mode: W4415320025 cites W4282835253 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4415320025 cites W4282835253"
+        ]
+      },
+      {
+        "id": "CITE-W4415320025-W4399954566",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4399954566",
+          "W4415320025"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5"
+        ],
+        "description": "Sample mode: W4415320025 cites W4399954566 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4399954566",
+            "quote": "In the dynamic field of drug discovery, deep attention neural networks are revolutionizing our approach to complex data."
+          },
+          {
+            "paper_id": "W4415320025",
+            "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+          }
+        ],
+        "reason_short": "Sample mode: W4415320025 cites W4399954566 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4415320025 cites W4399954566"
+        ]
+      },
+      {
+        "id": "CITE-W4396806998-W3116202926",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3116202926",
+          "W4396806998"
+        ],
+        "cluster_ids": [
+          "FOUNDATION",
+          "SIDE-a3137cac3858f7e5"
+        ],
+        "description": "Sample mode: W4396806998 cites W3116202926 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3116202926",
+            "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+          },
+          {
+            "paper_id": "W4396806998",
+            "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+          }
+        ],
+        "reason_short": "Sample mode: W4396806998 cites W3116202926 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4396806998 cites W3116202926"
+        ]
+      },
+      {
+        "id": "CITE-W4396806998-W4205167309",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4205167309",
+          "W4396806998"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5",
+          "SIDE-b72319658ad3fd2b"
+        ],
+        "description": "Sample mode: W4396806998 cites W4205167309 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4205167309",
+            "quote": "Predicting drug-target affinity (DTA) is beneficial for accelerating drug discovery."
+          },
+          {
+            "paper_id": "W4396806998",
+            "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+          }
+        ],
+        "reason_short": "Sample mode: W4396806998 cites W4205167309 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4396806998 cites W4205167309"
+        ]
+      },
+      {
+        "id": "CITE-W4396806998-W4318150241",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4318150241",
+          "W4396806998"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5",
+          "SIDE-b72319658ad3fd2b"
+        ],
+        "description": "Sample mode: W4396806998 cites W4318150241 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4318150241",
+            "quote": "Expressive molecular representation plays critical roles in researching drug design, while effective methods are beneficial to learning molecular representations and solving related problems in drug d"
+          },
+          {
+            "paper_id": "W4396806998",
+            "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+          }
+        ],
+        "reason_short": "Sample mode: W4396806998 cites W4318150241 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4396806998 cites W4318150241"
+        ]
+      },
+      {
+        "id": "CITE-W4416931215-W4205167309",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4205167309",
+          "W4416931215"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5",
+          "SIDE-b72319658ad3fd2b"
+        ],
+        "description": "Sample mode: W4416931215 cites W4205167309 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4205167309",
+            "quote": "Predicting drug-target affinity (DTA) is beneficial for accelerating drug discovery."
+          },
+          {
+            "paper_id": "W4416931215",
+            "quote": "Drug discovery is increasingly challenged by rising costs, long development cycles and high attrition rates, with accurate target identification remaining a critical bottleneck."
+          }
+        ],
+        "reason_short": "Sample mode: W4416931215 cites W4205167309 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4416931215 cites W4205167309"
+        ]
+      },
+      {
+        "id": "CITE-W7162690543-W3116202926",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3116202926",
+          "W7162690543"
+        ],
+        "cluster_ids": [
+          "FOUNDATION",
+          "SIDE-a3137cac3858f7e5"
+        ],
+        "description": "Sample mode: W7162690543 cites W3116202926 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3116202926",
+            "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+          },
+          {
+            "paper_id": "W7162690543",
+            "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+          }
+        ],
+        "reason_short": "Sample mode: W7162690543 cites W3116202926 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W7162690543 cites W3116202926"
+        ]
+      },
+      {
+        "id": "CITE-W7162690543-W4205167309",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4205167309",
+          "W7162690543"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5",
+          "SIDE-b72319658ad3fd2b"
+        ],
+        "description": "Sample mode: W7162690543 cites W4205167309 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4205167309",
+            "quote": "Predicting drug-target affinity (DTA) is beneficial for accelerating drug discovery."
+          },
+          {
+            "paper_id": "W7162690543",
+            "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+          }
+        ],
+        "reason_short": "Sample mode: W7162690543 cites W4205167309 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W7162690543 cites W4205167309"
+        ]
+      },
+      {
+        "id": "CITE-W7162690543-W4377968189",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4377968189",
+          "W7162690543"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5",
+          "SIDE-d8d0bd473dbafdd8"
+        ],
+        "description": "Sample mode: W7162690543 cites W4377968189 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4377968189",
+            "quote": "MOTIVATION: Computational approaches for identifying the protein-ligand binding affinity can greatly facilitate drug discovery and development."
+          },
+          {
+            "paper_id": "W7162690543",
+            "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+          }
+        ],
+        "reason_short": "Sample mode: W7162690543 cites W4377968189 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W7162690543 cites W4377968189"
+        ]
+      },
+      {
+        "id": "CITE-W7162690543-W4396806998",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4396806998",
+          "W7162690543"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5"
+        ],
+        "description": "Sample mode: W7162690543 cites W4396806998 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4396806998",
+            "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+          },
+          {
+            "paper_id": "W7162690543",
+            "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+          }
+        ],
+        "reason_short": "Sample mode: W7162690543 cites W4396806998 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W7162690543 cites W4396806998"
+        ]
+      },
+      {
+        "id": "CITE-W7162690543-W4415320025",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4415320025",
+          "W7162690543"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5"
+        ],
+        "description": "Sample mode: W7162690543 cites W4415320025 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4415320025",
+            "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+          },
+          {
+            "paper_id": "W7162690543",
+            "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+          }
+        ],
+        "reason_short": "Sample mode: W7162690543 cites W4415320025 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W7162690543 cites W4415320025"
+        ]
+      },
+      {
+        "id": "CITE-W4404803126-W4396806998",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4396806998",
+          "W4404803126"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5",
+          "SIDE-e1abf1cf21505143"
+        ],
+        "description": "Sample mode: W4404803126 cites W4396806998 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4396806998",
+            "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+          },
+          {
+            "paper_id": "W4404803126",
+            "quote": "Accurately predicting pharmacokinetic (PK) parameters such as absorption, distribution, metabolism, and excretion (ADME) is essential for optimizing drug efficacy, safety, and development timelines."
+          }
+        ],
+        "reason_short": "Sample mode: W4404803126 cites W4396806998 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4404803126 cites W4396806998"
+        ]
+      },
+      {
+        "id": "CITE-W4315767347-W3116202926",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3116202926",
+          "W4315767347"
+        ],
+        "cluster_ids": [
+          "FOUNDATION",
+          "MAIN"
+        ],
+        "description": "Sample mode: W4315767347 cites W3116202926 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3116202926",
+            "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+          },
+          {
+            "paper_id": "W4315767347",
+            "quote": "Abstract Drug design is costly in terms of resources and time."
+          }
+        ],
+        "reason_short": "Sample mode: W4315767347 cites W3116202926 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4315767347 cites W3116202926"
+        ]
+      },
+      {
+        "id": "CITE-W4391782448-W3116202926",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3116202926",
+          "W4391782448"
+        ],
+        "cluster_ids": [
+          "FOUNDATION",
+          "SIDE-a3137cac3858f7e5"
+        ],
+        "description": "Sample mode: W4391782448 cites W3116202926 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3116202926",
+            "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+          },
+          {
+            "paper_id": "W4391782448",
+            "quote": "Abstract Combinational therapies with synergistic effects provide a powerful treatment strategy for tackling complex diseases, particularly malignancies."
+          }
+        ],
+        "reason_short": "Sample mode: W4391782448 cites W3116202926 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4391782448 cites W3116202926"
+        ]
+      },
+      {
+        "id": "CITE-W4391782448-W3120618935",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W3120618935",
+          "W4391782448"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5"
+        ],
+        "description": "Sample mode: W4391782448 cites W3120618935 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3120618935",
+            "quote": "MOTIVATION: Properties of molecules are indicative of their functions and thus are useful in many applications."
+          },
+          {
+            "paper_id": "W4391782448",
+            "quote": "Abstract Combinational therapies with synergistic effects provide a powerful treatment strategy for tackling complex diseases, particularly malignancies."
+          }
+        ],
+        "reason_short": "Sample mode: W4391782448 cites W3120618935 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4391782448 cites W3120618935"
+        ]
+      },
+      {
+        "id": "CITE-W4318150241-W3120618935",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3120618935",
+          "W4318150241"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5",
+          "SIDE-b72319658ad3fd2b"
+        ],
+        "description": "Sample mode: W4318150241 cites W3120618935 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3120618935",
+            "quote": "MOTIVATION: Properties of molecules are indicative of their functions and thus are useful in many applications."
+          },
+          {
+            "paper_id": "W4318150241",
+            "quote": "Expressive molecular representation plays critical roles in researching drug design, while effective methods are beneficial to learning molecular representations and solving related problems in drug d"
+          }
+        ],
+        "reason_short": "Sample mode: W4318150241 cites W3120618935 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4318150241 cites W3120618935"
+        ]
+      },
+      {
+        "id": "CITE-W4392157869-W4392157869",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4392157869",
+          "W4392157869"
+        ],
+        "cluster_ids": [
+          "SIDE-a3137cac3858f7e5"
+        ],
+        "description": "Sample mode: W4392157869 cites W4392157869 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4392157869",
+            "quote": "We investigate the potential of graph neural networks for transfer learning and improving molecular property prediction on sparse and expensive to acquire high-fidelity data by leveraging low-fidelity"
+          },
+          {
+            "paper_id": "W4392157869",
+            "quote": "We investigate the potential of graph neural networks for transfer learning and improving molecular property prediction on sparse and expensive to acquire high-fidelity data by leveraging low-fidelity"
+          }
+        ],
+        "reason_short": "Sample mode: W4392157869 cites W4392157869 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4392157869 cites W4392157869"
+        ]
+      },
+      {
+        "id": "CITE-W4415615042-W4389131658",
+        "kind": "within_cluster",
+        "paper_ids": [
+          "W4389131658",
+          "W4415615042"
+        ],
+        "cluster_ids": [
+          "SIDE-b72319658ad3fd2b"
+        ],
+        "description": "Sample mode: W4415615042 cites W4389131658 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4389131658",
+            "quote": "Drug repositioning, the strategy of redirecting existing drugs to new therapeutic purposes, is pivotal in accelerating drug discovery."
+          },
+          {
+            "paper_id": "W4415615042",
+            "quote": "Drug repositioning presents a compelling strategy to accelerate therapeutic development by uncovering new indications for existing compounds."
+          }
+        ],
+        "reason_short": "Sample mode: W4415615042 cites W4389131658 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4415615042 cites W4389131658"
+        ]
+      },
+      {
+        "id": "CITE-W4380136659-W4318150241",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W4318150241",
+          "W4380136659"
+        ],
+        "cluster_ids": [
+          "SIDE-b72319658ad3fd2b",
+          "SIDE-f12620d9ee72e9bf"
+        ],
+        "description": "Sample mode: W4380136659 cites W4318150241 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W4318150241",
+            "quote": "Expressive molecular representation plays critical roles in researching drug design, while effective methods are beneficial to learning molecular representations and solving related problems in drug d"
+          },
+          {
+            "paper_id": "W4380136659",
+            "quote": "Recent advances and achievements of artificial intelligence (AI) as well as deep and graph learning models have established their usefulness in biomedical applications, especially in drug-drug interac"
+          }
+        ],
+        "reason_short": "Sample mode: W4380136659 cites W4318150241 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4380136659 cites W4318150241"
+        ]
+      },
+      {
+        "id": "CITE-W4402808474-W3188579603",
+        "kind": "between_clusters",
+        "paper_ids": [
+          "W3188579603",
+          "W4402808474"
+        ],
+        "cluster_ids": [
+          "FOUNDATION",
+          "SIDE-b545a7f1be03ca89"
+        ],
+        "description": "Sample mode: W4402808474 cites W3188579603 (OpenAlex reference list).",
+        "evidence": [
+          {
+            "paper_id": "W3188579603",
+            "quote": "Graph neural networks (GNNs), as a branch of deep learning in non-Euclidean space, perform particularly well in various tasks that process graph structure data."
+          },
+          {
+            "paper_id": "W4402808474",
+            "quote": "Graph neural networks (GNNs) process the graph-structured data using neural networks and have proven successful in various graph processing tasks."
+          }
+        ],
+        "reason_short": "Sample mode: W4402808474 cites W3188579603 (OpenAlex reference list).",
+        "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+        "evidence_notes": [
+          "W4402808474 cites W3188579603"
+        ]
+      },
+      {
         "id": "MAIN-K1",
         "kind": "within_cluster",
         "paper_ids": [
@@ -6794,7 +7348,7 @@
         "cluster_ids": [
           "MAIN"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W7164175736",
@@ -6804,7 +7358,10 @@
             "paper_id": "W4416068517",
             "quote": "Graph Neural Networks (GNNs) have gained traction in the complex domain of drug discovery because of their ability to process graph-structured data such as drug molecule models."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "FOUNDATION-K1",
@@ -6816,7 +7373,7 @@
         "cluster_ids": [
           "FOUNDATION"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W3116202926",
@@ -6826,29 +7383,10 @@
             "paper_id": "W3188579603",
             "quote": "Graph neural networks (GNNs), as a branch of deep learning in non-Euclidean space, perform particularly well in various tasks that process graph structure data."
           }
-        ]
-      },
-      {
-        "id": "SIDE-a3137cac3858f7e5-K1",
-        "kind": "within_cluster",
-        "paper_ids": [
-          "W3120618935",
-          "W4391782448"
         ],
-        "cluster_ids": [
-          "SIDE-a3137cac3858f7e5"
-        ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
-        "evidence": [
-          {
-            "paper_id": "W3120618935",
-            "quote": "MOTIVATION: Properties of molecules are indicative of their functions and thus are useful in many applications."
-          },
-          {
-            "paper_id": "W4391782448",
-            "quote": "Abstract Combinational therapies with synergistic effects provide a powerful treatment strategy for tackling complex diseases, particularly malignancies."
-          }
-        ]
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-b72319658ad3fd2b-K1",
@@ -6860,7 +7398,7 @@
         "cluster_ids": [
           "SIDE-b72319658ad3fd2b"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W3216638646",
@@ -6870,7 +7408,10 @@
             "paper_id": "W4205167309",
             "quote": "Predicting drug-target affinity (DTA) is beneficial for accelerating drug discovery."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-ee770297abeea332-K1",
@@ -6882,7 +7423,7 @@
         "cluster_ids": [
           "SIDE-ee770297abeea332"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W4282835253",
@@ -6892,7 +7433,10 @@
             "paper_id": "W4308610392",
             "quote": "The process of screening molecules for desirable properties is a key step in several applications, ranging from drug discovery to material design."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-d8d0bd473dbafdd8-K1",
@@ -6904,7 +7448,7 @@
         "cluster_ids": [
           "SIDE-d8d0bd473dbafdd8"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W4377968189",
@@ -6914,7 +7458,10 @@
             "paper_id": "W4391335127",
             "quote": "Peptides offer great biomedical potential and serve as promising drug candidates."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-b545a7f1be03ca89-K1",
@@ -6926,7 +7473,7 @@
         "cluster_ids": [
           "SIDE-b545a7f1be03ca89"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W4382317956",
@@ -6936,7 +7483,10 @@
             "paper_id": "W4388042006",
             "quote": "Abstract Molecular property prediction is a fundamental task in the field of drug discovery."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-f12620d9ee72e9bf-K1",
@@ -6948,7 +7498,7 @@
         "cluster_ids": [
           "SIDE-f12620d9ee72e9bf"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W4220788456",
@@ -6958,7 +7508,10 @@
             "paper_id": "W4380136659",
             "quote": "Recent advances and achievements of artificial intelligence (AI) as well as deep and graph learning models have established their usefulness in biomedical applications, especially in drug-drug interac"
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-e1abf1cf21505143-K1",
@@ -6970,7 +7523,7 @@
         "cluster_ids": [
           "SIDE-e1abf1cf21505143"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W4394850168",
@@ -6980,7 +7533,10 @@
             "paper_id": "W4404803126",
             "quote": "Accurately predicting pharmacokinetic (PK) parameters such as absorption, distribution, metabolism, and excretion (ADME) is essential for optimizing drug efficacy, safety, and development timelines."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       }
     ],
     "gaps": [
@@ -13672,12 +14228,39 @@
           "reason": "Mean content similarity to 5 final members: 0.7575; minimum: 0.7201. Main and foundation membership comes from the role rules, not content similarity. A numerical hint, not additional membership or a verified scientific connection."
         },
         {
+          "source": "W4318150241",
+          "target": "W4380136659",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4380136659 cites W4318150241 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-b72319658ad3fd2b",
+            "SIDE-f12620d9ee72e9bf"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4318150241",
+              "quote": "Expressive molecular representation plays critical roles in researching drug design, while effective methods are beneficial to learning molecular representations and solving related problems in drug d"
+            },
+            {
+              "paper_id": "W4380136659",
+              "quote": "Recent advances and achievements of artificial intelligence (AI) as well as deep and graph learning models have established their usefulness in biomedical applications, especially in drug-drug interac"
+            }
+          ],
+          "reason_short": "Sample mode: W4380136659 cites W4318150241 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4380136659 cites W4318150241"
+          ]
+        },
+        {
           "source": "W3120618935",
           "target": "W4391782448",
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: W4391782448 cites W3120618935 (OpenAlex reference list).",
           "cluster_refs": [
             "SIDE-a3137cac3858f7e5"
           ],
@@ -13690,6 +14273,38 @@
               "paper_id": "W4391782448",
               "quote": "Abstract Combinational therapies with synergistic effects provide a powerful treatment strategy for tackling complex diseases, particularly malignancies."
             }
+          ],
+          "reason_short": "Sample mode: W4391782448 cites W3120618935 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4391782448 cites W3120618935"
+          ]
+        },
+        {
+          "source": "W4282835253",
+          "target": "W4415320025",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4415320025 cites W4282835253 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5",
+            "SIDE-ee770297abeea332"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4282835253",
+              "quote": "Modern day drug discovery is extremely expensive and time consuming."
+            },
+            {
+              "paper_id": "W4415320025",
+              "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+            }
+          ],
+          "reason_short": "Sample mode: W4415320025 cites W4282835253 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4415320025 cites W4282835253"
           ]
         },
         {
@@ -13698,7 +14313,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-ee770297abeea332"
           ],
@@ -13711,6 +14326,36 @@
               "paper_id": "W4308610392",
               "quote": "The process of screening molecules for desirable properties is a key step in several applications, ranging from drug discovery to material design."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W4396806998",
+          "target": "W4404803126",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4404803126 cites W4396806998 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5",
+            "SIDE-e1abf1cf21505143"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4396806998",
+              "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+            },
+            {
+              "paper_id": "W4404803126",
+              "quote": "Accurately predicting pharmacokinetic (PK) parameters such as absorption, distribution, metabolism, and excretion (ADME) is essential for optimizing drug efficacy, safety, and development timelines."
+            }
+          ],
+          "reason_short": "Sample mode: W4404803126 cites W4396806998 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4404803126 cites W4396806998"
           ]
         },
         {
@@ -13719,7 +14364,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-b545a7f1be03ca89"
           ],
@@ -13732,6 +14377,63 @@
               "paper_id": "W4388042006",
               "quote": "Abstract Molecular property prediction is a fundamental task in the field of drug discovery."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W4377968189",
+          "target": "W7162690543",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W7162690543 cites W4377968189 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5",
+            "SIDE-d8d0bd473dbafdd8"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4377968189",
+              "quote": "MOTIVATION: Computational approaches for identifying the protein-ligand binding affinity can greatly facilitate drug discovery and development."
+            },
+            {
+              "paper_id": "W7162690543",
+              "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+            }
+          ],
+          "reason_short": "Sample mode: W7162690543 cites W4377968189 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W7162690543 cites W4377968189"
+          ]
+        },
+        {
+          "source": "W3116202926",
+          "target": "W7162690543",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W7162690543 cites W3116202926 (OpenAlex reference list).",
+          "cluster_refs": [
+            "FOUNDATION",
+            "SIDE-a3137cac3858f7e5"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3116202926",
+              "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+            },
+            {
+              "paper_id": "W7162690543",
+              "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+            }
+          ],
+          "reason_short": "Sample mode: W7162690543 cites W3116202926 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W7162690543 cites W3116202926"
           ]
         },
         {
@@ -13740,7 +14442,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "MAIN"
           ],
@@ -13753,7 +14455,10 @@
               "paper_id": "W4416068517",
               "quote": "Graph Neural Networks (GNNs) have gained traction in the complex domain of drug discovery because of their ability to process graph-structured data such as drug molecule models."
             }
-          ]
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
         },
         {
           "source": "W4394850168",
@@ -13761,7 +14466,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-e1abf1cf21505143"
           ],
@@ -13774,6 +14479,88 @@
               "paper_id": "W4404803126",
               "quote": "Accurately predicting pharmacokinetic (PK) parameters such as absorption, distribution, metabolism, and excretion (ADME) is essential for optimizing drug efficacy, safety, and development timelines."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W4415320025",
+          "target": "W7162690543",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W7162690543 cites W4415320025 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4415320025",
+              "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+            },
+            {
+              "paper_id": "W7162690543",
+              "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+            }
+          ],
+          "reason_short": "Sample mode: W7162690543 cites W4415320025 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W7162690543 cites W4415320025"
+          ]
+        },
+        {
+          "source": "W4389131658",
+          "target": "W4415615042",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4415615042 cites W4389131658 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-b72319658ad3fd2b"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4389131658",
+              "quote": "Drug repositioning, the strategy of redirecting existing drugs to new therapeutic purposes, is pivotal in accelerating drug discovery."
+            },
+            {
+              "paper_id": "W4415615042",
+              "quote": "Drug repositioning presents a compelling strategy to accelerate therapeutic development by uncovering new indications for existing compounds."
+            }
+          ],
+          "reason_short": "Sample mode: W4415615042 cites W4389131658 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4415615042 cites W4389131658"
+          ]
+        },
+        {
+          "source": "W4205167309",
+          "target": "W7162690543",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W7162690543 cites W4205167309 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5",
+            "SIDE-b72319658ad3fd2b"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4205167309",
+              "quote": "Predicting drug-target affinity (DTA) is beneficial for accelerating drug discovery."
+            },
+            {
+              "paper_id": "W7162690543",
+              "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+            }
+          ],
+          "reason_short": "Sample mode: W7162690543 cites W4205167309 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W7162690543 cites W4205167309"
           ]
         },
         {
@@ -13782,7 +14569,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-b72319658ad3fd2b"
           ],
@@ -13795,6 +14582,36 @@
               "paper_id": "W4205167309",
               "quote": "Predicting drug-target affinity (DTA) is beneficial for accelerating drug discovery."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W3120618935",
+          "target": "W4318150241",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4318150241 cites W3120618935 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5",
+            "SIDE-b72319658ad3fd2b"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3120618935",
+              "quote": "MOTIVATION: Properties of molecules are indicative of their functions and thus are useful in many applications."
+            },
+            {
+              "paper_id": "W4318150241",
+              "quote": "Expressive molecular representation plays critical roles in researching drug design, while effective methods are beneficial to learning molecular representations and solving related problems in drug d"
+            }
+          ],
+          "reason_short": "Sample mode: W4318150241 cites W3120618935 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4318150241 cites W3120618935"
           ]
         },
         {
@@ -13803,7 +14620,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-d8d0bd473dbafdd8"
           ],
@@ -13816,6 +14633,89 @@
               "paper_id": "W4391335127",
               "quote": "Peptides offer great biomedical potential and serve as promising drug candidates."
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W4205167309",
+          "target": "W4416931215",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4416931215 cites W4205167309 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5",
+            "SIDE-b72319658ad3fd2b"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4205167309",
+              "quote": "Predicting drug-target affinity (DTA) is beneficial for accelerating drug discovery."
+            },
+            {
+              "paper_id": "W4416931215",
+              "quote": "Drug discovery is increasingly challenged by rising costs, long development cycles and high attrition rates, with accurate target identification remaining a critical bottleneck."
+            }
+          ],
+          "reason_short": "Sample mode: W4416931215 cites W4205167309 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4416931215 cites W4205167309"
+          ]
+        },
+        {
+          "source": "W4399954566",
+          "target": "W4415320025",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4415320025 cites W4399954566 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4399954566",
+              "quote": "In the dynamic field of drug discovery, deep attention neural networks are revolutionizing our approach to complex data."
+            },
+            {
+              "paper_id": "W4415320025",
+              "quote": "Graph neural networks (GNNs) are revolutionizing drug design processes."
+            }
+          ],
+          "reason_short": "Sample mode: W4415320025 cites W4399954566 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4415320025 cites W4399954566"
+          ]
+        },
+        {
+          "source": "W3116202926",
+          "target": "W4396806998",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4396806998 cites W3116202926 (OpenAlex reference list).",
+          "cluster_refs": [
+            "FOUNDATION",
+            "SIDE-a3137cac3858f7e5"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3116202926",
+              "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+            },
+            {
+              "paper_id": "W4396806998",
+              "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+            }
+          ],
+          "reason_short": "Sample mode: W4396806998 cites W3116202926 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4396806998 cites W3116202926"
           ]
         },
         {
@@ -13824,7 +14724,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "FOUNDATION"
           ],
@@ -13837,7 +14737,10 @@
               "paper_id": "W3188579603",
               "quote": "Graph neural networks (GNNs), as a branch of deep learning in non-Euclidean space, perform particularly well in various tasks that process graph structure data."
             }
-          ]
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
         },
         {
           "source": "W4220788456",
@@ -13845,7 +14748,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-f12620d9ee72e9bf"
           ],
@@ -13858,6 +14761,196 @@
               "paper_id": "W4380136659",
               "quote": "Recent advances and achievements of artificial intelligence (AI) as well as deep and graph learning models have established their usefulness in biomedical applications, especially in drug-drug interac"
             }
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
+        },
+        {
+          "source": "W3116202926",
+          "target": "W4391782448",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4391782448 cites W3116202926 (OpenAlex reference list).",
+          "cluster_refs": [
+            "FOUNDATION",
+            "SIDE-a3137cac3858f7e5"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3116202926",
+              "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+            },
+            {
+              "paper_id": "W4391782448",
+              "quote": "Abstract Combinational therapies with synergistic effects provide a powerful treatment strategy for tackling complex diseases, particularly malignancies."
+            }
+          ],
+          "reason_short": "Sample mode: W4391782448 cites W3116202926 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4391782448 cites W3116202926"
+          ]
+        },
+        {
+          "source": "W3188579603",
+          "target": "W4402808474",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4402808474 cites W3188579603 (OpenAlex reference list).",
+          "cluster_refs": [
+            "FOUNDATION",
+            "SIDE-b545a7f1be03ca89"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3188579603",
+              "quote": "Graph neural networks (GNNs), as a branch of deep learning in non-Euclidean space, perform particularly well in various tasks that process graph structure data."
+            },
+            {
+              "paper_id": "W4402808474",
+              "quote": "Graph neural networks (GNNs) process the graph-structured data using neural networks and have proven successful in various graph processing tasks."
+            }
+          ],
+          "reason_short": "Sample mode: W4402808474 cites W3188579603 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4402808474 cites W3188579603"
+          ]
+        },
+        {
+          "source": "W4205167309",
+          "target": "W4396806998",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4396806998 cites W4205167309 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5",
+            "SIDE-b72319658ad3fd2b"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4205167309",
+              "quote": "Predicting drug-target affinity (DTA) is beneficial for accelerating drug discovery."
+            },
+            {
+              "paper_id": "W4396806998",
+              "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+            }
+          ],
+          "reason_short": "Sample mode: W4396806998 cites W4205167309 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4396806998 cites W4205167309"
+          ]
+        },
+        {
+          "source": "W4392157869",
+          "target": "W4392157869",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W4392157869 cites W4392157869 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4392157869",
+              "quote": "We investigate the potential of graph neural networks for transfer learning and improving molecular property prediction on sparse and expensive to acquire high-fidelity data by leveraging low-fidelity"
+            },
+            {
+              "paper_id": "W4392157869",
+              "quote": "We investigate the potential of graph neural networks for transfer learning and improving molecular property prediction on sparse and expensive to acquire high-fidelity data by leveraging low-fidelity"
+            }
+          ],
+          "reason_short": "Sample mode: W4392157869 cites W4392157869 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4392157869 cites W4392157869"
+          ]
+        },
+        {
+          "source": "W4396806998",
+          "target": "W7162690543",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "within_cluster",
+          "description": "Sample mode: W7162690543 cites W4396806998 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4396806998",
+              "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+            },
+            {
+              "paper_id": "W7162690543",
+              "quote": "Drugs are molecules, and molecules are naturally represented as graphs, with atoms as nodes and bonds as edges, making graph neural networks an intuitive computational framework for medicinal chemistr"
+            }
+          ],
+          "reason_short": "Sample mode: W7162690543 cites W4396806998 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W7162690543 cites W4396806998"
+          ]
+        },
+        {
+          "source": "W4318150241",
+          "target": "W4396806998",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4396806998 cites W4318150241 (OpenAlex reference list).",
+          "cluster_refs": [
+            "SIDE-a3137cac3858f7e5",
+            "SIDE-b72319658ad3fd2b"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W4318150241",
+              "quote": "Expressive molecular representation plays critical roles in researching drug design, while effective methods are beneficial to learning molecular representations and solving related problems in drug d"
+            },
+            {
+              "paper_id": "W4396806998",
+              "quote": "Introduction: In recent years, graph neural network has been extensively applied to drug discovery research."
+            }
+          ],
+          "reason_short": "Sample mode: W4396806998 cites W4318150241 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4396806998 cites W4318150241"
+          ]
+        },
+        {
+          "source": "W3116202926",
+          "target": "W4315767347",
+          "type": "connects-to",
+          "by": "connection_finder",
+          "kind": "between_clusters",
+          "description": "Sample mode: W4315767347 cites W3116202926 (OpenAlex reference list).",
+          "cluster_refs": [
+            "FOUNDATION",
+            "MAIN"
+          ],
+          "evidence": [
+            {
+              "paper_id": "W3116202926",
+              "quote": "Graph neural networks (GNN) has been considered as an attractive modelling method for molecular property prediction, and numerous studies have shown that GNN could yield more promising results than tr"
+            },
+            {
+              "paper_id": "W4315767347",
+              "quote": "Abstract Drug design is costly in terms of resources and time."
+            }
+          ],
+          "reason_short": "Sample mode: W4315767347 cites W3116202926 (OpenAlex reference list).",
+          "reason_long": "Sample mode: the citation comes from the stored OpenAlex reference list; no model read the papers to say how one builds on the other.",
+          "evidence_notes": [
+            "W4315767347 cites W3116202926"
           ]
         },
         {
@@ -14249,7 +15342,7 @@
       "world": {
         "run_id": "example-02",
         "attempt": 2,
-        "events": 1818,
+        "events": 1837,
         "pending_merges": 7
       }
     },

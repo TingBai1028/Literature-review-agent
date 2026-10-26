@@ -197,13 +197,27 @@ class QuestionCluster(Cluster):
         return self
 
 
+# Paper-to-paper relation types (spec D3); contradiction is deliberately absent. For the directional ones the
+# edge points from the earlier work (source, paper_ids[0]) to the paper that builds on, benchmarks against or
+# cites it (target, paper_ids[1]).
+EdgeRelation = Literal["builds_on", "same_method_different_domain", "same_problem_different_method",
+                       "benchmarks_against", "directly_cites"]
+DIRECTIONAL_RELATIONS = {"builds_on", "benchmarks_against", "directly_cites"}
+LegacyRelation = Literal["shared_method", "shared_task", "complementary", "contrasting_results", "explicit_extension"]
+
+
 class Connection(BaseModel):
+    """An edge between two papers, never between clusters (spec D1)."""
+
     id: str
     kind: Literal["within_cluster", "between_clusters"]
-    paper_ids: list[str]
+    paper_ids: list[str]  # [source, target]
     cluster_ids: list[str]
-    description: str
+    description: str  # same text as reason_short, kept for older readers
     evidence: list[Evidence]
+    reason_short: str | None = None  # one sentence a human can read: why these two papers are linked
+    reason_long: str | None = None  # 2-4 sentences
+    evidence_notes: list[str] = Field(default_factory=list)  # e.g. "shared method: contrastive loss", "W2 cites W1"
 
 
 class CoverageSearch(BaseModel):
@@ -252,7 +266,7 @@ class Gap(BaseModel):
 
 
 class GroundedConnection(Connection):
-    relation: Literal["shared_method", "shared_task", "complementary", "contrasting_results", "explicit_extension"]
+    relation: EdgeRelation | LegacyRelation  # legacy values only appear in maps saved before spec D
     similarity: float = Field(ge=-1, le=1, allow_inf_nan=False)
     verification: Literal["source_supported"] = "source_supported"
 
@@ -339,8 +353,12 @@ class ReviewAgentAssessment(BaseModel):
 class ConnectionDecision(BaseModel):
     pair_id: str
     decision: Literal["supported", "abstain"]
-    relation: Literal["shared_method", "shared_task", "complementary", "contrasting_results", "explicit_extension"] | None = None
-    description: str = ""
+    relation: EdgeRelation | None = None
+    base_paper_id: str | None = Field(default=None, description="For builds_on, benchmarks_against and directly_cites: "
+                                      "the paper that is built on, compared against or cited")
+    reason_short: str = Field(default="", description="One sentence naming the concrete method, dataset, claim or citation")
+    reason_long: str = Field(default="", description="2-4 sentences")
+    evidence_notes: list[str] = Field(default_factory=list, description="Short facts, e.g. 'shared method: contrastive loss'")
     reason: str = Field(min_length=1)
     evidence: list[EvidenceReference] = Field(default_factory=list)
 
@@ -400,7 +418,7 @@ class GapLabelDecisions(BaseModel):
 
 class FindingVerification(BaseModel):
     pair_id: str
-    verdict: Literal["supported", "insufficient"]
+    verdict: Literal["supported", "generic", "insufficient"]  # generic: true but could describe almost any pair
     reason: str = Field(min_length=1)
 
 
