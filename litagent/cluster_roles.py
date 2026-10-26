@@ -52,7 +52,7 @@ def assign_roles(papers: list[Paper], similarity: np.ndarray, question_similarit
     rest = [i for i in ranked if i not in set(plan.main)]
     plan.foundation, plan.foundation_reason = _foundation(papers, plan.main, rest, settings)
     remaining = sorted((i for i in rest if i not in set(plan.foundation)), key=lambda i: papers[i].id)
-    plan.sides = _sides(papers, similarity, remaining, settings, plan)
+    plan.sides = side_groups(papers, similarity, remaining, settings, plan.decisions)
     if trace := current_trace():
         trace.log("clusterer", "assign cluster roles", f"main {len(plan.main)}, foundation {len(plan.foundation)}, "
                   f"{len(plan.sides)} side", result={"main": [papers[i].id for i in plan.main],
@@ -130,7 +130,9 @@ def _foundation(papers, main, rest, settings) -> tuple[list[int], str]:
     return chosen, reason
 
 
-def _sides(papers, similarity, remaining, settings, plan) -> list[list[int]]:
+def side_groups(papers: list[Paper], similarity: np.ndarray, remaining: list[int], settings: Settings,
+                decisions: list[dict]) -> list[list[int]]:
+    """Group the papers at `remaining` by linkage; groups under side_min_size merge into their nearest group."""
     if not remaining:
         return []
     block = similarity[np.ix_(remaining, remaining)]
@@ -139,13 +141,13 @@ def _sides(papers, similarity, remaining, settings, plan) -> list[list[int]]:
     small = [g for g in groups if len(g) < settings.side_min_size]
     if not large:
         if len(groups) > 1:
-            plan.decisions.append({"step": "side groups", "decision": "merged all into one",
+            decisions.append({"step": "side groups", "decision": "merged all into one",
                                    "why": f"no group reached {settings.side_min_size} papers"})
         return [sorted(remaining, key=lambda i: papers[i].id)]
     for group in small:
         target = max(large, key=lambda g: (float(similarity[np.ix_(group, g)].mean()), -g[0]))
         target += group
-        plan.decisions.append({"step": "side groups", "decision": f"merged {len(group)} paper(s)",
+        decisions.append({"step": "side groups", "decision": f"merged {len(group)} paper(s)",
                                "why": f"groups under {settings.side_min_size} papers join their most similar side group",
                                "paper_ids": [papers[i].id for i in group]})
     return [sorted(g, key=lambda i: papers[i].id) for g in large]

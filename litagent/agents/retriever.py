@@ -11,6 +11,7 @@ the summary shown at Human review 1.
 from __future__ import annotations
 
 import json
+import math
 import re
 import time
 from bisect import bisect_left
@@ -24,6 +25,7 @@ from pydantic import BaseModel, Field
 from litagent.config import EFFORT_PROFILES, Settings
 from litagent.integrations.embeddings import EmbeddingError, embed_documents
 from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
+from litagent.sample_data import sample_relevance
 from litagent.schemas import Paper, RetrievalSummary, SearchCriteria, SearchPlan
 from litagent.tools.arxiv import ArxivError, search_arxiv
 from litagent.tools.fulltext import FullTextError, fetch_full_text
@@ -48,9 +50,16 @@ class SummaryDraft(BaseModel):
 
 
 def retrieve(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> list[Paper]:
-    """Returns [] when the searches ran but found nothing; raises RetrievalError when every search failed."""
+    """The papers to show. Returns [] when the searches ran but found nothing; raises RetrievalError when every
+    search failed. retrieve_pool also returns the Fast/Pro backup pool."""
+    return retrieve_pool(plan, settings, signed_in)[0]
+
+
+def retrieve_pool(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> tuple[list[Paper], list[Paper]]:
+    """(shown, backup). Fast/Pro retrieve up to plan.retrieval_target papers, rank them all (spec F2) and show the
+    best plan.max_papers; the rest is the ranked backup pool for refresh. Older levels keep no pool."""
     if settings.sample_mode:
-        return _sample_papers(plan)
+        return _sample_pool(plan, settings)
 
     unknown = set(settings.retrieval_sources) - set(SOURCES)
     if unknown or not settings.retrieval_sources:
@@ -58,11 +67,13 @@ def retrieve(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> l
     results: list[list[Paper]] = []
     failures: list[str] = []
     fetched = 0
+    # Fast/Pro spread the retrieval target over the queries; each tool caps the page size its API allows.
+    per_search = -(-plan.retrieval_target // len(plan.queries)) if plan.retrieval_target else plan.max_papers
     for query in plan.queries:
         for source in settings.retrieval_sources:
             search = globals()[SOURCES[source]]  # looked up per call so tests can replace a source
             try:
-                found = search(query, plan.criteria, limit=plan.max_papers, open_access_only=not signed_in)
+                found = search(query, plan.criteria, limit=per_search, open_access_only=not signed_in)
             except SEARCH_ERRORS as e:
                 failures.append(f"{source}: {e}")
                 _log(f"search {source}", "failed", query, "next search", str(e))
@@ -87,6 +98,11 @@ def retrieve(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> l
     kept = [(p, s) for p, s in with_abstract if _meets_citation_rate(p, plan.criteria.min_citations_per_year)
             and (not plan.criteria.min_citations or (p.citation_count or 0) >= plan.criteria.min_citations)]
     relevant, floor_note = apply_relevance_floor(kept, plan.question, settings)
+    if plan.retrieval_target:
+        shown, backup = split_pool(relevant, plan, settings, found_total, len(merged), floor_note)
+        if EFFORT_PROFILES[plan.effort].use_full_text:
+            shown = attach_full_text(shown, settings)
+        return shown, backup
     # Choose by relevance first, then order the chosen papers; citations only reorder, never admit
     chosen = sorted(relevant, key=lambda ps: ps[1], reverse=True)[: plan.max_papers]
     papers = rank(chosen, settings.rank_relevance_weight)
@@ -101,7 +117,43 @@ def retrieve(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> l
 
     if EFFORT_PROFILES[plan.effort].use_full_text:
         papers = attach_full_text(papers, settings)
-    return papers
+    return papers, []
+
+
+def pool_rank(scored: list[tuple[Paper, float]], relevance_weight: float) -> list[Paper]:
+    """Spec F2: score = w * r + (1 - w) * log(1 + c) / log(1 + c_max), with relevance r scaled so the most relevant
+    paper is 1 and c the citation count, so highly cited papers rise in every ranked list. Ties keep input order."""
+    if not scored:
+        return []
+    top = max(s for _, s in scored)
+    c_max = max(p.citation_count or 0 for p, _ in scored)
+    def score(paper: Paper, relevance: float) -> float:
+        r = max(relevance, 0.0) / top if top > 0 else 0.0
+        c = math.log1p(paper.citation_count or 0) / math.log1p(c_max) if c_max > 0 else 0.0
+        return relevance_weight * r + (1 - relevance_weight) * c
+    return [p for p, _ in sorted(scored, key=lambda ps: -score(*ps))]
+
+
+def split_pool(relevant: list[tuple[Paper, float]], plan: SearchPlan, settings: Settings, found_total: int,
+               unique: int, floor_note: str) -> tuple[list[Paper], list[Paper]]:
+    """Show the best-ranked plan.max_papers papers that have references; everything else is the ranked backup
+    pool. A paper whose bibliography is empty (reference_count 0) goes to the pool only (spec F3)."""
+    ranked = pool_rank(relevant, settings.rank_relevance_weight)
+    shown = [p for p in ranked if p.reference_count != 0][:plan.max_papers]
+    ids = {p.id for p in shown}
+    backup = [p for p in ranked if p.id not in ids]
+    zero = sum(p.reference_count == 0 for p in ranked)
+    target = plan.retrieval_target
+    short = (f"; short of the {target} target because the searches returned {found_total} results "
+             f"({unique} unique) and the filters kept {len(relevant)}") if unique < target else ""
+    w = settings.rank_relevance_weight
+    _log("rank pool", f"{len(shown)} shown, {len(backup)} in backup", f"target {target}", "summarise",
+         f"Retrieved {unique} unique papers for a target of {target}{short}; {floor_note}; ranked "
+         f"{w:.0%} relevance / {1 - w:.0%} log citations; {zero} with no references kept for the backup pool only",
+         phase="partial_result", message=f"Retriever: {unique} papers retrieved (target {target}); showing the best "
+                                         f"{len(shown)}, {len(backup)} kept as backup",
+         payload={"retrieved": unique, "target": target, "shown": len(shown), "backup": len(backup)})
+    return shown, backup
 
 
 def attach_full_text(papers: list[Paper], settings: Settings) -> list[Paper]:
@@ -318,7 +370,18 @@ def _log(action: str, decision: str, result=None, next_step: str = "", why: str 
         trace.log("retriever", action, decision, result, next_step, why, **event)
 
 
-def _sample_papers(plan: SearchPlan) -> list[Paper]:
+def _sample_pool(plan: SearchPlan, settings: Settings) -> tuple[list[Paper], list[Paper]]:
+    """Sample mode: the older levels show the first papers of the sample file; Fast/Pro rank the whole file with
+    the F2 score (TF-IDF relevance to the question) and keep the rest as the backup pool."""
+    if not plan.retrieval_target:
+        return _sample_papers(plan), []
+    papers = [p for p in _sample_papers(plan, whole_file=True) if p.abstract]
+    relevance = sample_relevance(papers, plan.question)
+    found = len(papers)
+    return split_pool(list(zip(papers, relevance.tolist())), plan, settings, found, found, "sample mode: TF-IDF relevance")
+
+
+def _sample_papers(plan: SearchPlan, whole_file: bool = False) -> list[Paper]:
     """Sample mode: real OpenAlex papers saved under data/sample/, no network.
     Picks the file whose name shares the most words with the question (first file on a tie)."""
     files = sorted(SAMPLE_DIR.glob("*.json"))
@@ -327,7 +390,7 @@ def _sample_papers(plan: SearchPlan) -> list[Paper]:
     words = _words(plan.question)
     best = max(files, key=lambda f: len(words & _words(f.stem)))
     papers = [Paper.model_validate(d) for d in json.loads(best.read_text(encoding="utf-8"))]
-    return papers[: plan.max_papers]
+    return papers if whole_file else papers[: plan.max_papers]
 
 
 def _words(text: str) -> set[str]:

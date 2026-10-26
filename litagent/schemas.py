@@ -32,8 +32,9 @@ class SearchPlan(BaseModel):
     criteria: SearchCriteria
     queries: list[str] = Field(description="Search strings to send to the scholarly APIs")
     effort: Effort
-    max_papers: int
+    max_papers: int  # papers shown on the map
     token_budget: int
+    retrieval_target: int | None = None  # Fast/Pro: papers to retrieve; the rest of the shown set is the backup pool
     used_defaults: list[str] = Field(default_factory=list, description="Which criteria fell back to defaults")
     rationale: str | None = None  # one sentence from the Planner: why these criteria and queries
 
@@ -63,6 +64,7 @@ class Paper(BaseModel):
     # OpenAlex ids of the works this paper cites (OpenAlex `referenced_works`). None = unknown: the source
     # gives no list (Semantic Scholar, arXiv) or OpenAlex has none, so the Gap finder can't check citations.
     references: list[str] | None = None
+    reference_count: int | None = None  # length of the paper's bibliography per the source; 0 = backup pool only (spec F3)
 
 
 class RetrievalSummary(BaseModel):
@@ -573,6 +575,7 @@ class RunResult(BaseModel):
     warnings: list[str] = Field(default_factory=list)  # e.g. a stage that never passed grading
     paper_map: dict[str, Any] | None = None  # Meterless world model graph (nodes + edges) for the front end
     usage: TokenUsage | None = None
+    backup_pool_size: int = 0  # Fast/Pro: ranked papers kept in logs/backup-pool-<run_id>.json, not shown
 
 
 class ClusterMapResult(BaseModel):
@@ -592,6 +595,8 @@ class ClusterMapResult(BaseModel):
     parent_run_id: str | None = None
     version_token: str | None = None
     regeneration: RegenerationSummary | None = None
+    backup_pool_size: int = 0  # Fast/Pro: papers left in the backup pool for "refresh"
+    refresh: dict[str, Any] | None = None  # set on a version made by refresh: papers swapped in and out
     connections: list[GroundedConnection | Connection] = Field(default_factory=list)
     gaps: list[GroundedGap | Gap] = Field(default_factory=list)
     analysis: FindingAnalysis | None = None

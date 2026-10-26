@@ -202,7 +202,7 @@ def test_no_results_message_names_the_filters():
 
 
 def test_orchestrator_returns_no_results_status(monkeypatch, tmp_path):
-    monkeypatch.setattr(retriever, "retrieve", lambda plan, settings, signed_in=False: [])
+    monkeypatch.setattr(retriever, "retrieve_pool", lambda plan, settings, signed_in=False: ([], []))
     settings = Settings()
     settings.sample_mode = True
     settings.logs_dir = str(tmp_path)

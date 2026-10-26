@@ -297,7 +297,7 @@ def test_pipeline_passes_the_question_and_preserves_map_if_grading_budget_runs_o
         received.append(kwargs["question"])
         return real_clusters
     monkeypatch.setattr(clusterer, "cluster", cluster_stage)
-    monkeypatch.setattr(orchestrator.retriever, "retrieve", lambda *a, **kw: ps)
+    monkeypatch.setattr(orchestrator.retriever, "retrieve_pool", lambda *a, **kw: (ps, []))
     monkeypatch.setattr(grader, "grade", lambda *a, **kw: (_ for _ in ()).throw(TokenBudgetExceeded("Budget reached while grading")))
     result = orchestrator.run_pipeline("How do LLMs handle low-resource languages?", Effort.NORMAL, AutoApproveReviewer(), settings)
     assert received == [result.plan.question]

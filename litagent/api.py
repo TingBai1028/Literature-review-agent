@@ -31,6 +31,7 @@ from litagent.cluster_preview import run_cluster_map
 from litagent import cluster_regeneration
 from litagent.events import stream_events
 from litagent.finding_analysis import analyze_cluster_map
+from litagent.refresh import refresh_map
 from litagent.cluster_state import VersionError, path_for, version_lock
 from litagent.human_review import RequestReviewer
 from litagent.integrations.meterless import load_world
@@ -47,7 +48,7 @@ class RunInput(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     query: str
-    effort: Effort = Effort.NORMAL
+    effort: Effort = Effort.FAST
     feedback: str | None = None  # optional: triggers one re-plan at Human review 1
     signed_in: bool = False
 
@@ -63,13 +64,16 @@ class RunRequest(BaseModel):
 class ClusterInput(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
     query: str = Field(min_length=1)
-    effort: Effort = Effort.NORMAL
+    effort: Effort = Effort.FAST
     papers: list[Paper] = Field(min_length=1, max_length=EFFORT_PROFILES[Effort.ULTRA].max_papers)
+    # Fast/Pro: the ranked backup pool from /search, stored with the map for "refresh"
+    backup_papers: list[Paper] = Field(default_factory=list, max_length=2000)
 
     @model_validator(mode="after")
     def bounded_unique_papers(self):
-        if len({p.id for p in self.papers}) != len(self.papers):
-            raise ValueError("Paper IDs must be unique")
+        ids = [p.id for p in self.papers + self.backup_papers]
+        if len(set(ids)) != len(ids):
+            raise ValueError("Paper IDs must be unique across shown and backup papers")
         if len(self.papers) > EFFORT_PROFILES[self.effort].max_papers:
             raise ValueError("Paper count exceeds the selected effort limit")
         return self
@@ -83,7 +87,7 @@ class ClusterRequest(BaseModel):
 class SearchInput(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
     query: str
-    effort: Effort = Effort.NORMAL
+    effort: Effort = Effort.FAST
     feedback: str | None = Field(default=None, max_length=2000)  # with previous_plan: re-plan once
     previous_plan: SearchPlan | None = None
     signed_in: bool = False
@@ -212,7 +216,8 @@ def search(req: SearchRequest, settings: Settings = Depends(get_settings)) -> An
 def cluster_preview(req: ClusterRequest, settings: Settings = Depends(get_settings)) -> Any:
     run_id = req.run_id or new_run_id()
     try:
-        result = run_cluster_map(req.input.papers, req.input.query, req.input.effort, settings, run_id)
+        result = run_cluster_map(req.input.papers, req.input.query, req.input.effort, settings, run_id,
+                                 backup_papers=req.input.backup_papers)
     except VersionError as error:
         return _error(run_id, error.status, {409: "VersionConflict", 404: "NotFound"}.get(error.status, "InvalidInput"), str(error))
     except Exception as error:
@@ -255,6 +260,18 @@ def activate_cluster_version(root_id: str, req: ActivateVersionRequest, settings
 @app.get("/cluster/{run_id}/versions")
 def cluster_versions(run_id: str, settings: Settings = Depends(get_settings)):
     return _version_response(run_id, lambda: cluster_regeneration.version_history(run_id, settings))
+
+
+class RefreshRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expected_version_token: str = Field(pattern=r"^[a-f0-9]{32}$")
+    run_id: str | None = Field(default=None, pattern=RUN_ID_PATTERN)  # the new version's ID, to subscribe to its events first
+
+
+@app.post("/cluster/{run_id}/refresh")
+def refresh_saved_map(run_id: str, req: RefreshRequest, settings: Settings = Depends(get_settings)):
+    """Swap the side-cluster papers for the next-best backup papers (spec F5); main and foundation stay."""
+    return _version_response(run_id, lambda: refresh_map(run_id, req.expected_version_token, settings, req.run_id))
 
 
 @app.post("/cluster/{run_id}/analyze")
