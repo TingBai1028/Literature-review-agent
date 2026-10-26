@@ -56,6 +56,9 @@ Each event is one `data:` line holding JSON:
 | connection_finder | each batch of accepted edges | `edges`: `id`, `source`, `target`, `relation`, `reason_short` |
 | gap_finder | each cluster's gaps | `gaps`: `id`, `cluster_id`, `paper_ids`, `description`, `label` |
 
+Groups of pairs and clusters run at the same time (`LLM_CONCURRENCY`), so these events arrive in the order
+the model answers, not in cluster order. Each carries its own `cluster_id`s; the final result is in cluster order.
+
 ## In the map UI
 
 - **Live map (spec A2, A4).** Building a map: papers appear, glide into their clusters as soon as they are
