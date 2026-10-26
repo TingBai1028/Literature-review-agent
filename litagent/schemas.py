@@ -60,6 +60,9 @@ class Paper(BaseModel):
     doi: str | None = None
     source: str  # e.g. "openalex", "semantic_scholar", "arxiv"
     full_text: str | None = None  # only filled at High / Ultra effort
+    # OpenAlex ids of the works this paper cites (OpenAlex `referenced_works`). None = unknown: the source
+    # gives no list (Semantic Scholar, arXiv) or OpenAlex has none, so the Gap finder can't check citations.
+    references: list[str] | None = None
 
 
 class RetrievalSummary(BaseModel):
@@ -201,21 +204,6 @@ class Connection(BaseModel):
     evidence: list[Evidence]
 
 
-class Gap(BaseModel):
-    id: str
-    cluster_id: str
-    description: str
-    between_paper_ids: list[str]
-    why_it_matters: str
-    evidence: list[Evidence]
-
-
-class GroundedConnection(Connection):
-    relation: Literal["shared_method", "shared_task", "complementary", "contrasting_results", "explicit_extension"]
-    similarity: float = Field(ge=-1, le=1, allow_inf_nan=False)
-    verification: Literal["source_supported"] = "source_supported"
-
-
 class CoverageSearch(BaseModel):
     query: str
     provider: str = "openalex"
@@ -235,6 +223,36 @@ class GapCoverage(BaseModel):
     evidence: list[Evidence] = Field(default_factory=list)
     reason: str
     scope: str = "Bounded original-source excerpts and top OpenAlex results; this does not establish global novelty."
+
+
+GapLabel = Literal["trivial", "known_open", "known_solved", "novel"]
+
+
+class Gap(BaseModel):
+    id: str
+    cluster_id: str
+    description: str  # the claim: "paper A shows X, paper B shows Y, no work combines them"
+    between_paper_ids: list[str]
+    why_it_matters: str
+    evidence: list[Evidence]  # the grounds: one verbatim quote from each paper
+    # Gap finder stages (docs/agents/gap_finder.md). Defaults keep older gaps and the front end valid.
+    gap_type: Literal["inferred", "explicit"] = "inferred"  # explicit = stated as open by one paper's authors
+    paper_a_id: str | None = None
+    paper_b_id: str | None = None  # None for an explicit gap
+    warrant: str | None = None  # why the grounds imply the gap
+    similarity: float | None = Field(default=None, ge=-1, le=1, allow_inf_nan=False)
+    citation_check: Literal["passed", "unknown"] | None = None  # unknown = a paper has no reference list
+    coverage_query: str | None = None
+    coverage_status: Literal["not_filled", "filled", "unavailable", "skipped"] | None = None
+    coverage: GapCoverage | None = None
+    label: GapLabel | None = None
+    label_reason: str | None = None
+
+
+class GroundedConnection(Connection):
+    relation: Literal["shared_method", "shared_task", "complementary", "contrasting_results", "explicit_extension"]
+    similarity: float = Field(ge=-1, le=1, allow_inf_nan=False)
+    verification: Literal["source_supported"] = "source_supported"
 
 
 class GroundedGap(Gap):
@@ -329,20 +347,53 @@ class ConnectionDecisions(BaseModel):
     decisions: list[ConnectionDecision]
 
 
-class GapDecision(BaseModel):
-    pair_id: str
-    decision: Literal["propose", "abstain"]
-    basis: Literal["author_stated", "cross_paper_hypothesis"] | None = None
-    research_question: str = ""
-    proposed_test: str = ""
-    why_it_matters: str = ""
+class GapDraft(BaseModel):
+    """Gap writer output for one candidate pair, in GAPMAP's Claim / Grounds / Warrant shape."""
+
+    gap_id: str
+    decision: Literal["write", "abstain"]
+    claim: str = ""
+    grounds: list[EvidenceReference] = Field(default_factory=list, description="One source span from each paper")
+    warrant: str = ""
+    coverage_query: str = Field(default="", description="Short search query for a paper that already does what the claim says is missing")
     reason: str = Field(min_length=1)
-    search_queries: list[str] = Field(default_factory=list)
-    evidence: list[EvidenceReference] = Field(default_factory=list)
 
 
-class GapDecisions(BaseModel):
-    decisions: list[GapDecision]
+class GapDrafts(BaseModel):
+    drafts: list[GapDraft]
+
+
+class ExplicitGapDraft(BaseModel):
+    paper_id: str
+    sentence: str = Field(min_length=1, description="Copied verbatim from the paper's abstract")
+    coverage_query: str = Field(min_length=1)
+
+
+class ExplicitGapDrafts(BaseModel):
+    gaps: list[ExplicitGapDraft]
+
+
+class CoverageJudgement(BaseModel):
+    gap_id: str
+    filled: bool
+    filling_paper_id: str | None = None
+    evidence: list[EvidenceReference] = Field(default_factory=list, description="A span of the filling paper")
+    reason: str = Field(min_length=1)
+
+
+class CoverageJudgements(BaseModel):
+    judgements: list[CoverageJudgement]
+
+
+class GapLabelDecision(BaseModel):
+    gap_id: str
+    label: GapLabel
+    reason: str = Field(min_length=1, description="One sentence")
+    fix: str | None = Field(default=None, description="Only when the claim misstates its quotes: one concrete correction")
+
+
+class GapLabelDecisions(BaseModel):
+    labels: list[GapLabelDecision]
 
 
 class FindingVerification(BaseModel):
@@ -353,17 +404,6 @@ class FindingVerification(BaseModel):
 
 class FindingVerifications(BaseModel):
     verdicts: list[FindingVerification]
-
-
-class CoverageVerdict(BaseModel):
-    gap_id: str
-    verdict: Literal["addressed", "not_addressed_in_checked_sources", "inconclusive"]
-    reason: str = Field(min_length=1)
-    evidence: list[EvidenceReference] = Field(default_factory=list)
-
-
-class CoverageVerdicts(BaseModel):
-    verdicts: list[CoverageVerdict]
 
 
 class FindingAudit(BaseModel):
@@ -456,7 +496,7 @@ class FindingCacheRecord(BaseModel):
     stage: Literal["connections", "gaps"]
     created_at: str
     connections: list[GroundedConnection] = Field(default_factory=list)
-    gaps: list[GroundedGap] = Field(default_factory=list)
+    gaps: list[Gap] = Field(default_factory=list)
     dependencies: dict[str, FindingDependency] = Field(default_factory=dict)
     audit: FindingAudit
 

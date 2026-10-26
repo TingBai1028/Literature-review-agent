@@ -41,13 +41,14 @@ def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: 
         by_id = {p.id: p for p in papers}
         for item in output:
             ids = set(getattr(item, "paper_ids", getattr(item, "between_paper_ids", [])))
-            if len(ids) != 2 or not ids <= set(by_id) or {e.paper_id for e in item.evidence} != ids or any(
+            expected = 1 if getattr(item, "gap_type", None) == "explicit" else 2  # explicit gaps quote one paper
+            if len(ids) != expected or not ids <= set(by_id) or {e.paper_id for e in item.evidence} != ids or any(
                 len(e.quote.strip()) < settings.finding_min_quote_chars or not any(e.quote in source for source in
                     (by_id[e.paper_id].abstract, by_id[e.paper_id].full_text) if source) for e in item.evidence):
                 return Grade(stage=stage, accuracy=0, appropriateness=0, actionability=0,
                     fix="Remove unsupported findings; cite original body spans from both supplied papers.",
                     reasoning="Deterministic original-source evidence validation failed")
-            if stage == "gaps" and hasattr(item, "coverage") and item.coverage.status == "addressed":
+            if stage == "gaps" and getattr(item, "coverage", None) and item.coverage.status == "addressed":
                 return Grade(stage=stage, accuracy=0, appropriateness=0, actionability=0,
                     fix="Remove hypotheses already addressed by an evidenced study.", reasoning="Coverage counterevidence contradicts the reported gap")
 
@@ -74,7 +75,8 @@ def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: 
         for item in payload["output"]:
             item.pop("verification", None)
             item.pop("similarity", None)
-            if "coverage" in item:
+            item.pop("label_reason", None)
+            if item.get("coverage"):
                 item["coverage"].pop("reason", None)
         payload["papers"] = [{"id": p.id, "title": p.title,
             "abstract": (p.abstract or "")[:settings.finding_grader_source_chars],

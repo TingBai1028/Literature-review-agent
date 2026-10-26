@@ -45,7 +45,8 @@
         "pdf_url": "https://pinnaclepubs.com/index.php/PAPPS/article/download/664/642",
         "doi": "https://doi.org/10.71222/gkj3aw70",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W4402389783",
@@ -62,7 +63,16 @@
         "pdf_url": "https://arxiv.org/pdf/2407.21330",
         "doi": "https://doi.org/10.1109/ialp63756.2024.10661169",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W2983577274",
+          "W3157252883",
+          "W4205509257",
+          "W4391592188",
+          "W4402671897",
+          "W6852686595",
+          "W7135648299"
+        ]
       },
       {
         "id": "W7155356580",
@@ -78,7 +88,27 @@
         "pdf_url": "https://doi.org/10.1016/j.nlp.2026.100209",
         "doi": "https://doi.org/10.1016/j.nlp.2026.100209",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W1979264048",
+          "W2049312291",
+          "W2136589719",
+          "W2886711982",
+          "W2906961540",
+          "W2970476646",
+          "W2972161408",
+          "W3039018004",
+          "W3101332730",
+          "W4285251104",
+          "W4291138180",
+          "W4295857769",
+          "W4382246105",
+          "W4384561707",
+          "W4389977189",
+          "W4391136507",
+          "W4402683988",
+          "W4408413603"
+        ]
       },
       {
         "id": "W4405173107",
@@ -107,7 +137,8 @@
         "pdf_url": "https://arxiv.org/pdf/2412.04497",
         "doi": "https://doi.org/10.48550/arxiv.2412.04497",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W4407393353",
@@ -133,7 +164,40 @@
         "pdf_url": "https://doi.org/10.1016/j.cmpb.2025.108655",
         "doi": "https://doi.org/10.1016/j.cmpb.2025.108655",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W2154652894",
+          "W2620949368",
+          "W2936695845",
+          "W2970482702",
+          "W3001384475",
+          "W3168867926",
+          "W4239019441",
+          "W4285821749",
+          "W4305039137",
+          "W4322718191",
+          "W4366447635",
+          "W4366998603",
+          "W4368367885",
+          "W4380995257",
+          "W4381930847",
+          "W4382247640",
+          "W4383817745",
+          "W4384071683",
+          "W4384561707",
+          "W4384699745",
+          "W4384918448",
+          "W4386655575",
+          "W4388486391",
+          "W4389519500",
+          "W4389524378",
+          "W4390610399",
+          "W4391069573",
+          "W4403334196",
+          "W7133193448",
+          "W7133233472",
+          "W7133239970"
+        ]
       },
       {
         "id": "W4392637283",
@@ -150,7 +214,37 @@
         "pdf_url": "https://aclanthology.org/2023.findings-ijcnlp.18.pdf",
         "doi": "https://doi.org/10.18653/v1/2023.findings-ijcnlp.18",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W585078330",
+          "W1512634710",
+          "W2251651951",
+          "W2398648391",
+          "W2515218431",
+          "W2564362733",
+          "W2792932389",
+          "W2805659884",
+          "W2897565768",
+          "W2948764924",
+          "W2970849641",
+          "W3032808228",
+          "W3088112201",
+          "W3088721552",
+          "W3102425047",
+          "W3120219703",
+          "W3196966746",
+          "W3207602763",
+          "W3210189645",
+          "W4256657488",
+          "W4285242026",
+          "W4310362699",
+          "W4312386909",
+          "W4312608305",
+          "W4313067245",
+          "W4313346705",
+          "W4362707350",
+          "W4380480948"
+        ]
       },
       {
         "id": "W4408280927",
@@ -170,7 +264,49 @@
         "pdf_url": "https://doi.org/10.1109/access.2025.3549795",
         "doi": "https://doi.org/10.1109/access.2025.3549795",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W2194775991",
+          "W2250342921",
+          "W2337363174",
+          "W2512924740",
+          "W2550821151",
+          "W2757291580",
+          "W2913946806",
+          "W2958953787",
+          "W2962801832",
+          "W3001434439",
+          "W3030163527",
+          "W3034748831",
+          "W3092100113",
+          "W3093871477",
+          "W3139080614",
+          "W3169369929",
+          "W3173162544",
+          "W3199518308",
+          "W4200057797",
+          "W4285077564",
+          "W4318903120",
+          "W4322718191",
+          "W4385245566",
+          "W4385572225",
+          "W4387800062",
+          "W4389524534",
+          "W4390091978",
+          "W4390963024",
+          "W4391871574",
+          "W4393152836",
+          "W4394828356",
+          "W4399171333",
+          "W4401042336",
+          "W4401043487",
+          "W4404993448",
+          "W4406858940",
+          "W6796581206",
+          "W6847289649",
+          "W6858023062",
+          "W6871060950"
+        ]
       },
       {
         "id": "W7115677253",
@@ -188,7 +324,8 @@
         "pdf_url": "https://doi.org/10.5281/zenodo.17952587",
         "doi": "https://doi.org/10.5281/zenodo.17952587",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W7165482954",
@@ -204,7 +341,8 @@
         "pdf_url": "https://mcgill.scholaris.ca/bitstreams/b25141aa-742c-4dd8-9b25-4117b965cd9a/download",
         "doi": "https://doi.org/10.82308/55922",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W7155373379",
@@ -225,7 +363,8 @@
         "pdf_url": "https://doi.org/10.48448/aq48-r240",
         "doi": "https://doi.org/10.48448/aq48-r240",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W7123296616",
@@ -245,7 +384,8 @@
         "pdf_url": "https://doi.org/10.48550/arxiv.2601.05874",
         "doi": "https://doi.org/10.48550/arxiv.2601.05874",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W7123371404",
@@ -265,7 +405,8 @@
         "pdf_url": "https://arxiv.org/pdf/2601.05874",
         "doi": null,
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W4416249530",
@@ -282,7 +423,34 @@
         "pdf_url": "https://arxiv.org/pdf/2506.09992",
         "doi": "https://doi.org/10.1109/cyber-ai66431.2025.11233432",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W2473555522",
+          "W2526851824",
+          "W2595653137",
+          "W2741065173",
+          "W3022021376",
+          "W3161587393",
+          "W3162460878",
+          "W3166550823",
+          "W3169973903",
+          "W4244857688",
+          "W4294845625",
+          "W4312721630",
+          "W4360765133",
+          "W4366089033",
+          "W4380362950",
+          "W4385573219",
+          "W4389519004",
+          "W4391263226",
+          "W4392669753",
+          "W4399205773",
+          "W4401041960",
+          "W4402264403",
+          "W4406014331",
+          "W4408489879",
+          "W4412862737"
+        ]
       },
       {
         "id": "W4410184664",
@@ -301,7 +469,54 @@
         "pdf_url": "https://doi.org/10.2139/ssrn.5244227",
         "doi": "https://doi.org/10.2139/ssrn.5244227",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W22168010",
+          "W1514971736",
+          "W1992904575",
+          "W2006969979",
+          "W2132846241",
+          "W2134670378",
+          "W2136173435",
+          "W2148354767",
+          "W2149327368",
+          "W2161874394",
+          "W2165188277",
+          "W2171421863",
+          "W2561792472",
+          "W2574872930",
+          "W2626778328",
+          "W2782227846",
+          "W2798362442",
+          "W2964343359",
+          "W2981852735",
+          "W2997088366",
+          "W3030163527",
+          "W3093871477",
+          "W3134742392",
+          "W4285182954",
+          "W4307079201",
+          "W4317547647",
+          "W4318903120",
+          "W4319323306",
+          "W4320858136",
+          "W4379933104",
+          "W4382202554",
+          "W4382202744",
+          "W4385565463",
+          "W4385569882",
+          "W4388536144",
+          "W4389518624",
+          "W4389777735",
+          "W4395680645",
+          "W4402670263",
+          "W4403333962",
+          "W4404059833",
+          "W4404782209",
+          "W4408229604",
+          "W4413271463",
+          "W6898505805"
+        ]
       },
       {
         "id": "W7162479607",
@@ -318,7 +533,8 @@
         "pdf_url": "https://repository.arizona.edu/bitstream/10150/680315/1/azu_etd_22922_sip1_m.pdf",
         "doi": null,
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W7134895265",
@@ -337,7 +553,27 @@
         "pdf_url": "https://doi.org/10.2139/ssrn.6385139",
         "doi": "https://doi.org/10.2139/ssrn.6385139",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W1514971736",
+          "W1992904575",
+          "W2134670378",
+          "W2143221616",
+          "W2148354767",
+          "W2561792472",
+          "W2782227846",
+          "W2798362442",
+          "W2997088366",
+          "W4385569882",
+          "W4385572225",
+          "W4388536144",
+          "W4389520065",
+          "W4390098547",
+          "W4395680645",
+          "W4404059833",
+          "W4404782209",
+          "W4408229604"
+        ]
       },
       {
         "id": "W4402671168",
@@ -356,7 +592,8 @@
         "pdf_url": "https://aclanthology.org/2024.acl-short.59.pdf",
         "doi": "https://doi.org/10.18653/v1/2024.acl-short.59",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W4407385098",
@@ -375,7 +612,44 @@
         "pdf_url": "https://doi.org/10.1016/j.inffus.2026.104189",
         "doi": "https://doi.org/10.1016/j.inffus.2026.104189",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W2185175083",
+          "W2277195237",
+          "W2560647685",
+          "W2909695232",
+          "W2963770624",
+          "W3046174388",
+          "W3048186973",
+          "W3108716566",
+          "W3133852917",
+          "W3212464620",
+          "W3215822937",
+          "W4214934429",
+          "W4249982675",
+          "W4292596092",
+          "W4312810944",
+          "W4320002823",
+          "W4376643691",
+          "W4377041335",
+          "W4379929801",
+          "W4380053170",
+          "W4383263751",
+          "W4392623252",
+          "W4395470973",
+          "W4396228956",
+          "W4396808612",
+          "W4399433787",
+          "W4400091737",
+          "W4402227506",
+          "W4403598596",
+          "W4404246571",
+          "W4404356490",
+          "W4406439964",
+          "W4407694739",
+          "W4407904312",
+          "W4417465992"
+        ]
       },
       {
         "id": "W4392669965",
@@ -392,7 +666,31 @@
         "pdf_url": "https://aclanthology.org/2023.eval4nlp-1.8.pdf",
         "doi": "https://doi.org/10.18653/v1/2023.eval4nlp-1.8",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W1840435438",
+          "W2626804490",
+          "W2916132663",
+          "W2923014074",
+          "W3022569409",
+          "W3034748831",
+          "W3046357466",
+          "W3099919888",
+          "W4285178342",
+          "W4311642023",
+          "W4317553041",
+          "W4319793302",
+          "W4323697401",
+          "W4327811957",
+          "W4362515116",
+          "W4362679631",
+          "W4366733439",
+          "W4385570009",
+          "W4385571124",
+          "W4385988359",
+          "W4389519239",
+          "W4389519817"
+        ]
       },
       {
         "id": "W4416034203",
@@ -410,7 +708,8 @@
         "pdf_url": "https://aclanthology.org/2025.findings-emnlp.897.pdf",
         "doi": "https://doi.org/10.18653/v1/2025.findings-emnlp.897",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W4409178241",
@@ -430,7 +729,37 @@
         "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1049/cit2.70004",
         "doi": "https://doi.org/10.1049/cit2.70004",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W128638292",
+          "W2612560781",
+          "W2971120958",
+          "W3030163527",
+          "W3093871477",
+          "W3153391445",
+          "W3159597830",
+          "W3169369929",
+          "W3173343821",
+          "W3198985287",
+          "W4224308101",
+          "W4285294723",
+          "W4285362129",
+          "W4285675007",
+          "W4292779060",
+          "W4309674289",
+          "W4319984996",
+          "W4323323154",
+          "W4360584537",
+          "W4380995299",
+          "W4385570703",
+          "W4385574244",
+          "W4386566643",
+          "W4387491984",
+          "W4388688887",
+          "W4389519188",
+          "W4389681059",
+          "W4402671783"
+        ]
       },
       {
         "id": "W4404389841",
@@ -448,7 +777,8 @@
         "pdf_url": "https://arxiv.org/pdf/2411.05593",
         "doi": "https://doi.org/10.48550/arxiv.2411.05593",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W7165392193",
@@ -466,7 +796,16 @@
         "pdf_url": "https://archive.interconf.center/index.php/2709-4685/article/download/8191/8254",
         "doi": "https://doi.org/10.51582/interconf.19-20.05.2026.015",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W2053306448",
+          "W2963216553",
+          "W2983040767",
+          "W3015650676",
+          "W3017311573",
+          "W3094140582",
+          "W7133205974"
+        ]
       },
       {
         "id": "W4416223637",
@@ -485,7 +824,8 @@
         "pdf_url": "https://arxiv.org/pdf/2511.09396",
         "doi": "https://doi.org/10.63317/2ry23e89ew5v",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W4412862878",
@@ -501,7 +841,48 @@
         "pdf_url": "https://doi.org/10.1016/j.cola.2025.101351",
         "doi": "https://doi.org/10.1016/j.cola.2025.101351",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": [
+          "W2091731831",
+          "W2626778328",
+          "W2896457183",
+          "W2950621612",
+          "W3089436719",
+          "W3095809712",
+          "W3177813494",
+          "W3215923938",
+          "W4214928691",
+          "W4287024925",
+          "W4323655724",
+          "W4366204357",
+          "W4366851162",
+          "W4367189652",
+          "W4376167329",
+          "W4379260375",
+          "W4382704594",
+          "W4384561707",
+          "W4384920109",
+          "W4385245566",
+          "W4386185625",
+          "W4387390444",
+          "W4388725733",
+          "W4391272793",
+          "W4392163075",
+          "W4392340571",
+          "W4392822465",
+          "W4393730225",
+          "W4399657103",
+          "W4399795128",
+          "W4400158748",
+          "W4402457243",
+          "W4402683730",
+          "W4403223094",
+          "W4404918643",
+          "W4407303428",
+          "W4414360219",
+          "W7125135101",
+          "W7133198585"
+        ]
       },
       {
         "id": "W4417133178",
@@ -528,7 +909,8 @@
         "pdf_url": "https://arxiv.org/pdf/2506.07597",
         "doi": "https://doi.org/10.48550/arxiv.2506.07597",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W4403364915",
@@ -545,7 +927,8 @@
         "pdf_url": "https://arxiv.org/pdf/2410.07830",
         "doi": "https://doi.org/10.48550/arxiv.2410.07830",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W4412889388",
@@ -562,7 +945,8 @@
         "pdf_url": "https://aclanthology.org/2025.acl-srw.57.pdf",
         "doi": "https://doi.org/10.18653/v1/2025.acl-srw.57",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W7197036362",
@@ -580,7 +964,8 @@
         "pdf_url": "https://arxiv.org/pdf/2608.04186",
         "doi": "https://doi.org/10.48550/arxiv.2608.04186",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       },
       {
         "id": "W7168097912",
@@ -596,7 +981,8 @@
         "pdf_url": "https://doi.org/10.5281/zenodo.21320355",
         "doi": "https://doi.org/10.5281/zenodo.21320355",
         "source": "openalex",
-        "full_text": null
+        "full_text": null,
+        "references": null
       }
     ],
     "clusters": [
@@ -722,52 +1108,469 @@
     ],
     "gaps": [
       {
-        "id": "C1-G1",
+        "id": "GAP-54ba26d42ddd22ae",
         "cluster_id": "C1",
-        "description": "Sample mode: placeholder gap between the first two papers of this group.",
+        "description": "Sample mode: placeholder gap between \"Contextual Learning Support for Low-Resource Language Large Language Models: Efficient Training Strategies for Zero-Shot and Few-Shot Learning\" and \"Continual-learning for Modelling Low-Resource Languages from Large Language Models\"; no LLM wrote or checked it.",
         "between_paper_ids": [
           "W7154856337",
-          "W4405173107"
+          "W7155373379"
         ],
-        "why_it_matters": "Sample mode: illustrates the output shape; no actual gap or novelty assessment was performed.",
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
         "evidence": [
           {
             "paper_id": "W7154856337",
             "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+          },
+          {
+            "paper_id": "W7155373379",
+            "quote": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge."
           }
-        ]
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W7154856337",
+        "paper_b_id": "W7155373379",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7883,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
       },
       {
-        "id": "C2-G1",
+        "id": "GAP-fe8d12b53d1c9bc9",
+        "cluster_id": "C1",
+        "description": "Sample mode: placeholder gap between \"Toward Low-Resource Languages Machine Translation: A Language-Specific Fine-Tuning With LoRA for Specialized Large Language Models\" and \"Continual-learning for Modelling Low-Resource Languages from Large Language Models\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4408280927",
+          "W7155373379"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4408280927",
+            "quote": "In the field of computational linguistics, addressing machine translation (MT) challenges for low-resource languages remains crucial, as these languages often lack extensive data compared to high-reso"
+          },
+          {
+            "paper_id": "W7155373379",
+            "quote": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge."
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4408280927",
+        "paper_b_id": "W7155373379",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7288,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-7aa3552c947fb130",
+        "cluster_id": "C1",
+        "description": "Sample mode: placeholder gap between \"Large Language Models As Annotators: A Preliminary Evaluation For Annotating Low-Resource Language Content\" and \"Contextual Learning Support for Low-Resource Language Large Language Models: Efficient Training Strategies for Zero-Shot and Few-Shot Learning\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4392669965",
+          "W7154856337"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4392669965",
+            "quote": "The process of collecting human-generated annotations is time-consuming and resourcehungry.In the case of low-resource (LR) languages such as Indic languages, these efforts are more expensive due to t"
+          },
+          {
+            "paper_id": "W7154856337",
+            "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4392669965",
+        "paper_b_id": "W7154856337",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7181,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-6f42f9f942551abd",
+        "cluster_id": "C1",
+        "description": "Sample mode: placeholder gap between \"Evaluating Tokenizer Adaptation Methods for Large Language Models on Low-Resource Programming Languages\" and \"Contextual Learning Support for Low-Resource Language Large Language Models: Efficient Training Strategies for Zero-Shot and Few-Shot Learning\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4412889388",
+          "W7154856337"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4412889388",
+            "quote": "Large language models (LLMs), which are primarily trained on high-resource programming languages (HRPLs), tend to perform suboptimally for low-resource programming languages (LRPLs).This study investi"
+          },
+          {
+            "paper_id": "W7154856337",
+            "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4412889388",
+        "paper_b_id": "W7154856337",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7102,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-f1e90e9d358605ed",
+        "cluster_id": "C1",
+        "description": "Sample mode: placeholder gap between \"Large Language Models As Annotators: A Preliminary Evaluation For Annotating Low-Resource Language Content\" and \"Toward Low-Resource Languages Machine Translation: A Language-Specific Fine-Tuning With LoRA for Specialized Large Language Models\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4392669965",
+          "W4408280927"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4392669965",
+            "quote": "The process of collecting human-generated annotations is time-consuming and resourcehungry.In the case of low-resource (LR) languages such as Indic languages, these efforts are more expensive due to t"
+          },
+          {
+            "paper_id": "W4408280927",
+            "quote": "In the field of computational linguistics, addressing machine translation (MT) challenges for low-resource languages remains crucial, as these languages often lack extensive data compared to high-reso"
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4392669965",
+        "paper_b_id": "W4408280927",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.6952,
+        "citation_check": "passed",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-deb936c536eee663",
         "cluster_id": "C2",
-        "description": "Sample mode: placeholder gap between the first two papers of this group.",
+        "description": "Sample mode: placeholder gap between \"Performance of Recent Large Language Models for a Low-Resourced Language\" and \"Fine-Tuning Challenges of Large Language Models for Low-Resource Languages: an Analysis Based on the Azerbaijani Language\"; no LLM wrote or checked it.",
         "between_paper_ids": [
           "W4402389783",
-          "W4407393353"
+          "W7165392193"
         ],
-        "why_it_matters": "Sample mode: illustrates the output shape; no actual gap or novelty assessment was performed.",
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
         "evidence": [
           {
             "paper_id": "W4402389783",
             "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+          },
+          {
+            "paper_id": "W7165392193",
+            "quote": "Large Language Models have shown capabilities in natural language processing tasks."
           }
-        ]
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4402389783",
+        "paper_b_id": "W7165392193",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7983,
+        "citation_check": "passed",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
       },
       {
-        "id": "C3-G1",
-        "cluster_id": "C3",
-        "description": "Sample mode: placeholder gap between the first two papers of this group.",
+        "id": "GAP-81f979a2d2f19fd4",
+        "cluster_id": "C2",
+        "description": "Sample mode: placeholder gap between \"Adaptive and Efficient Large Language Models for Low-Resource African Languages\" and \"Fine-Tuning Challenges of Large Language Models for Low-Resource Languages: an Analysis Based on the Azerbaijani Language\"; no LLM wrote or checked it.",
         "between_paper_ids": [
-          "W7155356580",
-          "W4392637283"
+          "W7115677253",
+          "W7165392193"
         ],
-        "why_it_matters": "Sample mode: illustrates the output shape; no actual gap or novelty assessment was performed.",
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
         "evidence": [
           {
-            "paper_id": "W7155356580",
-            "quote": "The article is potentially destined to examine the efficacy of Large Language Models (LLMs) in Swahili (standard dialect spoken in Tanzania), a relatively less privileged and Low-resource Language (LR"
+            "paper_id": "W7115677253",
+            "quote": "PAIDeF SuperAI 2025 Conference Adaptive and Efficient Large Language Models for Low-Resource African Languages Authors: Mohammed Ajuji, Saifullahi Ibrahim Waziri, Datti Useni Emmanuel Keywords\u2014Large L"
+          },
+          {
+            "paper_id": "W7165392193",
+            "quote": "Large Language Models have shown capabilities in natural language processing tasks."
           }
-        ]
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W7115677253",
+        "paper_b_id": "W7165392193",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.753,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-2dc944e6343667dc",
+        "cluster_id": "C2",
+        "description": "Sample mode: placeholder gap between \"Performance of Recent Large Language Models for a Low-Resourced Language\" and \"FormosanBench: Benchmarking Low-Resource Austronesian Languages in the Era of Large Language Models\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4402389783",
+          "W4416034203"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4402389783",
+            "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+          },
+          {
+            "paper_id": "W4416034203",
+            "quote": "While large language models (LLMs) have demonstrated impressive performance across a wide range of natural language processing (NLP) tasks in high-resource languages, their capabilities in low-resourc"
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4402389783",
+        "paper_b_id": "W4416034203",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7294,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-b2c370f65fc900ae",
+        "cluster_id": "C2",
+        "description": "Sample mode: placeholder gap between \"Performance of Recent Large Language Models for a Low-Resourced Language\" and \"Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4402389783",
+          "W4402671168"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4402389783",
+            "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+          },
+          {
+            "paper_id": "W4402671168",
+            "quote": "Large language models (LLMs) as listwise rerankers have shown impressive zero-shot capabilities in various passage ranking tasks.Despite their success, there is still a gap in existing literature on t"
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4402389783",
+        "paper_b_id": "W4402671168",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7224,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-c4c1b717e1aa309e",
+        "cluster_id": "C2",
+        "description": "Sample mode: placeholder gap between \"Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages\" and \"Fine-Tuning Challenges of Large Language Models for Low-Resource Languages: an Analysis Based on the Azerbaijani Language\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4402671168",
+          "W7165392193"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4402671168",
+            "quote": "Large language models (LLMs) as listwise rerankers have shown impressive zero-shot capabilities in various passage ranking tasks.Despite their success, there is still a gap in existing literature on t"
+          },
+          {
+            "paper_id": "W7165392193",
+            "quote": "Large Language Models have shown capabilities in natural language processing tasks."
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4402671168",
+        "paper_b_id": "W7165392193",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7195,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-484347b77b46664a",
+        "cluster_id": "C3",
+        "description": "Sample mode: placeholder gap between \"Large multimodal models for low-resource languages: A survey\" and \"Large Language Models Adaptation for Low-resource Languages: The Case for African Languages\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4407385098",
+          "W7165482954"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4407385098",
+            "quote": "\u2022 Represents the first comprehensive analysis of LMMs specifically focused on LR languages."
+          },
+          {
+            "paper_id": "W7165482954",
+            "quote": "Despite remarkable advances in Large Language Models (LLMs), African languagesremain critically underserved by the current training and adaptation pipeline."
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4407385098",
+        "paper_b_id": "W7165482954",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7793,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-c1f85fbe43155874",
+        "cluster_id": "C3",
+        "description": "Sample mode: placeholder gap between \"Large multimodal models for low-resource languages: A survey\" and \"Multimodal Large Language Models for Low-Resource Languages: A Case Study for Basque\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4407385098",
+          "W4416223637"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4407385098",
+            "quote": "\u2022 Represents the first comprehensive analysis of LMMs specifically focused on LR languages."
+          },
+          {
+            "paper_id": "W4416223637",
+            "quote": "Current Multimodal Large Language Models exhibit very strong performance for several demanding tasks."
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4407385098",
+        "paper_b_id": "W4416223637",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7473,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-a4156ce5d857e608",
+        "cluster_id": "C3",
+        "description": "Sample mode: placeholder gap between \"NusaMT-7B: Machine Translation for Low-Resource Indonesian Languages with Large Language Models\" and \"Multimodal Large Language Models for Low-Resource Languages: A Case Study for Basque\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4403364915",
+          "W4416223637"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4403364915",
+            "quote": "Large Language Models (LLMs) have demonstrated exceptional promise in translation tasks for high-resource languages."
+          },
+          {
+            "paper_id": "W4416223637",
+            "quote": "Current Multimodal Large Language Models exhibit very strong performance for several demanding tasks."
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4403364915",
+        "paper_b_id": "W4416223637",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.7069,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-2646b1861d8a325e",
+        "cluster_id": "C3",
+        "description": "Sample mode: placeholder gap between \"Continual-learning for Modelling Low-Resource Languages from Large Language Models\" and \"Large Language Models Adaptation for Low-resource Languages: The Case for African Languages\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W7123371404",
+          "W7165482954"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W7123371404",
+            "quote": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge."
+          },
+          {
+            "paper_id": "W7165482954",
+            "quote": "Despite remarkable advances in Large Language Models (LLMs), African languagesremain critically underserved by the current training and adaptation pipeline."
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W7123371404",
+        "paper_b_id": "W7165482954",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.6975,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
+      },
+      {
+        "id": "GAP-0f23fe44e2d4248d",
+        "cluster_id": "C3",
+        "description": "Sample mode: placeholder gap between \"Large multimodal models for low-resource languages: A survey\" and \"Continual-learning for Modelling Low-Resource Languages from Large Language Models\"; no LLM wrote or checked it.",
+        "between_paper_ids": [
+          "W4407385098",
+          "W7123371404"
+        ],
+        "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+        "evidence": [
+          {
+            "paper_id": "W4407385098",
+            "quote": "\u2022 Represents the first comprehensive analysis of LMMs specifically focused on LR languages."
+          },
+          {
+            "paper_id": "W7123371404",
+            "quote": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge."
+          }
+        ],
+        "gap_type": "inferred",
+        "paper_a_id": "W4407385098",
+        "paper_b_id": "W7123371404",
+        "warrant": "Sample mode: placeholder warrant.",
+        "similarity": 0.6971,
+        "citation_check": "unknown",
+        "coverage_query": null,
+        "coverage_status": "skipped",
+        "coverage": null,
+        "label": "known_open",
+        "label_reason": "Sample mode: placeholder label, not assessed."
       }
     ],
     "warnings": [],
@@ -1263,46 +2066,439 @@
           "rationale": "Sample mode: placeholder grouping, not real clustering"
         },
         {
-          "id": "C1-G1",
-          "world_id": "gap:litagent:example-01:1:C1-G1",
+          "id": "GAP-0f23fe44e2d4248d",
+          "world_id": "gap:litagent:example-01:1:GAP-0f23fe44e2d4248d",
           "type": "gap",
-          "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: illustrates the output shape; no actual gap or novelty assessment was performed.",
-          "cluster_ref": "C1",
+          "description": "Sample mode: placeholder gap between \"Large multimodal models for low-resource languages: A survey\" and \"Continual-learning for Modelling Low-Resource Languages from Large Language Models\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C3",
           "evidence": [
             {
-              "paper_id": "W7154856337",
-              "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+              "paper_id": "W4407385098",
+              "quote": "\u2022 Represents the first comprehensive analysis of LMMs specifically focused on LR languages."
+            },
+            {
+              "paper_id": "W7123371404",
+              "quote": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge."
             }
-          ]
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4407385098",
+          "paper_b_id": "W7123371404",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.6971,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
         },
         {
-          "id": "C2-G1",
-          "world_id": "gap:litagent:example-01:1:C2-G1",
+          "id": "GAP-2646b1861d8a325e",
+          "world_id": "gap:litagent:example-01:1:GAP-2646b1861d8a325e",
           "type": "gap",
-          "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: illustrates the output shape; no actual gap or novelty assessment was performed.",
+          "description": "Sample mode: placeholder gap between \"Continual-learning for Modelling Low-Resource Languages from Large Language Models\" and \"Large Language Models Adaptation for Low-resource Languages: The Case for African Languages\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C3",
+          "evidence": [
+            {
+              "paper_id": "W7123371404",
+              "quote": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge."
+            },
+            {
+              "paper_id": "W7165482954",
+              "quote": "Despite remarkable advances in Large Language Models (LLMs), African languagesremain critically underserved by the current training and adaptation pipeline."
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W7123371404",
+          "paper_b_id": "W7165482954",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.6975,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-2dc944e6343667dc",
+          "world_id": "gap:litagent:example-01:1:GAP-2dc944e6343667dc",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Performance of Recent Large Language Models for a Low-Resourced Language\" and \"FormosanBench: Benchmarking Low-Resource Austronesian Languages in the Era of Large Language Models\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
           "cluster_ref": "C2",
           "evidence": [
             {
               "paper_id": "W4402389783",
               "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+            },
+            {
+              "paper_id": "W4416034203",
+              "quote": "While large language models (LLMs) have demonstrated impressive performance across a wide range of natural language processing (NLP) tasks in high-resource languages, their capabilities in low-resourc"
             }
-          ]
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4402389783",
+          "paper_b_id": "W4416034203",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7294,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
         },
         {
-          "id": "C3-G1",
-          "world_id": "gap:litagent:example-01:1:C3-G1",
+          "id": "GAP-484347b77b46664a",
+          "world_id": "gap:litagent:example-01:1:GAP-484347b77b46664a",
           "type": "gap",
-          "description": "Sample mode: placeholder gap between the first two papers of this group.",
-          "why_it_matters": "Sample mode: illustrates the output shape; no actual gap or novelty assessment was performed.",
+          "description": "Sample mode: placeholder gap between \"Large multimodal models for low-resource languages: A survey\" and \"Large Language Models Adaptation for Low-resource Languages: The Case for African Languages\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
           "cluster_ref": "C3",
           "evidence": [
             {
-              "paper_id": "W7155356580",
-              "quote": "The article is potentially destined to examine the efficacy of Large Language Models (LLMs) in Swahili (standard dialect spoken in Tanzania), a relatively less privileged and Low-resource Language (LR"
+              "paper_id": "W4407385098",
+              "quote": "\u2022 Represents the first comprehensive analysis of LMMs specifically focused on LR languages."
+            },
+            {
+              "paper_id": "W7165482954",
+              "quote": "Despite remarkable advances in Large Language Models (LLMs), African languagesremain critically underserved by the current training and adaptation pipeline."
             }
-          ]
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4407385098",
+          "paper_b_id": "W7165482954",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7793,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-54ba26d42ddd22ae",
+          "world_id": "gap:litagent:example-01:1:GAP-54ba26d42ddd22ae",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Contextual Learning Support for Low-Resource Language Large Language Models: Efficient Training Strategies for Zero-Shot and Few-Shot Learning\" and \"Continual-learning for Modelling Low-Resource Languages from Large Language Models\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C1",
+          "evidence": [
+            {
+              "paper_id": "W7154856337",
+              "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+            },
+            {
+              "paper_id": "W7155373379",
+              "quote": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge."
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W7154856337",
+          "paper_b_id": "W7155373379",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7883,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-6f42f9f942551abd",
+          "world_id": "gap:litagent:example-01:1:GAP-6f42f9f942551abd",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Evaluating Tokenizer Adaptation Methods for Large Language Models on Low-Resource Programming Languages\" and \"Contextual Learning Support for Low-Resource Language Large Language Models: Efficient Training Strategies for Zero-Shot and Few-Shot Learning\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C1",
+          "evidence": [
+            {
+              "paper_id": "W4412889388",
+              "quote": "Large language models (LLMs), which are primarily trained on high-resource programming languages (HRPLs), tend to perform suboptimally for low-resource programming languages (LRPLs).This study investi"
+            },
+            {
+              "paper_id": "W7154856337",
+              "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4412889388",
+          "paper_b_id": "W7154856337",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7102,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-7aa3552c947fb130",
+          "world_id": "gap:litagent:example-01:1:GAP-7aa3552c947fb130",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Large Language Models As Annotators: A Preliminary Evaluation For Annotating Low-Resource Language Content\" and \"Contextual Learning Support for Low-Resource Language Large Language Models: Efficient Training Strategies for Zero-Shot and Few-Shot Learning\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C1",
+          "evidence": [
+            {
+              "paper_id": "W4392669965",
+              "quote": "The process of collecting human-generated annotations is time-consuming and resourcehungry.In the case of low-resource (LR) languages such as Indic languages, these efforts are more expensive due to t"
+            },
+            {
+              "paper_id": "W7154856337",
+              "quote": "In natural language processing tasks for low-resource languages, building high-quality large language models faces numerous challenges, including data scarcity, domain mismatch, and limited annotation"
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4392669965",
+          "paper_b_id": "W7154856337",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7181,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-81f979a2d2f19fd4",
+          "world_id": "gap:litagent:example-01:1:GAP-81f979a2d2f19fd4",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Adaptive and Efficient Large Language Models for Low-Resource African Languages\" and \"Fine-Tuning Challenges of Large Language Models for Low-Resource Languages: an Analysis Based on the Azerbaijani Language\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C2",
+          "evidence": [
+            {
+              "paper_id": "W7115677253",
+              "quote": "PAIDeF SuperAI 2025 Conference Adaptive and Efficient Large Language Models for Low-Resource African Languages Authors: Mohammed Ajuji, Saifullahi Ibrahim Waziri, Datti Useni Emmanuel Keywords\u2014Large L"
+            },
+            {
+              "paper_id": "W7165392193",
+              "quote": "Large Language Models have shown capabilities in natural language processing tasks."
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W7115677253",
+          "paper_b_id": "W7165392193",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.753,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-a4156ce5d857e608",
+          "world_id": "gap:litagent:example-01:1:GAP-a4156ce5d857e608",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"NusaMT-7B: Machine Translation for Low-Resource Indonesian Languages with Large Language Models\" and \"Multimodal Large Language Models for Low-Resource Languages: A Case Study for Basque\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C3",
+          "evidence": [
+            {
+              "paper_id": "W4403364915",
+              "quote": "Large Language Models (LLMs) have demonstrated exceptional promise in translation tasks for high-resource languages."
+            },
+            {
+              "paper_id": "W4416223637",
+              "quote": "Current Multimodal Large Language Models exhibit very strong performance for several demanding tasks."
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4403364915",
+          "paper_b_id": "W4416223637",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7069,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-b2c370f65fc900ae",
+          "world_id": "gap:litagent:example-01:1:GAP-b2c370f65fc900ae",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Performance of Recent Large Language Models for a Low-Resourced Language\" and \"Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C2",
+          "evidence": [
+            {
+              "paper_id": "W4402389783",
+              "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+            },
+            {
+              "paper_id": "W4402671168",
+              "quote": "Large language models (LLMs) as listwise rerankers have shown impressive zero-shot capabilities in various passage ranking tasks.Despite their success, there is still a gap in existing literature on t"
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4402389783",
+          "paper_b_id": "W4402671168",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7224,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-c1f85fbe43155874",
+          "world_id": "gap:litagent:example-01:1:GAP-c1f85fbe43155874",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Large multimodal models for low-resource languages: A survey\" and \"Multimodal Large Language Models for Low-Resource Languages: A Case Study for Basque\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C3",
+          "evidence": [
+            {
+              "paper_id": "W4407385098",
+              "quote": "\u2022 Represents the first comprehensive analysis of LMMs specifically focused on LR languages."
+            },
+            {
+              "paper_id": "W4416223637",
+              "quote": "Current Multimodal Large Language Models exhibit very strong performance for several demanding tasks."
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4407385098",
+          "paper_b_id": "W4416223637",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7473,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-c4c1b717e1aa309e",
+          "world_id": "gap:litagent:example-01:1:GAP-c4c1b717e1aa309e",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Zero-Shot Cross-Lingual Reranking with Large Language Models for Low-Resource Languages\" and \"Fine-Tuning Challenges of Large Language Models for Low-Resource Languages: an Analysis Based on the Azerbaijani Language\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C2",
+          "evidence": [
+            {
+              "paper_id": "W4402671168",
+              "quote": "Large language models (LLMs) as listwise rerankers have shown impressive zero-shot capabilities in various passage ranking tasks.Despite their success, there is still a gap in existing literature on t"
+            },
+            {
+              "paper_id": "W7165392193",
+              "quote": "Large Language Models have shown capabilities in natural language processing tasks."
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4402671168",
+          "paper_b_id": "W7165392193",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7195,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-deb936c536eee663",
+          "world_id": "gap:litagent:example-01:1:GAP-deb936c536eee663",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Performance of Recent Large Language Models for a Low-Resourced Language\" and \"Fine-Tuning Challenges of Large Language Models for Low-Resource Languages: an Analysis Based on the Azerbaijani Language\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C2",
+          "evidence": [
+            {
+              "paper_id": "W4402389783",
+              "quote": "Large Language Models (LLMs) have shown significant advances in the past year."
+            },
+            {
+              "paper_id": "W7165392193",
+              "quote": "Large Language Models have shown capabilities in natural language processing tasks."
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4402389783",
+          "paper_b_id": "W7165392193",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7983,
+          "citation_check": "passed",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-f1e90e9d358605ed",
+          "world_id": "gap:litagent:example-01:1:GAP-f1e90e9d358605ed",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Large Language Models As Annotators: A Preliminary Evaluation For Annotating Low-Resource Language Content\" and \"Toward Low-Resource Languages Machine Translation: A Language-Specific Fine-Tuning With LoRA for Specialized Large Language Models\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C1",
+          "evidence": [
+            {
+              "paper_id": "W4392669965",
+              "quote": "The process of collecting human-generated annotations is time-consuming and resourcehungry.In the case of low-resource (LR) languages such as Indic languages, these efforts are more expensive due to t"
+            },
+            {
+              "paper_id": "W4408280927",
+              "quote": "In the field of computational linguistics, addressing machine translation (MT) challenges for low-resource languages remains crucial, as these languages often lack extensive data compared to high-reso"
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4392669965",
+          "paper_b_id": "W4408280927",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.6952,
+          "citation_check": "passed",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
+        },
+        {
+          "id": "GAP-fe8d12b53d1c9bc9",
+          "world_id": "gap:litagent:example-01:1:GAP-fe8d12b53d1c9bc9",
+          "type": "gap",
+          "description": "Sample mode: placeholder gap between \"Toward Low-Resource Languages Machine Translation: A Language-Specific Fine-Tuning With LoRA for Specialized Large Language Models\" and \"Continual-learning for Modelling Low-Resource Languages from Large Language Models\"; no LLM wrote or checked it.",
+          "why_it_matters": "Sample mode: illustrates the output shape; no gap or novelty assessment was performed.",
+          "cluster_ref": "C1",
+          "evidence": [
+            {
+              "paper_id": "W4408280927",
+              "quote": "In the field of computational linguistics, addressing machine translation (MT) challenges for low-resource languages remains crucial, as these languages often lack extensive data compared to high-reso"
+            },
+            {
+              "paper_id": "W7155373379",
+              "quote": "Modelling a language model for a multi-lingual scenario includes several potential challenges, among which catastrophic forgetting is the major challenge."
+            }
+          ],
+          "gap_type": "inferred",
+          "paper_a_id": "W4408280927",
+          "paper_b_id": "W7155373379",
+          "warrant": "Sample mode: placeholder warrant.",
+          "similarity": 0.7288,
+          "citation_check": "unknown",
+          "coverage_query": null,
+          "coverage_status": "skipped",
+          "coverage": null,
+          "label": "known_open",
+          "label_reason": "Sample mode: placeholder label, not assessed."
         }
       ],
       "edges": [
@@ -1550,38 +2746,182 @@
           ]
         },
         {
-          "source": "C1-G1",
-          "target": "W7154856337",
+          "source": "GAP-f1e90e9d358605ed",
+          "target": "W4408280927",
           "type": "between",
           "by": "gap_finder"
         },
         {
-          "source": "C2-G1",
+          "source": "GAP-fe8d12b53d1c9bc9",
+          "target": "W4408280927",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-a4156ce5d857e608",
+          "target": "W4416223637",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-fe8d12b53d1c9bc9",
+          "target": "W7155373379",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-484347b77b46664a",
+          "target": "W4407385098",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-b2c370f65fc900ae",
           "target": "W4402389783",
           "type": "between",
           "by": "gap_finder"
         },
         {
-          "source": "C3-G1",
-          "target": "W7155356580",
+          "source": "GAP-c4c1b717e1aa309e",
+          "target": "W4402671168",
           "type": "between",
           "by": "gap_finder"
         },
         {
-          "source": "C2-G1",
-          "target": "W4407393353",
+          "source": "GAP-2dc944e6343667dc",
+          "target": "W4402389783",
           "type": "between",
           "by": "gap_finder"
         },
         {
-          "source": "C1-G1",
-          "target": "W4405173107",
+          "source": "GAP-a4156ce5d857e608",
+          "target": "W4403364915",
           "type": "between",
           "by": "gap_finder"
         },
         {
-          "source": "C3-G1",
-          "target": "W4392637283",
+          "source": "GAP-c1f85fbe43155874",
+          "target": "W4407385098",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-0f23fe44e2d4248d",
+          "target": "W4407385098",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-7aa3552c947fb130",
+          "target": "W4392669965",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-deb936c536eee663",
+          "target": "W7165392193",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-deb936c536eee663",
+          "target": "W4402389783",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-81f979a2d2f19fd4",
+          "target": "W7115677253",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-484347b77b46664a",
+          "target": "W7165482954",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-6f42f9f942551abd",
+          "target": "W7154856337",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-81f979a2d2f19fd4",
+          "target": "W7165392193",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-7aa3552c947fb130",
+          "target": "W7154856337",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-b2c370f65fc900ae",
+          "target": "W4402671168",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-54ba26d42ddd22ae",
+          "target": "W7154856337",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-2dc944e6343667dc",
+          "target": "W4416034203",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-2646b1861d8a325e",
+          "target": "W7165482954",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-c4c1b717e1aa309e",
+          "target": "W7165392193",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-0f23fe44e2d4248d",
+          "target": "W7123371404",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-c1f85fbe43155874",
+          "target": "W4416223637",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-6f42f9f942551abd",
+          "target": "W4412889388",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-2646b1861d8a325e",
+          "target": "W7123371404",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-f1e90e9d358605ed",
+          "target": "W4392669965",
+          "type": "between",
+          "by": "gap_finder"
+        },
+        {
+          "source": "GAP-54ba26d42ddd22ae",
+          "target": "W7155373379",
           "type": "between",
           "by": "gap_finder"
         }
@@ -1590,7 +2930,7 @@
       "world": {
         "run_id": "example-01",
         "attempt": 1,
-        "events": 335,
+        "events": 383,
         "pending_merges": 0
       }
     },

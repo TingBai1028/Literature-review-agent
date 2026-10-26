@@ -13,7 +13,8 @@
     "pdf_url": "https://pinnaclepubs.com/index.php/PAPPS/article/download/664/642",
     "doi": "https://doi.org/10.71222/gkj3aw70",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4402389783",
@@ -30,7 +31,16 @@
     "pdf_url": "https://arxiv.org/pdf/2407.21330",
     "doi": "https://doi.org/10.1109/ialp63756.2024.10661169",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2983577274",
+      "W3157252883",
+      "W4205509257",
+      "W4391592188",
+      "W4402671897",
+      "W6852686595",
+      "W7135648299"
+    ]
   },
   {
     "id": "W7155356580",
@@ -46,7 +56,27 @@
     "pdf_url": "https://doi.org/10.1016/j.nlp.2026.100209",
     "doi": "https://doi.org/10.1016/j.nlp.2026.100209",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W1979264048",
+      "W2049312291",
+      "W2136589719",
+      "W2886711982",
+      "W2906961540",
+      "W2970476646",
+      "W2972161408",
+      "W3039018004",
+      "W3101332730",
+      "W4285251104",
+      "W4291138180",
+      "W4295857769",
+      "W4382246105",
+      "W4384561707",
+      "W4389977189",
+      "W4391136507",
+      "W4402683988",
+      "W4408413603"
+    ]
   },
   {
     "id": "W4405173107",
@@ -75,7 +105,8 @@
     "pdf_url": "https://arxiv.org/pdf/2412.04497",
     "doi": "https://doi.org/10.48550/arxiv.2412.04497",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4407393353",
@@ -101,7 +132,40 @@
     "pdf_url": "https://doi.org/10.1016/j.cmpb.2025.108655",
     "doi": "https://doi.org/10.1016/j.cmpb.2025.108655",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2154652894",
+      "W2620949368",
+      "W2936695845",
+      "W2970482702",
+      "W3001384475",
+      "W3168867926",
+      "W4239019441",
+      "W4285821749",
+      "W4305039137",
+      "W4322718191",
+      "W4366447635",
+      "W4366998603",
+      "W4368367885",
+      "W4380995257",
+      "W4381930847",
+      "W4382247640",
+      "W4383817745",
+      "W4384071683",
+      "W4384561707",
+      "W4384699745",
+      "W4384918448",
+      "W4386655575",
+      "W4388486391",
+      "W4389519500",
+      "W4389524378",
+      "W4390610399",
+      "W4391069573",
+      "W4403334196",
+      "W7133193448",
+      "W7133233472",
+      "W7133239970"
+    ]
   },
   {
     "id": "W4392637283",
@@ -118,7 +182,37 @@
     "pdf_url": "https://aclanthology.org/2023.findings-ijcnlp.18.pdf",
     "doi": "https://doi.org/10.18653/v1/2023.findings-ijcnlp.18",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W585078330",
+      "W1512634710",
+      "W2251651951",
+      "W2398648391",
+      "W2515218431",
+      "W2564362733",
+      "W2792932389",
+      "W2805659884",
+      "W2897565768",
+      "W2948764924",
+      "W2970849641",
+      "W3032808228",
+      "W3088112201",
+      "W3088721552",
+      "W3102425047",
+      "W3120219703",
+      "W3196966746",
+      "W3207602763",
+      "W3210189645",
+      "W4256657488",
+      "W4285242026",
+      "W4310362699",
+      "W4312386909",
+      "W4312608305",
+      "W4313067245",
+      "W4313346705",
+      "W4362707350",
+      "W4380480948"
+    ]
   },
   {
     "id": "W4408280927",
@@ -138,7 +232,49 @@
     "pdf_url": "https://doi.org/10.1109/access.2025.3549795",
     "doi": "https://doi.org/10.1109/access.2025.3549795",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2194775991",
+      "W2250342921",
+      "W2337363174",
+      "W2512924740",
+      "W2550821151",
+      "W2757291580",
+      "W2913946806",
+      "W2958953787",
+      "W2962801832",
+      "W3001434439",
+      "W3030163527",
+      "W3034748831",
+      "W3092100113",
+      "W3093871477",
+      "W3139080614",
+      "W3169369929",
+      "W3173162544",
+      "W3199518308",
+      "W4200057797",
+      "W4285077564",
+      "W4318903120",
+      "W4322718191",
+      "W4385245566",
+      "W4385572225",
+      "W4387800062",
+      "W4389524534",
+      "W4390091978",
+      "W4390963024",
+      "W4391871574",
+      "W4393152836",
+      "W4394828356",
+      "W4399171333",
+      "W4401042336",
+      "W4401043487",
+      "W4404993448",
+      "W4406858940",
+      "W6796581206",
+      "W6847289649",
+      "W6858023062",
+      "W6871060950"
+    ]
   },
   {
     "id": "W7115677253",
@@ -156,7 +292,8 @@
     "pdf_url": "https://doi.org/10.5281/zenodo.17952587",
     "doi": "https://doi.org/10.5281/zenodo.17952587",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7165482954",
@@ -172,7 +309,8 @@
     "pdf_url": "https://mcgill.scholaris.ca/bitstreams/b25141aa-742c-4dd8-9b25-4117b965cd9a/download",
     "doi": "https://doi.org/10.82308/55922",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7155373379",
@@ -193,7 +331,8 @@
     "pdf_url": "https://doi.org/10.48448/aq48-r240",
     "doi": "https://doi.org/10.48448/aq48-r240",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7123296616",
@@ -213,7 +352,8 @@
     "pdf_url": "https://doi.org/10.48550/arxiv.2601.05874",
     "doi": "https://doi.org/10.48550/arxiv.2601.05874",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7123371404",
@@ -233,7 +373,8 @@
     "pdf_url": "https://arxiv.org/pdf/2601.05874",
     "doi": null,
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4416249530",
@@ -250,7 +391,34 @@
     "pdf_url": "https://arxiv.org/pdf/2506.09992",
     "doi": "https://doi.org/10.1109/cyber-ai66431.2025.11233432",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2473555522",
+      "W2526851824",
+      "W2595653137",
+      "W2741065173",
+      "W3022021376",
+      "W3161587393",
+      "W3162460878",
+      "W3166550823",
+      "W3169973903",
+      "W4244857688",
+      "W4294845625",
+      "W4312721630",
+      "W4360765133",
+      "W4366089033",
+      "W4380362950",
+      "W4385573219",
+      "W4389519004",
+      "W4391263226",
+      "W4392669753",
+      "W4399205773",
+      "W4401041960",
+      "W4402264403",
+      "W4406014331",
+      "W4408489879",
+      "W4412862737"
+    ]
   },
   {
     "id": "W4410184664",
@@ -269,7 +437,54 @@
     "pdf_url": "https://doi.org/10.2139/ssrn.5244227",
     "doi": "https://doi.org/10.2139/ssrn.5244227",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W22168010",
+      "W1514971736",
+      "W1992904575",
+      "W2006969979",
+      "W2132846241",
+      "W2134670378",
+      "W2136173435",
+      "W2148354767",
+      "W2149327368",
+      "W2161874394",
+      "W2165188277",
+      "W2171421863",
+      "W2561792472",
+      "W2574872930",
+      "W2626778328",
+      "W2782227846",
+      "W2798362442",
+      "W2964343359",
+      "W2981852735",
+      "W2997088366",
+      "W3030163527",
+      "W3093871477",
+      "W3134742392",
+      "W4285182954",
+      "W4307079201",
+      "W4317547647",
+      "W4318903120",
+      "W4319323306",
+      "W4320858136",
+      "W4379933104",
+      "W4382202554",
+      "W4382202744",
+      "W4385565463",
+      "W4385569882",
+      "W4388536144",
+      "W4389518624",
+      "W4389777735",
+      "W4395680645",
+      "W4402670263",
+      "W4403333962",
+      "W4404059833",
+      "W4404782209",
+      "W4408229604",
+      "W4413271463",
+      "W6898505805"
+    ]
   },
   {
     "id": "W7162479607",
@@ -286,7 +501,8 @@
     "pdf_url": "https://repository.arizona.edu/bitstream/10150/680315/1/azu_etd_22922_sip1_m.pdf",
     "doi": null,
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7134895265",
@@ -305,7 +521,27 @@
     "pdf_url": "https://doi.org/10.2139/ssrn.6385139",
     "doi": "https://doi.org/10.2139/ssrn.6385139",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W1514971736",
+      "W1992904575",
+      "W2134670378",
+      "W2143221616",
+      "W2148354767",
+      "W2561792472",
+      "W2782227846",
+      "W2798362442",
+      "W2997088366",
+      "W4385569882",
+      "W4385572225",
+      "W4388536144",
+      "W4389520065",
+      "W4390098547",
+      "W4395680645",
+      "W4404059833",
+      "W4404782209",
+      "W4408229604"
+    ]
   },
   {
     "id": "W4402671168",
@@ -324,7 +560,8 @@
     "pdf_url": "https://aclanthology.org/2024.acl-short.59.pdf",
     "doi": "https://doi.org/10.18653/v1/2024.acl-short.59",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4407385098",
@@ -343,7 +580,44 @@
     "pdf_url": "https://doi.org/10.1016/j.inffus.2026.104189",
     "doi": "https://doi.org/10.1016/j.inffus.2026.104189",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2185175083",
+      "W2277195237",
+      "W2560647685",
+      "W2909695232",
+      "W2963770624",
+      "W3046174388",
+      "W3048186973",
+      "W3108716566",
+      "W3133852917",
+      "W3212464620",
+      "W3215822937",
+      "W4214934429",
+      "W4249982675",
+      "W4292596092",
+      "W4312810944",
+      "W4320002823",
+      "W4376643691",
+      "W4377041335",
+      "W4379929801",
+      "W4380053170",
+      "W4383263751",
+      "W4392623252",
+      "W4395470973",
+      "W4396228956",
+      "W4396808612",
+      "W4399433787",
+      "W4400091737",
+      "W4402227506",
+      "W4403598596",
+      "W4404246571",
+      "W4404356490",
+      "W4406439964",
+      "W4407694739",
+      "W4407904312",
+      "W4417465992"
+    ]
   },
   {
     "id": "W4392669965",
@@ -360,7 +634,31 @@
     "pdf_url": "https://aclanthology.org/2023.eval4nlp-1.8.pdf",
     "doi": "https://doi.org/10.18653/v1/2023.eval4nlp-1.8",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W1840435438",
+      "W2626804490",
+      "W2916132663",
+      "W2923014074",
+      "W3022569409",
+      "W3034748831",
+      "W3046357466",
+      "W3099919888",
+      "W4285178342",
+      "W4311642023",
+      "W4317553041",
+      "W4319793302",
+      "W4323697401",
+      "W4327811957",
+      "W4362515116",
+      "W4362679631",
+      "W4366733439",
+      "W4385570009",
+      "W4385571124",
+      "W4385988359",
+      "W4389519239",
+      "W4389519817"
+    ]
   },
   {
     "id": "W4416034203",
@@ -378,7 +676,8 @@
     "pdf_url": "https://aclanthology.org/2025.findings-emnlp.897.pdf",
     "doi": "https://doi.org/10.18653/v1/2025.findings-emnlp.897",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4409178241",
@@ -398,7 +697,37 @@
     "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1049/cit2.70004",
     "doi": "https://doi.org/10.1049/cit2.70004",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W128638292",
+      "W2612560781",
+      "W2971120958",
+      "W3030163527",
+      "W3093871477",
+      "W3153391445",
+      "W3159597830",
+      "W3169369929",
+      "W3173343821",
+      "W3198985287",
+      "W4224308101",
+      "W4285294723",
+      "W4285362129",
+      "W4285675007",
+      "W4292779060",
+      "W4309674289",
+      "W4319984996",
+      "W4323323154",
+      "W4360584537",
+      "W4380995299",
+      "W4385570703",
+      "W4385574244",
+      "W4386566643",
+      "W4387491984",
+      "W4388688887",
+      "W4389519188",
+      "W4389681059",
+      "W4402671783"
+    ]
   },
   {
     "id": "W4404389841",
@@ -416,7 +745,8 @@
     "pdf_url": "https://arxiv.org/pdf/2411.05593",
     "doi": "https://doi.org/10.48550/arxiv.2411.05593",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7165392193",
@@ -434,7 +764,16 @@
     "pdf_url": "https://archive.interconf.center/index.php/2709-4685/article/download/8191/8254",
     "doi": "https://doi.org/10.51582/interconf.19-20.05.2026.015",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2053306448",
+      "W2963216553",
+      "W2983040767",
+      "W3015650676",
+      "W3017311573",
+      "W3094140582",
+      "W7133205974"
+    ]
   },
   {
     "id": "W4416223637",
@@ -453,7 +792,8 @@
     "pdf_url": "https://arxiv.org/pdf/2511.09396",
     "doi": "https://doi.org/10.63317/2ry23e89ew5v",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4412862878",
@@ -469,7 +809,48 @@
     "pdf_url": "https://doi.org/10.1016/j.cola.2025.101351",
     "doi": "https://doi.org/10.1016/j.cola.2025.101351",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2091731831",
+      "W2626778328",
+      "W2896457183",
+      "W2950621612",
+      "W3089436719",
+      "W3095809712",
+      "W3177813494",
+      "W3215923938",
+      "W4214928691",
+      "W4287024925",
+      "W4323655724",
+      "W4366204357",
+      "W4366851162",
+      "W4367189652",
+      "W4376167329",
+      "W4379260375",
+      "W4382704594",
+      "W4384561707",
+      "W4384920109",
+      "W4385245566",
+      "W4386185625",
+      "W4387390444",
+      "W4388725733",
+      "W4391272793",
+      "W4392163075",
+      "W4392340571",
+      "W4392822465",
+      "W4393730225",
+      "W4399657103",
+      "W4399795128",
+      "W4400158748",
+      "W4402457243",
+      "W4402683730",
+      "W4403223094",
+      "W4404918643",
+      "W4407303428",
+      "W4414360219",
+      "W7125135101",
+      "W7133198585"
+    ]
   },
   {
     "id": "W4417133178",
@@ -496,7 +877,8 @@
     "pdf_url": "https://arxiv.org/pdf/2506.07597",
     "doi": "https://doi.org/10.48550/arxiv.2506.07597",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4403364915",
@@ -513,7 +895,8 @@
     "pdf_url": "https://arxiv.org/pdf/2410.07830",
     "doi": "https://doi.org/10.48550/arxiv.2410.07830",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4412889388",
@@ -530,7 +913,8 @@
     "pdf_url": "https://aclanthology.org/2025.acl-srw.57.pdf",
     "doi": "https://doi.org/10.18653/v1/2025.acl-srw.57",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7197036362",
@@ -548,7 +932,8 @@
     "pdf_url": "https://arxiv.org/pdf/2608.04186",
     "doi": "https://doi.org/10.48550/arxiv.2608.04186",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7168097912",
@@ -564,7 +949,8 @@
     "pdf_url": "https://doi.org/10.5281/zenodo.21320355",
     "doi": "https://doi.org/10.5281/zenodo.21320355",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7106855099",
@@ -592,7 +978,8 @@
     "pdf_url": "https://doi.org/10.48448/5bx3-dw66",
     "doi": "https://doi.org/10.48448/5bx3-dw66",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4416033559",
@@ -610,7 +997,8 @@
     "pdf_url": "https://aclanthology.org/2025.winlp-main.31.pdf",
     "doi": "https://doi.org/10.18653/v1/2025.winlp-main.31",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7155525670",
@@ -634,7 +1022,8 @@
     "pdf_url": "https://arxiv.org/pdf/2604.20996",
     "doi": "https://doi.org/10.48550/arxiv.2604.20996",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7130236767",
@@ -653,7 +1042,8 @@
     "pdf_url": "https://arxiv.org/pdf/2602.14517",
     "doi": null,
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4409171398",
@@ -669,7 +1059,11 @@
     "pdf_url": "http://thesai.org/Downloads/Volume16No3/Paper_84-Optimizing_Large_Language_Models.pdf",
     "doi": "https://doi.org/10.14569/ijacsa.2025.0160384",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2896457183",
+      "W2979826702"
+    ]
   },
   {
     "id": "W7106842783",
@@ -688,7 +1082,8 @@
     "pdf_url": "https://doi.org/10.48448/dj1x-0q86",
     "doi": "https://doi.org/10.48448/dj1x-0q86",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7140138356",
@@ -708,7 +1103,8 @@
     "pdf_url": "https://aclanthology.org/2026.eacl-long.293.pdf",
     "doi": "https://doi.org/10.18653/v1/2026.eacl-long.293",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4408865983",
@@ -724,7 +1120,39 @@
     "pdf_url": "https://doi.org/10.17798/bitlisfen.1561298",
     "doi": "https://doi.org/10.17798/bitlisfen.1561298",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2250701144",
+      "W2626990892",
+      "W2751448157",
+      "W2768409085",
+      "W2798753108",
+      "W2863697128",
+      "W2890431379",
+      "W2890561662",
+      "W2945102109",
+      "W2952032096",
+      "W2970605129",
+      "W3035159685",
+      "W3091857408",
+      "W4292949568",
+      "W4293819888",
+      "W4381739142",
+      "W4382202606",
+      "W4384918448",
+      "W4385567069",
+      "W4385573402",
+      "W4385574048",
+      "W4386917976",
+      "W4387913122",
+      "W4389524490",
+      "W4391317783",
+      "W4391801078",
+      "W4395474395",
+      "W4396571402",
+      "W4399116870",
+      "W4401047149"
+    ]
   },
   {
     "id": "W4402738714",
@@ -744,7 +1172,8 @@
     "pdf_url": "https://www.authorea.com/doi/pdf/10.22541/au.172712663.32653113",
     "doi": "https://doi.org/10.22541/au.172712663.32653113/v1",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7129538432",
@@ -763,7 +1192,8 @@
     "pdf_url": "https://doi.org/10.48550/arxiv.2602.14517",
     "doi": "https://doi.org/10.48550/arxiv.2602.14517",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4404781415",
@@ -781,7 +1211,8 @@
     "pdf_url": "https://aclanthology.org/2024.nlp4dh-1.31.pdf",
     "doi": "https://doi.org/10.18653/v1/2024.nlp4dh-1.31",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4396913951",
@@ -797,7 +1228,8 @@
     "pdf_url": "https://arxiv.org/pdf/2405.07745",
     "doi": "https://doi.org/10.48550/arxiv.2405.07745",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4416010939",
@@ -818,7 +1250,23 @@
     "pdf_url": "https://arxiv.org/pdf/2508.09091",
     "doi": "https://doi.org/10.1109/mercon67903.2025.11216992",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2888520903",
+      "W2891555348",
+      "W2955816480",
+      "W2983040767",
+      "W3161110574",
+      "W3169369929",
+      "W3169483174",
+      "W4385245566",
+      "W4385574330",
+      "W4401042597",
+      "W4401043609",
+      "W4402669965",
+      "W4402672067",
+      "W4404781253"
+    ]
   },
   {
     "id": "W4387968215",
@@ -839,7 +1287,41 @@
     "pdf_url": "https://dl.acm.org/doi/pdf/10.1145/3581783.3611992",
     "doi": "https://doi.org/10.1145/3581783.3611992",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W288653040",
+      "W1732736211",
+      "W1861492603",
+      "W1863849972",
+      "W2022214202",
+      "W2048343491",
+      "W2077947298",
+      "W2096733369",
+      "W2138621090",
+      "W2150593711",
+      "W2250976127",
+      "W2252200119",
+      "W2277195237",
+      "W2568389463",
+      "W2593864460",
+      "W2738574128",
+      "W2889326414",
+      "W2891555348",
+      "W2949579048",
+      "W2963909453",
+      "W2979826702",
+      "W3022467813",
+      "W3035579820",
+      "W3045462440",
+      "W3156394741",
+      "W3172424021",
+      "W3174010726",
+      "W3177777394",
+      "W4205480697",
+      "W4312245858",
+      "W4312528757",
+      "W4385572711"
+    ]
   },
   {
     "id": "W4417082092",
@@ -861,7 +1343,8 @@
     "pdf_url": "https://arxiv.org/pdf/2509.14804",
     "doi": "https://doi.org/10.1109/icassp55912.2026.11462300",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7128163889",
@@ -889,7 +1372,22 @@
     "pdf_url": "https://www.nature.com/articles/s44360-025-00038-1.pdf",
     "doi": "https://doi.org/10.1038/s44360-025-00038-1",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2128213565",
+      "W2997646859",
+      "W3037032032",
+      "W4384071683",
+      "W4389519066",
+      "W4390971012",
+      "W4405995927",
+      "W4407150885",
+      "W4409361669",
+      "W4412008174",
+      "W4412886773",
+      "W4415243946",
+      "W7128212144"
+    ]
   },
   {
     "id": "W7140158674",
@@ -905,7 +1403,8 @@
     "pdf_url": "https://arxiv.org/pdf/2603.21036",
     "doi": "https://doi.org/10.48550/arxiv.2603.21036",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4406074029",
@@ -928,7 +1427,8 @@
     "pdf_url": "https://arxiv.org/pdf/2407.16470",
     "doi": "https://doi.org/10.48550/arxiv.2407.16470",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7155368837",
@@ -948,7 +1448,8 @@
     "pdf_url": "https://doi.org/10.48448/xzaz-zg65",
     "doi": "https://doi.org/10.48448/xzaz-zg65",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7134163653",
@@ -964,7 +1465,8 @@
     "pdf_url": "https://www.preprints.org/frontend/manuscript/18e8902d287d8bf70d7657c469bf7474/download_pub",
     "doi": "https://doi.org/10.20944/preprints202603.0570.v1",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7213058184",
@@ -982,7 +1484,8 @@
     "pdf_url": "https://www.jstage.jst.go.jp/article/jnlp/33/3/33_1460/_pdf",
     "doi": "https://doi.org/10.5715/jnlp.33.1460",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7221458672",
@@ -998,7 +1501,8 @@
     "pdf_url": "https://doi.org/10.5281/zenodo.23295440",
     "doi": "https://doi.org/10.5281/zenodo.23295440",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4403369854",
@@ -1018,7 +1522,8 @@
     "pdf_url": "https://arxiv.org/pdf/2408.02237",
     "doi": "https://doi.org/10.48550/arxiv.2408.02237",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7167904346",
@@ -1039,7 +1544,30 @@
     "pdf_url": "https://doi.org/10.3390/electronics15143034",
     "doi": "https://doi.org/10.3390/electronics15143034",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W2804732445",
+      "W3007829690",
+      "W3035254119",
+      "W3128424785",
+      "W4231148039",
+      "W4285211844",
+      "W4385565107",
+      "W4385571060",
+      "W4386576703",
+      "W4389520101",
+      "W4389524378",
+      "W4402671194",
+      "W4403401649",
+      "W4404067076",
+      "W4408403900",
+      "W4408460210",
+      "W4409569111",
+      "W4411119310",
+      "W4413007018",
+      "W4413348209",
+      "W7104364891"
+    ]
   },
   {
     "id": "W7166719625",
@@ -1056,7 +1584,8 @@
     "pdf_url": "https://www.nature.com/articles/s41598-026-60445-6_reference.pdf",
     "doi": "https://doi.org/10.1038/s41598-026-60445-6",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4402101192",
@@ -1076,7 +1605,31 @@
     "pdf_url": "https://arxiv.org/pdf/2404.02261",
     "doi": "https://doi.org/10.1007/978-3-031-70381-2_25",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": [
+      "W1975879668",
+      "W2020278455",
+      "W2048110207",
+      "W2102575587",
+      "W2144578941",
+      "W2523868951",
+      "W2745019517",
+      "W2951053127",
+      "W3030163527",
+      "W3194309076",
+      "W3195577433",
+      "W4296965999",
+      "W4384662964",
+      "W4384918448",
+      "W4385571157",
+      "W4385571232",
+      "W4385572824",
+      "W4389518684",
+      "W4389636360",
+      "W4401042461",
+      "W4411403346",
+      "W6858023062"
+    ]
   },
   {
     "id": "W4416035536",
@@ -1103,7 +1656,8 @@
     "pdf_url": "https://aclanthology.org/2025.emnlp-main.1484.pdf",
     "doi": "https://doi.org/10.18653/v1/2025.emnlp-main.1484",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7130373545",
@@ -1120,7 +1674,8 @@
     "pdf_url": "https://doi.org/10.48448/16d5-7t11",
     "doi": "https://doi.org/10.48448/16d5-7t11",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W4408062096",
@@ -1137,7 +1692,8 @@
     "pdf_url": "https://doi.org/10.5220/0013319000003905",
     "doi": "https://doi.org/10.5220/0013319000003905",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   },
   {
     "id": "W7140283089",
@@ -1161,6 +1717,7 @@
     "pdf_url": "https://arxiv.org/pdf/2603.22642",
     "doi": "https://doi.org/10.48550/arxiv.2603.22642",
     "source": "openalex",
-    "full_text": null
+    "full_text": null,
+    "references": null
   }
 ]

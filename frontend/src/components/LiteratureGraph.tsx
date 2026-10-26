@@ -356,8 +356,17 @@ export function LiteratureGraph({
                 filter === "main_side") &&
                 map.gaps.map((g) => {
                   const a = point(g.between_paper_ids[0]),
-                    b = point(g.between_paper_ids[1]);
-                  return a && b ? (
+                    b = g.between_paper_ids[1]
+                      ? point(g.between_paper_ids[1])
+                      : undefined;
+                  // An explicit gap is stated by one paper: a marker beside that paper, no line.
+                  const m =
+                    a && b
+                      ? { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
+                      : a && g.gap_type === "explicit"
+                        ? { x: a.x + 14, y: a.y - 14 }
+                        : null;
+                  return m ? (
                     <g
                       key={g.id}
                       data-interactive="true"
@@ -367,30 +376,32 @@ export function LiteratureGraph({
                       onClick={() => onSelect({ type: "gap", id: g.id })}
                       onKeyDown={(e) => edgeEnter(e, { type: "gap", id: g.id })}
                     >
-                      <line
-                        x1={a.x}
-                        y1={a.y}
-                        x2={b.x}
-                        y2={b.y}
-                        stroke="#a86e3c"
-                        strokeDasharray="3 4"
-                        strokeWidth={2}
-                      />
+                      {a && b && (
+                        <line
+                          x1={a.x}
+                          y1={a.y}
+                          x2={b.x}
+                          y2={b.y}
+                          stroke="#a86e3c"
+                          strokeDasharray="3 4"
+                          strokeWidth={2}
+                        />
+                      )}
                       <circle
-                        cx={(a.x + b.x) / 2}
-                        cy={(a.y + b.y) / 2}
+                        cx={m.x}
+                        cy={m.y}
                         r={11}
                         fill="#fff9ef"
                         stroke="#a86e3c"
                       />
                       <text
-                        x={(a.x + b.x) / 2}
-                        y={(a.y + b.y) / 2 + 4}
+                        x={m.x}
+                        y={m.y + 4}
                         textAnchor="middle"
                         fontSize={13}
                         fill="#82562e"
                       >
-                        ?
+                        {g.gap_type === "explicit" ? "!" : "?"}
                       </text>
                     </g>
                   ) : null;

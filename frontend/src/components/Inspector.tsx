@@ -281,8 +281,32 @@ export function Inspector({
           <p className="hypothesis-label">
             {map.sample_mode ? "样例占位" : "待验证研究假设"} ·{" "}
             {gap.scope === "main_side" ? "主簇与侧簇" : "簇内比较"}
+            {gap.gap_type && (
+              <>
+                {" "}
+                ·{" "}
+                <span className="gap-badge">
+                  {gap.gap_type === "explicit" ? "作者陈述" : "推断"}
+                </span>
+              </>
+            )}
+            {gap.label && (
+              <>
+                {" "}
+                ·{" "}
+                {(
+                  {
+                    novel: "新颖",
+                    known_open: "已知未解决",
+                  } as Record<string, string>
+                )[gap.label] ?? gap.label}
+              </>
+            )}
           </p>
           <p>{gap.why_it_matters}</p>
+          {gap.label_reason && (
+            <p className="muted small">{gap.label_reason}</p>
+          )}
           {gap.proposed_test && (
             <section className="inspector-section">
               <h3>建议实验</h3>

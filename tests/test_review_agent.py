@@ -16,7 +16,7 @@ from litagent.finding_review import ReviewSubmission, prepare_review, save_revie
 from litagent.integrations.llm import LLMError
 from litagent.schemas import ReviewAgentDecisions, ReviewExplanationChecks
 from tests.test_cluster_regeneration import snapshot
-from tests.test_findings import model
+from tests.test_findings import gap_settings, model
 
 
 @pytest.fixture
@@ -99,7 +99,7 @@ def test_invalid_ai_quotes_ids_and_score_verdicts_fail_bounded_validation(review
 
 
 def test_missing_hypothesis_is_unscored_without_any_llm_call(model, tmp_path, monkeypatch):
-    root, cfg, *_ = snapshot(tmp_path)
+    root, cfg, *_ = snapshot(tmp_path, settings=gap_settings(tmp_path))
     monkeypatch.setattr(review_agent, "complete_json", lambda *a, **k: pytest.fail("Missing claims cannot be graded"))
     out = review_agent.run_review(root.run_id, root.version_token, cfg)["report"]
     assert out["items"]

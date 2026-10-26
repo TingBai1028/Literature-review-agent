@@ -57,12 +57,22 @@ export interface Gap {
   evidence: Evidence[];
   proposed_test?: string;
   hypothesis_status?: string;
+  gap_type?: "inferred" | "explicit";
+  paper_a_id?: string | null;
+  paper_b_id?: string | null;
+  warrant?: string | null;
+  similarity?: number | null;
+  citation_check?: "passed" | "unknown" | null;
+  coverage_query?: string | null;
+  coverage_status?: "not_filled" | "filled" | "unavailable" | "skipped" | null;
+  label?: "trivial" | "known_open" | "known_solved" | "novel" | null;
+  label_reason?: string | null;
   coverage?: {
     status: string;
     reason: string;
     scope: string;
     searches: { query: string; status: string; papers: Paper[] }[];
-  };
+  } | null;
 }
 export interface Grade {
   accuracy: number;

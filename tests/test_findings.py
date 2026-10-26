@@ -18,8 +18,9 @@ from litagent.finding_engine import FindingContext
 from litagent.integrations.llm import LLMError, TokenBudgetExceeded
 from litagent.integrations.meterless import ResearchWorld
 from litagent.schemas import (Cluster, ClusterAssessmentProposal, ClusterAssessmentProposals, ClusterMove,
-    ConnectionDecision, ConnectionDecisions, CoverageVerdict, CoverageVerdicts, EvidenceReference,
-    FindingVerification, FindingVerifications, GapDecision, GapDecisions, Grade, GroundedConnection, GroundedGap, Paper, RunResult)
+    ConnectionDecision, ConnectionDecisions, CoverageJudgement, CoverageJudgements, EvidenceReference,
+    FindingVerification, FindingVerifications, Gap, GapDraft, GapDrafts, GapLabelDecision, GapLabelDecisions, Grade,
+    GroundedConnection, Paper, RunResult)
 from litagent.tools.openalex import OpenAlexError
 from tests.test_cluster_regeneration import snapshot
 
@@ -44,17 +45,20 @@ def model(monkeypatch):
             assert all("reason" not in c and "decision" not in c and "similarity" not in c for c in data["claims"])
             return FindingVerifications(verdicts=[FindingVerification(pair_id=c["pair_id"],
                 verdict="insufficient" if state["reject"] else "supported", reason="Independent source check.") for c in data["claims"]])
-        if schema is GapDecisions:
-            return GapDecisions(decisions=[GapDecision(pair_id=p["pair_id"], decision="propose",
-                basis="cross_paper_hypothesis", research_question="Could the two controlled task approaches be compared under a shared evaluation?",
-                proposed_test="Compare both approaches with the same dataset and report held-out accuracy.",
-                why_it_matters="Controls evaluation differences between the two scientific approaches.", reason="A testable source-based hypothesis.",
-                search_queries=["controlled task comparison evaluation"],
-                evidence=[EvidenceReference(paper_id=x["id"], span_id=x["spans"][0]["span_id"]) for x in p["papers"]]) for p in data["pairs"]])
-        if schema is CoverageVerdicts:
-            return CoverageVerdicts(verdicts=[CoverageVerdict(gap_id=h["gap_id"],
-                verdict="addressed" if state["covered"] else "not_addressed_in_checked_sources", reason="Checked the supplied original source excerpts.",
-                evidence=[EvidenceReference(paper_id=state["covered"], span_id="S1")] if state["covered"] else []) for h in data["hypotheses"]])
+        if schema is GapDrafts:
+            spans = {x["id"]: x["spans"][0]["span_id"] for x in data["papers"]}
+            return GapDrafts(drafts=[GapDraft(gap_id=c["gap_id"], decision="write",
+                claim="Paper A reports a controlled task experiment. Paper B reports direct measurements. No work combines them under one evaluation.",
+                grounds=[EvidenceReference(paper_id=pid, span_id=spans[pid]) for pid in c["paper_ids"]],
+                warrant="Each paper supplies one half of a shared controlled evaluation.",
+                coverage_query="controlled task comparison evaluation", reason="Grounded in both papers.") for c in data["candidates"]])
+        if schema is CoverageJudgements:
+            return CoverageJudgements(judgements=[CoverageJudgement(gap_id=g["gap_id"], filled=bool(state["covered"]),
+                filling_paper_id=state["covered"], reason="Checked the search results.",
+                evidence=[EvidenceReference(paper_id=state["covered"], span_id="S1")] if state["covered"] else []) for g in data["gaps"]])
+        if schema is GapLabelDecisions:
+            return GapLabelDecisions(labels=[GapLabelDecision(gap_id=g["gap_id"], label="novel",
+                reason="A specific combination visible only across both papers.") for g in data["gaps"]])
         raise AssertionError(schema)
     def label(prompt, message, schema, **kwargs):
         data = json.loads(message)
@@ -76,6 +80,13 @@ def model(monkeypatch):
 
 def context(root, arrays, **kw):
     return FindingContext(question=root.question, similarity=arrays.similarity, **kw)
+
+
+def gap_settings(tmp_path):
+    """The snapshot's within-cluster pairs have cosine 0.9 (A-B) and 0.995 (D-E), above the 0.8 default;
+    widen the band so A-B is a gap candidate and the gap mechanics can be exercised."""
+    return Settings(sample_mode=False, logs_dir=str(tmp_path), cluster_label_neighbors=0, cluster_label_batch_size=1,
+                    gap_similarity_max=0.9)
 
 
 def test_connections_have_both_original_quotes_verified_semantics_and_typed_graph(model, tmp_path):
@@ -138,17 +149,17 @@ def test_title_only_and_duplicate_studies_do_not_generate_evidence(model):
     assert ctx.audits[0].duplicate_pairs_skipped == 1 and not model["calls"]
 
 
-def test_gap_is_provisional_and_search_checks_older_non_oa_sources(model, tmp_path):
-    root, cfg, papers, arrays = snapshot(tmp_path)
+def test_gap_quotes_both_papers_and_coverage_searches_older_non_oa_sources(model, tmp_path):
+    root, cfg, papers, arrays = snapshot(tmp_path, settings=gap_settings(tmp_path))
     ctx = context(root, arrays)
     found = gap_finder.find_gaps(papers, root.clusters, [], cfg, context=ctx)
-    assert found and isinstance(found[0], GroundedGap) and found[0].hypothesis_status == "provisional"
-    assert found[0].coverage.status == "no_address_found_in_checked_sources"
-    assert found[0].coverage.local_papers_checked == len(papers)
-    _, criteria, limit, oa_only, opts = model["searches"][0]
-    assert not oa_only and criteria.year_from is None and criteria.min_citations is None
+    assert [g.between_paper_ids for g in found] == [["A", "B"]]
+    gap, by_id = found[0], {p.id: p for p in papers}
+    assert gap.label == "novel" and gap.citation_check == "unknown" and gap.coverage_status == "not_filled"
+    assert [e.paper_id for e in gap.evidence] == ["A", "B"] and all(e.quote in by_id[e.paper_id].abstract for e in gap.evidence)
+    query, criteria, limit, oa_only, opts = model["searches"][0]
+    assert query == gap.coverage_query and not oa_only and criteria.year_from is None and criteria.min_citations is None
     assert limit == cfg.gap_coverage_hits_per_query and opts["attempts"] == 1 and opts["timeout_s"] <= cfg.gap_coverage_timeout_s
-    assert set(next(data for schema, data in model["calls"] if schema is CoverageVerdicts)["local_paper_ids"]) == {p.id for p in papers}
     count, searches = len(model["calls"]), len(model["searches"])
     assert gap_finder.find_gaps(papers, root.clusters, [], cfg, context=ctx) == found
     assert len(model["calls"]) == count and len(model["searches"]) == searches
@@ -156,21 +167,20 @@ def test_gap_is_provisional_and_search_checks_older_non_oa_sources(model, tmp_pa
     assert len(model["searches"]) > searches
 
 
-def test_gap_premise_cannot_assert_unstated_full_parameter_tuning(model, tmp_path, monkeypatch):
-    root, cfg, papers, arrays = snapshot(tmp_path)
+def test_gap_claim_cannot_assert_unstated_full_parameter_tuning(model, tmp_path, monkeypatch):
+    root, cfg, papers, arrays = snapshot(tmp_path, settings=gap_settings(tmp_path))
     original = engine.complete_json
     def premise(prompt, message, schema, **kwargs):
         out = original(prompt, message, schema, **kwargs)
-        if schema is GapDecisions and "validation_error" not in json.loads(message):
-            for d in out.decisions:
-                d.research_question = "Does LoRA match full-parameter SFT under a shared evaluation?"
+        if schema is GapDrafts:
+            for d in out.drafts:
+                d.claim = "Paper A uses LoRA. Paper B uses full-parameter SFT. No work compares them."
         return out
     monkeypatch.setattr(engine, "complete_json", premise)
     ctx = context(root, arrays)
-    found = gap_finder.find_gaps(papers, root.clusters, [], cfg, context=ctx)
-    repaired = [data for schema, data in model["calls"] if schema is GapDecisions and "validation_error" in data]
-    assert repaired and "full-parameter" in repaired[0]["validation_error"]
-    assert found and all("full-parameter" not in g.description for g in found)
+    assert gap_finder.find_gaps(papers, root.clusters, [], cfg, context=ctx) == []
+    dropped = ctx.audits[0].decisions[0]
+    assert dropped["stage"] == "writer" and "full-parameter" in dropped["reason"]
 
 
 def test_scope_claim_is_allowed_when_a_source_states_it():
@@ -182,39 +192,24 @@ def test_scope_claim_is_allowed_when_a_source_states_it():
     assert gap_finder.unsupported_scope_claims(["Compare SFT and LoRA."], silent) == []
 
 
-@pytest.mark.parametrize("external", [False, True])
-def test_coverage_suppresses_hypotheses_answered_by_local_or_external_study(model, tmp_path, external):
-    root, cfg, papers, arrays = snapshot(tmp_path)
-    if external:
-        answer = Paper(id="EXTERNAL", title="A controlled comparison", abstract="We compare both scientific task approaches on the same dataset and report held-out accuracy.", source="openalex")
-        model["hits"], model["covered"] = [answer], answer.id
-    else:
-        model["covered"] = "D"  # Not a boundary member; the whole local corpus is checked.
-    ctx = context(root, arrays)
-    assert gap_finder.find_gaps(papers, root.clusters, [], cfg, context=ctx) == []
-    decision = next(d for d in ctx.audits[0].decisions if d["decision"] == "addressed")
-    assert decision["coverage"]["addressing_paper_ids"] == [model["covered"]]
-    assert decision["coverage"]["evidence"][0]["quote"]
-
-
 def test_unavailable_search_never_becomes_negative_novelty_evidence(model, tmp_path):
-    root, cfg, papers, arrays = snapshot(tmp_path)
+    root, cfg, papers, arrays = snapshot(tmp_path, settings=gap_settings(tmp_path))
     model["search_error"] = True
     ctx = context(root, arrays)
     found = gap_finder.find_gaps(papers, root.clusters, [], cfg, context=ctx)
-    assert found[0].coverage.status == "unavailable" and found[0].hypothesis_status == "provisional"
+    assert found[0].coverage_status == "unavailable" and found[0].coverage.status == "unavailable"
     count = len(model["searches"])
     gap_finder.find_gaps(papers, root.clusters, [], cfg, context=ctx)
     assert len(model["searches"]) > count  # A failed search is not reusable absence evidence.
 
 
-def test_missing_body_coverage_reports_considered_and_actually_quoted_counts(model, tmp_path):
-    root, cfg, papers, arrays = snapshot(tmp_path)
-    papers[-1].abstract = None
+def test_invented_filling_study_cannot_drop_a_gap(model, tmp_path):
+    root, cfg, papers, arrays = snapshot(tmp_path, settings=gap_settings(tmp_path))
+    model["hits"] = [Paper(id="EXTERNAL", title="A controlled comparison", source="openalex",
+                           abstract="We compare both scientific task approaches on the same dataset and report held-out accuracy.")]
+    model["covered"] = "NOT_A_SEARCH_RESULT"
     found = gap_finder.find_gaps(papers, root.clusters, [], cfg, context=context(root, arrays))
-    assert found[0].coverage.local_papers_considered == 6
-    assert found[0].coverage.local_papers_checked == 5
-    assert found[0].coverage.status == "inconclusive"
+    assert found[0].coverage_status == "not_filled" and "not one of this gap's search results" in found[0].coverage.reason
 
 
 def test_grader_receives_question_and_only_reviewed_scope_without_verifier_reasoning(model, tmp_path, monkeypatch):
@@ -236,13 +231,6 @@ def test_grader_receives_question_and_only_reviewed_scope_without_verifier_reaso
     assert "empty_output" not in seen[0] and "abstention is justified" in seen[1]["empty_output"]
 
 
-def test_invented_addressing_study_cannot_suppress_a_hypothesis(model, tmp_path):
-    root, cfg, papers, arrays = snapshot(tmp_path)
-    model["covered"] = "NOT_A_SUPPLIED_STUDY"
-    with pytest.raises(LLMError, match="Coverage must reference"):
-        gap_finder.find_gaps(papers, root.clusters, [], cfg, context=context(root, arrays))
-
-
 def test_supplied_full_text_is_quoted_only_when_selected_and_titles_are_never_substitutes(model):
     ps = [Paper(id=pid, title=f"Title {pid}", abstract=None, full_text=f"Full source {pid} reports a controlled scientific experiment and its independently measured outcome.", source="test")
           for pid in ["A", "B"]]
@@ -257,7 +245,7 @@ def test_supplied_full_text_is_quoted_only_when_selected_and_titles_are_never_su
 
 
 def test_analysis_api_commits_child_without_touching_source_and_idempotent_retry(model, tmp_path):
-    root, cfg, _, _ = snapshot(tmp_path)
+    root, cfg, _, _ = snapshot(tmp_path, settings=gap_settings(tmp_path))
     before = path_for(cfg, "cluster-map", root.run_id).read_bytes()
     api.app.dependency_overrides[api.get_settings] = lambda: cfg
     try:
@@ -268,7 +256,7 @@ def test_analysis_api_commits_child_without_touching_source_and_idempotent_retry
             child = out.json()["output"]
             assert child["stage"] == "findings" and child["analysis"]["completed_stages"] == ["connections", "gaps"]
             assert child["connections"] and child["gaps"] and child["parent_run_id"] == "root"
-            assert child["connections"][0]["relation"] == "shared_task" and child["gaps"][0]["hypothesis_status"] == "provisional"
+            assert child["connections"][0]["relation"] == "shared_task" and child["gaps"][0]["label"] == "novel"
             assert path_for(cfg, "cluster-map", "root").read_bytes() == before
             assert head("root", cfg)["run_id"] == child["run_id"]
             count = len(model["calls"])
@@ -277,13 +265,13 @@ def test_analysis_api_commits_child_without_touching_source_and_idempotent_retry
             assert client.post("/cluster/root/analyze", json={**req, "request_id": "b" * 32}).status_code == 409
             saved, state, _ = load_version(child["run_id"], cfg)
             assert state.finding_cache and state.finding_dependencies
-            assert isinstance(saved.connections[0], GroundedConnection) and isinstance(saved.gaps[0], GroundedGap)
+            assert isinstance(saved.connections[0], GroundedConnection) and type(saved.gaps[0]) is Gap and saved.gaps[0].label == "novel"
     finally:
         api.app.dependency_overrides.clear()
 
 
 def test_partial_analysis_preserves_completed_tasks_and_resume_reuses_them(model, tmp_path):
-    root, cfg, _, _ = snapshot(tmp_path)
+    root, cfg, _, _ = snapshot(tmp_path, settings=gap_settings(tmp_path))
     model["fail_after"] = 2  # First producer + independent verifier complete one cache task.
     partial = analyze_cluster_map("root", root.version_token, cfg, "c" * 32)
     assert partial.status == "partial" and partial.connections and not partial.gaps
@@ -296,7 +284,7 @@ def test_partial_analysis_preserves_completed_tasks_and_resume_reuses_them(model
 
 
 def test_regeneration_runs_real_finders_for_analyzed_maps_and_reuses_unaffected_tasks(model, tmp_path):
-    root, cfg, _, _ = snapshot(tmp_path)
+    root, cfg, _, _ = snapshot(tmp_path, settings=gap_settings(tmp_path))
     analyzed = analyze_cluster_map("root", root.version_token, cfg, "e" * 32)
     plan = preview_moves(analyzed.run_id, [ClusterMove(paper_id="A", target_cluster_id="S2")], cfg)
     child = apply_moves(analyzed.run_id, plan.preview_id, cfg)

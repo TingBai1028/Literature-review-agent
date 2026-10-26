@@ -10,7 +10,8 @@ from typing import Literal
 
 from litagent.cluster_audit import corpus_fingerprint
 from litagent.cluster_state import VersionError, atomic_json, digest, load_version, path_for, version_lock
-from litagent.finding_engine import FindingContext, choose_pairs, sources
+from litagent.agents.gap_finder import candidate_pairs
+from litagent.finding_engine import FindingContext, sources
 from litagent.schemas import Evidence
 
 
@@ -28,7 +29,7 @@ def prepare_review(run_id, settings, *, reveal=False):
     result, state, arrays = load_version(run_id, settings)
     context = FindingContext(question=result.question, similarity=arrays.similarity, use_full_text=result.use_full_text)
     src = sources(state.papers, settings, context)
-    gap_pairs, _ = choose_pairs("gaps", state.papers, result.clusters, settings, context, set(src))
+    gap_pairs = candidate_pairs(state.papers, result.clusters, context.similarity, settings, set(src))
     by_id = {p.id: p for p in state.papers}
     owner = {pid: c.id for c in result.clusters for pid in c.paper_ids}
     previous = {d["pair_id"]: d for a in (result.analysis.audits if result.analysis else []) if a.stage == "gaps" for d in a.decisions}
