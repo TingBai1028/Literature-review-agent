@@ -20,9 +20,17 @@ Content-Type: application/json
 ```json
 {
   "expected_version_token": "SOURCE_VERSION_TOKEN",
-  "request_id": "OPTIONAL_32_CHARACTER_HEX_ID"
+  "request_id": "OPTIONAL_32_CHARACTER_HEX_ID",
+  "stages": ["connections"]
 }
 ```
+
+**Two graphs in stages (spec E).** `stages` is optional (default: both, in order). The map UI first
+sends `["connections"]`: the child is **Graph 1** (clusters + paper edges), becomes the active version at
+once with `analysis.pending_stages = ["gaps"]`, and is shown while the gap finder runs. It then sends
+`["gaps"]` for that child: **Graph 2** (clusters + gaps) keeps Graph 1's edges, grade and dependencies
+unchanged, and the same clusters, so no paper moves on the map. Gaps cannot run before connections
+(HTTP 422). A request ID is bound to its stage list.
 
 The source must be the active version or a partial descendant of the active version.
 The response is a new immutable `ClusterMapResult` with `stage="findings"`, the same
