@@ -50,7 +50,7 @@ def assign_roles(papers: list[Paper], similarity: np.ndarray, question_similarit
     plan = RolePlan([], [], [], "", "")
     plan.main, plan.main_reason = _main(papers, similarity, question_similarity, relevance, scores, ranked, settings, plan)
     rest = [i for i in ranked if i not in set(plan.main)]
-    plan.foundation, plan.foundation_reason = _foundation(papers, plan.main, rest, settings)
+    plan.foundation, plan.foundation_reason = _foundation(papers, plan.main, rest, question_similarity, relevance, settings)
     remaining = sorted((i for i in rest if i not in set(plan.foundation)), key=lambda i: papers[i].id)
     plan.sides = side_groups(papers, similarity, remaining, settings, plan.decisions)
     if trace := current_trace():
@@ -90,6 +90,14 @@ def _main(papers, similarity, question_similarity, relevance, scores, ranked, se
         reason = (f"Fallback main: no group of 2+ papers reached question similarity {settings.main_similarity_threshold} "
                   f"or had a paper judged directly relevant, so the {len(members)} most relevant papers overall form it.")
         plan.decisions.append({"step": "main fallback", "decision": "top papers overall", "why": reason})
+    # Papers judged directly relevant join main up to its maximum (real run 26 Oct: the best group held only 4
+    # of the many direct LLM-evaluation papers; grouping had split the rest off).
+    direct = [i for i in ranked if i not in members and relevance[i] == "direct"][:max(0, high - len(members))]
+    if direct:
+        members += direct
+        reason += f" Added {len(direct)} more papers judged directly relevant (main holds up to {high})."
+        plan.decisions.append({"step": "main size", "decision": f"added {len(direct)} direct",
+                               "why": "papers judged directly relevant belong in main even when grouping split them off"})
     added = [i for i in ranked if i not in members][:max(0, low - len(members))]
     if added:
         members += added
@@ -98,7 +106,7 @@ def _main(papers, similarity, question_similarity, relevance, scores, ranked, se
     return sorted(members, key=ranked.index), reason
 
 
-def _foundation(papers, main, rest, settings) -> tuple[list[int], str]:
+def _foundation(papers, main, rest, question_similarity, relevance, settings) -> tuple[list[int], str]:
     if not rest:
         return [], "No papers left for a foundation cluster."
     years = [p.year for p in papers if p.year]
@@ -109,23 +117,38 @@ def _foundation(papers, main, rest, settings) -> tuple[list[int], str]:
     old = lambda i: median_year is not None and papers[i].year is not None and papers[i].year < median_year
     highly_cited = lambda i: (papers[i].citation_count or 0) > 0 and (papers[i].citation_count or 0) >= median_cites
     by_citations = lambda ids: sorted(ids, key=lambda i: (-(papers[i].citation_count or 0), papers[i].year or 9999, papers[i].id))
+    # A citation from main papers ties a paper to the topic; the relaxed rules must establish it another way
+    # (real run 26 Oct: a protein-language review was chosen as foundation for an LLM question).
+    # The LLM relevance check decides; the question-similarity gate cannot, because retrieval already drops every
+    # paper below it (the protein review scored 0.54 but was judged "uncertain": not about human languages).
+    # Only when no paper was checked (sample mode) does the gate stand in.
+    checked = any(r != "uncertain" for r in relevance)
+    on_topic = lambda i: (relevance[i] in ("direct", "supporting") if checked
+                          else question_similarity[i] >= settings.main_similarity_threshold)
     tiers = [("cited by main papers, older than the median year and at least median citations",
               [i for i in rest if papers[i].id in cited_by_main and old(i) and highly_cited(i)]),
-             ("older than the median year and at least median citations (not required to be cited by main)",
-              [i for i in rest if old(i) and highly_cited(i)]),
-             ("the most cited remaining papers", list(rest))]
-    chosen, used = [], []
+             ("on topic, older than the median year and at least median citations (not required to be cited by main)",
+              [i for i in rest if on_topic(i) and old(i) and highly_cited(i)]),
+             ("the most cited on-topic remaining papers", [i for i in rest if on_topic(i)]),
+             ("the most cited remaining papers (no on-topic paper left)", list(rest))]
+    chosen, used, relaxed = [], [], False
+    last = len(tiers) - 1
     for tier, (description, candidates) in enumerate(tiers):
         new = [i for i in by_citations(candidates) if i not in chosen]
+        if tier == last and chosen:
+            break  # the off-topic last resort only guarantees that a foundation cluster exists
         if new and len(chosen) < settings.foundation_min_size:
-            # Papers meeting the strict rule fill up to the maximum; relaxed tiers only top up to the minimum.
-            limit = settings.foundation_max_size if tier == 0 else settings.foundation_min_size
+            # The strict rule fills up to the maximum, relaxed on-topic rules up to the minimum, and the off-topic
+            # last resort adds a single paper.
+            limit = (settings.foundation_max_size if tier == 0 else
+                     1 if tier == last else settings.foundation_min_size)
             chosen += new[:limit - len(chosen)]
             used.append(f"{len(new)} {description}")
+            relaxed |= tier > 0
     year = f"{median_year:g}" if median_year is not None else "unknown"
     reason = (f"Foundation: {len(chosen)} classic papers (median year of the set {year}, "
               f"median citations {median_cites:g}); candidates: " + "; then ".join(used) + ".")
-    if len(used) > 1:
+    if relaxed:
         reason += " Fewer than " + str(settings.foundation_min_size) + " papers met the strict rule, so it was relaxed."
     return chosen, reason
 

@@ -178,6 +178,8 @@ class _Run:
             ranked = self.rank(kept)
             ranked = self.escalate(cluster, ranked, mine)
             gaps += ranked
+            # A later timeout keeps the clusters already finished (real run 26 Oct lost 9 finished gaps to one).
+            self.context.partial_gaps = [g.model_copy(deep=True) for g in gaps]
             if (trace := current_trace()) and ranked:
                 trace.log("gap_finder", "gaps", f"{len(ranked)} in {cluster.id}", phase="partial_result",
                           message=f"Gap finder: {len(gaps)} gaps so far",
@@ -236,18 +238,19 @@ class _Run:
     def write(self, cluster: Cluster, candidates: list[dict], fixes: dict[str, str]) -> list[Gap]:
         if not candidates:
             return []
-        ids = sorted({pid for c in candidates for pid in c["paper_ids"]})
-        payload = {"task_version": "gap-writer-v1", "question": self.context.question, "fix": self.fix,
-                   "cluster": {"id": cluster.id, "label": cluster.label},
-                   "cluster_cards": compact(self.context.cards),
-                   "min_quote_chars": self.settings.finding_min_quote_chars,
-                   "papers": [self.source_map[pid] for pid in ids],
-                   "candidates": [{"gap_id": c["gap_id"], "paper_ids": c["paper_ids"],
-                                   **({"fix": fixes[c["gap_id"]], "previous_claim": self.outcomes[c["gap_id"]]["claim"]}
-                                      if c["gap_id"] in fixes else {})} for c in candidates]}
         drafts = {}
-        for d in request("gap_finder", payload, GapDrafts, _no_check, self.settings, self.context, "gaps").drafts:
-            drafts.setdefault(d.gap_id, d)
+        for chunk in _chunks(candidates, self.settings.gap_llm_batch_size):
+            ids = sorted({pid for c in chunk for pid in c["paper_ids"]})
+            payload = {"task_version": "gap-writer-v1", "question": self.context.question, "fix": self.fix,
+                       "cluster": {"id": cluster.id, "label": cluster.label},
+                       "cluster_cards": compact(self.context.cards),
+                       "min_quote_chars": self.settings.finding_min_quote_chars,
+                       "papers": [self.source_map[pid] for pid in ids],
+                       "candidates": [{"gap_id": c["gap_id"], "paper_ids": c["paper_ids"],
+                                       **({"fix": fixes[c["gap_id"]], "previous_claim": self.outcomes[c["gap_id"]]["claim"]}
+                                          if c["gap_id"] in fixes else {})} for c in chunk]}
+            for d in request("gap_finder", payload, GapDrafts, _no_check, self.settings, self.context, "gaps").drafts:
+                drafts.setdefault(d.gap_id, d)
         out = []
         for c in candidates:
             gid, d = c["gap_id"], drafts.get(c["gap_id"])
@@ -349,11 +352,13 @@ class _Run:
         pool = {p.id: p for g in gaps for p in results[g.id]}
         source_map = sources(list(pool.values()), self.settings, self.context, limit=self.settings.gap_coverage_source_chars)
         verdicts = {}
-        if pool:
+        for chunk in _chunks([g for g in gaps if results[g.id]], self.settings.gap_llm_batch_size):
+            shown = {p.id for g in chunk for p in results[g.id]}
             payload = {"task_version": "gap-coverage-v2",
                        "gaps": [{"gap_id": g.id, "claim": g.description, "result_ids": [p.id for p in results[g.id]]}
-                                for g in gaps if results[g.id]],
-                       "papers": [source_map.get(pid) or {"id": pid, "title": p.title, "spans": []} for pid, p in pool.items()]}
+                                for g in chunk],
+                       "papers": [source_map.get(pid) or {"id": pid, "title": p.title, "spans": []}
+                                  for pid, p in pool.items() if pid in shown]}
             for j in request("gap_coverage", payload, CoverageJudgements, _no_check, self.settings, self.context, "gaps").judgements:
                 verdicts.setdefault(j.gap_id, j)
         out = []
@@ -410,16 +415,17 @@ class _Run:
     def grade(self, cluster: Cluster, gaps: list[Gap], final: bool) -> tuple[list[Gap], dict[str, str]]:
         if not gaps:
             return [], {}
-        payload = {"task_version": "gap-grader-v1", "research_area": self.context.question or cluster.label,
-                   "cluster": cluster.label, "cluster_cards": compact(self.context.cards),
-                   "gaps": [{"gap_id": g.id, "type": g.gap_type, "claim": g.description, "warrant": g.warrant,
-                             "grounds": [{"paper_id": e.paper_id, "title": self.by_id[e.paper_id].title, "quote": e.quote}
-                                         for e in g.evidence],
-                             "coverage": {"status": g.coverage_status, "checked_titles": self.checked.get(g.id, [])}}
-                            for g in gaps]}
         labels = {}
-        for d in request("gap_grader", payload, GapLabelDecisions, _no_check, self.settings, self.context, "gaps").labels:
-            labels.setdefault(d.gap_id, d)
+        for chunk in _chunks(gaps, self.settings.gap_llm_batch_size):
+            payload = {"task_version": "gap-grader-v1", "research_area": self.context.question or cluster.label,
+                       "cluster": cluster.label, "cluster_cards": compact(self.context.cards),
+                       "gaps": [{"gap_id": g.id, "type": g.gap_type, "claim": g.description, "warrant": g.warrant,
+                                 "grounds": [{"paper_id": e.paper_id, "title": self.by_id[e.paper_id].title,
+                                              "quote": e.quote} for e in g.evidence],
+                                 "coverage": {"status": g.coverage_status, "checked_titles": self.checked.get(g.id, [])}}
+                                for g in chunk]}
+            for d in request("gap_grader", payload, GapLabelDecisions, _no_check, self.settings, self.context, "gaps").labels:
+                labels.setdefault(d.gap_id, d)
         kept, fixes = [], {}
         for g in gaps:
             d = labels.get(g.id)
@@ -507,6 +513,12 @@ def _gap_id(a: str, b: str) -> str:
 
 def _doi(doi: str | None) -> str | None:
     return doi.lower().removeprefix("https://doi.org/") if doi else None
+
+
+def _chunks(items: list, size: int) -> list[list]:
+    """Small batches keep each model request well inside the 90 s limit (real run 26 Oct: a 15-candidate writer
+    call took 82 s and the next timed out)."""
+    return [items[i:i + size] for i in range(0, len(items), size)]
 
 
 def _no_check(output) -> None:
