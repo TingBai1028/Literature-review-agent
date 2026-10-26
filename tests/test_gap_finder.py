@@ -227,3 +227,33 @@ def test_sample_mode_runs_end_to_end_and_produces_gaps(tmp_path):
     assert max(sum(g.cluster_id == c.id for g in result.gaps) for c in result.clusters) <= settings.gap_max_per_cluster
     events = [json.loads(line) for line in (tmp_path / f"trace-{result.run_id}.jsonl").read_text().splitlines()]
     assert {e.get("stage") for e in events if e["agent_name"] == "gap_finder"} >= {"candidates", "writer", "coverage", "grading"}
+
+
+def test_model_requests_go_in_small_batches(llm, search, tmp_path):
+    ids = [f"P{i}" for i in range(5)]
+    papers = [paper(pid) for pid in ids]
+    sims = np.full((5, 5), .7)
+    np.fill_diagonal(sims, 1)
+    settings = Settings(sample_mode=False, logs_dir=str(tmp_path), gap_llm_batch_size=3)
+    gaps, _ = run(papers, sims, tmp_path, settings)
+    writer = [d["candidates"] for schema, d in llm.calls if schema is GapDrafts]
+    grader = [d["gaps"] for schema, d in llm.calls if schema is GapLabelDecisions]
+    assert sum(map(len, writer)) == 10 and max(map(len, writer)) == 3  # 10 candidate pairs in 4 requests
+    assert max(map(len, grader)) <= 3 and gaps
+
+
+def test_a_failure_in_a_later_cluster_keeps_the_finished_clusters_gaps(llm, search, tmp_path, monkeypatch):
+    from litagent.integrations.llm import LLMError
+    original = llm.__call__
+    def fail_second_cluster(prompt, message, schema, **kwargs):
+        if schema is GapDrafts and json.loads(message)["cluster"]["id"] == "C2":
+            raise LLMError("Request timed out.")
+        return original(prompt, message, schema, **kwargs)
+    monkeypatch.setattr(engine, "complete_json", fail_second_cluster)
+    papers = [paper(pid) for pid in IDS]
+    clusters = [Cluster(id="C1", label="One", rationale="", paper_ids=["A", "B"]),
+                Cluster(id="C2", label="Two", rationale="", paper_ids=["C", "D"])]
+    context = FindingContext(similarity=matrix({("A", "B"): .7, ("C", "D"): .7}))
+    with pytest.raises(LLMError):
+        gap_finder.find_gaps(papers, clusters, [], Settings(sample_mode=False, logs_dir=str(tmp_path)), context=context)
+    assert [g.between_paper_ids for g in context.partial_gaps] == [["A", "B"]]

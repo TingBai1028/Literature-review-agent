@@ -229,6 +229,7 @@ class Settings:
     gap_similarity_min: float = 0.5
     gap_similarity_max: float = 0.8
     gap_max_per_cluster: int = 5  # gaps kept per cluster after grading
+    gap_llm_batch_size: int = 5  # candidates or gaps per writer, coverage and grading request
     gap_candidate_multiplier: int = 3  # candidates per cluster sent to the LLM = gap_max_per_cluster x this
     gap_coverage_check: bool = field(default_factory=lambda: _env_bool("GAP_COVERAGE_CHECK", "true"))
     gap_explicit_enabled: bool = field(default_factory=lambda: _env_bool("GAP_EXPLICIT_ENABLED"))
