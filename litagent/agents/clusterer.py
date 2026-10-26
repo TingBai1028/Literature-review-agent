@@ -26,8 +26,9 @@ from litagent.trace import current_trace
 
 def cluster(papers: list[Paper], effort: Effort, settings: Settings, fix: str | None = None,
             *, defer_labels_on_size_failure: bool = False, question: str | None = None,
-            artifacts: ClusteringArtifacts | None = None) -> list[Cluster]:
-    """`fix` is the grading agent's one suggested fix when the previous attempt failed."""
+            artifacts: ClusteringArtifacts | None = None, deadline: float | None = None) -> list[Cluster]:
+    """`fix` is the grading agent's one suggested fix when the previous attempt failed. `deadline` (monotonic) is
+    the run's time limit; labelling retries failed names only while there is time left."""
     if settings.sample_mode:
         if question is not None and settings.cluster_map_mode == "question":
             return sample_role_clusters(papers, question.strip(), settings, artifacts)
@@ -69,7 +70,8 @@ def cluster(papers: list[Paper], effort: Effort, settings: Settings, fix: str | 
         artifacts.question_vector = question_vector.copy() if question_vector is not None else None
         artifacts.similarity = scores.combined.copy()
     if question_mode:
-        return build_question_clusters(papers, texts, embeddings, question_vector, scores, question.strip(), settings, fix)
+        return build_question_clusters(papers, texts, embeddings, question_vector, scores, question.strip(), settings, fix,
+                                       deadline=deadline)
     if settings.cluster_grouping_strategy == "semantic":
         return semantic_clusters(papers, texts, scores.combined, settings, fix)
     # A stable paper-id order makes linkage ties independent of API result order.
@@ -94,7 +96,7 @@ def cluster(papers: list[Paper], effort: Effort, settings: Settings, fix: str | 
             if trace := current_trace():
                 trace.log("clusterer", "defer labels", "size check will retry", why=problem)
             return pending
-    assessed = (contrastive_labels(papers, texts, groups, scores.combined, settings, fix)
+    assessed = (contrastive_labels(papers, texts, groups, scores.combined, settings, fix, deadline=deadline)
                 if settings.cluster_label_strategy == "contrastive" else {})
     clusters = []
     for index, group in enumerate(groups, 1):

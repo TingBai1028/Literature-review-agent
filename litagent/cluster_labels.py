@@ -276,28 +276,52 @@ def contrastive_labels(papers: list[Paper], texts: list[str], groups: list[list[
                     continue
                 return abstain_where_invalid(proposals, batch_context, settings)
 
+    failed: list[str] = []
+
     def label_or_unlabelled(batch_context: list[dict]) -> ClusterAssessmentBatch:
         # A batch that times out is asked again as two halves; groups whose call still fails stay unnamed.
         got, lost, error = halve_on_timeout(label_batch, batch_context, "cluster label batch")
         if lost:
             ids = [c["cluster_id"] for c in lost]
+            failed.extend(ids)
             if trace := current_trace():
                 trace.log("clusterer", "label clusters", "unlabelled", why=f"{type(error).__name__}: {error}",
-                          next_step="keep the groups unnamed; a refresh labels them",
-                          message=f"Naming {len(ids)} clusters failed ({type(error).__name__}); "
-                                  "they stay on the map unnamed",
+                          next_step="name them again once after the other batches, if time allows; "
+                                    "otherwise they stay unnamed until a refresh",
+                          message=f"Naming {len(ids)} clusters failed ({type(error).__name__})",
                           payload={"cluster_ids": ids})
         return ClusterAssessmentBatch(assessments=got + unlabelled(lost, error) if lost else got)
 
     size = settings.cluster_label_batch_size
     batches = [contexts[i:i + size] for i in range(0, len(contexts), size)]
     batches = [b for b in batches if only_cluster_ids is None or any(c["cluster_id"] in only_cluster_ids for c in b)]
+    def keep(found: list[ClusterAssessmentBatch]) -> None:
+        for batch in found:
+            for assessment in batch.assessments:
+                labels[assessment.cluster_id] = assessment
+                if trace := current_trace():
+                    # A nested dict preserves evidence in trace (top-level lists are summarized).
+                    trace.log("clusterer", "assess cluster", assessment.coherence,
+                              result=assessment.model_dump(), why="Exact quotes checked; semantic support still requires review")
+
     # Each batch names different groups, so the batches run at the same time (litagent/parallel.py).
-    for batch in parallel_map(label_or_unlabelled, batches, settings.llm_concurrency):
-        for assessment in batch.assessments:
-            labels[assessment.cluster_id] = assessment
+    keep(parallel_map(label_or_unlabelled, batches, settings.llm_concurrency))
+    retry = [c for c in contexts if c["cluster_id"] in failed]
+    if retry and settings.cluster_relabel_retry:
+        left = None if deadline is None else deadline - time.monotonic()
+        ids = [c["cluster_id"] for c in retry]
+        if left is not None and left < 2 * settings.llm_timeout_s:
             if trace := current_trace():
-                # A nested dict preserves evidence in trace (top-level lists are summarized).
-                trace.log("clusterer", "assess cluster", assessment.coherence,
-                          result=assessment.model_dump(), why="Exact quotes checked; semantic support still requires review")
+                trace.log("clusterer", "relabel unlabelled clusters", "skipped", payload={"cluster_ids": ids},
+                          why=f"{left:.0f} s of the run left; naming again could take {settings.llm_timeout_s:.0f} s "
+                              "and leave no time for cards and the grade", next_step="keep them unnamed; a refresh labels them")
+        else:
+            # After the other batches have finished, one group per request: the smallest, least loaded call.
+            if trace := current_trace():
+                trace.log("clusterer", "relabel unlabelled clusters", f"naming {len(ids)} again",
+                          payload={"cluster_ids": ids}, next_step="one group per request",
+                          message=f"Clusterer: naming {len(ids)} unnamed clusters again",
+                          why="Their naming call failed; one more try after the other batches finished")
+            failed.clear()
+            keep(parallel_map(label_or_unlabelled, [[c] for c in retry], settings.llm_concurrency))
     return labels

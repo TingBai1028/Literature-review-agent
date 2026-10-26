@@ -139,7 +139,8 @@ def run_pipeline(
                 artifacts = ClusteringArtifacts()
                 result.clusters = _graded_stage(
                     "clusters", lambda fix: clusterer.cluster(papers, effort, settings, fix,
-                                                              defer_labels_on_size_failure=True, question=plan.question, artifacts=artifacts),
+                                                              defer_labels_on_size_failure=True, question=plan.question, artifacts=artifacts,
+                                                              deadline=deadline),
                     papers, settings, trace, result, world
                 )
                 world.write_clusters(result.clusters)

@@ -240,11 +240,11 @@ def label_side_groups(papers: list[Paper], texts: list[str], groups: list[list[i
 
 def build_question_clusters(papers: list[Paper], texts: list[str], vectors: np.ndarray, question_vector: np.ndarray,
                             scores: SimilarityMatrices, question: str, settings: Settings,
-                            fix: str | None = None) -> list[QuestionCluster]:
+                            fix: str | None = None, deadline: float | None = None) -> list[QuestionCluster]:
     validate_settings(settings)
     query_scores = cosine_matrix(np.vstack([question_vector, vectors]))[0, 1:]
     details = assess_relevance(papers, texts, query_scores, question, settings, fix)
-    return role_clusters(papers, texts, scores.combined, query_scores, details, question, settings, fix)
+    return role_clusters(papers, texts, scores.combined, query_scores, details, question, settings, fix, deadline)
 
 
 def sample_role_clusters(papers: list[Paper], question: str, settings: Settings,
@@ -269,7 +269,7 @@ def sample_role_clusters(papers: list[Paper], question: str, settings: Settings,
 
 def role_clusters(papers: list[Paper], texts: list[str], similarity: np.ndarray, query_scores: np.ndarray,
                   details: dict[str, PaperClusterDetail], question: str, settings: Settings,
-                  fix: str | None = None) -> list[QuestionCluster]:
+                  fix: str | None = None, deadline: float | None = None) -> list[QuestionCluster]:
     """One main, at least one foundation and side clusters (litagent/cluster_roles.py), each labelled."""
     for pid, values in paper_keywords(papers, settings.paper_keyword_limit).items():
         details[pid].keywords = values
@@ -293,7 +293,8 @@ def role_clusters(papers: list[Paper], texts: list[str], similarity: np.ndarray,
     ids = [cid for _, cid, _, _ in roles]
     if set(ids) & {p.id for p in papers}:
         raise ValueError("Paper ids conflict with generated cluster ids")
-    labels = label_side_groups(papers, texts, [group for _, _, group, _ in roles], similarity, ids, settings, fix)
+    labels = label_side_groups(papers, texts, [group for _, _, group, _ in roles], similarity, ids, settings, fix,
+                               deadline=deadline)
     clusters = []
     for kind, cid, group, reason in roles:
         label = labels[cid]
