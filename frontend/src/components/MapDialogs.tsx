@@ -155,12 +155,12 @@ export function NewMapDialog({
   busy: boolean;
   sample: boolean;
   timeout: number;
-  onCreate: (q: string, effort: string, p: Paper[]) => void;
+  onCreate: (q: string, effort: string, p: Paper[], backup?: Paper[]) => void;
   onClose: () => void;
 }) {
   const [mode, setMode] = useState<"search" | "import">("search");
   const [query, setQuery] = useState(question);
-  const [effort, setEffort] = useState("normal");
+  const [effort, setEffort] = useState("fast");
   const [source, setSource] = useState<Paper[]>(papers);
   const [error, setError] = useState("");
   const search = useSearchReview(query, effort, timeout);
@@ -197,7 +197,11 @@ export function NewMapDialog({
       if (typeof importedQuery === "string" && importedQuery.trim())
         setQuery(importedQuery);
       const importedEffort = raw.input?.effort ?? raw.effort;
-      if (["normal", "medium", "high", "ultra"].includes(importedEffort))
+      if (
+        ["fast", "pro", "normal", "medium", "high", "ultra"].includes(
+          importedEffort,
+        )
+      )
         setEffort(importedEffort);
     } catch (e) {
       setError(e instanceof Error ? e.message : "无法读取文件");
@@ -216,7 +220,14 @@ export function NewMapDialog({
     }
     const chosen = mode === "search" ? search.selected : source;
     const cap = (
-      { normal: 30, medium: 60, high: 100, ultra: 150 } as Record<string, number>
+      {
+        fast: 50,
+        pro: 50,
+        normal: 30,
+        medium: 60,
+        high: 100,
+        ultra: 150,
+      } as Record<string, number>
     )[effort];
     if (!chosen.length) {
       setError(mode === "search" ? "请至少保留一篇论文。" : "请选择论文记录。");
@@ -226,7 +237,12 @@ export function NewMapDialog({
       setError(`当前级别最多支持 ${cap} 篇，请更换级别或论文记录。`);
       return;
     }
-    onCreate(search.result?.plan?.question ?? query.trim(), effort, chosen);
+    onCreate(
+      search.result?.plan?.question ?? query.trim(),
+      effort,
+      chosen,
+      mode === "search" ? (search.result?.backup_papers ?? []) : [],
+    );
   };
   return (
     <Dialog
@@ -242,7 +258,11 @@ export function NewMapDialog({
         }}
       >
         <div className="dialog-body">
-          <div className="segmented mode-switch" role="group" aria-label="论文来源">
+          <div
+            className="segmented mode-switch"
+            role="group"
+            aria-label="论文来源"
+          >
             {(
               [
                 ["search", "在线检索"],
@@ -288,10 +308,15 @@ export function NewMapDialog({
                 search.reset();
               }}
             >
-              <option value="normal">Normal · 最多 30 篇</option>
-              <option value="medium">Medium · 最多 60 篇</option>
-              <option value="high">High · 最多 100 篇</option>
-              <option value="ultra">Ultra · 最多 150 篇</option>
+              <option value="fast">
+                Fast · 检索约 300 篇，展示最相关的 50 篇
+              </option>
+              <option value="pro">
+                Pro · 检索约 1000 篇，展示 50 篇并读取全文
+              </option>
+              {!["fast", "pro"].includes(effort) && (
+                <option value={effort}>{effort}（旧级别）</option>
+              )}
             </select>
           </label>
           {mode === "search" ? (
