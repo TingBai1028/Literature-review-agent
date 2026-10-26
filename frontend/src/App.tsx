@@ -513,6 +513,7 @@ function WorkspaceView({
             onFilter={changeFilter}
             search={search}
             onReview={() => setTab("review")}
+            analysisHint
           />
           <Inspector
             map={map}
