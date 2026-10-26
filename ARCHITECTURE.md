@@ -127,8 +127,8 @@ Used by the Planner when the user doesn't specify. Starting points to tune.
 
 | Criterion | Default |
 | --- | --- |
-| Relevance | Top results by search-API ranking, then keep the papers most similar to the question |
-| Recency | Past 5 years |
+| Relevance | Top results by search-API ranking, then keep the papers most similar to the question (embedding cosine ≥ 0.5) |
+| Recency | No limit unless the user gives years |
 | Citations | No hard minimum; rank by citations per year so recent papers aren't penalised |
 | Paper type | Both primary and review papers |
 

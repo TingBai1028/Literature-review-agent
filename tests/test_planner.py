@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from litagent.agents import planner
 from litagent.agents.planner import PlannerDraft
-from litagent.config import EFFORT_PROFILES, Effort, Settings
+from litagent.config import EFFORT_PROFILES, DefaultCriteria, Effort, Settings
 from litagent.human_review import AutoApproveReviewer
 from litagent.integrations.llm import complete_json
 from litagent.orchestrator import run_pipeline
@@ -54,9 +54,9 @@ def test_clear_question_builds_plan_with_defaults(monkeypatch):
     assert result.status == "ok"
     # blanks and case-insensitive duplicates dropped, capped at Medium's 3 queries
     assert plan.queries == ["graph neural network drug-target", "GNN binding affinity", "molecular graph learning"]
-    assert plan.criteria.year_from == real_settings().defaults.year_from
+    assert plan.criteria.year_from is None  # no default start year: classic papers stay searchable
     assert plan.criteria.paper_types == ["primary", "review"]
-    assert any(d.startswith("year_from=") for d in plan.used_defaults)
+    assert not any(d.startswith("year_from=") for d in plan.used_defaults)
     assert "paper_types=primary+review" in plan.used_defaults
     assert (plan.max_papers, plan.token_budget) == (60, EFFORT_PROFILES[Effort.MEDIUM].token_budget)
     assert plan.rationale == "Covers the method and the binding-affinity framing."
@@ -79,9 +79,20 @@ def test_user_criteria_are_kept(monkeypatch):
     assert plan.used_defaults == []
 
 
+def test_configured_default_window_still_applies(monkeypatch):
+    settings = real_settings()
+    settings.defaults = DefaultCriteria(years_back=5)
+    fake_llm(monkeypatch, ok_draft())
+    plan = planner.plan(QUESTION, Effort.NORMAL, settings).plan
+    assert plan.criteria.year_from == settings.defaults.year_from
+    assert f"year_from={settings.defaults.year_from}" in plan.used_defaults
+
+
 def test_no_default_start_year_after_users_end_year(monkeypatch):
+    settings = real_settings()
+    settings.defaults = DefaultCriteria(years_back=5)
     fake_llm(monkeypatch, ok_draft(year_to=2015))
-    plan = planner.plan(QUESTION, Effort.NORMAL, real_settings()).plan
+    plan = planner.plan(QUESTION, Effort.NORMAL, settings).plan
     assert plan.criteria.year_from is None and plan.criteria.year_to == 2015
     assert not any(d.startswith("year_from=") for d in plan.used_defaults)
 
@@ -141,8 +152,8 @@ def test_replan_can_remove_a_criterion_on_purpose(monkeypatch):
     draft.removed_criteria = ["year_from"]  # feedback: "any year is fine"
     fake_llm(monkeypatch, draft)
     plan = planner.plan(QUESTION, Effort.NORMAL, real_settings(), "any year is fine", previous_plan_since_2020()).plan
-    assert plan.criteria.year_from == real_settings().defaults.year_from
-    assert any(d.startswith("year_from=") for d in plan.used_defaults)
+    assert plan.criteria.year_from is None
+    assert not any(d.startswith("year_from=") for d in plan.used_defaults)
 
 
 def test_replan_does_not_restore_defaults(monkeypatch):

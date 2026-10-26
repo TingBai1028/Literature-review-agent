@@ -9,7 +9,7 @@
       "question": "Deep learning methods for protein structure prediction since AlphaFold",
       "criteria": {
         "topic": "Deep learning methods for protein structure prediction since AlphaFold",
-        "year_from": 2021,
+        "year_from": null,
         "year_to": null,
         "min_citations": null,
         "min_citations_per_year": null,
@@ -25,7 +25,6 @@
       "max_papers": 100,
       "token_budget": 700000,
       "used_defaults": [
-        "year_from=2021",
         "paper_types=primary+review"
       ],
       "rationale": null

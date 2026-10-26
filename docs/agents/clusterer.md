@@ -29,7 +29,7 @@ Code: `litagent/agents/clusterer.py`, `litagent/cluster_labels.py` · Default pr
 Labels see all member titles, up to eight MMR source examples, and the two nearest groups (selected by closest cross-group pair).
 Context includes both minimum and maximum cross-group similarity; proximity is not permission to merge.
 The LLM selects paper/span IDs, and code copies exact source substrings into `Evidence`, validates group ownership and
-source coverage, and rejects invalid output after a bounded repair. Coherence is explicitly `coherent`, `mixed`, or
+source coverage, and rejects invalid output; after a bounded repair, a group whose claim is still unsupported becomes `insufficient_evidence` (keeping only valid quotes) instead of failing the whole map. Coherence is explicitly `coherent`, `mixed`, or
 `insufficient_evidence`; a coherent assessment requires body text and evidence for every supplied example. This checks
 provenance, not whether a quote semantically entails a claim. Assessments are recorded in trace and the smoke report;
 the public `Cluster` shape and sample snapshots remain unchanged. The grader does not see the producing agent's rationale.

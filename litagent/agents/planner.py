@@ -134,7 +134,7 @@ def apply_defaults(plan: SearchPlan, settings: Settings) -> SearchPlan:
     c = plan.criteria
     used = list(plan.used_defaults)
     # Don't add a start year that would contradict a user's end year ("before 2015")
-    if c.year_from is None and (c.year_to is None or c.year_to >= d.year_from):
+    if c.year_from is None and d.year_from is not None and (c.year_to is None or c.year_to >= d.year_from):
         c.year_from = d.year_from
         used.append(f"year_from={d.year_from}")
     if not c.paper_types:

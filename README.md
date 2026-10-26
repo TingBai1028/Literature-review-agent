@@ -17,7 +17,7 @@ A research student starting a literature review searches a few databases, skims 
 ## What it does
 
 - The user types a research question into one box (years, citation counts or paper type can be stated in plain words) and picks an effort level: Normal (30 papers), Medium (60), High (100, with open-access full text) or Ultra (150).
-- The Planner turns it into a search plan; without a clear topic it asks for one instead of guessing. The Retriever searches OpenAlex and arXiv (and Semantic Scholar with a key), removes duplicates across sources and preprint/published versions, and ranks by relevance and citations per year.
+- The Planner turns it into a search plan; without a clear topic it asks for one instead of guessing. The Retriever searches OpenAlex and arXiv (and Semantic Scholar with a key), removes duplicates across sources and preprint/published versions, drops papers whose embedding similarity to the question is too low, keeps the most relevant and orders them by relevance and citations per year.
 - **Human review 1**: the user sees a summary and the paper list, keeps or removes papers, or gives feedback ("only since 2023") to re-plan. Nothing is approved automatically in the web app.
 - The Clusterer selects a **main** pool of papers whose own text directly answers the question (checked by a second, independent model call) and groups the rest into **side** topics with a complete-linkage similarity bound. Each paper shows why it is where it is and which other groups it is close to.
 - The Connection finder and Gap finder compare bounded pairs of papers. A claim needs quotes from both papers, passes an independent verification, and for gaps an OpenAlex search for a study that already answers it. Abstaining is a valid result.

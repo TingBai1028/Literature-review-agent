@@ -71,7 +71,7 @@ def extract_text(data: bytes, max_pages: int) -> str:
 
 def clean_text(raw: str) -> str:
     """Plain prose: join hyphenated line breaks and wrapped lines, drop the reference list."""
-    text = raw.replace("­", "").replace("\r", "\n")
+    text = raw.replace("­", "").replace("\x00", "").replace("\r", "\n")  # some PDFs extract NUL bytes
     text = re.sub(r"(\w)-\n(\w)", r"\1\2", text)  # "trans-\nlation" -> "translation"
     # The first references heading after the opening third ends the body; appendices and checklists follow it.
     # (Measured: NeurIPS-style papers put references near 45% of the text, before long appendices.)

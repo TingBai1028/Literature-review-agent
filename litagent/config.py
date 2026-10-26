@@ -69,15 +69,17 @@ SIMILARITY_HYBRID_DENSE_WEIGHT = 0.85  # optional ablation, not the production d
 class DefaultCriteria:
     """Used by the Planner when the user doesn't say otherwise (team decision, 22 Oct)."""
 
-    years_back: int = 5
+    # No default start year (26 Oct, replaces the 22 Oct 5-year window): it dropped the classic papers
+    # theoretical questions depend on. Set a number to restore a default window.
+    years_back: int | None = None
     paper_types: tuple[str, ...] = ("primary", "review")
     # Team decision (24 Oct): no default minimum. Citations only filter when the user gives a number;
     # otherwise the Retriever ranks by citations per year so recent papers aren't penalised.
     min_citations_per_year: float | None = None
 
     @property
-    def year_from(self) -> int:
-        return date.today().year - self.years_back
+    def year_from(self) -> int | None:
+        return None if self.years_back is None else date.today().year - self.years_back
 
 
 # Nightshift model for every agent. Must be an NVIDIA Nemotron model, set explicitly
@@ -112,8 +114,15 @@ class Settings:
     # Whole run: stop between stages and return a partial result after this many seconds
     run_timeout_s: float = field(default_factory=lambda: float(os.getenv("RUN_TIMEOUT_S", "600")))
 
-    # Retriever ranking: share of relevance vs citations per year (team decision, 24 Oct)
+    # Retriever ranking: share of relevance vs citations per year (team decision, 24 Oct). It only orders the
+    # papers already chosen by relevance; citations never bring an off-topic paper into the list (26 Oct).
     rank_relevance_weight: float = 0.7
+    # Relevance floor: question-paper cosine with the clustering embedding model, on the same scale as
+    # main_similarity_threshold. On a 494-paper average-reward-MDP pool, papers above 0.5 were MDP theory and
+    # those below it generic deep RL; title + 600 abstract characters kept the ranking (Spearman 0.97 vs the
+    # full abstract) in 42 s instead of 101 s on CPU.
+    retrieval_similarity_min: float = 0.5
+    retrieval_relevance_text_chars: int = 600
     # Scholarly APIs each query runs against; a failing source is logged and skipped. Semantic Scholar's
     # shared keyless rate limit answered 429 on every live check, so it is a default only with a key.
     retrieval_sources: tuple[str, ...] = field(default_factory=lambda: tuple(s.strip() for s in os.getenv(

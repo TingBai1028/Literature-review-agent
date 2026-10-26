@@ -2,9 +2,10 @@
 
 Runs the Planner's queries against each configured scholarly API (OpenAlex, Semantic Scholar,
 arXiv), merges and deduplicates the results across sources and paper versions,
-drops papers without an abstract (later agents quote them as evidence), ranks by a blend of
-relevance and citations per year, caps the number of papers by effort level, and builds the
-summary shown at Human review 1.
+drops papers without an abstract (later agents quote them as evidence), drops papers whose
+embedding similarity to the question is below the relevance floor, keeps the most relevant up to
+the effort level's cap, orders them by a blend of relevance and citations per year, and builds
+the summary shown at Human review 1.
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from openai import OpenAIError
 from pydantic import BaseModel, Field
 
 from litagent.config import EFFORT_PROFILES, Settings
+from litagent.integrations.embeddings import EmbeddingError, embed_documents
 from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
 from litagent.schemas import Paper, RetrievalSummary, SearchCriteria, SearchPlan
 from litagent.tools.arxiv import ArxivError, search_arxiv
@@ -80,13 +82,17 @@ def retrieve(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> l
     # Sources without citation counts (arXiv) cannot show they meet a stated minimum
     kept = [(p, s) for p, s in with_abstract if _meets_citation_rate(p, plan.criteria.min_citations_per_year)
             and (not plan.criteria.min_citations or (p.citation_count or 0) >= plan.criteria.min_citations)]
-    papers = rank(kept, settings.rank_relevance_weight)[: plan.max_papers]
+    relevant, floor_note = apply_relevance_floor(kept, plan.question, settings)
+    # Choose by relevance first, then order the chosen papers; citations only reorder, never admit
+    chosen = sorted(relevant, key=lambda ps: ps[1], reverse=True)[: plan.max_papers]
+    papers = rank(chosen, settings.rank_relevance_weight)
     w = settings.rank_relevance_weight
     _log(
         "merge, filter, rank", f"{len(papers)} papers kept", f"limit {plan.max_papers}", "summarise",
         f"{found_total} found by {len(results)} searches ({', '.join(settings.retrieval_sources)}); removed "
         f"{found_total - len(merged)} duplicates, {len(merged) - len(with_abstract)} without abstract, "
-        f"{len(with_abstract) - len(kept)} below the citation minimum; ranked {w:.0%} relevance / {1 - w:.0%} citations per year",
+        f"{len(with_abstract) - len(kept)} below the citation minimum; {floor_note}; chose the {len(chosen)} most "
+        f"relevant, ordered {w:.0%} relevance / {1 - w:.0%} citations per year",
     )
 
     if EFFORT_PROFILES[plan.effort].use_full_text:
@@ -126,6 +132,30 @@ def attach_full_text(papers: list[Paper], settings: Settings) -> list[Paper]:
              f"{len(papers) - len(wanted)} without an open-access PDF link, {len(failures)} failed {reasons or ''}, "
              f"{len(timed_out)} cut by the {settings.full_text_total_timeout_s:.0f} s limit; the rest use abstracts")
     return [p.model_copy(update={"full_text": texts[p.id]}) if p.id in texts else p for p in papers]
+
+
+def apply_relevance_floor(scored: list[tuple[Paper, float]], question: str,
+                          settings: Settings) -> tuple[list[tuple[Paper, float]], str]:
+    """Re-score papers by embedding similarity to the question and drop those below the floor.
+
+    Search-rank fusion only says where a source listed a paper, and an any-word search lists off-topic
+    papers too. If the local embedding model is unavailable, the fusion scores are kept and nothing is
+    dropped, so retrieval still works; the trace says so.
+    """
+    if not scored:
+        return scored, "no papers to score against the question"
+    chars = settings.retrieval_relevance_text_chars
+    started = time.monotonic()
+    try:
+        vectors = embed_documents([question] + [f"{p.title}\n\n{p.abstract[:chars]}" for p, _ in scored], settings)
+    except EmbeddingError as e:
+        _log("relevance floor", "skipped: no embedding model", next_step="rank by search position", why=str(e))
+        return scored, "relevance floor skipped (no embedding model), chosen by search position"
+    similarity = vectors[1:] @ vectors[0]
+    floor = settings.retrieval_similarity_min
+    kept = [(p, float(s)) for (p, _), s in zip(scored, similarity) if s >= floor]
+    return kept, (f"{len(scored) - len(kept)} below question similarity {floor} "
+                  f"(scored {len(scored)} in {time.monotonic() - started:.0f} s)")
 
 
 def merge_ranked(results: list[list[Paper]]) -> list[tuple[Paper, float]]:

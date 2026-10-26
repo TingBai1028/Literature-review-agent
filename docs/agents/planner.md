@@ -6,7 +6,7 @@ Code: `litagent/agents/planner.py` · Prompt: `prompts/planner.md`
 2. **Plan:**
    1. Check there is a clear literature topic (the LLM decides, with examples in the prompt; an empty message is caught in code); if not, ask the user in a friendly way.
    2. Extract stated criteria: years, citations, primary vs review. A citation minimum is set only when the user gives a number; otherwise the Retriever ranks by citations per year.
-   3. Fill missing criteria with defaults (past 5 years, both paper types).
+   3. Fill missing criteria with defaults (both paper types; no start year, so classic papers stay searchable).
    4. Write search queries: Normal 2, Medium 3, High/Ultra 4 (`num_queries` in `EFFORT_PROFILES`).
    5. Set paper limit and token budget from the effort level.
 3. **Tools:** none (LLM only).

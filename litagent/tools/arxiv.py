@@ -2,7 +2,10 @@
 
 name: search_arxiv
 inputs: query, SearchCriteria, limit
-output: list[Paper] in arXiv relevance order (pdf_url always set, citation_count unknown)
+output: list[Paper] in arXiv relevance order (pdf_url always set, citation_count unknown). Papers matching
+        every query word come first; when fewer than TOP_UP_TO match (arXiv ANDs every word, so a 5-word
+        query often finds nothing), papers matching any word top the list up. The Retriever's relevance
+        floor removes the off-topic ones an any-word search brings in.
 fail mode: network error or 5xx -> retry up to 3 times with backoff, then raise ArxivError; 4xx -> raise at once.
            arXiv asks for at most one request every 3 seconds, so calls are spaced by MIN_INTERVAL_S.
 
@@ -25,6 +28,7 @@ BASE_URL = "https://export.arxiv.org/api/query"
 TIMEOUT_S = 30
 MAX_RESULTS = 200
 MIN_INTERVAL_S = 3.0
+TOP_UP_TO = 25  # any-word results drift off topic quickly, so they only fill up to this many papers
 NS = {"a": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
 _lock = threading.Lock()
 _last_call = 0.0
@@ -38,12 +42,17 @@ def search_arxiv(query: str, criteria: SearchCriteria, limit: int = 25, open_acc
                  *, timeout_s: float = TIMEOUT_S, attempts: int = 3) -> list[Paper]:
     if criteria.paper_types == ["review"]:
         return []  # arXiv cannot tell reviews apart; returning preprints would break the user's filter
-    text = _get_with_retry(build_params(query, criteria, limit), attempts, timeout_s)
-    return parse_feed(text)
+    papers = parse_feed(_get_with_retry(build_params(query, criteria, limit), attempts, timeout_s))
+    target = min(limit, TOP_UP_TO)
+    if len(papers) < target and len([w for w in query.split() if _term(w)]) > 1:
+        seen = {p.id for p in papers}
+        extra = parse_feed(_get_with_retry(build_params(query, criteria, target, any_word=True), attempts, timeout_s))
+        papers += [p for p in extra if p.id not in seen][:target - len(papers)]
+    return papers
 
 
-def build_params(query: str, criteria: SearchCriteria, limit: int) -> dict:
-    terms = " AND ".join(f"all:{_term(w)}" for w in query.split() if _term(w))
+def build_params(query: str, criteria: SearchCriteria, limit: int, any_word: bool = False) -> dict:
+    terms = (" OR " if any_word else " AND ").join(f"all:{_term(w)}" for w in query.split() if _term(w))
     if criteria.year_from or criteria.year_to:
         start, end = f"{criteria.year_from or 1991}01010000", f"{criteria.year_to or 2999}12312359"
         terms = f"({terms}) AND submittedDate:[{start} TO {end}]"

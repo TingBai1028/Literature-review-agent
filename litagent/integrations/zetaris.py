@@ -218,8 +218,10 @@ def row_to_paper(row: list[Any]) -> Paper:
 
 
 def _paper_values(p: Paper) -> tuple:
-    return (p.id, p.title, p.abstract, p.year, json.dumps(p.authors, ensure_ascii=False), p.citation_count,
-            p.is_review, p.is_open_access, p.pdf_url, p.doi, p.source, p.full_text)
+    values = (p.id, p.title, p.abstract, p.year, json.dumps(p.authors, ensure_ascii=False), p.citation_count,
+              p.is_review, p.is_open_access, p.pdf_url, p.doi, p.source, p.full_text)
+    # PostgreSQL text fields reject NUL bytes, which can arrive in PDF text or API metadata
+    return tuple(v.replace("\x00", "") if isinstance(v, str) else v for v in values)
 
 
 def _quote(value: str) -> str:

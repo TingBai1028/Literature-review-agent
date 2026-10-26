@@ -9,7 +9,7 @@ import time
 import numpy as np
 
 from litagent.config import Settings
-from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
+from litagent.integrations.llm import TokenBudgetExceeded, complete_json, load_prompt
 from litagent.schemas import ClusterAssessment, ClusterAssessmentBatch, ClusterAssessmentProposals, Evidence, Paper
 from litagent.similarity import representative_indices
 from litagent.trace import current_trace
@@ -145,21 +145,66 @@ def validate_assessments(batch: ClusterAssessmentBatch, contexts: list[dict], se
         raise ValueError(f"Expected cluster_ids {sorted(expected)} exactly once; received {ids}. "
                          "Include title-only groups as insufficient_evidence; neighbors are not targets.")
     for assessment in batch.assessments:
-        context = expected[assessment.cluster_id]
+        if error := assessment_error(assessment, expected[assessment.cluster_id], settings):
+            raise ValueError(error)
+
+
+def assessment_error(assessment: ClusterAssessment, context: dict, settings: Settings) -> str | None:
+    sources = {p["id"]: p for p in context["papers"]}
+    evidence_ids = set()
+    for e in assessment.evidence:
+        if e.paper_id not in sources:
+            return f"{assessment.cluster_id}: evidence must cite this group's supplied examples, not neighbors"
+        if not _valid_quote(e, sources, settings):
+            return f"{assessment.cluster_id}: quotes must be sufficiently long, exact substrings of supplied text"
+        evidence_ids.add(e.paper_id)
+    if assessment.coherence == "coherent":
+        # A title-only pair or unquoted counterexample cannot be turned into a verified shared idea.
+        if not all(p["has_body"] for p in sources.values()) or evidence_ids != set(sources):
+            return f"{assessment.cluster_id}: coherent requires body text and a quote for EVERY shown example; otherwise abstain"
+    elif assessment.coherence == "mixed" and len(evidence_ids) < min(2, len(sources)):
+        return f"{assessment.cluster_id}: mixed requires quotes from at least two examples"
+    return None
+
+
+def _valid_quote(e: Evidence, sources: dict, settings: Settings) -> bool:
+    return (e.paper_id in sources and len(e.quote.strip()) >= settings.cluster_evidence_min_chars
+            and e.quote in sources[e.paper_id]["text"])
+
+
+def abstain_where_invalid(proposals: ClusterAssessmentProposals, contexts: list[dict],
+                          settings: Settings) -> list[ClusterAssessment]:
+    """After bounded repair: keep valid assessments; turn the rest into explicit abstentions.
+
+    An abstention is always allowed, so one group's unsupported claim no longer fails the whole map.
+    Only references that resolve to supplied spans are kept as evidence; a group the model left out
+    gets a code-written abstention like a title-only group.
+    """
+    proposed = {p.cluster_id: p for p in proposals.assessments}
+    assessments = []
+    for context in contexts:
+        cid = context["cluster_id"]
         sources = {p["id"]: p for p in context["papers"]}
-        evidence_ids = set()
-        for e in assessment.evidence:
-            if e.paper_id not in sources:
-                raise ValueError(f"{assessment.cluster_id}: evidence must cite this group's supplied examples, not neighbors")
-            if len(e.quote.strip()) < settings.cluster_evidence_min_chars or e.quote not in sources[e.paper_id]["text"]:
-                raise ValueError(f"{assessment.cluster_id}: quotes must be sufficiently long, exact substrings of supplied text")
-            evidence_ids.add(e.paper_id)
-        if assessment.coherence == "coherent":
-            # A title-only pair or unquoted counterexample cannot be turned into a verified shared idea.
-            if not all(p["has_body"] for p in sources.values()) or evidence_ids != set(sources):
-                raise ValueError(f"{assessment.cluster_id}: coherent requires body text and a quote for EVERY shown example; otherwise abstain")
-        elif assessment.coherence == "mixed" and len(evidence_ids) < min(2, len(sources)):
-            raise ValueError(f"{assessment.cluster_id}: mixed requires quotes from at least two examples")
+        spans = {p["id"]: {s["span_id"]: s["quote"] for s in p["spans"]} for p in context["papers"]}
+        proposal = proposed.get(cid)
+        if proposal is None:
+            assessments.append(ClusterAssessment(
+                cluster_id=cid, label=f"Unverified group: {context['members'][0]['title']}",
+                rationale="The labeller gave no valid assessment for this group after repair.",
+                coherence="insufficient_evidence", evidence=[],
+                contrast="No supported distinction from neighboring research could be established."))
+            continue
+        evidence = [Evidence(paper_id=r.paper_id, quote=spans[r.paper_id][r.span_id])
+                    for r in proposal.evidence if r.span_id in spans.get(r.paper_id, {})]
+        assessment = ClusterAssessment(**proposal.model_dump(exclude={"evidence"}),
+                                       evidence=[e for e in evidence if _valid_quote(e, sources, settings)])
+        if assessment_error(assessment, context, settings):
+            assessment = assessment.model_copy(update={
+                "coherence": "insufficient_evidence",
+                "rationale": f"{assessment.rationale} [Abstained by code: the claimed {assessment.coherence} "
+                             "assessment was not supported by the required quotes after repair.]"})
+        assessments.append(assessment)
+    return assessments
 
 
 def contrastive_payload(contexts: list[dict], settings: Settings, fix: str | None = None) -> dict:
@@ -209,12 +254,13 @@ def contrastive_labels(papers: list[Paper], texts: list[str], groups: list[list[
             except ValueError as error:
                 if trace := current_trace():
                     trace.log("clusterer", "validate cluster evidence", "rejected", why=str(error),
-                              next_step="repair" if attempt < settings.cluster_label_validation_retries else "raise")
-                if attempt == settings.cluster_label_validation_retries:
-                    raise LLMError("Cluster label evidence failed validation after bounded repair") from error
-                payload["validation_error"] = str(error)
-                payload["rejected_proposal"] = proposals.model_dump()
-                continue
+                              next_step="repair" if attempt < settings.cluster_label_validation_retries
+                              else "abstain on invalid groups")
+                if attempt < settings.cluster_label_validation_retries:
+                    payload["validation_error"] = str(error)
+                    payload["rejected_proposal"] = proposals.model_dump()
+                    continue
+                batch = ClusterAssessmentBatch(assessments=abstain_where_invalid(proposals, batch_context, settings))
             for assessment in batch.assessments:
                 labels[assessment.cluster_id] = assessment
                 if trace := current_trace():
