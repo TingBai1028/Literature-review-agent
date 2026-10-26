@@ -208,6 +208,10 @@ class Settings:
     # Groups named per call. 4 made answers long: one batch took 82 of the 90 s limit and two runs timed out
     # (26 Oct); batches run at the same time, so smaller ones cost no wall time.
     cluster_label_batch_size: int = 2
+    # Groups whose naming call failed are named again once, one group per request, after the other batches finish
+    # (27 Oct handover: label timeouts left "Unlabelled:" clusters in 3 of 4 parallel runs, named only by a refresh).
+    # Skipped when less than 2 x llm_timeout_s of the run is left, so cards and the grade still fit.
+    cluster_relabel_retry: bool = True
     cluster_label_neighbors: int = 2
     cluster_neighbor_text_chars: int = 600
     cluster_label_validation_retries: int = 1

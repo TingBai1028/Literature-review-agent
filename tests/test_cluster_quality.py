@@ -162,8 +162,49 @@ def test_a_failed_label_call_leaves_its_groups_unnamed_and_keeps_the_map(monkeyp
     assert labels["C1"].coherence == "coherent"
     assert labels["C2"].coherence == "insufficient_evidence" and labels["C2"].label.startswith("Unlabelled: ")
     assert labels["C2"].evidence == [] and type(error).__name__ in labels["C2"].rationale
-    [failed] = [e for e in trace.events if e["action"] == "label clusters"]
-    assert failed["payload"] == {"cluster_ids": ["C2"]} and failed["decision"] == "unlabelled"
+    failed = [e for e in trace.events if e["action"] == "label clusters"]
+    # Named again once after the other batches (it fails again here), then left unnamed.
+    assert [e["payload"] for e in failed] == [{"cluster_ids": ["C2"]}] * 2 and failed[0]["decision"] == "unlabelled"
+    [retry] = [e for e in trace.events if e["action"] == "relabel unlabelled clusters"]
+    assert retry["decision"] == "naming 1 again"
+
+
+def test_a_group_whose_naming_failed_is_named_in_a_second_pass(monkeypatch, tmp_path):
+    attempts = []
+    def llm(prompt, message, output_model, **kwargs):
+        groups = json.loads(message)["groups"]
+        attempts.append([g["cluster_id"] for g in groups])
+        if groups[0]["cluster_id"] == "C2" and attempts.count(["C2"]) == 1:
+            raise openai.APITimeoutError(request=httpx2.Request("POST", "http://nightshift.test/v1/chat/completions"))
+        return proposals(groups)
+    monkeypatch.setattr(cluster_labels, "complete_json", llm)
+    ps = corpus(4)
+    settings = Settings(cluster_label_batch_size=1, cluster_label_neighbors=0)
+    with Trace(str(tmp_path)) as trace:
+        labels = cluster_labels.contrastive_labels(ps, [p.abstract for p in ps], [[0, 1], [2, 3]], np.eye(4), settings, None)
+    assert {a.coherence for a in labels.values()} == {"coherent"} and attempts.count(["C2"]) == 2
+    assert not labels["C2"].label.startswith("Unlabelled")
+
+
+def test_no_second_naming_pass_when_the_run_is_nearly_out_of_time(monkeypatch, tmp_path):
+    import time
+    calls = []
+    def llm(prompt, message, output_model, **kwargs):
+        groups = json.loads(message)["groups"]
+        calls.append(groups[0]["cluster_id"])
+        if groups[0]["cluster_id"] == "C2":
+            raise LLMError("ClusterAssessmentProposals: model output failed validation twice")
+        return proposals(groups)
+    monkeypatch.setattr(cluster_labels, "complete_json", llm)
+    ps = corpus(4)
+    settings = Settings(cluster_label_batch_size=1, cluster_label_neighbors=0)
+    deadline = time.monotonic() + settings.llm_timeout_s  # less than the two timeouts the second pass needs
+    with Trace(str(tmp_path)) as trace:
+        labels = cluster_labels.contrastive_labels(ps, [p.abstract for p in ps], [[0, 1], [2, 3]], np.eye(4), settings,
+                                                   None, deadline=deadline)
+    assert calls.count("C2") == 1 and labels["C2"].label.startswith("Unlabelled: ")
+    [skip] = [e for e in trace.events if e["action"] == "relabel unlabelled clusters"]
+    assert skip["decision"] == "skipped"
 
 
 def test_a_timed_out_label_batch_is_asked_again_one_group_at_a_time(monkeypatch):

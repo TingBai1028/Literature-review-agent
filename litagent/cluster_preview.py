@@ -59,7 +59,8 @@ def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, setting
                 raise _PreviewTimeLimit
             trace.log("clusterer", "start", "cluster papers", phase="start",
                       message=f"Clusterer: grouping {len(papers)} papers and choosing the main cluster")
-            result.clusters = clusterer.cluster(papers, effort, settings, question=question, artifacts=artifacts)
+            result.clusters = clusterer.cluster(papers, effort, settings, question=question, artifacts=artifacts,
+                                                deadline=started + settings.run_timeout_s)
             partition_indices(papers, result.clusters)
             mains = [c for c in result.clusters if isinstance(c, QuestionCluster) and c.kind == "main"]
             if len(mains) > 1 or (settings.cluster_map_mode == "question" and not mains):
