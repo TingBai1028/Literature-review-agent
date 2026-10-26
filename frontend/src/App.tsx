@@ -10,6 +10,7 @@ import { Inspector } from "./components/Inspector";
 import { ReviewPanel } from "./components/ReviewPanel";
 import { ActivityFeed } from "./components/ActivityFeed";
 import { ReasoningPanel } from "./components/ReasoningPanel";
+import { PanelHandle, usePanels } from "./components/PanelHandle";
 import { Provenance } from "./components/Provenance";
 import {
   buildingMap,
@@ -462,6 +463,7 @@ function WorkspaceView({
   const [moves, setMoves] = useState<Move[]>([]);
   const [plan, setPlan] = useState<Plan | null>(null);
   const [mobile, setMobile] = useState(false);
+  const panels = usePanels();
   const changeFilter = (f: Filter) => {
     setFilter(f);
     if (f === "connections")
@@ -472,13 +474,6 @@ function WorkspaceView({
       );
     if (f === "gaps")
       setSelection(map.gaps[0] ? { type: "gap", id: map.gaps[0].id } : null);
-    if (f === "main_side")
-      setSelection({
-        type: "paper",
-        id:
-          map.clusters.find((c) => c.kind === "main")?.paper_ids[0] ??
-          papers[0].id,
-      });
   };
   return (
     <>
@@ -491,7 +486,7 @@ function WorkspaceView({
           live={live?.events ?? []}
         />
       ) : (
-        <main className="workspace-grid">
+        <main className={`workspace-grid${panels.className}`} style={panels.style}>
           <button
             className="mobile-topic-toggle"
             onClick={() => setMobile((v) => !v)}
@@ -512,6 +507,7 @@ function WorkspaceView({
             }}
             mobileOpen={mobile}
           />
+          <PanelHandle side="left" panels={panels.panels} set={panels.set} />
           <LiteratureGraph
             map={map}
             papers={papers}
@@ -525,6 +521,7 @@ function WorkspaceView({
             onSwap={onSwap}
             swapDisabled={busy || !editable}
           />
+          <PanelHandle side="right" panels={panels.panels} set={panels.set} />
           <Inspector
             map={map}
             papers={papers}
@@ -652,16 +649,18 @@ function LiveBuild({
   );
   const [selection, setSelection] = useState<Selection | null>(null);
   const [filter, setFilter] = useState<Filter>("all");
+  const panels = usePanels();
   const paper = live.papers.find(
     (p) => selection?.type === "paper" && p.id === selection.id,
   );
   return (
-    <main className="workspace-grid live-build">
+    <main className={`workspace-grid live-build${panels.className}`} style={panels.style}>
       <aside className="topic-sidebar">
         <h2>{live.title}</h2>
         <p className="muted small">{live.question}</p>
         <p className="small">{live.papers.length} papers are being grouped and named.</p>
       </aside>
+      <PanelHandle side="left" panels={panels.panels} set={panels.set} />
       <LiteratureGraph
         map={map}
         papers={live.papers}
@@ -673,6 +672,7 @@ function LiveBuild({
         search=""
         onReview={() => undefined}
       />
+      <PanelHandle side="right" panels={panels.panels} set={panels.set} />
       <aside className="inspector">
         <ActivityFeed side events={events} title={live.title} />
         {paper ? (

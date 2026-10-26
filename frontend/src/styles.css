@@ -223,9 +223,82 @@ h3 {
 .workspace-grid {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(228px, 20%) minmax(0, 1fr) minmax(320px, 26.7%);
+  /* topics | divider | map | divider | details; a divider takes no width, a folded panel gets 0 */
+  grid-template-columns:
+    var(--left-col, minmax(228px, 20%)) 0 minmax(0, 1fr) 0
+    var(--right-col, minmax(320px, 26.7%));
   flex: 1;
   min-height: 0;
+}
+@media (min-width: 1051px) {
+  .workspace-grid > .topic-sidebar {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .workspace-grid > .panel-handle.left {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .workspace-grid > .graph-panel {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .workspace-grid > .panel-handle.right {
+    grid-column: 4;
+    grid-row: 1;
+  }
+  .workspace-grid > .inspector {
+    grid-column: 5;
+    grid-row: 1;
+  }
+  .workspace-grid.left-folded > .topic-sidebar,
+  .workspace-grid.right-folded > .inspector {
+    display: none;
+  }
+}
+.panel-handle {
+  position: relative;
+  z-index: 6;
+}
+.panel-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+}
+.panel-resizer:hover,
+.panel-resizer:focus-visible {
+  outline: none;
+  background: linear-gradient(to right, transparent 3px, #9fbcae 3px, #9fbcae 5px, transparent 5px);
+}
+.panel-fold {
+  position: absolute;
+  top: 14px;
+  left: -11px;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  color: #4b6054;
+  box-shadow: 0 1px 3px rgba(32, 52, 46, 0.12);
+}
+.panel-fold:hover {
+  color: var(--green);
+  border-color: #9fbcae;
+}
+/* A folded panel's button sits just inside the map's edge */
+.panel-handle.left.folded .panel-fold {
+  left: 6px;
+}
+.panel-handle.right.folded .panel-fold {
+  left: -28px;
 }
 .topic-sidebar {
   background: var(--rail);
@@ -343,6 +416,8 @@ h3 {
 }
 .graph-toolbar {
   display: flex;
+  /* wraps when the side panels are made wide, so no tab is cut off */
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 10px;
   align-items: center;
@@ -1182,7 +1257,7 @@ blockquote {
 }
 @media (min-width: 1700px) {
   .workspace-grid {
-    grid-template-columns: 300px minmax(0, 1fr) 400px;
+    grid-template-columns: var(--left-col, 300px) 0 minmax(0, 1fr) 0 var(--right-col, 400px);
   }
   .question-bar h1 {
     font-size: 25px;
@@ -1245,6 +1320,10 @@ blockquote {
 @media (max-width: 1050px) {
   .workspace-grid {
     grid-template-columns: minmax(0, 1fr) 330px;
+  }
+  /* Narrower screens keep their own layout (topics as a drawer, stacked on phones): no dividers */
+  .panel-handle {
+    display: none;
   }
   .topic-sidebar {
     display: none;
@@ -1376,6 +1455,17 @@ blockquote {
   .graph-toolbar {
     padding: 48px 16px 6px;
     gap: 8px;
+    /* The three tabs get their own row; Swap papers goes below them */
+    flex-wrap: wrap;
+  }
+  .graph-toolbar .segmented {
+    flex: 1 1 100%;
+  }
+  .graph-toolbar .segmented button {
+    flex: 1;
+  }
+  .graph-actions {
+    justify-content: flex-start;
   }
   .segmented button {
     padding: 8px 11px;
