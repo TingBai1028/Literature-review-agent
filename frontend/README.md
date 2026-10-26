@@ -33,9 +33,10 @@ labels its synthetic similarities, groupings and findings.
 
 1. Choose a saved version, or **新建地图**. Two sources are available:
    - **在线检索** (default): type a research question (years, citation counts or paper type
-     can be stated in it) and an effort level. `POST /search` runs the Planner and OpenAlex
-     retrieval, stores the papers through Zetaris and returns the plan, a summary and the
-     paper list (Human review 1). Nothing is approved automatically: untick papers to drop,
+     can be stated in it) and a mode: **Fast** (retrieve ~300, show the best 50) or **Pro**
+     (~1,000, show 50, read full text). `POST /search` runs the Planner and retrieval, ranks
+     every paper by relevance and citations, stores the papers through Zetaris and returns the
+     plan, a summary, the paper list (Human review 1) and the ranked backup pool. Nothing is approved automatically: untick papers to drop,
      or write feedback and **按反馈重新检索** to re-plan (stated criteria are kept), then
      **用保留的 N 篇建立地图** sends only the kept papers to `POST /cluster`.
    - **导入记录**: import a JSON paper array, a `/cluster` request (`input.query`,
@@ -43,14 +44,20 @@ labels its synthetic similarities, groupings and findings.
      query/effort replaces the dialog's prefilled values. Try
      `input_examples/cluster-map/lora-translation.json`; it contains original records.
 2. Click a topic or paper. Inspect its source evidence, full abstract, keywords and
-   numerical alternatives. Main is a question-relevance pool; paper membership is exclusive.
-   Map coordinates are for navigation and do not encode semantic distance. On a phone,
+   numerical alternatives. Every map has one main cluster (the most topic-related, centred and
+   outlined), foundation clusters (classic work) and side clusters; each says why it got its role.
+   Paper membership is exclusive. The layout is force-directed: similar papers sit closer, node
+   size grows with citations and darker nodes are more recent. Positions are seeded and
+   remembered per map lineage, so Graph 1, Graph 2 and refreshed versions keep papers in place. On a phone,
    topic navigation and the inspector show full labels; the overview omits dense labels.
    Drag the map with a finger and use the zoom controls to inspect individual nodes.
-3. Click a solid scientific connection to inspect both sources. Dashed similarity hints
-   are navigational suggestions. Empty gap output is valid and does not prove no gap exists.
+3. **运行分析** shows Graph 1 (paper-to-paper edges) as soon as it is ready, then adds Graph 2
+   (research gaps) on the same positions. Hover an edge for its one-line reason; click it for the
+   longer reason, evidence and similarity. Edges always join two papers. Empty gap output is valid
+   and does not prove no gap exists. **换一批论文** swaps the side papers for the next-best papers
+   of the backup pool; main and foundation stay.
 4. Select an eligible side-cluster target, **预览移动**, then explicitly apply the preview.
-   Main papers stay fixed. The server validates the final simultaneous membership.
+   Main and foundation papers stay fixed. The server validates the final simultaneous membership.
 5. **版本记录** lets you inspect old versions or explicitly set a completed version as current.
    A stale preview shows a conflict inside the dialog; it cannot overwrite a changed head.
 6. **人工验收** hides model decisions by default. Fill in the reviewer, reason, judgment

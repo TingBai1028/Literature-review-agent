@@ -79,3 +79,14 @@ def test_corrupt_manifest_is_not_presented_as_a_working_map(client):
     out=c.get('/maps').json()['output']
     assert out['maps']==[] and out['warnings']
     assert c.get('/cluster/root/review').status_code==409
+
+
+def test_neighbors_give_each_paper_its_most_similar_papers_once(client):
+    c,root,cfg,papers,arrays=client
+    pairs=c.get('/cluster/root/neighbors?k=1').json()['output']['pairs']
+    assert all(p['source']<p['target'] for p in pairs) and len({(p['source'],p['target']) for p in pairs})==len(pairs)
+    ids=[p.id for p in papers]
+    for i,pid in enumerate(ids):
+        best=max((j for j in range(len(ids)) if j!=i),key=lambda j:arrays.similarity[i,j])
+        assert any({p['source'],p['target']}=={pid,ids[best]} for p in pairs)
+    assert c.get('/cluster/root/neighbors?k=0').status_code==422
