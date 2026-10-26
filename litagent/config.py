@@ -125,6 +125,10 @@ class Settings:
     # An answer Nightshift built with injected prior-answer memory is discarded and asked again in a new scope
     # this many times before the call fails. It happened once in 155 runs (26 Oct, 4 calls at once).
     llm_memory_retries: int = 1
+    # An answer that only repeats the request's own fields is sent again, unchanged, this many times before the
+    # usual repair turn (which would show the model its echo as its own answer). 27 Oct, Ultra, one technical
+    # planner question: 6 of 11 answers were echoes; 2 of 10 with the system prompt's no-echo line.
+    llm_echo_retries: int = 2
 
     # Zetaris SQL requests (rules: 30-60 s)
     zetaris_timeout_s: float = 45.0
