@@ -2,14 +2,13 @@
 
 Code: `litagent/agents/clusterer.py`, `litagent/cluster_labels.py` · Default prompt: `prompts/cluster_labeler_contrastive.md`
 
-1. **Goal:** Group papers into labelled research ideas.
-   Question-aware callers now select one source-backed main relevance pool and then group the remaining papers into side topics;
-   see [main/side API, scores and evidence](../main-side-clusters.md). The earlier topic-only path remains available.
+1. **Goal:** Group papers into labelled research ideas with roles: exactly one main cluster, at least one foundation
+   cluster and side clusters (see "Cluster roles" below). The earlier topic-only path remains available.
    Standalone question maps also support [previewed side moves, incremental label reuse and rollback](../cluster-regeneration.md).
 2. **Plan:**
    1. Build text per paper: metadata (Normal / Medium) or full text (High / Ultra, via Meterless Markovian engine).
-   2. Embed each paper and, for question maps, the question. Admit main papers through the query gate and verified source relevance.
-   3. Complete-linkage grouping of remaining side papers: every pair meets the selected side threshold (default 0.7). The main relevance pool has a separate criterion.
+   2. Embed each paper and, for question maps, the question (code). Check relevance of papers above the query gate against their source text (LLM).
+   3. Assign roles (code, `litagent/cluster_roles.py`): main, foundation, then side groups by complete linkage at the side threshold (default 0.7).
    4. Retrieve nearest groups, then name bounded batches using task/method/data/evaluation contrasts and source-span references.
    5. Write clusters to the world model.
 3. **Tools:** pinned `CLAUSE-Bielefeld/SemCSE_cosine` on CPU with CLS pooling; MiniLM fast baseline; SciPy complete linkage; Nightshift/Nemotron labeller.
@@ -17,7 +16,22 @@ Code: `litagent/agents/clusterer.py`, `litagent/cluster_labels.py` · Default pr
 5. **Rubric:** see `prompts/grader.md` → clusters. Legacy topic-only runs use size rules first. Question maps exempt main from size rules and treat side sizes as diagnostics, then assess question relevance and side coherence against sources.
 6. **Stop conditions:** grade < 7/9 → redo once with the grader's fix → continue with a warning.
 7. **Run log:** threshold used, number of clusters, size distribution.
-8. **Guardrails:** runtime loads local model files only; no automatic download, remote model code or GPU. Input ids must be unique, vectors finite and non-zero, labels non-empty. Code validates memberships. The topic/side labeller only names fixed groups; main admission additionally requires verified relevance evidence. Singletons are retained as `Unclustered: <title>` without a labeller call.
+8. **Guardrails:** runtime loads local model files only; no automatic download, remote model code or GPU. Input ids must be unique, vectors finite and non-zero, labels non-empty. Code validates memberships. The labeller only names fixed groups; roles come from code, never from the labeller. Singletons are retained as `Unclustered: <title>` without a labeller call.
+
+## Cluster roles
+
+Every question map has exactly one main cluster, at least one foundation cluster and some side clusters; a map with
+no main cluster is an error. Role assignment is plain code; each cluster's `role_reason` says why it got its role.
+
+| Role | How it is chosen | Size |
+| --- | --- | --- |
+| Main (`MAIN`) | All papers are grouped by complete linkage; each group of 2+ papers is scored by mean question similarity plus `main_relevance_weight` (0.2) times the LLM relevance check (direct 1, supporting 0.5). The best group that reaches the question gate (0.5) or has a directly relevant paper wins. If none does, the most relevant papers overall form the main cluster and the fallback is logged. | 5-10: a larger group keeps its 10 most relevant papers, a smaller one is filled with the next most relevant |
+| Foundation (`FOUNDATION`) | Papers cited by main papers, older than the set's median year, with at least median citations, most cited first. When fewer than 3 qualify, the rule relaxes (drop "cited by main", then the most cited remaining papers), and the reason says so. | 3-10 |
+| Side (`SIDE-...`) | The remaining papers, regrouped by complete linkage. Groups under 3 papers merge into their most similar group; each merge is logged. | 3+ |
+
+Main and foundation membership is frozen in regeneration; only side papers can be moved. A move is checked by each
+incoming paper's score against its target's final members. Sample mode runs the same rules with TF-IDF relevance and
+the stored similarity matrices (`data/sample/similarity/`), and placeholder labels.
 
 **Implementation choices:** title + abstract for Normal/Medium; supplied full text for High/Ultra, with a logged metadata fallback when missing. SemCSE encodes each token window using its documented CLS representation; MiniLM uses its original mean pooling. Window vectors are mean-pooled and normalized, with a logged per-paper cap. This is document embedding, not the pending Meterless Markovian reasoning engine. MMR selects at most `cluster_label_max_papers` central, non-redundant examples for the label prompt without changing group membership. All numeric controls live in `litagent/config.py`.
 
