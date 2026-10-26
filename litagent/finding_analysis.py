@@ -60,7 +60,7 @@ def run_finding_stages(result, papers, settings, world, context: FindingContext)
         result.warnings.append(mask(str(error)) + "; completed finding tasks retained. Resume this partial version with a new analysis request.")
     finally:
         analysis.audits = context.audits
-    if any(g.coverage.status in {"unavailable", "inconclusive"} for g in result.gaps if hasattr(g, "coverage")):
+    if any(g.coverage.status in {"unavailable", "inconclusive"} for g in result.gaps if getattr(g, "coverage", None)):
         result.warnings.append("Some research hypotheses have unavailable or inconclusive coverage checks; global novelty is not established.")
 
 

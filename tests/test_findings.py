@@ -305,3 +305,9 @@ def test_model_grade_must_explain_itself():
     ok = schema.model_validate({"stage": "gaps", "accuracy": 3, "appropriateness": 3, "actionability": 2,
                                 "reasoning": "Both quotes support the hypothesis."})
     assert ok.total == 8 and ok.fix is None
+
+
+def test_gaps_without_a_coverage_search_do_not_break_the_analysis(model, tmp_path):
+    root, cfg, _, _ = snapshot(tmp_path, settings=replace(gap_settings(tmp_path), gap_coverage_check=False))
+    result = analyze_cluster_map("root", root.version_token, cfg, "f" * 32)
+    assert result.gaps and all(g.coverage is None and g.coverage_status == "skipped" for g in result.gaps)
