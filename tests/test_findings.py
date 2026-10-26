@@ -314,6 +314,9 @@ def test_model_grade_must_explain_itself():
     ok = schema.model_validate({"stage": "gaps", "accuracy": 3, "appropriateness": 3, "actionability": 2,
                                 "reasoning": "Both quotes support the hypothesis."})
     assert ok.total == 8 and ok.fix is None
+    shown = schema.model_json_schema()  # what the model is asked to fill in, in this order
+    assert list(shown["properties"])[:2] == ["stage", "reasoning"] and "reasoning" in shown["required"]
+    assert "default" not in shown["properties"]["reasoning"]
 
 
 def test_gaps_without_a_coverage_search_do_not_break_the_analysis(model, tmp_path):

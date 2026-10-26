@@ -305,7 +305,7 @@ def _generate_child(source, state, arrays, output, plan, keys, cfg) -> ClusterMa
             if analyze:
                 run_finding_stages(child, state.papers, cfg, world, context)
                 pending.extend(child.analysis.pending_stages)
-            if pending:
+            if any(s not in {"connections_grade", "gaps_grade"} for s in pending) or child.status == "partial":
                 child.status = "partial"
                 child.warnings.append("Pending stages were not recomputed. The source remains active; inspect this child version separately.")
             child.regeneration.pending_stages = pending
