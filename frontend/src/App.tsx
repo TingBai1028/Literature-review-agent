@@ -532,6 +532,16 @@ function WorkspaceView({
               setPlan(null);
             }}
             onReview={() => setTab("review")}
+            top={
+              live && (
+                <ActivityFeed
+                  side
+                  events={live.events}
+                  title={live.title}
+                  onShowAll={() => setTab("reasoning")}
+                />
+              )
+            }
           >
             <Provenance
               map={map}
@@ -540,13 +550,6 @@ function WorkspaceView({
               onShowReasoning={() => setTab("reasoning")}
             />
           </Inspector>
-          {live && (
-            <ActivityFeed
-              events={live.events}
-              title={live.title}
-              onShowAll={() => setTab("reasoning")}
-            />
-          )}
         </main>
       )}
       {tab === "map" && (
@@ -661,6 +664,7 @@ function LiveBuild({
         onReview={() => undefined}
       />
       <aside className="inspector">
+        <ActivityFeed side events={events} title={live.title} />
         {paper ? (
           <>
             <h3 className="paper-title">{paper.title}</h3>
@@ -673,7 +677,6 @@ function LiveBuild({
           <p className="muted">The map is being built; click a paper to read its abstract meanwhile.</p>
         )}
       </aside>
-      <ActivityFeed events={events} title={live.title} />
     </main>
   );
 }

@@ -9,6 +9,7 @@ import type {
   ReviewPack,
 } from "../types";
 import { AgentReview } from "./AgentReview";
+import { PaperText } from "../paperNames";
 export function ReviewPanel({
   map,
   timeout,
@@ -251,7 +252,7 @@ function ReviewForm({
         </button>
       </div>
       <p className="review-question">
-        {item.claim || `From the two sources, can you state a testable hypothesis that fits this research question?`}
+        {item.claim ? <PaperText text={item.claim} papers={item.papers} /> : `From the two sources, can you state a testable hypothesis that fits this research question?`}
       </p>
       {!item.claim && <p className="muted">{map.question}</p>}
       {item.proposed_test && (
@@ -278,8 +279,11 @@ function ReviewForm({
         <div className="notice">
           <strong>Model judgement: {assessment.decision}</strong>
           <p>
-            {assessment.reason ||
-              "This is a kept connection; the sources and human review decide."}
+            {assessment.reason ? (
+              <PaperText text={assessment.reason} papers={item.papers} />
+            ) : (
+              "This is a kept connection; the sources and human review decide."
+            )}
           </p>
         </div>
       )}

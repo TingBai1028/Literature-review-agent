@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Bot, LoaderCircle } from "lucide-react";
 import { request, messageOf } from "../api";
 import type { AgentReviewReport, MapResult, ReviewItem } from "../types";
+import { PaperText } from "../paperNames";
 
 export function AgentReview({
   map,
@@ -125,7 +126,9 @@ export function AgentReview({
               </div>
             </dl>
           )}
-          <p>{assessment.reason}</p>
+          <p>
+            <PaperText text={assessment.reason} papers={item.papers} />
+          </p>
           {assessment.limitations.length > 0 && (
             <ul>
               {assessment.limitations.map((s, i) => (

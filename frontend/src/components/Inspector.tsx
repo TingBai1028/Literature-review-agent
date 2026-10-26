@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { ArrowUpRight, ArrowRight, BookOpen } from "lucide-react";
 import { request, messageOf } from "../api";
 import { roleName } from "./TopicSidebar";
+import { PaperText } from "../paperNames";
 import type {
   Candidate,
   Evidence,
@@ -50,6 +51,7 @@ export function Inspector({
   onMove,
   canEdit,
   onReview,
+  top,
   children,
 }: {
   map: MapResult;
@@ -60,6 +62,7 @@ export function Inspector({
   onMove: (paper: string, target: string) => void;
   canEdit: boolean;
   onReview: () => void;
+  top?: ReactNode; // shown above the selection, e.g. the activity feed of a run in progress
   children?: ReactNode; // shown under the selection, e.g. its provenance
 }) {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -107,6 +110,7 @@ export function Inspector({
   const card = map.cluster_cards?.find((c) => c.cluster_id === topic?.id);
   return (
     <aside className="inspector" aria-label="Details and evidence">
+      {top}
       <h2 className="inspector-heading">
         {paper
           ? "Paper details"
@@ -265,7 +269,7 @@ export function Inspector({
           <p className="paper-meta">
             {roleName(topic)} · {topic.paper_ids.length} papers
           </p>
-          {topic.role_reason && <p className="small">{topic.role_reason}</p>}
+          {topic.role_reason && <p className="small"><PaperText text={topic.role_reason} papers={papers} onSelect={onSelect} /></p>}
           {card && (
             <section className="inspector-section cluster-card">
               <h3>
@@ -274,7 +278,7 @@ export function Inspector({
                   ? `Full-text analysis (${card.papers_with_full_text ?? 0} with full text)`
                   : "Metadata analysis"}
               </h3>
-              <p>{card.summary}</p>
+              <p><PaperText text={card.summary} papers={papers} onSelect={onSelect} /></p>
               <p className="muted small">
                 {card.year_range
                   ? `${card.year_range[0]}–${card.year_range[1]}`
@@ -287,7 +291,7 @@ export function Inspector({
               )}
             </section>
           )}
-          <p className="muted small">{topic.rationale}</p>
+          <p className="muted small"><PaperText text={topic.rationale} papers={papers} onSelect={onSelect} /></p>
           <div className="paper-list">
             {topic.paper_ids.map((id) => (
               <button key={id} onClick={() => onSelect({ type: "paper", id })}>
@@ -301,7 +305,7 @@ export function Inspector({
       ) : connection ? (
         <>
           <h3 className="finding-title">
-            {connection.reason_short ?? connection.description}
+            <PaperText text={connection.reason_short ?? connection.description} papers={papers} onSelect={onSelect} />
           </h3>
           <p className="muted small">
             {relationNames[connection.relation ?? ""] ?? "Connection"} ·{" "}
@@ -310,7 +314,7 @@ export function Inspector({
               ? "Sample placeholder"
               : "Passed an independent source check; still needs human review"}
           </p>
-          {connection.reason_long && <p>{connection.reason_long}</p>}
+          {connection.reason_long && <p><PaperText text={connection.reason_long} papers={papers} onSelect={onSelect} /></p>}
           {!!connection.evidence_notes?.length && (
             <section className="inspector-section">
               <h3>Basis</h3>
@@ -333,9 +337,9 @@ export function Inspector({
         </>
       ) : gap ? (
         <>
-          <h3 className="finding-title">{gap.description}</h3>
+          <h3 className="finding-title"><PaperText text={gap.description} papers={papers} onSelect={onSelect} /></h3>
           <p className="small">
-            Between:
+            Between:{" "}
             {gap.between_paper_ids
               .map((id) => papers.find((p) => p.id === id)?.title ?? id)
               .join(" ↔ ")}{" "}
@@ -378,9 +382,9 @@ export function Inspector({
               </>
             )}
           </p>
-          <p>{gap.why_it_matters}</p>
+          <p><PaperText text={gap.why_it_matters} papers={papers} onSelect={onSelect} /></p>
           {gap.label_reason && (
-            <p className="muted small">{gap.label_reason}</p>
+            <p className="muted small"><PaperText text={gap.label_reason} papers={papers} onSelect={onSelect} /></p>
           )}
           {gap.proposed_test && (
             <section className="inspector-section">
