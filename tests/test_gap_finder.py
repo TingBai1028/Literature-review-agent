@@ -257,3 +257,26 @@ def test_a_failure_in_a_later_cluster_keeps_the_finished_clusters_gaps(llm, sear
     with pytest.raises(LLMError):
         gap_finder.find_gaps(papers, clusters, [], Settings(sample_mode=False, logs_dir=str(tmp_path)), context=context)
     assert [g.between_paper_ids for g in context.partial_gaps] == [["A", "B"]]
+
+
+def test_a_failed_grading_call_drops_only_its_gaps_and_is_retried_later(llm, search, tmp_path, monkeypatch):
+    from litagent.integrations.llm import LLMError
+    original, failed = llm.__call__, []
+    def fail_first_grading(prompt, message, schema, **kwargs):
+        if schema is GapLabelDecisions and not failed:
+            failed.append(json.loads(message)["gaps"][0]["gap_id"])
+            raise LLMError("GapLabelDecisions: model output failed validation twice")
+        return original(prompt, message, schema, **kwargs)
+    monkeypatch.setattr(engine, "complete_json", fail_first_grading)
+    papers = [paper(pid) for pid in IDS]
+    settings = Settings(sample_mode=False, logs_dir=str(tmp_path), gap_llm_batch_size=1)
+    context = FindingContext(similarity=matrix({("A", "B"): .7, ("C", "D"): .7}))
+    clusters = [Cluster(id="C1", label="Topic", rationale="", paper_ids=IDS)]
+    with Trace(str(tmp_path)) as trace:
+        gaps = gap_finder.find_gaps(papers, clusters, [], settings, context=context)
+    assert len(gaps) == 1 and gaps[0].id != failed[0]
+    [dropped] = lines(trace.events, "grading", "dropped")
+    assert dropped["gap_id"] == failed[0] and "a later analysis retries it" in dropped["why"]
+    graded = sum(schema is GapLabelDecisions for schema, _ in llm.calls)
+    again = gap_finder.find_gaps(papers, clusters, [], settings, context=context)  # not reused from the cache
+    assert len(again) == 2 and sum(schema is GapLabelDecisions for schema, _ in llm.calls) == graded + 2

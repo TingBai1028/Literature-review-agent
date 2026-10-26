@@ -159,7 +159,10 @@ one-sentence reason. It keeps `novel` and `known_open`, ranks `novel` first and 
 and caps the result at `gap_max_per_cluster` per cluster. When the claim misstates its grounds, the
 grading agent returns a fix, and that gap is rewritten once with the fix and checked again. Output:
 the final gaps for the paper map. Drops: `trivial`, `known_solved`, no label returned, over the cap,
-or still flawed after the one retry. The orchestrator's stage grade (0–9) still runs afterwards, as for every finding agent.
+or still flawed after the one retry. A grading request that fails (timeout, or invalid JSON twice) drops only the
+gaps in that request, with a warning and `retry: true` in the audit, so the stage finishes and a later analysis
+request grades them again instead of reusing the cached result; the token budget and time limit still stop the run.
+The orchestrator's stage grade (0–9) still runs afterwards, as for every finding agent.
 
 **Optional: explicit gaps** (`gap_explicit_enabled=True`, off by default). Input: each paper's
 abstract. The LLM selects sentences that state missing knowledge ("remains unknown", "future work",

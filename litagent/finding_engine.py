@@ -228,6 +228,8 @@ def cached(key: str, context: FindingContext, settings: Settings) -> FindingCach
     if record and record.stage == "gaps":
         if any(g.coverage_status == "unavailable" for g in record.gaps):
             return None
+        if any(d.get("retry") for d in record.audit.decisions):  # a gap dropped by a failed grading call
+            return None
         age = (datetime.now(timezone.utc) - datetime.fromisoformat(record.created_at)).total_seconds()
         if age < 0 or age >= settings.gap_coverage_ttl_s:
             return None
