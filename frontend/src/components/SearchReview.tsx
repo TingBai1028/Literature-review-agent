@@ -1,20 +1,30 @@
 import { useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { request, messageOf } from "../api";
+import { newRunId, useRunEvents } from "../events";
 import type { Paper, SearchResult } from "../types";
-export function useSearchReview(query: string, effort: string, timeout: number) {
+export function useSearchReview(
+  query: string,
+  effort: string,
+  timeout: number,
+) {
   const [result, setResult] = useState<SearchResult | null>(null);
   const [kept, setKept] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [searchId, setSearchId] = useState<string | null>(null);
+  const events = useRunEvents(searchId); // live retriever counter and feed (specs A2, A3)
   const run = async (feedback?: string) => {
     setLoading(true);
     setError("");
+    const id = newRunId();
+    setSearchId(id);
     try {
       const replan = feedback && result?.plan;
       const out = await request<SearchResult>("/search", {
         method: "POST",
         body: {
+          run_id: id,
           input: {
             query: replan ? result.plan!.question : query.trim(),
             effort,
@@ -40,8 +50,20 @@ export function useSearchReview(query: string, effort: string, timeout: number) 
       else next.add(id);
       return next;
     });
-  const selected: Paper[] = (result?.papers ?? []).filter((p) => kept.has(p.id));
-  return { result, kept, selected, loading, error, run, toggle, reset: () => setResult(null) };
+  const selected: Paper[] = (result?.papers ?? []).filter((p) =>
+    kept.has(p.id),
+  );
+  return {
+    result,
+    kept,
+    selected,
+    loading,
+    error,
+    run,
+    toggle,
+    events,
+    reset: () => setResult(null),
+  };
 }
 const describe = (plan: NonNullable<SearchResult["plan"]>) => {
   const c = plan.criteria;
@@ -127,7 +149,9 @@ export function SearchReview({
                   {[
                     p.year,
                     p.is_review ? "综述" : null,
-                    p.citation_count != null ? `${p.citation_count} 次引用` : null,
+                    p.citation_count != null
+                      ? `${p.citation_count} 次引用`
+                      : null,
                     p.abstract ? null : "无摘要",
                   ]
                     .filter(Boolean)

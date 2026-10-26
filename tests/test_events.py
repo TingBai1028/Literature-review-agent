@@ -95,3 +95,22 @@ def test_every_agent_reports_its_start_and_end_with_labelled_steps(tmp_path):
         assert phases[0] == "start" and "done" in phases, agent
     assert all(e["step_kind"] in {"code", "llm", "human"} and e["message"] for e in events)
     assert events[-1]["terminal"] and events[-1]["action"] == "finish"
+
+
+def test_finished_runs_read_back_as_json_and_live_neighbors_match_the_saved_map(tmp_path):
+    settings = Settings(sample_mode=True, logs_dir=str(tmp_path))
+    api.app.dependency_overrides[api.get_settings] = lambda: settings
+    try:
+        with TestClient(api.app) as client:
+            papers = json.loads((Path(__file__).resolve().parents[1] / "data/sample/low_resource_languages_llm.json").read_text())[:30]
+            client.post("/cluster", json={"run_id": "log-map", "input": {"query": "LLMs for low-resource languages",
+                                                                          "papers": papers}})
+            log = client.get("/runs/log-map/log").json()["output"]["events"]
+            tail = client.get("/runs/log-map/log?after=2").json()["output"]["events"]
+            saved = client.get("/cluster/log-map/neighbors").json()["output"]["pairs"]
+            assert client.get("/runs/bad!id/log").status_code == 422
+    finally:
+        api.app.dependency_overrides.clear()
+    assert log[-1]["terminal"] and tail == log[3:] and all(set(e) == KEYS for e in log)
+    grouped = next(e for e in log if e["step"] == "group papers")
+    assert grouped["payload"]["neighbors"] == saved

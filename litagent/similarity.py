@@ -195,3 +195,14 @@ def representative_indices(similarity: np.ndarray, group: list[int], limit: int,
             relevance_weight * centrality[i] - (1 - relevance_weight) * max(block[i, j] for j in selected), -i))
         selected.append(best)
     return [group[i] for i in selected]
+
+
+def nearest_pairs(ids: list[str], similarity, k: int) -> list[dict]:
+    """Undirected pairs linking each paper to its k most similar others, each pair listed once."""
+    pairs = {}
+    for i, source in enumerate(ids):
+        ranked = sorted((j for j in range(len(ids)) if j != i), key=lambda j: (-similarity[i, j], ids[j]))
+        for j in ranked[:k]:
+            key = tuple(sorted((source, ids[j])))
+            pairs[key] = round(float(similarity[i, j]), 4)
+    return [{"source": a, "target": b, "similarity": s} for (a, b), s in sorted(pairs.items())]

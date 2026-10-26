@@ -12,6 +12,7 @@ from litagent.cluster_state import ClusterState, VersionError, digest, head, loa
 from litagent.finding_review import ReviewSubmission, prepare_review, save_review
 from litagent.agents import review_agent
 from litagent.schemas import ReviewAgentRequest
+from litagent.similarity import nearest_pairs
 from litagent.trace import mask
 
 
@@ -42,17 +43,6 @@ def map_catalog(settings):
     rows.sort(key=lambda r: r["run_id"], reverse=True)
     rows.sort(key=lambda r: (not r["active"], r["sample_mode"]))
     return {"maps": rows, "warnings": warnings}
-
-
-def nearest_pairs(ids: list[str], similarity, k: int) -> list[dict]:
-    """Undirected pairs linking each paper to its k most similar others, each pair listed once."""
-    pairs = {}
-    for i, source in enumerate(ids):
-        ranked = sorted((j for j in range(len(ids)) if j != i), key=lambda j: (-similarity[i, j], ids[j]))
-        for j in ranked[:k]:
-            key = tuple(sorted((source, ids[j])))
-            pairs[key] = round(float(similarity[i, j]), 4)
-    return [{"source": a, "target": b, "similarity": s} for (a, b), s in sorted(pairs.items())]
 
 
 def install_map_routes(app, get_settings, respond):

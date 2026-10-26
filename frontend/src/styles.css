@@ -1245,11 +1245,12 @@ blockquote {
     font-size: 21px;
   }
   .top-nav {
-    gap: 16px;
+    gap: 10px;
     margin-left: auto;
+    white-space: nowrap;
   }
   .top-nav button {
-    font-size: 13px;
+    font-size: 12.5px;
   }
   .header-actions {
     width: 100%;
@@ -1759,4 +1760,150 @@ blockquote {
   margin: 4px 0 0;
   padding-left: 18px;
   font-size: 13px;
+}
+/* Live map (spec A2): papers glide into their clusters, new nodes fade in, edges draw in, gaps pop in. */
+@media (prefers-reduced-motion: no-preference) {
+  .paper-node {
+    transition: transform 0.9s ease;
+    animation: fade-in 0.6s ease both;
+  }
+  .edge-line {
+    stroke-dasharray: 1;
+    animation: draw-in 0.7s ease-out both;
+  }
+  .gap-marker {
+    animation: fade-in 0.5s ease both;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes draw-in {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.graph-canvas {
+  position: relative;
+}
+.activity-feed {
+  position: fixed;
+  left: 50%;
+  bottom: 64px;
+  transform: translateX(-50%);
+  z-index: 30;
+  width: min(380px, calc(100% - 24px));
+  max-height: 46%;
+  overflow: auto;
+  padding: 10px 12px;
+  border: 1px solid #d6e2dc;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 20px rgba(32, 52, 46, 0.12);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.activity-feed header {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.activity-feed ol,
+.agent-steps {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.activity-feed li {
+  padding: 2px 0;
+  color: #34463f;
+}
+.activity-feed li.setback,
+.agent-steps li.setback {
+  color: #9a5b14;
+}
+.activity-feed li b {
+  color: #28584b;
+}
+.feed-counter {
+  margin: 4px 0;
+  font-weight: 600;
+  color: #28584b;
+}
+.reasoning-panel {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+  overflow: auto;
+}
+.agent-log {
+  margin: 10px 0;
+  border: 1px solid #e0e8e4;
+  border-radius: 8px;
+  background: #fff;
+}
+.agent-log > summary {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.agent-steps li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  padding: 6px 14px;
+  border-top: 1px solid #f0f4f2;
+  font-size: 13px;
+}
+.agent-steps .raw {
+  grid-column: 2;
+}
+.agent-steps pre {
+  max-height: 260px;
+  overflow: auto;
+  font-size: 11.5px;
+  white-space: pre-wrap;
+}
+.kind {
+  align-self: start;
+  padding: 0 6px;
+  border-radius: 6px;
+  font-size: 11px;
+  background: #eef3f0;
+  color: #44584f;
+}
+.kind.llm {
+  background: #e8eefb;
+  color: #2f4f8f;
+}
+.kind.human {
+  background: #f6eedd;
+  color: #7a5a1e;
+}
+.provenance dl {
+  margin: 0;
+}
+.provenance dt {
+  font-weight: 600;
+  font-size: 12.5px;
+}
+.provenance dd {
+  margin: 0 0 6px;
+  font-size: 12.5px;
+  color: #44584f;
+}
+.activity-feed.inline {
+  position: static;
+  transform: none;
+  width: auto;
+  max-height: 220px;
+  margin: 8px 0;
+  box-shadow: none;
 }

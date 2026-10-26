@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Check, RefreshCw, Upload } from "lucide-react";
+import { ActivityFeed } from "./ActivityFeed";
 import { Dialog } from "./Dialog";
 import { SearchReview, useSearchReview } from "./SearchReview";
 import type { CatalogItem, MapResult, Paper, Plan, Versions } from "../types";
@@ -319,6 +320,9 @@ export function NewMapDialog({
               )}
             </select>
           </label>
+          {mode === "search" && search.loading && (
+            <ActivityFeed inline events={search.events} title="正在检索论文" />
+          )}
           {mode === "search" ? (
             <SearchReview search={search} />
           ) : (

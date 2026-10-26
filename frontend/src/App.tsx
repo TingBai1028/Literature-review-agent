@@ -8,6 +8,16 @@ import { TopicSidebar } from "./components/TopicSidebar";
 import { LiteratureGraph } from "./components/LiteratureGraph";
 import { Inspector } from "./components/Inspector";
 import { ReviewPanel } from "./components/ReviewPanel";
+import { ActivityFeed } from "./components/ActivityFeed";
+import { ReasoningPanel } from "./components/ReasoningPanel";
+import { Provenance } from "./components/Provenance";
+import {
+  buildingMap,
+  newRunId,
+  overlay,
+  useRunEvents,
+  type RunEvent,
+} from "./events";
 import {
   MovePreview,
   NewMapDialog,
@@ -15,7 +25,10 @@ import {
 } from "./components/MapDialogs";
 export default function App() {
   const ws = useWorkspace();
-  const [tab, setTab] = useState<"map" | "review">("map");
+  const [tab, setTab] = useState<Tab>("map");
+  // A run in progress (spec A): its events drive the live map and the activity feed.
+  const [live, setLive] = useState<Live | null>(null);
+  const events = useRunEvents(live?.runId ?? null);
   const [dialog, setDialog] = useState<"versions" | "new" | null>(null);
   const [busy, setBusy] = useState("");
   const busyRef = useRef(false);
@@ -64,31 +77,58 @@ export default function App() {
           )
         ).papers;
       }
-      const map = await request<MapResult>("/cluster", {
-        method: "POST",
-        body: {
-          input: { query: q, effort, papers: selected, backup_papers: backup },
-        },
-        timeout: (ws.config.run_timeout_s + 120) * 1000,
-      });
+      const runId = newRunId();
       setDialog(null);
       setTab("map");
-      await ws.open(map.run_id);
-      if (map.status === "partial")
-        setNotice("地图已保存为待完成版本，可继续分析。");
+      setLive({
+        runId,
+        base: null,
+        papers: selected,
+        question: q,
+        title: "正在建立地图",
+      });
+      try {
+        const map = await request<MapResult>("/cluster", {
+          method: "POST",
+          body: {
+            run_id: runId,
+            input: {
+              query: q,
+              effort,
+              papers: selected,
+              backup_papers: backup,
+            },
+          },
+          timeout: (ws.config.run_timeout_s + 120) * 1000,
+        });
+        await ws.open(map.run_id);
+      } finally {
+        setLive(null);
+      }
     });
   // Spec F5: swap the side papers for the next-best backup papers; main and foundation stay.
   const refresh = () =>
     data &&
     void operate("正在换一批论文", async () => {
+      const runId = newRunId();
+      setLive({
+        runId,
+        base: data.map,
+        papers: data.papers,
+        question: data.map.question,
+        title: "换一批论文",
+      });
       const map = await request<MapResult>(
         `/cluster/${data.map.run_id}/refresh`,
         {
           method: "POST",
-          body: { expected_version_token: data.map.version_token },
+          body: {
+            expected_version_token: data.map.version_token,
+            run_id: runId,
+          },
           timeout: (ws.config.run_timeout_s + 120) * 1000,
         },
-      );
+      ).finally(() => setLive(null));
       await ws.open(map.run_id);
       setNotice(
         `已换入 ${map.refresh?.swapped_in.length ?? 0} 篇备选论文，主簇和基础簇保持不变。` +
@@ -96,16 +136,27 @@ export default function App() {
       );
     });
   // Spec E: Graph 1 (paper edges) is opened as soon as it is ready; Graph 2 (gaps) follows on that version.
-  const runStage = (map: MapResult, stage: "connections" | "gaps") =>
-    request<MapResult>(`/cluster/${map.run_id}/analyze`, {
+  const runStage = (map: MapResult, stage: "connections" | "gaps") => {
+    const runId = newRunId();
+    setLive({
+      runId,
+      base: map,
+      papers: data?.papers ?? [],
+      question: map.question,
+      title:
+        stage === "connections" ? "图 1：寻找论文关联" : "图 2：寻找研究空白",
+    });
+    return request<MapResult>(`/cluster/${map.run_id}/analyze`, {
       method: "POST",
       body: {
         expected_version_token: map.version_token,
         request_id: crypto.randomUUID().replaceAll("-", ""),
         stages: [stage],
+        run_id: runId,
       },
       timeout: (ws.config.run_timeout_s + 120) * 1000,
-    });
+    }).finally(() => setLive(null));
+  };
   const analyze = () =>
     data &&
     void operate("正在寻找论文关联（图 1）", async () => {
@@ -151,6 +202,14 @@ export default function App() {
               disabled={!data}
             >
               人工验收
+            </button>
+            <button
+              className={tab === "reasoning" ? "active" : ""}
+              aria-pressed={tab === "reasoning"}
+              onClick={() => setTab("reasoning")}
+              disabled={!data}
+            >
+              推理过程
             </button>
           </nav>
           <div className="header-actions">
@@ -237,7 +296,13 @@ export default function App() {
             )}
           </div>
         )}
-        {ws.loading ? (
+        {live && !live.base ? (
+          <LiveBuild
+            live={live}
+            events={events}
+            sample={ws.config.sample_mode}
+          />
+        ) : ws.loading ? (
           <main className="center-message">
             <LoaderCircle className="spin" size={24} />
             <p>正在读取地图与原文…</p>
@@ -263,6 +328,7 @@ export default function App() {
             onOperation={operate}
             onOpen={ws.open}
             timeout={(ws.config.run_timeout_s + 120) * 1000}
+            live={live?.base ? { ...live, events } : null}
           />
         )}
         {data && (
@@ -356,18 +422,22 @@ function WorkspaceView({
   onOperation,
   onOpen,
   timeout,
+  live,
 }: {
   data: NonNullable<ReturnType<typeof useWorkspace>["data"]>;
-  tab: "map" | "review";
-  setTab: (v: "map" | "review") => void;
+  tab: Tab;
+  setTab: (v: Tab) => void;
   editable: boolean;
   busy: boolean;
   onNew: () => void;
   onOperation: (label: string, action: () => Promise<void>) => Promise<void>;
   onOpen: (id: string) => Promise<void>;
   timeout: number;
+  live: (Live & { events: RunEvent[] }) | null;
 }) {
-  const { map, papers } = data;
+  // During an analysis or refresh the map shows the base version plus everything accepted so far (A2, A4).
+  const map = live ? overlay(data.map, live.events) : data.map;
+  const { papers } = data;
   const [selection, setSelection] = useState<Selection | null>({
     type: "paper",
     id:
@@ -401,6 +471,12 @@ function WorkspaceView({
     <>
       {tab === "review" ? (
         <ReviewPanel map={map} timeout={timeout} />
+      ) : tab === "reasoning" ? (
+        <ReasoningPanel
+          map={data.map}
+          versions={data.versions}
+          live={live?.events ?? []}
+        />
       ) : (
         <main className="workspace-grid">
           <button
@@ -451,7 +527,21 @@ function WorkspaceView({
               setPlan(null);
             }}
             onReview={() => setTab("review")}
-          />
+          >
+            <Provenance
+              map={map}
+              papers={papers}
+              selection={selection}
+              onShowReasoning={() => setTab("reasoning")}
+            />
+          </Inspector>
+          {live && (
+            <ActivityFeed
+              events={live.events}
+              title={live.title}
+              onShowAll={() => setTab("reasoning")}
+            />
+          )}
         </main>
       )}
       {tab === "map" && (
@@ -512,5 +602,73 @@ function WorkspaceView({
         />
       )}
     </>
+  );
+}
+
+type Tab = "map" | "review" | "reasoning";
+interface Live {
+  runId: string;
+  base: MapResult | null; // null while a new map is being built
+  papers: Paper[];
+  question: string;
+  title: string;
+}
+
+/** A new map being built (spec A2): papers appear, glide into their clusters, then the clusters get names.
+ * Pan, zoom and clicking work throughout (A4); the activity feed says which agent is working (A3). */
+function LiveBuild({
+  live,
+  events,
+  sample,
+}: {
+  live: Live;
+  events: RunEvent[];
+  sample: boolean;
+}) {
+  const { map, neighbors } = buildingMap(
+    live.runId,
+    live.question,
+    live.papers,
+    events,
+    sample,
+  );
+  const [selection, setSelection] = useState<Selection | null>(null);
+  const [filter, setFilter] = useState<Filter>("all");
+  const paper = live.papers.find(
+    (p) => selection?.type === "paper" && p.id === selection.id,
+  );
+  return (
+    <main className="workspace-grid live-build">
+      <aside className="topic-sidebar">
+        <h2>{live.title}</h2>
+        <p className="muted small">{live.question}</p>
+        <p className="small">{live.papers.length} 篇论文正在分组和命名。</p>
+      </aside>
+      <LiteratureGraph
+        map={map}
+        papers={live.papers}
+        neighbors={neighbors}
+        selection={selection}
+        onSelect={setSelection}
+        filter={filter}
+        onFilter={setFilter}
+        search=""
+        onReview={() => undefined}
+      />
+      <aside className="inspector">
+        {paper ? (
+          <>
+            <h3 className="paper-title">{paper.title}</h3>
+            <p className="paper-meta">
+              {paper.year ?? "年份未知"} · {paper.source}
+            </p>
+            <p className="small">{paper.abstract}</p>
+          </>
+        ) : (
+          <p className="muted">地图生成中，可以先点击论文查看摘要。</p>
+        )}
+      </aside>
+      <ActivityFeed events={events} title={live.title} />
+    </main>
   );
 }

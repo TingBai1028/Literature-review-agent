@@ -60,10 +60,13 @@ labels its synthetic similarities, groupings and findings.
    Main and foundation papers stay fixed. The server validates the final simultaneous membership.
 5. **版本记录** lets you inspect old versions or explicitly set a completed version as current.
    A stale preview shows a conflict inside the dialog; it cannot overwrite a changed head.
-6. **人工验收** hides model decisions by default. Fill in the reviewer, reason, judgment
+6. While a run is in progress the map builds itself and an activity feed names the agent at work.
+   Selecting any paper, cluster, edge or gap shows which agent created it and why; **推理过程** lists
+   every agent's steps (code or LLM, with setbacks highlighted). See [progress events](../docs/events.md).
+7. **人工验收** hides model decisions by default. Fill in the reviewer, reason, judgment
    and exact quotes from both original sources, then save. Reviewer identity is self-declared.
    Reading a review queue never creates human labels. Each version has its own annotations.
-7. **AI 自动评分** asks the independent Review Agent to grade the version's explicit claims
+8. **AI 自动评分** asks the independent Review Agent to grade the version's explicit claims
    on source support, question relevance and testability (0–3 each). **查看已有评分** only
    reads a cached report. Missing hypotheses receive no score. Suggestions and their original
    quotes appear separately from the human form; judgments are saved only by explicit submission.

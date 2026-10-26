@@ -24,6 +24,7 @@ export function LiteratureGraph({
   onFilter,
   search,
   onReview,
+  neighbors: supplied,
 }: {
   map: MapResult;
   papers: Paper[];
@@ -33,6 +34,8 @@ export function LiteratureGraph({
   onFilter: (f: Filter) => void;
   search: string;
   onReview: () => void;
+  /** A live map passes the neighbours from its events instead of fetching a saved version's. */
+  neighbors?: Neighbor[];
 }) {
   const [view, setView] = useState({ x: 0, y: 0, scale: 1 });
   const drag = useRef<{ x: number; y: number; vx: number; vy: number } | null>(
@@ -40,8 +43,10 @@ export function LiteratureGraph({
   );
   const svg = useRef<SVGSVGElement>(null);
   // Spec G: positions come only from a seeded force simulation over paper similarity (no grid slots).
-  const [neighbors, setNeighbors] = useState<Neighbor[] | null>(null);
+  const [fetched, setNeighbors] = useState<Neighbor[] | null>(null);
+  const neighbors = supplied ?? fetched;
   useEffect(() => {
+    if (supplied) return;
     const abort = new AbortController();
     setNeighbors(null);
     request<{ pairs: Neighbor[] }>(`/cluster/${map.run_id}/neighbors`, {
@@ -50,7 +55,7 @@ export function LiteratureGraph({
       .then((r) => !abort.signal.aborted && setNeighbors(r.pairs))
       .catch(() => !abort.signal.aborted && setNeighbors([]));
     return () => abort.abort();
-  }, [map.run_id]);
+  }, [map.run_id, supplied]);
   const layout = useMemo(() => {
     if (neighbors === null) return null;
     const positions = forceLayout(
@@ -299,6 +304,8 @@ export function LiteratureGraph({
                   return (
                     <g key={c.id}>
                       <line
+                        className="edge-line"
+                        pathLength={1}
                         x1={a.x}
                         y1={a.y}
                         x2={b.x}
@@ -349,6 +356,7 @@ export function LiteratureGraph({
                   return m ? (
                     <g
                       key={g.id}
+                      className="gap-marker"
                       data-interactive="true"
                       role="button"
                       tabIndex={0}
@@ -399,6 +407,7 @@ export function LiteratureGraph({
                       role="button"
                       tabIndex={0}
                       className="paper-node"
+                      style={{ transform: `translate(${p.x}px, ${p.y}px)` }}
                       aria-label={`论文：${paperMap.get(id)?.title ?? id}`}
                       opacity={dim ? 0.15 : 1}
                       onClick={() => onSelect({ type: "paper", id })}
@@ -407,8 +416,6 @@ export function LiteratureGraph({
                       <title>{paperMap.get(id)?.title ?? id}</title>
                       {selected && (
                         <circle
-                          cx={p.x}
-                          cy={p.y}
                           r={p.r + 6}
                           fill="none"
                           stroke={color}
@@ -417,8 +424,6 @@ export function LiteratureGraph({
                         />
                       )}
                       <circle
-                        cx={p.x}
-                        cy={p.y}
                         r={p.r}
                         fill={layout.shade(id, color)}
                         stroke={c.kind === "main" ? color : "white"}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ArrowUpRight, ArrowRight, BookOpen } from "lucide-react";
 import { request, messageOf } from "../api";
 import { roleName } from "./TopicSidebar";
@@ -50,6 +50,7 @@ export function Inspector({
   onMove,
   canEdit,
   onReview,
+  children,
 }: {
   map: MapResult;
   papers: Paper[];
@@ -59,6 +60,7 @@ export function Inspector({
   onMove: (paper: string, target: string) => void;
   canEdit: boolean;
   onReview: () => void;
+  children?: ReactNode; // shown under the selection, e.g. its provenance
 }) {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [error, setError] = useState("");
@@ -395,6 +397,7 @@ export function Inspector({
           {error}
         </p>
       )}
+      {children}
     </aside>
   );
 }
