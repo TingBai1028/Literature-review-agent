@@ -243,11 +243,11 @@ def test_model_requests_go_in_small_batches(llm, search, tmp_path):
 
 
 def test_a_failure_in_a_later_cluster_keeps_the_finished_clusters_gaps(llm, search, tmp_path, monkeypatch):
-    from litagent.integrations.llm import LLMError
+    from litagent.integrations.llm import TokenBudgetExceeded as LLMError  # only time or budget still stops the stage
     original = llm.__call__
     def fail_second_cluster(prompt, message, schema, **kwargs):
         if schema is GapDrafts and json.loads(message)["cluster"]["id"] == "C2":
-            raise LLMError("Request timed out.")
+            raise LLMError("Finding analysis time limit reached")
         return original(prompt, message, schema, **kwargs)
     monkeypatch.setattr(engine, "complete_json", fail_second_cluster)
     papers = [paper(pid) for pid in IDS]
@@ -280,3 +280,63 @@ def test_a_failed_grading_call_drops_only_its_gaps_and_is_retried_later(llm, sea
     graded = sum(schema is GapLabelDecisions for schema, _ in llm.calls)
     again = gap_finder.find_gaps(papers, clusters, [], settings, context=context)  # not reused from the cache
     assert len(again) == 2 and sum(schema is GapLabelDecisions for schema, _ in llm.calls) == graded + 2
+
+
+def _timeout():
+    import httpx
+    from openai import APITimeoutError
+    return APITimeoutError(request=httpx.Request("POST", "http://nightshift.test/v1/chat/completions"))
+
+
+def test_a_timed_out_writer_batch_is_asked_again_in_halves(llm, search, tmp_path, monkeypatch):
+    original, sizes = llm.__call__, []
+    def slow_when_big(prompt, message, schema, **kwargs):
+        assert kwargs.get("retry_timeout") is False  # the halves are the retry
+        if schema is GapDrafts:
+            sizes.append(len(json.loads(message)["candidates"]))
+            if sizes[-1] > 1:
+                raise _timeout()
+        return original(prompt, message, schema, **kwargs)
+    monkeypatch.setattr(engine, "complete_json", slow_when_big)
+    papers = [paper(pid) for pid in IDS]
+    gaps, events = run(papers, matrix({("A", "B"): .7, ("C", "D"): .7}), tmp_path)
+    assert sizes == [2, 1, 1] and len(gaps) == 2
+
+
+def test_a_failed_writer_or_coverage_call_drops_or_defers_only_its_gaps(llm, search, tmp_path, monkeypatch):
+    from litagent.integrations.llm import LLMError
+    original = llm.__call__
+    def fail(prompt, message, schema, **kwargs):
+        data = json.loads(message)
+        if schema is GapDrafts and data["candidates"][0]["paper_ids"] == ["A", "B"]:
+            raise LLMError("GapDrafts: model output failed validation twice")
+        if schema is CoverageJudgements:
+            raise _timeout()
+        return original(prompt, message, schema, **kwargs)
+    monkeypatch.setattr(engine, "complete_json", fail)
+    search["hits"] = [paper("EXT")]
+    papers = [paper(pid) for pid in IDS]
+    settings = Settings(sample_mode=False, logs_dir=str(tmp_path), gap_llm_batch_size=1)
+    gaps, events = run(papers, matrix({("A", "B"): .7, ("C", "D"): .7}), tmp_path, settings)
+    [dropped] = lines(events, "writer", "dropped")
+    assert dropped["gap_id"] == gap_finder._gap_id("A", "B") and "a later analysis retries it" in dropped["why"]
+    assert [g.between_paper_ids for g in gaps] == [["C", "D"]]
+    assert gaps[0].coverage_status == "unavailable" and "coverage judge call failed" in gaps[0].coverage.reason
+
+
+def test_the_stage_grader_gets_coverage_hits_as_titles_not_full_records(monkeypatch):
+    from litagent.agents import grader
+    from litagent.schemas import CoverageSearch, Evidence, Gap, GapCoverage
+    a, b, hit = paper("A"), paper("B"), paper("EXT", references=[f"W{i}" for i in range(50)])
+    gap = Gap(id="g1", cluster_id="C1", description="A shows X. B shows Y.", between_paper_ids=["A", "B"],
+              why_it_matters="w", evidence=[Evidence(paper_id=p.id, quote=p.abstract) for p in (a, b)],
+              coverage=GapCoverage(status="no_address_found_in_checked_sources", checked_at="t", local_papers_checked=0,
+                                   reason="r", searches=[CoverageSearch(query="q", checked_at="t", status="ok", papers=[hit])]))
+    sent = {}
+    def capture(prompt, message, model, **kwargs):
+        sent.update(json.loads(message), retry_timeout=kwargs.get("retry_timeout"))
+        return model(stage="gaps", reasoning="ok", accuracy=3, appropriateness=3, actionability=3)
+    monkeypatch.setattr(grader, "complete_json", capture)
+    grader.grade("gaps", [gap], [a, b], Settings(sample_mode=False), reviewed_pairs=[], retry_timeout=False)
+    [search] = sent["output"][0]["coverage"]["searches"]
+    assert search["papers"] == [{"id": "EXT", "title": "Study EXT", "year": None}] and sent["retry_timeout"] is False

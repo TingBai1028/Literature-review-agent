@@ -6,6 +6,7 @@ import pytest
 
 from litagent.config import Settings
 from litagent.integrations.llm import LLMError, TokenBudgetExceeded, TokenMeter, complete_json
+from litagent.integrations.llm import get_client as real_get_client  # bound before conftest blocks it
 from litagent.schemas import HumanFeedback
 from litagent.trace import Trace
 from tests.fakes import FakeClient
@@ -168,3 +169,86 @@ def test_echoed_request_is_not_wrapped():
     with pytest.raises(LLMError):
         complete_json("sys", "user", GapLabelDecisions, settings=real_settings(), client=client)
     assert len(client.calls) == 2
+
+
+def _timeout():
+    import httpx
+    from openai import APITimeoutError
+    return APITimeoutError(request=httpx.Request("POST", "http://nightshift.test/v1/chat/completions"))
+
+
+class FailingClient(FakeClient):
+    """Raises the given errors first, then answers like FakeClient."""
+
+    def __init__(self, errors, replies):
+        super().__init__(replies)
+        self.errors = list(errors)
+
+    def create(self, **kwargs):
+        if self.errors:
+            self.calls.append(kwargs)
+            raise self.errors.pop(0)
+        return super().create(**kwargs)
+
+
+def test_a_timeout_is_sent_again_once_only_for_callers_without_a_fallback(tmp_path):
+    from openai import APITimeoutError
+    client = FailingClient([_timeout()], ['{"approved": true}'])
+    with Trace(str(tmp_path)) as trace:
+        assert complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client).approved
+    assert len(client.calls) == 2
+    assert [e["decision"] for e in trace.events][:1] == ["timeout"] and trace.events[0]["next"] == "send again"
+    client = FailingClient([_timeout()], ['{"approved": true}'])
+    with pytest.raises(APITimeoutError):
+        complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client, retry_timeout=False)
+    assert len(client.calls) == 1  # the caller's fallback takes over after one llm_timeout_s, not two
+
+
+def test_a_dropped_connection_is_sent_again_even_without_timeout_retry():
+    import httpx
+    from openai import APIConnectionError
+    error = APIConnectionError(request=httpx.Request("POST", "http://nightshift.test/v1/chat/completions"))
+    client = FailingClient([error], ['{"approved": true}'])
+    assert complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client, retry_timeout=False).approved
+    assert len(client.calls) == 2
+
+
+def test_the_client_itself_never_retries(monkeypatch):
+    monkeypatch.setenv("METERLESS_BASE_URL", "http://nightshift.test/v1")
+    monkeypatch.setenv("METERLESS_RUNTIME_TOKEN", "test")
+    assert real_get_client(real_settings()).max_retries == 0  # builds the client only; sends nothing
+
+
+def test_a_timed_out_batch_is_asked_again_in_two_halves(tmp_path):
+    from litagent.integrations.llm import halve_on_timeout
+    asked = []
+    def ask(items):
+        asked.append(list(items))
+        if len(items) > 2:
+            raise LLMError("gap_finder provider request failed") from _timeout()
+        return [i * 10 for i in items]
+    with Trace(str(tmp_path)) as trace:
+        assert halve_on_timeout(ask, [1, 2, 3, 4]) == ([10, 20, 30, 40], [], None)
+    assert asked == [[1, 2, 3, 4], [1, 2], [3, 4]]
+    assert any(e["action"] == "batch timed out" for e in trace.events)
+
+
+def test_halves_that_still_fail_are_returned_and_other_errors_are_not_split():
+    from litagent.integrations.llm import halve_on_timeout
+    def ask(items):
+        if 4 in items:
+            raise _timeout()
+        return items
+    results, failed, error = halve_on_timeout(ask, [1, 2, 3, 4])
+    assert results == [1, 2] and failed == [3, 4] and type(error).__name__ == "APITimeoutError"
+    calls = []
+    def invalid(items):
+        calls.append(items)
+        raise LLMError("failed validation twice")
+    results, failed, error = halve_on_timeout(invalid, [1, 2])
+    assert results == [] and failed == [1, 2] and isinstance(error, LLMError)
+    assert len(calls) == 1  # only a timeout is split
+    def broke(items):
+        raise TokenBudgetExceeded("Finding analysis time limit reached")
+    with pytest.raises(TokenBudgetExceeded):
+        halve_on_timeout(broke, [1, 2])

@@ -23,7 +23,8 @@ Stage = Literal["clusters", "connections", "gaps"]
 
 
 def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: Settings,
-          *, question: str | None = None, reviewed_pairs: list[dict] | None = None) -> Grade:
+          *, question: str | None = None, reviewed_pairs: list[dict] | None = None, retry_timeout: bool = True) -> Grade:
+    """`retry_timeout=False` when a missing grade is acceptable (it stays pending and is retried later)."""
     if stage == "clusters":
         problem = check_cluster_sizes(output, len(papers))  # type: ignore[arg-type]
         question_map = any(isinstance(c, QuestionCluster) for c in output)
@@ -78,13 +79,19 @@ def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: 
             item.pop("label_reason", None)
             if item.get("coverage"):
                 item["coverage"].pop("reason", None)
+                # Every hit was a full paper record (abstract, references): the gap grader once sent 149k
+                # prompt tokens. The coverage judge has read the hits already; the grader needs what was searched
+                # and what came back.
+                for search in item["coverage"].get("searches", []):
+                    search["papers"] = [{"id": p["id"], "title": p["title"], "year": p.get("year")}
+                                        for p in search.get("papers", [])]
         payload["papers"] = [{"id": p.id, "title": p.title,
             "abstract": (p.abstract or "")[:settings.finding_grader_source_chars],
             "cited_original_spans": [{"field": field, "quote": e.quote} for item in output for e in item.evidence
                 if e.paper_id == p.id for field in ("abstract", "full_text") if getattr(p, field) and e.quote in getattr(p, field)]}
             for p in papers if (not referenced and reviewed_pairs is None) or p.id in referenced]
     draft = complete_json(load_prompt("grader"), json.dumps(payload, ensure_ascii=False), _explained_grade(settings.grade_pass_mark),
-                          settings=settings, agent_name="grader")
+                          settings=settings, agent_name="grader", retry_timeout=retry_timeout)
     return Grade.model_validate(draft.model_dump())
 
 

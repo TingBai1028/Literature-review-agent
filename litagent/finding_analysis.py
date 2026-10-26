@@ -56,7 +56,7 @@ def grade_stage(result, stage, output, papers, settings, world, scope: dict) -> 
     analysis = result.analysis
     result.warnings = [w for w in result.warnings if not _grade_warning(w, stage)]
     try:
-        grade = grader.grade(stage, output, papers, settings, **scope)
+        grade = grader.grade(stage, output, papers, settings, **scope, retry_timeout=False)
         if grade.stage != stage:
             raise LLMError("Independent grader returned the wrong finding stage")
     except TokenBudgetExceeded:

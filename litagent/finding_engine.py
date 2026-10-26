@@ -179,13 +179,14 @@ def resolve_evidence(refs, source_map, expected_ids: set[str], settings: Setting
     return evidence
 
 
-def request(prompt: str, payload: dict, schema, validate, settings: Settings, context: FindingContext, stage: str):
+def request(prompt: str, payload: dict, schema, validate, settings: Settings, context: FindingContext, stage: str,
+            retry_timeout: bool = True):
     message = dict(payload)
     for attempt in range(settings.finding_validation_retries + 1):
         check_deadline(context)
         try:
             output = complete_json(load_prompt(prompt), json.dumps(message, ensure_ascii=False), schema,
-                                   settings=settings, agent_name=stage + "_finder")
+                                   settings=settings, agent_name=stage + "_finder", retry_timeout=retry_timeout)
         except OpenAIError as error:
             raise LLMError(f"{stage} provider request failed ({type(error).__name__})") from error
         try:
