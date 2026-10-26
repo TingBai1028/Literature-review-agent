@@ -4,9 +4,9 @@ Code: `litagent/agents/grader.py` · Prompt: `prompts/grader.md`
 
 1. **Goal:** Check the Clusterer, Connection finder and Gap finder before their output moves on.
 2. **Plan:**
-   1. Run cheap cluster-size checks; question maps exempt main and use side size as a diagnostic.
-   2. Score the output against the source papers with the stage's rubric.
-   3. Pass at 7/9; otherwise return exactly one fix.
+   1. `[code]` Run cheap checks first: cluster sizes (question maps exempt main and foundation and use side size as a diagnostic); for findings, quotes verbatim in both papers and no gap already filled.
+   2. `[LLM]` Score the output against the source papers with the stage's rubric.
+   3. `[code]` Pass at 7/9; otherwise the grade must carry exactly one fix (repaired once if missing).
 3. **Tools:** LLM.
 4. **Memory to keep:** grades are recorded as World Model facts and in the trace.
 5. **Rubric (0–3 × 3):** accuracy · appropriateness · actionability, with stage-specific details in the prompt.
@@ -16,7 +16,7 @@ Code: `litagent/agents/grader.py` · Prompt: `prompts/grader.md`
 
 Question maps include the research question, cluster roles and selected source evidence.
 The producer's per-paper reasons and alternate scores are excluded from the grader input.
-Main is judged by directness to the question, while sides are judged by topic coherence.
+Main is judged as the most topic-related cluster, foundation as classic background work, and sides by topic coherence.
 `POST /cluster` is a single-pass checkpoint and retains a failed grade with warnings;
 full pipeline runs keep their bounded grading retry. Each model call uses an isolated
 Nightshift H-MEM scope. See [main/side behavior](../main-side-clusters.md).

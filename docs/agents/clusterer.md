@@ -5,18 +5,18 @@ Code: `litagent/agents/clusterer.py`, `litagent/cluster_labels.py` · Default pr
 1. **Goal:** Group papers into labelled research ideas with roles: exactly one main cluster, at least one foundation
    cluster and side clusters (see "Cluster roles" below). The earlier topic-only path remains available.
    Standalone question maps also support [previewed side moves, incremental label reuse and rollback](../cluster-regeneration.md).
-2. **Plan:**
-   1. Build text per paper: metadata (Normal / Medium) or full text (High / Ultra, via Meterless Markovian engine).
-   2. Embed each paper and, for question maps, the question (code). Check relevance of papers above the query gate against their source text (LLM).
-   3. Assign roles (code, `litagent/cluster_roles.py`): main, foundation, then side groups by complete linkage at the side threshold (default 0.7).
-   4. Retrieve nearest groups, then name bounded batches using task/method/data/evaluation contrasts and source-span references.
-   5. Write clusters to the world model.
-3. **Tools:** pinned `CLAUSE-Bielefeld/SemCSE_cosine` on CPU with CLS pooling; MiniLM fast baseline; SciPy complete linkage; Nightshift/Nemotron labeller.
-4. **Memory to keep:** clusters → world model.
-5. **Rubric:** see `prompts/grader.md` → clusters. Legacy topic-only runs use size rules first. Question maps exempt main from size rules and treat side sizes as diagnostics, then assess question relevance and side coherence against sources.
-6. **Stop conditions:** grade < 7/9 → redo once with the grader's fix → continue with a warning.
-7. **Run log:** threshold used, number of clusters, size distribution.
-8. **Guardrails:** runtime loads local model files only; no automatic download, remote model code or GPU. Input ids must be unique, vectors finite and non-zero, labels non-empty. Code validates memberships. The labeller only names fixed groups; roles come from code, never from the labeller. Singletons are retained as `Unclustered: <title>` without a labeller call.
+2. **Plan (≤5 steps):**
+   1. `[code]` Build text per paper (metadata at Normal/Medium, full text at High/Ultra) and embed the papers and the question with the local model.
+   2. `[LLM]` Check each paper above the question gate (0.5) against its source spans: direct, supporting or uncertain; an independent `[LLM]` call re-checks the direct ones.
+   3. `[code]` Assign roles: main, foundation, side (`litagent/cluster_roles.py`).
+   4. `[LLM]` Name each cluster from source quotes, contrasting it with its nearest neighbours; `[code]` checks every quote is verbatim and abstains for a group whose claim stays unsupported.
+   5. `[code]` Write clusters to the world model; the `[LLM]` grading agent scores the map.
+3. **Tools:** local embedding model (`embed_documents` → texts → vectors → `EmbeddingError` if the model is missing); SciPy complete linkage (code); Nightshift/Nemotron relevance checker and labeller (`complete_json` → prompt, payload → validated JSON → repaired once, then `LLMError`).
+4. **Memory kept:** clusters, role reasons, relevance details and labels → world model and saved map version; similarity matrix and vectors → version artifacts reused by later stages and regeneration.
+5. **Rubric (0–3 × 3):** accuracy (labels and roles match the papers), appropriateness (main is the most topic-related group, foundation is classic background, sides are coherent), actionability (a reader can navigate the field from the map); see `prompts/grader.md` → clusters.
+6. **Stop conditions:** grade < 7/9 → redo once with the grader's fix → continue with a warning. No main cluster is an error, never a result.
+7. **Run log:** role decisions (main choice, resize, fallback, foundation tiers, side merges), threshold, cluster sizes; progress events `start`, `partial_result` (groups, then labels) and `done`.
+8. **Guardrails:** runtime loads local model files only; no automatic download, remote model code or GPU. Input ids must be unique, vectors finite and non-zero. The labeller only names fixed groups; roles come from code. Singletons are retained as `Unclustered: <title>` without a labeller call.
 
 ## Cluster roles
 
