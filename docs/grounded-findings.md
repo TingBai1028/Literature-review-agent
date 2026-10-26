@@ -40,12 +40,60 @@ counts, rejection reasons, cache task counts and independent grades. The origina
 and World Model remain unchanged. A complete stage can have zero findings.
 
 Completed versions become active even when a model grade fails, with the failed grade
-and warning retained. Partial versions remain inspectable and leave the original head
+and warning retained. A grade the grader cannot give at all (timeout, invalid answer twice)
+doesn't block either: the stage counts as complete, `<stage>_grade` stays in `pending_stages`
+with a warning, the next stage runs, and a Graph 2 request retries a pending connections
+grade once **after** producing and grading the gaps, so the old slow grade cannot delay the Gap finder.
+The grade remains absent, never substituted with zero or a passing score. Running out of token budget
+or time still stops the run as a partial version; finished findings remain complete even if the limit
+is reached immediately before grading. The same finding-grade policy applies after a map regeneration.
+
+When a source has pending work, an analysis request resumes only unfinished finders and missing grades.
+Completed findings, exact evidence, candidate audits, dependencies and existing grades are preserved.
+If only grades are pending, the request does not run either finder or repeat a coverage search. Use a new
+request ID on that version (the UI's **运行分析** does this); successful grading clears its unavailable
+warning. When nothing is pending, requesting analysis still re-evaluates the selected stages as before.
+Legacy partial versions with `<stage>_grade` pending but no completed marker are recognized as having
+finished that finder, so the pre-fix failed Graph 1 checkpoints can also proceed directly to Graph 2.
+
+Partial versions remain inspectable and leave the original head
 active. Pass the partial version's ID/token with a NEW request ID to resume. Completed
 positive and negative tasks are reused; an interrupted task can be retried deliberately.
 Repeating a committed request ID returns its original child without more model calls or
 changing a later rollback. The head/child locks and source tokens prevent concurrent
 writes. Version selection/rollback uses the existing [regeneration API](cluster-regeneration.md).
+
+## Real grade-recovery verification (27 Oct 2026)
+
+Recovered the previously blocked 50-paper checkpoint `20261026-134336-6457de` through
+the actual `/cluster/{run_id}/analyze` API, with real Nightshift calls. Retrieval, cluster
+membership, labels and numeric caches were reused; this was not a fresh end-to-end search.
+Concurrency remained 4, request timeout 90 seconds and run timeout 600 seconds.
+
+| Request | Seconds | Result |
+| --- | ---: | --- |
+| Graph 2 recovery: `20261026-144756-4d7a74` | 312.3 | Preserved 7 connections; produced 31 provisional gaps and a 7/9 gap grade. Paused after the response took total usage to 412,398 tokens against the 350,000-token Fast budget; only `connections_grade` remained pending. |
+| Grade-only recovery: `20261026-145411-b427f9` | 159.9 | One returned grading call, 13,784 tokens; connection grade 9/9. No finder or coverage search reran. Status `done`, no pending stages; this version became active. |
+
+All 17 integrity checks passed, including exact original quotes, unchanged source snapshots,
+preserved findings/audits/dependencies, unchanged embeddings/matrix and replaying both request
+IDs without running analysis or adding trace events. All 42 returned model-call receipts
+reported zero injected answer memory. See [the compact verification report](benchmarks/grade-recovery.json).
+
+These are workflow checks, not scientific accuracy scores: 15 gaps have unavailable coverage
+checks and 16 have `not_filled` coverage; neither establishes global novelty. The model also
+miscounted 32 gaps in its grading explanation, while the saved output contains 31. The two
+unlabelled side clusters and the source map's quality warning remain unchanged.
+
+The local detailed reports are `logs/grade-recovery-real-20261027.json` and
+`logs/grade-recovery-retry-real-20261027.json`. To replay the saved grade-only request
+without new model calls, use its original ID:
+
+```bash
+python scripts/check_findings.py --run-id 20261026-144756-4d7a74 --stages gaps \
+  --request-id 62c28dcda55644c1a0df89baa2397df8 \
+  --output logs/grade-recovery-replay.json
+```
 
 ## Sources and claims
 

@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-27",
+  "timezone": "Australia/Sydney",
+  "scope": "Real API recovery from the previously blocked 50-paper Graph 1 checkpoint, followed by grade-only recovery; retrieval and clustering were not rerun. Model grades are not expert accuracy or evidence of global novelty.",
+  "source_run_id": "20261026-134336-6457de",
+  "active_run_id": "20261026-145411-b427f9",
+  "root_run_id": "20261026-133528-ead852",
+  "settings": {
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "llm_concurrency": 4,
+    "llm_timeout_s": 90.0,
+    "run_timeout_s": 600.0,
+    "token_budget_per_request": 350000
+  },
+  "paper_count": 50,
+  "cluster_count": 9,
+  "connection_count": 7,
+  "gap_count": 31,
+  "requests": [
+    {
+      "source_run_id": "20261026-134336-6457de",
+      "finding_run_id": "20261026-144756-4d7a74",
+      "request_id": "9d26539315f84e76a96b2693608a924a",
+      "status": "partial",
+      "seconds": 312.3,
+      "requested_stages": [
+        "gaps"
+      ],
+      "usage": {
+        "prompt_tokens": 378346,
+        "completion_tokens": 34052,
+        "llm_calls": 41,
+        "estimated_calls": 0,
+        "budget": 350000
+      },
+      "completed_stages": [
+        "connections",
+        "gaps"
+      ],
+      "pending_stages": [
+        "connections_grade"
+      ],
+      "grades": {
+        "gaps": 7
+      }
+    },
+    {
+      "source_run_id": "20261026-144756-4d7a74",
+      "finding_run_id": "20261026-145411-b427f9",
+      "request_id": "62c28dcda55644c1a0df89baa2397df8",
+      "status": "done",
+      "seconds": 159.9,
+      "requested_stages": [
+        "gaps"
+      ],
+      "usage": {
+        "prompt_tokens": 12684,
+        "completion_tokens": 1100,
+        "llm_calls": 1,
+        "estimated_calls": 0,
+        "budget": 350000
+      },
+      "completed_stages": [
+        "connections",
+        "gaps"
+      ],
+      "pending_stages": [],
+      "grades": {
+        "gaps": 7,
+        "connections": 9
+      }
+    }
+  ],
+  "checks": {
+    "first_recovery_kept_original_connections": true,
+    "original_and_partial_source_snapshots_unchanged": true,
+    "numeric_cache_reused_through_both_requests": true,
+    "exact_original_quotes_checked": true,
+    "membership_and_labels_unchanged": true,
+    "original_connection_audits_preserved": true,
+    "retry_preserved_all_findings": true,
+    "retry_preserved_all_audits": true,
+    "retry_preserved_dependencies": true,
+    "retry_preserved_completed_gap_grade": true,
+    "retry_only_called_grader": true,
+    "request_replays_returned_identical_versions_without_analysis": true,
+    "request_replays_wrote_no_trace_events": true,
+    "request_replays_did_not_change_head": true,
+    "active_head_is_final_version": true,
+    "all_finding_stages_complete_and_graded": true,
+    "all_returned_llm_receipts_report_zero_answer_memory": true
+  },
+  "passed": 17,
+  "total": 17,
+  "coverage_status_counts": {
+    "unavailable": 15,
+    "not_filled": 16
+  },
+  "model_gap_label_counts": {
+    "novel": 23,
+    "known_open": 8
+  },
+  "limits": [
+    "The first request used 412398 tokens against a 350000-token budget: usage is known after a response. It stopped before the remaining connections grade and preserved the completed gap grade. The follow-up used 13784 tokens without rerunning finders.",
+    "15 coverage checks are unavailable and 16 are not_filled; novelty remains unestablished. The model labeled 23 gaps novel and 8 known_open; these are provisional judgments.",
+    "The gap grader described 32 candidates although the saved output contains 31 gaps; its 7/9 grade is a model judgment, not an audited accuracy metric.",
+    "The source map still has two unlabelled side clusters and a cluster-quality warning; recovery preserves the map rather than silently repairing unrelated quality issues."
+  ]
+}

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 import uuid
 from pathlib import Path
 
@@ -14,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from fastapi.testclient import TestClient  # noqa: E402
 from litagent import api  # noqa: E402
-from litagent.cluster_state import load_version  # noqa: E402
+from litagent.cluster_state import file_hash, load_version, path_for  # noqa: E402
 from litagent.config import Settings  # noqa: E402
 from litagent.trace import mask  # noqa: E402
 
@@ -24,17 +25,21 @@ def main() -> int:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--request-id", default=None)
     parser.add_argument("--sample-mode", action="store_true")
+    parser.add_argument("--stages", nargs="+", choices=["connections", "gaps"], default=None)
     parser.add_argument("--output", type=Path, default=Path("logs/grounded-findings-report.json"))
     args = parser.parse_args()
     cfg = Settings(sample_mode=args.sample_mode)
     source, _, source_arrays = load_version(args.run_id, cfg)
+    protected = [path_for(cfg, prefix, source.run_id) for prefix in ("cluster-map", "cluster-state")]
+    source_hashes = {str(p): file_hash(p) for p in protected}
     request_id = args.request_id or uuid.uuid4().hex
     print(f"Source: {source.run_id}; request ID: {request_id}", flush=True)
     api.app.dependency_overrides[api.get_settings] = lambda: cfg
+    started = time.monotonic()
     try:
         with TestClient(api.app) as client:
             response = client.post(f"/cluster/{source.run_id}/analyze", json={
-                "expected_version_token": source.version_token, "request_id": request_id})
+                "expected_version_token": source.version_token, "request_id": request_id, "stages": args.stages})
             response.raise_for_status()
             output = response.json()["output"]
         result, state, arrays = load_version(output["run_id"], cfg)
@@ -44,6 +49,10 @@ def main() -> int:
                                for e in f.evidence) for f in [*result.connections, *result.gaps])
         report = {"sample_mode": result.sample_mode, "source_run_id": source.run_id, "finding_run_id": result.run_id,
             "request_id": request_id, "status": result.status, "paper_count": len(state.papers),
+            "requested_stages": args.stages, "seconds": round(time.monotonic() - started, 1),
+            "source_snapshots_unchanged": source_hashes == {str(p): file_hash(p) for p in protected},
+            "source_pending_stages": source.analysis.pending_stages if source.analysis else [],
+            "source_connections_preserved": result.connections == source.connections if args.stages == ["gaps"] else None,
             "main_cluster_id": result.main_cluster_id, "main_paper_ids": [pid for c in result.clusters if c.id == result.main_cluster_id for pid in c.paper_ids],
             "connection_count": len(result.connections), "gap_count": len(result.gaps),
             "exact_original_quotes_checked": grounded, "reused_numeric_cache": all(np.array_equal(a, b) for a, b in (
@@ -57,7 +66,8 @@ def main() -> int:
         args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
         print(f"Saved: {result.run_id}; {len(result.connections)} connections, {len(result.gaps)} provisional gaps; {result.status}")
         print(f"Calls: {result.usage.llm_calls}; tokens: {result.usage.total}; original quotes: {grounded}; report: {args.output}")
-        return 0 if result.status == "done" and grounded else 2
+        return 0 if (result.status == "done" and grounded and report["source_snapshots_unchanged"] and report["reused_numeric_cache"]
+                     and report["source_connections_preserved"] is not False) else 2
     except Exception as error:
         print(mask(f"FAILED: {type(error).__name__}: {error}"), file=sys.stderr)
         return 1
