@@ -7,9 +7,10 @@ import re
 import time
 
 import numpy as np
+from openai import OpenAIError
 
 from litagent.config import Settings
-from litagent.integrations.llm import TokenBudgetExceeded, complete_json, load_prompt
+from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
 from litagent.parallel import parallel_map
 from litagent.schemas import ClusterAssessment, ClusterAssessmentBatch, ClusterAssessmentProposals, Evidence, Paper
 from litagent.similarity import representative_indices
@@ -173,6 +174,19 @@ def _valid_quote(e: Evidence, sources: dict, settings: Settings) -> bool:
             and e.quote in sources[e.paper_id]["text"])
 
 
+def unlabelled(contexts: list[dict], error: Exception) -> list[ClusterAssessment]:
+    """The labelling call failed (no answer within the time limit, or invalid JSON twice).
+
+    The groups stay on the map, unnamed and marked insufficient_evidence; a refresh or regeneration labels them
+    again. On 26 Oct, 2 of 3 real runs lost the whole map to one label call that got no answer for 2 x 90 s.
+    """
+    return [ClusterAssessment(
+        cluster_id=c["cluster_id"], label=f"Unlabelled: {c['members'][0]['title']}",
+        rationale=f"The labelling call failed ({type(error).__name__}); refresh this cluster to label it.",
+        coherence="insufficient_evidence", evidence=[],
+        contrast="No distinction from neighboring research was assessed.") for c in contexts]
+
+
 def abstain_where_invalid(proposals: ClusterAssessmentProposals, contexts: list[dict],
                           settings: Settings) -> list[ClusterAssessment]:
     """After bounded repair: keep valid assessments; turn the rest into explicit abstentions.
@@ -245,8 +259,20 @@ def contrastive_labels(papers: list[Paper], texts: list[str], groups: list[list[
         for attempt in range(settings.cluster_label_validation_retries + 1):
             if deadline is not None and time.monotonic() >= deadline:
                 raise TokenBudgetExceeded("Regeneration time limit reached during labeling")
-            proposals = complete_json(load_prompt("cluster_labeler_contrastive"), json.dumps(payload, ensure_ascii=False),
-                                      ClusterAssessmentProposals, settings=settings, agent_name="clusterer")
+            try:
+                proposals = complete_json(load_prompt("cluster_labeler_contrastive"), json.dumps(payload, ensure_ascii=False),
+                                          ClusterAssessmentProposals, settings=settings, agent_name="clusterer")
+            except TokenBudgetExceeded:
+                raise
+            except (LLMError, OpenAIError) as error:
+                ids = [c["cluster_id"] for c in batch_context]
+                if trace := current_trace():
+                    trace.log("clusterer", "label clusters", "unlabelled", why=f"{type(error).__name__}: {error}",
+                              next_step="keep the groups unnamed; a refresh labels them",
+                              message=f"Naming {len(ids)} clusters failed ({type(error).__name__}); "
+                                      "they stay on the map unnamed",
+                              payload={"cluster_ids": ids})
+                return ClusterAssessmentBatch(assessments=unlabelled(batch_context, error))
             try:
                 batch = resolve_assessments(proposals, batch_context)
                 validate_assessments(batch, batch_context, settings)

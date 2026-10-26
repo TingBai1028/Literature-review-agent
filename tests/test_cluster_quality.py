@@ -3,7 +3,9 @@
 import copy
 import json
 
+import httpx2
 import numpy as np
+import openai
 import pytest
 
 from evals.cluster_pairs import paper_splits, prepare_review, score_reviews
@@ -11,6 +13,7 @@ from litagent import cluster_labels
 from litagent.agents import clusterer, grader
 from litagent.cluster_audit import cluster_diagnostics, duplicate_components
 from litagent.config import Effort, Settings
+from litagent.integrations.llm import LLMError, TokenBudgetExceeded
 from litagent.integrations.meterless import ResearchWorld
 from litagent.orchestrator import _graded_stage
 from litagent.schemas import (Cluster, ClusterAssessment, ClusterAssessmentBatch, ClusterAssessmentProposal,
@@ -142,6 +145,36 @@ def test_unsupported_coherent_claim_abstains_after_repair_and_valid_groups_are_k
     assert rejected[-1]["next"] == "abstain on invalid groups"
 
 
+@pytest.mark.parametrize("error", [
+    openai.APITimeoutError(request=httpx2.Request("POST", "http://nightshift.test/v1/chat/completions")),
+    LLMError("ClusterAssessmentProposals: model output failed validation twice")])
+def test_a_failed_label_call_leaves_its_groups_unnamed_and_keeps_the_map(monkeypatch, tmp_path, error):
+    def llm(prompt, message, output_model, **kwargs):
+        payload = json.loads(message)
+        if payload["groups"][0]["cluster_id"] == "C2":
+            raise error
+        return proposals(payload["groups"])
+    monkeypatch.setattr(cluster_labels, "complete_json", llm)
+    ps = corpus(4)
+    settings = Settings(cluster_label_batch_size=1, cluster_label_neighbors=0)
+    with Trace(str(tmp_path)) as trace:
+        labels = cluster_labels.contrastive_labels(ps, [p.abstract for p in ps], [[0, 1], [2, 3]], np.eye(4), settings, None)
+    assert labels["C1"].coherence == "coherent"
+    assert labels["C2"].coherence == "insufficient_evidence" and labels["C2"].label.startswith("Unlabelled: ")
+    assert labels["C2"].evidence == [] and type(error).__name__ in labels["C2"].rationale
+    [failed] = [e for e in trace.events if e["action"] == "label clusters"]
+    assert failed["payload"] == {"cluster_ids": ["C2"]} and failed["decision"] == "unlabelled"
+
+
+def test_running_out_of_budget_while_labelling_still_stops_the_run(monkeypatch):
+    def llm(*args, **kwargs):
+        raise TokenBudgetExceeded("Token budget of 10 used up")
+    monkeypatch.setattr(cluster_labels, "complete_json", llm)
+    ps = corpus(2)
+    with pytest.raises(TokenBudgetExceeded):
+        cluster_labels.contrastive_labels(ps, [p.abstract for p in ps], [[0, 1]], np.eye(2), Settings(), None)
+
+
 def test_batch_limit_and_no_llm_for_singletons(monkeypatch):
     calls = []
     def llm(prompt, message, output_model, **kwargs):
@@ -206,12 +239,13 @@ def test_size_failure_defers_names_but_final_attempt_is_fully_labelled(monkeypat
         result = RunResult(run_id=trace.run_id, status="partial")
         output = _graded_stage("clusters", lambda fix: clusterer.cluster(
             ps, Effort.NORMAL, settings, fix, defer_labels_on_size_failure=True), ps, settings, trace, result, world)
-    assert len(calls) == 1 and [len(c.paper_ids) for c in output] == [2, 2, 2]
+    labelled = lambda: sorted(g["cluster_id"] for c in calls for g in c["groups"])
+    assert len(labelled()) == len(set(labelled())) == 3 and [len(c.paper_ids) for c in output] == [2, 2, 2]
     assert all(c.label != "Pending size review" for c in output)
     assert any(e["action"] == "defer labels" for e in trace.events)
     calls.clear()
     clusterer.cluster(ps, Effort.NORMAL, Settings(sample_mode=False, max_redo_per_stage=0), defer_labels_on_size_failure=True)
-    assert len(calls) == 1  # no retry means no deferred placeholders may escape
+    assert labelled() and len(labelled()) == len(set(labelled()))  # no retry means no deferred placeholders may escape
 
 
 def test_grader_does_not_see_producers_rationale(monkeypatch):
