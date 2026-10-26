@@ -7,6 +7,25 @@ import path from "node:path";
 import os from "node:os";
 
 const root = path.resolve(import.meta.dirname, "../..");
+// Main and foundation papers are frozen (cluster roles), so pick a side paper the API says can move.
+async function clickMovablePaper(
+  page: import("@playwright/test").Page,
+  request: import("@playwright/test").APIRequestContext,
+  appUrl: string,
+  runId: string,
+) {
+  const get = async (url: string) =>
+    (await (await request.get(appUrl + url)).json()).output;
+  const move = (
+    await get(`/cluster/${runId}/regenerate/candidates`)
+  ).candidates.find((c: any) => c.eligible);
+  const title = (await get(`/cluster/${runId}/papers`)).papers.find(
+    (p: any) => p.id === move.paper_id,
+  ).title;
+  await page
+    .getByRole("button", { name: `论文：${title}`, exact: true })
+    .click();
+}
 const test = base.extend<{ appUrl: string }>({
   appUrl: async ({}, use) => {
     const directory = await mkdtemp(
@@ -85,11 +104,15 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
     page.getByText("样例模式：分组、相似度和评分为占位结果。"),
   ).toBeVisible();
   await page.getByRole("button", { name: "运行分析", exact: true }).click();
+  // Graph 1 opens first; wait until Graph 2 has replaced it as the active version.
+  await expect(
+    page.getByText("图 2（研究空白）已生成", { exact: false }),
+  ).toBeVisible();
   await expect(page.locator(".version-selector select")).not.toHaveValue(
     "qa-root",
   );
   const analyzed = await page.locator(".version-selector select").inputValue();
-  await page.getByRole("button", { name: "关联", exact: true }).click();
+  await page.getByRole("button", { name: "图 1 · 关联", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "关联证据", exact: true }),
   ).toBeVisible();
@@ -99,7 +122,7 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   ).output;
   expect(original.connections).toHaveLength(0);
   await page.getByRole("button", { name: "全部", exact: true }).click();
-  await page.locator(".paper-node").first().click();
+  await clickMovablePaper(page, request, appUrl, analyzed);
   const target = page.getByLabel("选择移动目标");
   await expect(target.locator("option")).not.toHaveCount(1);
   const option = await target
@@ -136,12 +159,16 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
     await (await request.get(appUrl + `/cluster/${analyzed}/versions`)).json()
   ).output;
   expect(history.active_head.run_id).toBe(analyzed);
-  expect(history.versions).toHaveLength(3);
+  expect(history.versions).toHaveLength(4); // root, Graph 1, Graph 2, moved
   await page.getByRole("button", { name: "人工验收", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "验收材料", exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("0 / 6 已完成")).toBeVisible();
+  const queue = (
+    await (await request.get(appUrl + `/cluster/${analyzed}/review`)).json()
+  ).output.summary.total;
+  expect(queue).toBeGreaterThan(0);
+  await expect(page.getByText(`0 / ${queue} 已完成`)).toBeVisible();
   await page.getByRole("button", { name: "保存人工判断", exact: true }).click();
   await expect(page.getByRole("alert")).toHaveText(
     "请选择一项判断：有依据、不支持或资料不足。",
@@ -228,7 +255,9 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   expect(newReview.summary.reviewed).toBe(0);
   await page.getByRole("button", { name: "新建地图", exact: true }).click();
   const importDialog = page.getByRole("dialog", { name: "新建研究地图" });
-  await importDialog.getByRole("button", { name: "导入记录", exact: true }).click();
+  await importDialog
+    .getByRole("button", { name: "导入记录", exact: true })
+    .click();
   await importDialog
     .locator('input[type="file"]')
     .setInputFiles(
@@ -249,16 +278,21 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   await searchDialog
     .getByRole("textbox", { name: "研究问题", exact: true })
     .fill("How do large language models handle low-resource languages?");
-  await searchDialog.getByRole("button", { name: "检索论文", exact: true }).click();
+  await searchDialog
+    .getByRole("button", { name: "检索论文", exact: true })
+    .click();
   const results = searchDialog.getByRole("region", { name: "检索结果审核" });
   await expect(results.getByText("保留 30 / 30 篇")).toBeVisible();
   await expect(results.locator(".plan-criteria")).toContainText("（默认）");
   await results.getByRole("textbox").fill("Only papers since 2023");
   const replan = page.waitForRequest(
-    (r) => r.url().endsWith("/search") && !!r.postDataJSON().input.previous_plan,
+    (r) =>
+      r.url().endsWith("/search") && !!r.postDataJSON().input.previous_plan,
   );
   await results.getByRole("button", { name: "按反馈重新检索" }).click();
-  expect((await replan).postDataJSON().input.feedback).toBe("Only papers since 2023");
+  expect((await replan).postDataJSON().input.feedback).toBe(
+    "Only papers since 2023",
+  );
   await expect(results.getByRole("textbox")).toHaveValue("");
   await results.getByRole("button", { name: "全部取消" }).click();
   for (const box of (await results.getByRole("checkbox").all()).slice(0, 4))
@@ -348,11 +382,15 @@ test("stale preview conflict is visible inside the dialog and does not move pape
 }) => {
   await page.goto(appUrl);
   await page.getByRole("button", { name: "运行分析", exact: true }).click();
+  // Graph 1 opens first; wait until Graph 2 has replaced it as the active version.
+  await expect(
+    page.getByText("图 2（研究空白）已生成", { exact: false }),
+  ).toBeVisible();
   await expect(page.locator(".version-selector select")).not.toHaveValue(
     "qa-root",
   );
   const id = await page.locator(".version-selector select").inputValue();
-  await page.locator(".paper-node").first().click();
+  await clickMovablePaper(page, request, appUrl, id);
   const target = page.getByLabel("选择移动目标");
   await expect(target.locator("option")).not.toHaveCount(1);
   await target.selectOption(
@@ -387,6 +425,6 @@ test("stale preview conflict is visible inside the dialog and does not move pape
   const versions = (
     await (await request.get(appUrl + "/cluster/qa-root/versions")).json()
   ).output;
-  expect(versions.versions).toHaveLength(2);
+  expect(versions.versions).toHaveLength(3); // root, Graph 1, Graph 2
   expect(versions.active_head.run_id).toBe("qa-root");
 });
