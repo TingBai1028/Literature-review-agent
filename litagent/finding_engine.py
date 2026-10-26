@@ -216,7 +216,7 @@ def cache_key(stage: str, payload: dict, schema, settings: Settings) -> str:
     params = {k: v for k, v in vars(settings).items() if k.startswith(("finding_", "connection_", "gap_"))}
     files = [Path(__file__), Path(__file__).parent / "agents" / (stage[:-1] + "_finder.py")]
     if stage == "gaps":
-        files += [Path(__file__).parent / "tools" / name for name in ("openalex.py", "semantic_scholar.py")]
+        files += [Path(__file__).parent / "tools" / name for name in ("openalex.py", "semantic_scholar.py", "search_store.py")]
     return digest({"payload": payload, "settings": params, "model": settings.llm_model,
                    "prompts": {name: load_prompt(name) for name in names}, "schema": schema.model_json_schema(),
                    "verification_schema": FindingVerifications.model_json_schema(),

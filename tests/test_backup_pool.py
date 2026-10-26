@@ -54,7 +54,7 @@ def test_zero_reference_papers_go_to_the_backup_pool_only(tmp_path):
 
 def test_fast_spreads_its_retrieval_target_over_the_searches(monkeypatch):
     limits = []
-    def search(query, criteria, limit, open_access_only):
+    def search(query, criteria, limit, open_access_only, **options):
         limits.append(limit)
         return [paper(f"{query}-{i}", refs=5) for i in range(3)]
     monkeypatch.setattr(retriever, "search_openalex", search)

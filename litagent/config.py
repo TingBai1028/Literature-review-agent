@@ -151,6 +151,11 @@ class Settings:
     retrieval_sources: tuple[str, ...] = field(default_factory=lambda: tuple(s.strip() for s in os.getenv(
         "RETRIEVAL_SOURCES", "openalex,semantic_scholar,arxiv" if os.getenv("SEMANTIC_SCHOLAR_API_KEY") else "openalex,arxiv",
     ).split(",") if s.strip()))
+    # Shared by retrieval and coverage. Keep the 100-call allowance conservative even with a key;
+    # users can explicitly increase it. These count local HTTP attempts, not provider dollar credits.
+    scholarly_search_db: str = field(default_factory=lambda: os.getenv("SCHOLARLY_SEARCH_DB", "data/cache/scholarly-search.sqlite3"))
+    openalex_daily_search_limit: int = field(default_factory=lambda: int(os.getenv("OPENALEX_DAILY_SEARCH_LIMIT", "100")))
+    openalex_search_cache_ttl_s: float = field(default_factory=lambda: float(os.getenv("OPENALEX_SEARCH_CACHE_TTL_S", "86400")))
 
     # Full text (High / Ultra): open-access PDFs only, fetched concurrently within one overall deadline
     full_text_timeout_s: float = 20.0  # per PDF request
@@ -246,6 +251,8 @@ class Settings:
     gap_coverage_source_chars: int = 1000
     gap_coverage_timeout_s: float = 20.0
     gap_coverage_ttl_s: float = 86400
+    # Shared across clusters/rewrites; cached OpenAlex results consume no requests. Zero means cache only.
+    gap_coverage_max_requests: int = field(default_factory=lambda: int(os.getenv("GAP_COVERAGE_MAX_REQUESTS", "10")))
 
     # Independent per-claim AI review; separate from human annotations and finding production.
     review_agent_source_chars: int = 6000

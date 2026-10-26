@@ -55,7 +55,7 @@ def similarity(monkeypatch):
 
 def fake_search(monkeypatch, results: dict):
     """results: query -> list[Paper] or an exception to raise."""
-    def search(query, criteria, limit=25, open_access_only=True):
+    def search(query, criteria, limit=25, open_access_only=True, **options):
         r = results[query]
         if isinstance(r, Exception):
             raise r
@@ -279,7 +279,7 @@ def fake_sources(monkeypatch, **by_source):
     """by_source: source name -> list[Paper] or exception, the same for every query."""
     calls = []
     for name, value in by_source.items():
-        def search(query, criteria, limit=25, open_access_only=True, _name=name, _value=value):
+        def search(query, criteria, limit=25, open_access_only=True, _name=name, _value=value, **options):
             calls.append((_name, query, open_access_only))
             if isinstance(_value, Exception):
                 raise _value

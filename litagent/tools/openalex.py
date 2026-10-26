@@ -12,16 +12,24 @@ Usage is metered per day: about 100 searches without a key, 10x that with a free
 
 from __future__ import annotations
 
+import hashlib
+import json
+import math
 import os
+import sqlite3
+import threading
 import time
 
 import httpx
 
+from litagent.config import Settings
 from litagent.schemas import Paper, SearchCriteria
+from litagent.tools.search_store import SearchBudget, SearchLimitError, SearchStore
+from litagent.trace import current_trace
 
 BASE_URL = "https://api.openalex.org/works"
 TIMEOUT_S = 30
-MAX_PER_PAGE = 200
+MAX_PER_PAGE = 100
 MAX_WAIT_S = 5  # a 429 asking us to wait longer than this means the daily budget is used up
 FIELDS = ("id,doi,display_name,publication_year,type,cited_by_count,open_access,authorships,abstract_inverted_index,"
           "referenced_works,referenced_works_count")
@@ -37,9 +45,39 @@ class OpenAlexError(RuntimeError):
     pass
 
 
+_locks: dict[str, threading.Lock] = {}
+_locks_guard = threading.Lock()
+
+
 def search_openalex(query: str, criteria: SearchCriteria, limit: int = 25, open_access_only: bool = True,
-                   *, timeout_s: float = TIMEOUT_S, attempts: int = 3) -> list[Paper]:
-    data = _get_with_retry(BASE_URL, build_params(query, criteria, limit, open_access_only), attempts, timeout_s)
+                   *, timeout_s: float = TIMEOUT_S, attempts: int = 3,
+                   request_budget: SearchBudget | None = None, settings: Settings | None = None) -> list[Paper]:
+    cfg = settings or Settings()
+    if cfg.openalex_daily_search_limit < 0 or not math.isfinite(cfg.openalex_search_cache_ttl_s) or cfg.openalex_search_cache_ttl_s < 0:
+        raise ValueError("OpenAlex search allowance and cache TTL must be non-negative")
+    params = build_params(query.strip(), criteria, limit, open_access_only)
+    # Search results are public. Neither credentials nor the user's email are persisted.
+    public = {k: v for k, v in params.items() if k not in {"api_key", "mailto", "per-page"}}
+    key = hashlib.sha256(json.dumps([BASE_URL, public], sort_keys=True).encode()).hexdigest()
+    scope = hashlib.sha256((os.getenv("OPENALEX_API_KEY") or "anonymous").encode()).hexdigest()
+    with _locks_guard:
+        lock = _locks.setdefault(str(cfg.scholarly_search_db) + key, threading.Lock())
+    try:
+        store = SearchStore(cfg.scholarly_search_db)
+        # Identical requests from parallel clusters share one HTTP response. Different queries can overlap.
+        with lock:
+            cached = store.get(key, params["per-page"], cfg.openalex_search_cache_ttl_s)
+            if cached:
+                data, fetched = cached
+                if trace := current_trace():
+                    trace.log("openalex", "search cache", "hit", result={"fetched_at": fetched},
+                              why="Reused the same query/filters and a sufficient result page; no HTTP request")
+            else:
+                data = _get_with_retry(BASE_URL, params, attempts, timeout_s, store=store, scope=scope,
+                                       daily_limit=cfg.openalex_daily_search_limit, request_budget=request_budget)
+                store.put(key, params["per-page"], data)
+    except (SearchLimitError, OSError, sqlite3.Error) as error:
+        raise OpenAlexError(str(error)) from error
     return [_to_paper(w) for w in data.get("results", [])]
 
 
@@ -64,9 +102,13 @@ def build_params(query: str, criteria: SearchCriteria, limit: int, open_access_o
     return params
 
 
-def _get_with_retry(url: str, params: dict, attempts: int = 3, timeout_s: float = TIMEOUT_S) -> dict:
+def _get_with_retry(url: str, params: dict, attempts: int = 3, timeout_s: float = TIMEOUT_S, *,
+                    store: SearchStore | None = None, scope: str = "", daily_limit: int = 100,
+                    request_budget: SearchBudget | None = None) -> dict:
     problem = ""
     for i in range(attempts):
+        if store is not None:
+            store.reserve(scope, daily_limit, request_budget)
         try:
             r = httpx.get(url, params=params, timeout=timeout_s)
         except httpx.HTTPError as e:
@@ -75,6 +117,8 @@ def _get_with_retry(url: str, params: dict, attempts: int = 3, timeout_s: float 
             if r.status_code == 429:
                 wait = _seconds_to_wait(r)
                 if wait > MAX_WAIT_S:
+                    if store is not None:
+                        store.block(scope, wait, "OpenAlex daily limit reached")
                     raise OpenAlexError(
                         f"OpenAlex daily limit reached (resets in {wait / 3600:.1f} h). "
                         "A free OPENALEX_API_KEY raises the limit 10x."
@@ -95,7 +139,13 @@ def _get_with_retry(url: str, params: dict, attempts: int = 3, timeout_s: float 
 
 def _seconds_to_wait(r: httpx.Response) -> float:
     if r.headers.get("x-ratelimit-remaining") == "0":
-        return float(r.headers.get("x-ratelimit-reset") or 86_400)
+        try:
+            wait = float(r.headers.get("x-ratelimit-reset") or 86_400)
+            if wait > 1_000_000_000:  # some providers report a Unix timestamp, others seconds remaining
+                wait -= time.time()
+            return max(0.0, wait) if math.isfinite(wait) else 86_400
+        except ValueError:
+            return 86_400
     try:
         return float(r.headers.get("retry-after") or 1)
     except ValueError:

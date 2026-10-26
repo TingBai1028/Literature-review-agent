@@ -4,7 +4,7 @@ A gap is a pair of papers in one cluster that are close enough to plausibly comb
 literature has combined yet. Four stages, each writing one trace line per kept or dropped item:
 1. candidate_pairs (code): similarity band, no citation between the two, no retrieved paper citing both;
 2. gap writer (LLM): claim / grounds / warrant, with both quotes checked against the original text;
-3. coverage search: OpenAlex (+ Semantic Scholar with a key), then the LLM checks the top results;
+3. coverage search: cached/budgeted OpenAlex (Semantic Scholar fallback with a key), then the LLM checks the results;
 4. grading agent (LLM): SGHA labels; keeps novel and known_open, ranks and caps per cluster.
 Optional (gap_explicit_enabled): gaps the authors state themselves skip stages 1 and 2.
 """
@@ -32,10 +32,11 @@ from litagent.parallel import run_parallel
 from litagent.sample_data import sample_similarity
 from litagent.tools.openalex import OpenAlexError, search_openalex
 from litagent.tools.semantic_scholar import SemanticScholarError, search_semantic_scholar
+from litagent.tools.search_store import SearchBudget, SearchLimitError
 from litagent.trace import current_trace, mask
 
 KEPT_LABELS = ("novel", "known_open")
-COVERAGE_SCOPE = "Top results of one OpenAlex / Semantic Scholar query; this does not establish global novelty."
+COVERAGE_SCOPE = "Top results of budgeted OpenAlex queries (Semantic Scholar fallback with a key); cached results may be reused. This does not establish global novelty."
 _EXPLICIT_CUE = re.compile(r"remains? (?:unknown|unclear|unexplored|open)|future (?:work|research)|"
                            r"ha(?:s|ve) not (?:yet )?been (?:studied|explored|investigated|addressed)", re.IGNORECASE)
 
@@ -163,6 +164,7 @@ class _Run:
         self.lock = threading.Lock()  # clusters run in parallel; shared bookkeeping changes under this lock
         self.outcomes: dict[str, dict] = {}
         self.checked: dict[str, list[str]] = {}  # gap id -> titles the coverage judge saw
+        self.coverage_budget = SearchBudget(settings.gap_coverage_max_requests)
 
     def assess(self, candidates: list[dict], clusters: list[Cluster]) -> FindingCacheRecord:
         for c in candidates:
@@ -422,10 +424,15 @@ class _Run:
             timeout = min(self.settings.gap_coverage_timeout_s, max(.1, self.context.deadline - time.monotonic()))
             try:
                 # Coverage is not restricted by open access, dates or citation counts.
+                options = {"request_budget": self.coverage_budget, "settings": self.settings} if name == "openalex" else {}
+                if name != "openalex":
+                    self.coverage_budget.consume()
                 found = search(query, SearchCriteria(topic=self.context.question or query),
-                               self.settings.gap_coverage_hits_per_query, open_access_only=False, timeout_s=timeout, attempts=1)
+                               self.settings.gap_coverage_hits_per_query, open_access_only=False, timeout_s=timeout, attempts=1,
+                               **options)
                 checks.append(CoverageSearch(query=query, provider=name, checked_at=now(), status="ok", papers=found))
-            except error_type as error:
+                break  # only fall back when the primary provider fails
+            except (error_type, SearchLimitError) as error:
                 checks.append(CoverageSearch(query=query, provider=name, checked_at=now(), status="unavailable",
                                              error=mask(str(error))))
         return checks
