@@ -70,9 +70,28 @@ def test_foundation_prefers_old_highly_cited_papers_cited_by_main():
 def test_foundation_relaxes_step_by_step_and_says_so():
     ps = papers(10, P07={"year": 2001, "citation_count": 500})
     question = np.r_[np.full(5, .9), np.full(5, .2)]
-    plan = assign_roles(ps, blocks(5, 5), question, ["uncertain"] * 10, Settings())
+    relevance = ["uncertain"] * 5 + ["supporting"] * 5  # the rest is on topic, just less related
+    plan = assign_roles(ps, blocks(5, 5), question, relevance, Settings())
     assert len(plan.foundation) == 3 and ps[plan.foundation[0]].id == "P07"
-    assert "relaxed" in plan.foundation_reason and "most cited remaining" in plan.foundation_reason
+    assert "relaxed" in plan.foundation_reason and "most cited on-topic" in plan.foundation_reason
+
+
+def test_off_topic_classics_are_not_foundation_while_on_topic_papers_remain():
+    # Real run, 26 Oct: a highly cited protein-language review became foundation for an LLM question.
+    ps = papers(12, P05={"year": 2001, "citation_count": 900}, P06={"year": 2015, "citation_count": 40})
+    question = np.r_[np.full(5, .9), .1, np.full(6, .6)]  # P05 is off topic
+    plan = assign_roles(ps, blocks(5, 7), question, ["uncertain"] * 12, Settings())
+    assert "P05" not in [ps[i].id for i in plan.foundation] and ps[plan.foundation[0]].id == "P06"
+    offtopic = assign_roles(ps, blocks(5, 7), np.r_[np.full(5, .9), np.full(7, .1)], ["uncertain"] * 12, Settings())
+    assert len(offtopic.foundation) == 1 and "no on-topic paper left" in offtopic.foundation_reason
+
+
+def test_papers_judged_directly_relevant_join_main_up_to_ten():
+    ps = papers(16)
+    question = np.r_[np.full(4, .8), np.full(12, .55)]
+    relevance = ["direct"] * 4 + ["direct"] * 7 + ["uncertain"] * 5  # grouping put 7 direct papers elsewhere
+    plan = assign_roles(ps, blocks(4, 12), question, relevance, Settings())
+    assert len(plan.main) == 10 and "6 more papers judged directly relevant" in plan.main_reason
 
 
 def test_small_side_groups_merge_into_their_nearest_group():
@@ -84,3 +103,13 @@ def test_small_side_groups_merge_into_their_nearest_group():
     sides = sorted(map(sorted, plan.sides))
     assert all(len(g) >= 3 for g in sides) and any(16 in g and 8 in g for g in sides)
     assert any(d["step"] == "side groups" and d["paper_ids"] == ["P16"] for d in plan.decisions)
+
+
+def test_the_llm_relevance_check_decides_what_is_on_topic_for_foundation():
+    # Real run, 26 Oct: retrieval keeps only papers above the question gate, so the gate cannot tell a protein
+    # review (0.54, judged "uncertain") from on-topic work; the LLM check can.
+    ps = papers(12, P05={"year": 2001, "citation_count": 900}, P06={"year": 2015, "citation_count": 40})
+    question = np.r_[np.full(5, .9), np.full(7, .6)]
+    relevance = ["direct"] * 5 + ["uncertain", "supporting"] + ["supporting"] * 5
+    plan = assign_roles(ps, blocks(5, 7), question, relevance, Settings())
+    assert "P05" not in [ps[i].id for i in plan.foundation] and ps[plan.foundation[0]].id == "P06"
