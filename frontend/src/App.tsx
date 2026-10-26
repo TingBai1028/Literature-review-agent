@@ -147,7 +147,14 @@ export default function App() {
             <span className="map-counts">
               {data.papers.length} 篇论文 ·{" "}
               {data.map.clusters.filter((c) => c.kind === "main").length} 个主簇
-              · {data.map.clusters.filter((c) => c.kind !== "main").length}{" "}
+              ·{" "}
+              {data.map.clusters.filter((c) => c.kind === "foundation").length}{" "}
+              个基础簇 ·{" "}
+              {
+                data.map.clusters.filter(
+                  (c) => c.kind !== "main" && c.kind !== "foundation",
+                ).length
+              }{" "}
               个侧簇
             </span>
           </section>

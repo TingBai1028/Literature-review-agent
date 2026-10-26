@@ -10,7 +10,13 @@ export const colors = [
   "#cb9aa8",
 ];
 export const topicColor = (c: Cluster, i: number) =>
-  c.kind === "main" ? "#28584b" : colors[i % colors.length];
+  c.kind === "main"
+    ? "#28584b"
+    : c.kind === "foundation"
+      ? "#9a7438"
+      : colors[i % colors.length];
+export const roleName = (c?: Cluster) =>
+  c?.kind === "main" ? "主簇" : c?.kind === "foundation" ? "基础簇" : "侧簇";
 export function TopicSidebar({
   clusters,
   papers,
@@ -90,10 +96,10 @@ export function TopicSidebar({
                 style={{ background: topicColor(c, index) }}
               />
               <span className="topic-name">
-                {c.kind === "main" ? "主簇 · " : ""}
-                {c.kind === "main"
-                  ? "直接回答研究问题"
-                  : c.label.replace(/^Unclustered:\s*/, "")}
+                {c.kind === "main" || c.kind === "foundation"
+                  ? `${roleName(c)} · `
+                  : ""}
+                {c.label.replace(/^Unclustered:\s*/, "")}
               </span>
               <span className="topic-count">{c.paper_ids.length}</span>
             </button>

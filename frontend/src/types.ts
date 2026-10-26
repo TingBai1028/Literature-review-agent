@@ -32,9 +32,10 @@ export interface Detail {
 export interface Cluster {
   id: string;
   label: string;
-  kind?: "main" | "side";
+  kind?: "main" | "foundation" | "side";
   paper_ids: string[];
   rationale: string;
+  role_reason?: string | null;
   paper_details?: Detail[];
 }
 export interface Connection {
