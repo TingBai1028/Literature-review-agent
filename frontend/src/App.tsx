@@ -70,25 +70,39 @@ export default function App() {
       if (map.status === "partial")
         setNotice("地图已保存为待完成版本，可继续分析。");
     });
+  // Spec E: Graph 1 (paper edges) is opened as soon as it is ready; Graph 2 (gaps) follows on that version.
+  const runStage = (map: MapResult, stage: "connections" | "gaps") =>
+    request<MapResult>(`/cluster/${map.run_id}/analyze`, {
+      method: "POST",
+      body: {
+        expected_version_token: map.version_token,
+        request_id: crypto.randomUUID().replaceAll("-", ""),
+        stages: [stage],
+      },
+      timeout: (ws.config.run_timeout_s + 120) * 1000,
+    });
   const analyze = () =>
     data &&
-    void operate("正在分析关联与研究假设", async () => {
-      const map = await request<MapResult>(
-        `/cluster/${data.map.run_id}/analyze`,
-        {
-          method: "POST",
-          body: {
-            expected_version_token: data.map.version_token,
-            request_id: crypto.randomUUID().replaceAll("-", ""),
-          },
-          timeout: (ws.config.run_timeout_s + 120) * 1000,
-        },
-      );
+    void operate("正在寻找论文关联（图 1）", async () => {
+      let map = data.map;
+      if (!map.analysis?.completed_stages?.includes("connections")) {
+        map = await runStage(map, "connections");
+        await ws.open(map.run_id);
+        if (map.status === "partial") {
+          setNotice(
+            "已保留完成结果。原版本保持为当前版本，可打开这个待完成版本继续分析。",
+          );
+          return;
+        }
+      }
+      setBusy("图 1 已可浏览，正在寻找研究空白（图 2）");
+      map = await runStage(map, "gaps");
       await ws.open(map.run_id);
-      if (map.status === "partial")
-        setNotice(
-          "已保留完成结果。原版本保持为当前版本，可打开这个待完成版本继续分析。",
-        );
+      setNotice(
+        map.status === "partial"
+          ? "图 1 已保留；图 2 未完成，可再次运行分析继续。"
+          : "图 2（研究空白）已生成，切换到“图 2 · 研究空白”查看。",
+      );
     });
   return (
     <DialogNotice.Provider value={notice}>
