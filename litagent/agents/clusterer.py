@@ -1,161 +1,158 @@
 """3. Clusterer agent. Spec: docs/agents/clusterer.md
 
-Embeds each paper (title + abstract), mean-centers the run's embeddings (all papers share the topic,
-so the shared direction would otherwise dominate), groups papers by average-linkage on cosine
-similarity (groups merge while their average similarity stays above the threshold, which avoids the
-chaining of connected components), and labels every group in one LLM call. Groups smaller than
-min_cluster_size are left out: the orchestrator records those papers as "unclustered".
-
-On a redo, the grading agent's fix is passed to the labeller, and a fix that says the clusters are
-too broad or too fragmented moves the similarity threshold (settings.cluster_threshold_step).
+Embeds papers, groups those with cosine similarity >= threshold, and labels each group.
+Normal / Medium use metadata (title + abstract); High / Ultra use full text.
+With a question, first selects a source-verified main relevance pool and organizes
+the remaining papers into side groups with numerical alternative-cluster hints.
 """
 
 from __future__ import annotations
 
 import json
-import os
-import re
-import time
-
 import numpy as np
-from pydantic import BaseModel, Field
 
-from litagent.config import EFFORT_PROFILES, EMBEDDING_MAX_CHARS, EMBEDDING_MODEL, Effort, Settings
+from litagent.config import EFFORT_PROFILES, Effort, Settings
+from litagent.cluster_labels import contrastive_labels
+from litagent.cluster_state import ClusteringArtifacts
+from litagent.agents.grader import check_cluster_sizes
+from litagent.integrations.embeddings import embed_documents
 from litagent.integrations.llm import complete_json, load_prompt
-from litagent.schemas import Cluster, Paper
+from litagent.schemas import Cluster, ClusterLabel, Paper
+from litagent.semantic_groups import semantic_clusters
+from litagent.question_clusters import build_question_clusters
+from litagent.similarity import cosine_matrix, paper_similarity, partition_metrics, representative_indices, select_partition
 from litagent.trace import current_trace
 
-ABSTRACT_CHARS_FOR_LABELS = 300  # the labeller sees titles plus the start of each abstract
 
-_embedder = None
-
-
-class ClusterLabel(BaseModel):
-    cluster_id: str
-    label: str = Field(description="3-8 words naming the shared idea")
-    rationale: str = Field(description="One sentence: why these papers belong together")
-    coherent: bool = Field(default=True, description="False if the papers don't share one idea")
-
-
-class ClusterLabels(BaseModel):
-    labels: list[ClusterLabel]
-
-
-def cluster(papers: list[Paper], effort: Effort, settings: Settings, fix: str | None = None) -> list[Cluster]:
+def cluster(papers: list[Paper], effort: Effort, settings: Settings, fix: str | None = None,
+            *, defer_labels_on_size_failure: bool = False, question: str | None = None,
+            artifacts: ClusteringArtifacts | None = None) -> list[Cluster]:
     """`fix` is the grading agent's one suggested fix when the previous attempt failed."""
     if settings.sample_mode:
         return _fake_clusters(papers)
-    if len(papers) < settings.min_cluster_size:
+    if not papers:
         return []
+    if len({p.id for p in papers}) != len(papers):
+        raise ValueError("Clusterer requires unique paper ids")
+    if not 0 <= settings.cluster_similarity_threshold <= 1:
+        raise ValueError("cluster_similarity_threshold must be between 0 and 1")
+    if settings.cluster_label_strategy not in {"independent", "contrastive"}:
+        raise ValueError("cluster_label_strategy must be independent or contrastive")
+    if settings.cluster_grouping_strategy not in {"complete", "semantic"}:
+        raise ValueError("cluster_grouping_strategy must be complete or semantic")
+    if settings.cluster_map_mode not in {"question", "topic"}:
+        raise ValueError("cluster_map_mode must be question or topic")
+    if question is not None and not question.strip():
+        raise ValueError("Research question must not be blank")
+    if settings.cluster_label_text_chars < 1 or settings.cluster_label_max_papers < 1 or settings.cluster_redo_threshold_step < 0:
+        raise ValueError("Cluster label limit must be positive and threshold step non-negative")
 
-    threshold = adjust_threshold(settings.cluster_similarity_threshold, fix, settings.cluster_threshold_step)
     use_full_text = EFFORT_PROFILES[effort].use_full_text
-    start = time.monotonic()
-    embeddings = center(embed([_text_for(p, use_full_text) for p in papers]))
-    embed_s = time.monotonic() - start
-    groups = average_linkage(cosine_similarity_matrix(embeddings), threshold)
-    kept = sorted((g for g in groups if len(g) >= settings.min_cluster_size), key=lambda g: (-len(g), g[0]))
-    left_out = sum(len(g) for g in groups if len(g) < settings.min_cluster_size)
-    _log("group papers", f"{len(kept)} groups, {left_out} papers unclustered",
-         f"sizes {[len(g) for g in kept]}",
-         f"average linkage, mean-centered cosine >= {threshold:.2f} ({EMBEDDING_MODEL}, {len(papers)} papers embedded in {embed_s:.1f} s)"
-         + (f"; threshold moved by grader fix: {fix}" if threshold != settings.cluster_similarity_threshold else ""))
-
-    drafts = [Cluster(id=f"C{i + 1}", label="", paper_ids=[papers[j].id for j in g], rationale="") for i, g in enumerate(kept)]
-    return label_clusters(drafts, papers, settings, fix)
-
-
-def label_clusters(drafts: list[Cluster], papers: list[Paper], settings: Settings, fix: str | None) -> list[Cluster]:
-    """One LLM call labels every group. Groups the model calls incoherent are dropped (their papers
-    become unclustered); a group the model skipped gets a fallback label so no papers are lost."""
-    if not drafts:
-        return []
-    by_id = {p.id: p for p in papers}
-    message = {"clusters": [
-        {"cluster_id": c.id, "papers": [{"title": by_id[pid].title, "abstract_start": (by_id[pid].abstract or "")[:ABSTRACT_CHARS_FOR_LABELS]}
-                                        for pid in c.paper_ids]}
-        for c in drafts
-    ]}
-    if fix:
-        message["fix_from_grader"] = fix
-    result = complete_json(load_prompt("cluster_labeler"), json.dumps(message, ensure_ascii=False), ClusterLabels,
-                           settings=settings, agent_name="clusterer")
-    labels = {lab.cluster_id: lab for lab in result.labels}
-
-    out, dropped, fallback = [], [], []
-    for c in drafts:
-        lab = labels.get(c.id)
-        if lab is None:
-            fallback.append(c.id)
-            out.append(c.model_copy(update={"label": by_id[c.paper_ids[0]].title[:80],
-                                            "rationale": "Grouped by similarity; the labeller gave no label"}))
-        elif not lab.coherent:
-            dropped.append(c.id)
+    texts = [_text_for(p, use_full_text) for p in papers]
+    if use_full_text and any(not p.full_text for p in papers) and (trace := current_trace()):
+        trace.log("clusterer", "select text", "metadata fallback",
+                  result={"paper_ids": [p.id for p in papers if not p.full_text]},
+                  why="Some High/Ultra papers have no full text (no open-access PDF, or it could not be read); they use title + abstract")
+    question_mode = question is not None and settings.cluster_map_mode == "question"
+    embeddings = np.asarray(embed([question] + texts if question_mode else texts, settings), dtype=float)
+    if (embeddings.ndim != 2 or embeddings.shape[0] != len(papers) + int(question_mode) or embeddings.shape[1] == 0
+            or not np.isfinite(embeddings).all() or (np.linalg.norm(embeddings, axis=1) == 0).any()):
+        raise ValueError("Embeddings must contain one finite non-zero vector per paper")
+    question_vector = embeddings[0] if question_mode else None
+    if question_mode:
+        embeddings = embeddings[1:]
+    scores = paper_similarity(papers, embeddings, settings)
+    if artifacts is not None:
+        artifacts.paper_vectors = embeddings.copy()
+        artifacts.question_vector = question_vector.copy() if question_vector is not None else None
+        artifacts.similarity = scores.combined.copy()
+    if question_mode:
+        return build_question_clusters(papers, texts, embeddings, question_vector, scores, question.strip(), settings, fix)
+    if settings.cluster_grouping_strategy == "semantic":
+        return semantic_clusters(papers, texts, scores.combined, settings, fix)
+    # A stable paper-id order makes linkage ties independent of API result order.
+    order = sorted(range(len(papers)), key=lambda i: papers[i].id)
+    canonical = scores.combined[np.ix_(order, order)]
+    canonical_groups, threshold, candidates = select_partition(canonical, settings, fix)
+    groups = [[order[i] for i in group] for group in canonical_groups]
+    if trace := current_trace():
+        trace.log("clusterer", "group papers", f"{len(groups)} groups", next_step="label groups",
+                  threshold=threshold, sizes={"counts": [len(g) for g in groups]},
+                  metrics=partition_metrics(scores.combined, groups),
+                  dense_metrics=partition_metrics(scores.dense, groups),
+                  calibration={"candidates": candidates}, lexical_missing=scores.lexical_missing,
+                  why=f"Complete linkage on semantic/TF-IDF similarity; dense weight={settings.cluster_dense_weight}; "
+                      f"mode={settings.cluster_threshold_mode}; singletons retained; grader fix: {fix or 'none'}")
+    # In the graded pipeline the first size failure is guaranteed to trigger a redo.
+    # Return its partition for that check without spending tokens on discarded names.
+    if defer_labels_on_size_failure and fix is None and settings.max_redo_per_stage > 0:
+        pending = [Cluster(id=f"C{i + 1}", label="Pending size review", paper_ids=[papers[j].id for j in group],
+                           rationale="Label deferred until the deterministic size check.") for i, group in enumerate(groups)]
+        if problem := check_cluster_sizes(pending, len(papers)):
+            if trace := current_trace():
+                trace.log("clusterer", "defer labels", "size check will retry", why=problem)
+            return pending
+    assessed = (contrastive_labels(papers, texts, groups, scores.combined, settings, fix)
+                if settings.cluster_label_strategy == "contrastive" else {})
+    clusters = []
+    for index, group in enumerate(groups, 1):
+        members = [papers[i] for i in group]
+        if len(members) == 1:
+            label = ClusterLabel(label=f"Unclustered: {members[0].title}",
+                                 rationale="No compatible group met the pairwise similarity threshold; retained as an outlier.")
+        elif settings.cluster_label_strategy == "contrastive":
+            assessment = assessed[f"C{index}"]
+            label = ClusterLabel(label=assessment.label,
+                                 rationale=f"[{assessment.coherence}] {assessment.rationale} {assessment.contrast}")
         else:
-            out.append(c.model_copy(update={"label": lab.label, "rationale": lab.rationale}))
-    if dropped or fallback:
-        _log("label clusters", f"{len(out)} labelled", f"dropped as incoherent: {dropped}; fallback label: {fallback}",
-             "The labeller said these papers don't share one idea" if dropped else "Labeller skipped some groups")
-    # Renumber so ids stay C1..Cn after drops
-    return [c.model_copy(update={"id": f"C{i + 1}"}) for i, c in enumerate(out)]
+            representatives = representative_indices(scores.combined, group, settings.cluster_label_max_papers,
+                                                       settings.cluster_representative_relevance_weight)
+            payload = {
+                "papers": [{"id": papers[i].id, "title": papers[i].title,
+                            "text": texts[i][:settings.cluster_label_text_chars]} for i in representatives],
+                "total_papers": len(group),
+                "group_paper_ids": [p.id for p in members],
+                "fix": fix,
+            }
+            if trace := current_trace():
+                trace.log("clusterer", "choose label examples", f"{len(representatives)} of {len(group)} papers",
+                          result={"paper_ids": [papers[i].id for i in representatives]},
+                          why="MMR balances group centrality and non-redundant evidence; group membership is unchanged")
+            label = complete_json(load_prompt("cluster_labeler"), json.dumps(payload, ensure_ascii=False),
+                                  ClusterLabel, settings=settings, agent_name="clusterer")
+        clusters.append(Cluster(id=f"C{index}", label=label.label,
+                                paper_ids=[p.id for p in members], rationale=label.rationale))
+    return clusters
 
 
-def adjust_threshold(threshold: float, fix: str | None, step: float) -> float:
-    """Clusters too broad -> stricter threshold (more, smaller groups); too fragmented or none -> looser."""
-    if not fix:
-        return threshold
-    text = fix.lower()
-    if re.search(r"too broad|split|too large|too big", text):
-        return min(threshold + step, 0.99)
-    if re.search(r"no clusters|too many|fragment|merge|too small|too detailed|lower the similarity", text):
-        return max(threshold - step, -1.0)
-    return threshold
-
-
-def embed(texts: list[str]) -> np.ndarray:
-    """Local ONNX embeddings (config.EMBEDDING_MODEL); loaded once per process."""
-    global _embedder
-    if _embedder is None:
-        from fastembed import TextEmbedding
-
-        _embedder = TextEmbedding(EMBEDDING_MODEL, cache_dir=os.getenv("EMBEDDING_CACHE_DIR") or None)
-    return np.array(list(_embedder.embed([t[:EMBEDDING_MAX_CHARS] for t in texts])))
-
-
-def center(embeddings: np.ndarray) -> np.ndarray:
-    """Normalize, then subtract the run's mean vector, so similarity reflects what separates papers
-    within the topic rather than the topic they all share."""
-    unit = embeddings / np.clip(np.linalg.norm(embeddings, axis=1, keepdims=True), 1e-12, None)
-    return unit - unit.mean(axis=0)
+def embed(texts: list[str], settings: Settings | None = None) -> np.ndarray:
+    return embed_documents(texts, settings or Settings())
 
 
 def cosine_similarity_matrix(embeddings: np.ndarray) -> np.ndarray:
-    norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
-    unit = embeddings / np.clip(norms, 1e-12, None)
-    return unit @ unit.T
+    return cosine_matrix(embeddings)
 
 
-def average_linkage(similarity: np.ndarray, threshold: float) -> list[list[int]]:
-    """Agglomerative clustering: repeatedly merge the two groups with the highest average pairwise
-    similarity, while that average is >= threshold. Returns groups of indices, each sorted."""
+def group_by_threshold(similarity: np.ndarray, threshold: float) -> list[list[int]]:
+    """Legacy connected-components baseline, retained only for comparison experiments."""
     n = similarity.shape[0]
-    groups: list[list[int]] = [[i] for i in range(n)]
-    sim = similarity.astype(float).copy()
-    np.fill_diagonal(sim, -np.inf)
-    active = np.ones(n, dtype=bool)
-    while active.sum() > 1:
-        masked = np.where(active[:, None] & active[None, :], sim, -np.inf)
-        a, b = np.unravel_index(np.argmax(masked), masked.shape)
-        if masked[a, b] < threshold:
-            break
-        size_a, size_b = len(groups[a]), len(groups[b])
-        # Average similarity of the merged group to every other group (UPGMA update)
-        sim[a, :] = (size_a * sim[a, :] + size_b * sim[b, :]) / (size_a + size_b)
-        sim[:, a] = sim[a, :]
-        sim[a, a] = -np.inf
-        groups[a] = sorted(groups[a] + groups[b])
-        active[b] = False
-    return [groups[i] for i in range(n) if active[i]]
+    parent = list(range(n))
+
+    def find(i: int) -> int:
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if similarity[i, j] >= threshold:
+                parent[find(i)] = find(j)
+
+    groups: dict[int, list[int]] = {}
+    for i in range(n):
+        groups.setdefault(find(i), []).append(i)
+    return list(groups.values())
 
 
 def _text_for(paper: Paper, use_full_text: bool) -> str:
@@ -164,14 +161,9 @@ def _text_for(paper: Paper, use_full_text: bool) -> str:
     return f"{paper.title}. {paper.abstract or ''}"
 
 
-def _log(action: str, decision: str, result: str, why: str) -> None:
-    if trace := current_trace():
-        trace.log("clusterer", action, decision, result, "grade clusters", why)
-
-
 def _fake_clusters(papers: list[Paper]) -> list[Cluster]:
     """Sample mode: split papers round-robin into 3 placeholder groups (no embeddings, no LLM)."""
-    k = 3
+    k = min(3, len(papers))
     return [
         Cluster(
             id=f"C{i + 1}", label=f"Sample theme {i + 1}", paper_ids=[p.id for p in papers[i::k]],

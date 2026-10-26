@@ -18,9 +18,11 @@ psycopg[binary]>=3.2
 fastapi>=0.110
 uvicorn>=0.29
 
-# Clusterer embeddings: small ONNX model, no PyTorch (Nightshift serves no embeddings endpoint).
-# The Docker image downloads the model at build time (Dockerfile), never at runtime.
-fastembed>=0.4
+# CPU semantic clustering. Provision weights with scripts/setup_embeddings.py;
+# Docker bakes them in at build time. Real runs only load local files.
+sentence-transformers>=5.7,<6
+scikit-learn>=1.4,<2
+scipy>=1.11,<2
 
-# TODO: uncomment when you implement full-text reading (High / Ultra)
-# pypdf>=4.0
+# Full-text PDF extraction for High / Ultra effort (litagent/tools/fulltext.py); keeps two-column order
+pdfminer.six>=20231228

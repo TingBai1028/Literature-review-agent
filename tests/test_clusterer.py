@@ -1,142 +1,140 @@
-"""Clusterer (real, non-sample path) with embeddings and the LLM mocked."""
+"""Real clustering contracts, boundary cases, and the grading/redo integration (no network)."""
 
 import json
+from collections import Counter
 
 import numpy as np
 import pytest
+from pydantic import ValidationError
 
-from litagent.agents import clusterer
-from litagent.agents.clusterer import ClusterLabel, ClusterLabels, adjust_threshold, average_linkage, cluster
+from litagent.agents import clusterer, grader
 from litagent.config import Effort, Settings
-from litagent.human_review import AutoApproveReviewer
-from litagent.orchestrator import run_pipeline
-from litagent.schemas import Cluster, Paper
+from litagent.integrations.meterless import ResearchWorld
+from litagent.orchestrator import _graded_stage
+from litagent.schemas import ClusterLabel, Grade, Paper, RunResult
 from litagent.trace import Trace
 
 
-def unit(deg: float) -> list[float]:
-    return [np.cos(np.radians(deg)), np.sin(np.radians(deg))]
-
-
-# Two tight groups (around 0 and 90 degrees) and one outlier at 45 degrees (cosine 0.71 to both)
-ANGLES = {"P1": 0, "P2": 4, "P3": 88, "P4": 90, "P5": 93, "P6": 45}
-PAPERS = [Paper(id=pid, title=f"Title {pid}", abstract=f"Abstract {pid}.", source="openalex") for pid in ANGLES]
-
-
-def real_settings(threshold=0.85) -> Settings:
-    s = Settings()
-    s.sample_mode = False
-    s.cluster_similarity_threshold = threshold
-    s.cluster_threshold_step = 0.03
-    return s
+def papers(n=6):
+    return [Paper(id=f"P{i}", title=f"Paper {i}", abstract=f"Abstract {i}", source="test") for i in range(n)]
 
 
 @pytest.fixture
-def fakes(monkeypatch):
-    """Fake embeddings from ANGLES and a fake labeller; returns the messages sent to the LLM."""
-    sent = []
-    monkeypatch.setattr(clusterer, "embed", lambda texts: np.array([unit(ANGLES[t.split(".")[0].split()[-1]]) for t in texts]))
+def labeller(monkeypatch):
+    calls = []
 
-    def fake_llm(system_prompt, user_message, output_model, **kwargs):
-        message = json.loads(user_message)
-        sent.append(message)
-        return ClusterLabels(labels=[ClusterLabel(cluster_id=c["cluster_id"], label=f"Label {c['cluster_id']}",
-                                                  rationale="r") for c in message["clusters"]])
+    def label(prompt, message, output_model, **kwargs):
+        payload = json.loads(message)
+        calls.append(payload)
+        assert output_model is ClusterLabel
+        return ClusterLabel(label="Cross-lingual transfer", rationale="The papers study cross-lingual transfer.")
 
-    monkeypatch.setattr(clusterer, "complete_json", fake_llm)
-    return sent
+    monkeypatch.setattr(clusterer, "complete_json", label)
+    return calls
 
 
-# ----- grouping -----
-
-def test_average_linkage_does_not_chain():
-    # A~B and B~C are close but A and C are far apart: connected components would make one group
-    sim = np.array([[1.0, 0.9, 0.1], [0.9, 1.0, 0.9], [0.1, 0.9, 1.0]])
-    assert average_linkage(sim, 0.8) == [[0, 1], [2]]
-
-
-def test_average_linkage_extremes():
-    sim = np.full((4, 4), 0.95)
-    assert average_linkage(sim, 0.9) == [[0, 1, 2, 3]]
-    assert average_linkage(np.eye(4), 0.5) == [[0], [1], [2], [3]]
-
-
-@pytest.mark.parametrize("fix, expected", [
-    ("One cluster is too broad; split the largest cluster.", 0.88),
-    ("Too many single-paper clusters; lower the similarity threshold or merge.", 0.82),
-    ("No clusters were produced.", 0.82),
-    ("Make the labels more specific.", 0.85),
-    (None, 0.85),
-])
-def test_grader_fix_moves_the_threshold(fix, expected):
-    assert adjust_threshold(0.85, fix, 0.03) == pytest.approx(expected)
-
-
-# ----- cluster() -----
-
-def test_groups_are_labelled_and_the_outlier_is_left_out(fakes):
-    clusters = cluster(PAPERS, Effort.NORMAL, real_settings())
-    assert [(c.id, c.paper_ids) for c in clusters] == [("C1", ["P3", "P4", "P5"]), ("C2", ["P1", "P2"])]
-    assert [c.label for c in clusters] == ["Label C1", "Label C2"]
-    assert "P6" not in {pid for c in clusters for pid in c.paper_ids}
-    assert len(fakes) == 1  # one LLM call labels every group
-    assert fakes[0]["clusters"][1]["papers"][0] == {"title": "Title P1", "abstract_start": "Abstract P1."}
-
-
-def test_grader_fix_reaches_the_labeller_and_the_log(fakes, tmp_path):
+def test_groups_are_labelled_and_every_paper_is_kept_once(monkeypatch, labeller, tmp_path):
+    monkeypatch.setattr(clusterer, "embed", lambda texts, settings: np.array(
+        [[1, 0, 0], [1, 0, 0], [0, 1, 0], [0, 1, 0], [0, 0, 1]]))
     with Trace(str(tmp_path)) as trace:
-        cluster(PAPERS, Effort.NORMAL, real_settings(), fix="One cluster is too broad; split the largest cluster.")
-    assert fakes[0]["fix_from_grader"].startswith("One cluster is too broad")
-    grouped = next(e for e in trace.events if e["action"] == "group papers")
-    assert "0.88" in grouped["why"] and "threshold moved" in grouped["why"]
+        out = clusterer.cluster(papers(5), Effort.NORMAL, Settings(sample_mode=False, cluster_label_strategy="independent", cluster_threshold_mode="fixed", cluster_dense_weight=1))
+    assert [c.paper_ids for c in out] == [["P0", "P1"], ["P2", "P3"], ["P4"]]
+    assert Counter(p for c in out for p in c.paper_ids) == Counter(p.id for p in papers(5))
+    assert [c.id for c in out] == ["C1", "C2", "C3"]
+    assert len(labeller) == 2  # singletons are explicitly retained without inventing a shared theme
+    assert out[-1].label.startswith("Unclustered:")
+    grouping = next(e for e in trace.events if e["action"] == "group papers")
+    assert grouping["threshold"] == 0.7 and grouping["sizes"]["counts"] == [2, 2, 1]
 
 
-def test_incoherent_group_is_dropped_and_ids_renumbered(fakes, monkeypatch):
-    def llm(system_prompt, user_message, output_model, **kwargs):
-        return ClusterLabels(labels=[
-            ClusterLabel(cluster_id="C1", label="Mixed", rationale="no shared idea", coherent=False),
-            ClusterLabel(cluster_id="C2", label="Pair", rationale="r"),
-        ])
+def test_high_effort_uses_available_full_text_and_logs_missing_text(monkeypatch, labeller, tmp_path):
+    seen = []
 
-    monkeypatch.setattr(clusterer, "complete_json", llm)
-    clusters = cluster(PAPERS, Effort.NORMAL, real_settings())
-    assert [(c.id, c.label, c.paper_ids) for c in clusters] == [("C1", "Pair", ["P1", "P2"])]
+    def embedding(texts, settings):
+        seen.extend(texts)
+        return np.ones((2, 2))
 
-
-def test_group_the_labeller_skipped_gets_a_fallback_label(fakes, monkeypatch):
-    monkeypatch.setattr(clusterer, "complete_json",
-                        lambda *a, **k: ClusterLabels(labels=[ClusterLabel(cluster_id="C1", label="Big", rationale="r")]))
-    clusters = cluster(PAPERS, Effort.NORMAL, real_settings())
-    assert [c.label for c in clusters] == ["Big", "Title P1"]
+    monkeypatch.setattr(clusterer, "embed", embedding)
+    ps = papers(2)
+    ps[0].full_text = "Full text with scientific findings."
+    with Trace(str(tmp_path)) as trace:
+        clusterer.cluster(ps, Effort.HIGH, Settings(sample_mode=False, cluster_label_strategy="independent", cluster_threshold_mode="fixed", cluster_dense_weight=1), "Use precise labels")
+    assert seen == [ps[0].full_text, "Paper 1. Abstract 1"]
+    assert labeller[0]["fix"] == "Use precise labels"
+    assert any(e["decision"] == "metadata fallback" for e in trace.events)
 
 
-def test_too_few_papers_or_no_groups(fakes):
-    assert cluster(PAPERS[:1], Effort.NORMAL, real_settings()) == []
-    assert cluster(PAPERS, Effort.NORMAL, real_settings(threshold=0.9999)) == []
-    assert fakes == []  # no LLM call when there is nothing to label
+def test_grader_redo_splits_broad_components_and_world_retains_memberships(monkeypatch, labeller, tmp_path):
+    # The 45-degree bridges join every paper at 0.7; a 0.75 redo separates three pairs.
+    angles = np.repeat([0, np.pi / 4, np.pi / 2], 2)
+    embeddings = np.stack([np.cos(angles), np.sin(angles)], axis=1)
+    monkeypatch.setattr(clusterer, "embed", lambda texts, settings: embeddings)
+    monkeypatch.setattr(grader, "complete_json", lambda *a, **kw: Grade(
+        stage="clusters", accuracy=3, appropriateness=3, actionability=2, reasoning="Specific themes"))
+    settings = Settings(sample_mode=False, cluster_label_strategy="independent", cluster_threshold_mode="fixed", cluster_dense_weight=1)
+    ps = papers()
+    with Trace(str(tmp_path)) as trace:
+        world = ResearchWorld(trace.run_id)
+        world.start_attempt(1)
+        world.add_papers(ps)
+        result = RunResult(run_id=trace.run_id, status="partial")
+        out = _graded_stage("clusters", lambda fix: clusterer.cluster(ps, Effort.NORMAL, settings, fix),
+                            ps, settings, trace, result, world)
+        world.write_clusters(out)
+    assert [len(c.paper_ids) for c in out] == [2, 2, 2]
+    assert len(labeller) == 5  # two complete-link groups, then three corrected labels
+    assert all(c["fix"] == "One cluster is too broad; split the largest cluster." for c in labeller[2:])
+    assert not result.warnings
+    assert sorted(p for refs in world.read_clusters().values() for p in refs) == [p.id for p in ps]
+    assert [e["threshold"] for e in trace.events if e["action"] == "group papers"] == [0.7, 0.75]
 
 
-# ----- orchestrator -----
-
-def test_orchestrator_records_unclustered_papers(tmp_path, monkeypatch):
-    monkeypatch.setattr(clusterer, "cluster", lambda papers, effort, settings, fix=None: [
-        Cluster(id="C1", label="A", paper_ids=[p.id for p in papers[:12]], rationale="r"),
-        Cluster(id="C2", label="B", paper_ids=[p.id for p in papers[12:24]], rationale="r"),
-        Cluster(id="C3", label="C", paper_ids=[p.id for p in papers[24:28]], rationale="r"),
-    ])
-    settings = Settings()
-    settings.sample_mode = True
-    settings.logs_dir = str(tmp_path)
-    result = run_pipeline("graph neural networks for drug discovery", Effort.NORMAL, AutoApproveReviewer(), settings)
-    expected = [p.id for p in result.papers[28:]]
-    assert len(expected) == 2 and result.unclustered_paper_ids == expected
-    assert result.paper_map["unclustered"] == sorted(expected)
+def test_redo_can_merge_excessive_singletons(monkeypatch, labeller):
+    angle = np.arccos(0.68)
+    monkeypatch.setattr(clusterer, "embed", lambda texts, settings: np.array([[1, 0], [np.cos(angle), np.sin(angle)]]))
+    out = clusterer.cluster(papers(2), Effort.NORMAL, Settings(sample_mode=False, cluster_label_strategy="independent", cluster_threshold_mode="fixed", cluster_dense_weight=1), "Merge related singletons")
+    assert [c.paper_ids for c in out] == [["P0", "P1"]]
 
 
-def test_docker_image_bakes_the_configured_embedding_model():
-    from pathlib import Path
+def test_sample_mode_does_not_load_encoder_or_call_llm(monkeypatch):
+    def forbidden(*args, **kwargs):
+        pytest.fail("sample mode attempted real compute")
+    monkeypatch.setattr(clusterer, "embed", forbidden)
+    monkeypatch.setattr(clusterer, "complete_json", forbidden)
+    assert len(clusterer.cluster(papers(), Effort.NORMAL, Settings(sample_mode=True))) == 3
 
-    from litagent.config import EMBEDDING_MODEL
 
-    dockerfile = (Path(__file__).resolve().parents[1] / "Dockerfile").read_text()
-    assert f"ARG EMBEDDING_MODEL={EMBEDDING_MODEL}" in dockerfile
+def test_empty_input_needs_no_model(monkeypatch):
+    monkeypatch.setattr(clusterer, "embed", lambda *a: pytest.fail("empty input loaded a model"))
+    assert clusterer.cluster([], Effort.NORMAL, Settings(sample_mode=False, cluster_label_strategy="independent", cluster_threshold_mode="fixed", cluster_dense_weight=1)) == []
+
+
+def test_duplicate_paper_ids_are_rejected():
+    p = papers(1)[0]
+    with pytest.raises(ValueError, match="unique"):
+        clusterer.cluster([p, p], Effort.NORMAL, Settings(sample_mode=False, cluster_label_strategy="independent", cluster_threshold_mode="fixed", cluster_dense_weight=1))
+
+
+@pytest.mark.parametrize("vectors", [np.ones((1, 2)), np.array([[np.nan, 0], [1, 0]]), np.zeros((2, 2))])
+def test_bad_embeddings_fail_before_labelling(monkeypatch, vectors, labeller):
+    monkeypatch.setattr(clusterer, "embed", lambda *a: vectors)
+    with pytest.raises(ValueError, match="finite non-zero"):
+        clusterer.cluster(papers(2), Effort.NORMAL, Settings(sample_mode=False, cluster_label_strategy="independent", cluster_threshold_mode="fixed", cluster_dense_weight=1))
+    assert not labeller
+
+
+def test_labels_cannot_be_blank():
+    with pytest.raises(ValidationError):
+        ClusterLabel(label="  ", rationale="A reason")
+
+
+def test_grouping_is_stable_when_the_retrieval_order_changes(monkeypatch, labeller):
+    ps = papers(3)
+    vector_by_id = {"P0": [1, 0], "P1": [np.cos(.6), np.sin(.6)], "P2": [np.cos(1.2), np.sin(1.2)]}
+    def embedding(texts, settings):
+        return np.array([vector_by_id[f"P{text.split()[1].rstrip('.')}"] for text in texts])
+    monkeypatch.setattr(clusterer, "embed", embedding)
+    settings = Settings(sample_mode=False, cluster_label_strategy="independent", cluster_dense_weight=1, cluster_threshold_mode="fixed")
+    left = clusterer.cluster(ps, Effort.NORMAL, settings)
+    right = clusterer.cluster(list(reversed(ps)), Effort.NORMAL, settings)
+    assert [c.model_dump() for c in left] == [c.model_dump() for c in right]

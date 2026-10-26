@@ -8,8 +8,10 @@ Loops:
 
 Bounds: replans and redos are capped in config.py. The run stops between stages once
 settings.run_timeout_s has passed, and before any LLM call once the effort level's token budget
-is used up; both return status="partial" with what was finished.
-An exception in any stage is logged to the trace and re-raised for the caller (CLI or API).
+is used up; both return status="partial" with what was finished. So does a model-provider failure
+(timeout, output still invalid after the repair) once the run is past Human review 1: the finished
+stages are worth more than an error. Any other exception, or one before papers exist, is logged to
+the trace and re-raised for the caller (CLI or API).
 """
 
 from __future__ import annotations
@@ -17,10 +19,14 @@ from __future__ import annotations
 import time
 from typing import Callable, TypeVar
 
+from openai import OpenAIError
+
 from litagent.agents import clusterer, connection_finder, gap_finder, grader, planner, retriever
 from litagent.config import EFFORT_PROFILES, Effort, Settings
+from litagent.cluster_state import ClusteringArtifacts
+from litagent.finding_engine import FindingContext
 from litagent.human_review import Reviewer
-from litagent.integrations.llm import TokenBudgetExceeded, TokenMeter
+from litagent.integrations.llm import LLMError, TokenBudgetExceeded, TokenMeter
 from litagent.integrations.meterless import ResearchWorld
 from litagent.integrations.zetaris import ZetarisStore
 from litagent.schemas import RunResult
@@ -112,22 +118,23 @@ def run_pipeline(
                 # ----- 3. Clusterer + grading -----
                 stage = "clusterer"
                 check_time(stage)
+                artifacts = ClusteringArtifacts()
                 result.clusters = _graded_stage(
-                    "clusters", lambda fix: clusterer.cluster(papers, effort, settings, fix), papers, settings, trace, result, world
+                    "clusters", lambda fix: clusterer.cluster(papers, effort, settings, fix,
+                                                              defer_labels_on_size_failure=True, question=plan.question, artifacts=artifacts),
+                    papers, settings, trace, result, world
                 )
                 world.write_clusters(result.clusters)
-                clustered = {pid for c in result.clusters for pid in c.paper_ids}
-                result.unclustered_paper_ids = [p.id for p in papers if p.id not in clustered]
-                if result.unclustered_paper_ids:
-                    world.write_unclustered(result.unclustered_paper_ids)
+                finding_context = FindingContext(question=plan.question, similarity=artifacts.similarity,
+                    use_full_text=EFFORT_PROFILES[effort].use_full_text, deadline=deadline)
 
                 # ----- 4. Connection finder + grading -----
                 stage = "connection_finder"
                 check_time(stage)
                 result.connections = _graded_stage(
                     "connections",
-                    lambda fix: connection_finder.find_connections(papers, result.clusters, settings, fix),
-                    papers, settings, trace, result, world,
+                    lambda fix: connection_finder.find_connections(papers, result.clusters, settings, fix, context=finding_context),
+                    papers, settings, trace, result, world, finding_context=finding_context,
                 )
                 world.write_connections(result.connections)
 
@@ -136,8 +143,8 @@ def run_pipeline(
                 check_time(stage)
                 result.gaps = _graded_stage(
                     "gaps",
-                    lambda fix: gap_finder.find_gaps(papers, result.clusters, result.connections, settings, fix),
-                    papers, settings, trace, result, world,
+                    lambda fix: gap_finder.find_gaps(papers, result.clusters, result.connections, settings, fix, context=finding_context),
+                    papers, settings, trace, result, world, finding_context=finding_context,
                 )
                 world.write_gaps(result.gaps)
                 result.paper_map = world.to_graph_json()
@@ -165,6 +172,16 @@ def run_pipeline(
             partial.warnings.append(f"{reason}; returning what was finished.")
             trace.log("orchestrator", action, "stop early", next_step="return partial result", why=reason)
             return finish(partial)
+        except (LLMError, OpenAIError) as e:
+            if result is None:  # nothing finished worth returning yet
+                trace.error(stage, "run stage", e, next_step="return error to caller")
+                raise
+            reason = f"Model provider failed during {stage} ({type(e).__name__})"
+            trace.error(stage, "run stage", e, next_step="return partial result")
+            result.status = "partial"
+            result.paper_map = world.to_graph_json()
+            result.warnings.append(f"{reason}; returning what was finished. Run again for the remaining stages.")
+            return finish(result)
         except Exception as e:
             trace.error(stage, "run stage", e, next_step="return error to caller")
             raise
@@ -178,11 +195,21 @@ def _graded_stage(
     trace: Trace,
     result: RunResult,
     world: ResearchWorld,
+    finding_context: FindingContext | None = None,
 ) -> list[T]:
     fix: str | None = None
     for attempt in range(settings.max_redo_per_stage + 1):
         output = produce(fix)
-        g = grader.grade(stage, output, papers, settings)
+        setattr(result, stage, output)  # Keep completed output if grading exhausts the token budget.
+        try:
+            scope = grader.finding_scope(finding_context, stage) if finding_context is not None else {}
+            g = grader.grade(stage, output, papers, settings, **scope)
+        except (TokenBudgetExceeded, LLMError, OpenAIError):
+            # No output for this stage has been written yet. Persist the last completed
+            # attempt so the partial graph matches the structured partial result.
+            {"clusters": world.write_clusters, "connections": world.write_connections,
+             "gaps": world.write_gaps}[stage](output)
+            raise
         ok = grader.passed(g, settings)
         world.record_grade(stage, g)
         trace.log(

@@ -11,14 +11,14 @@ The hackathon technical-requirements prompt (Nightshift, Zetaris, `/run`, sample
 
 ## 0. LLM wrapper (do this first: every agent uses it)
 
-Done: `complete_json` calls Nightshift (Nemotron 3.5 Super VL), counts tokens per run (`TokenMeter`) and enforces the effort level's token budget. Use this prompt only to change or extend it. Check the live connection with `python scripts/check_nightshift.py`.
+Done: `complete_json` calls Nightshift (Nemotron 3 Ultra, `nvidia/nemotron-3-ultra-550b-a55b`), counts tokens per run (`TokenMeter`) and enforces the effort level's token budget. Use this prompt only to change or extend it. Check the live connection with `python scripts/check_nightshift.py`.
 
 ```
 Review and extend complete_json in litagent/integrations/llm.py.
 
 Decisions:
 - Provider: Meterless Nightshift (fixed by the hackathon rules; OpenAI-compatible, official OpenAI client)
-- Model: Nemotron 3.5 Super VL (NIGHTSHIFT_MODEL in litagent/config.py, no automatic routing; confirm the ID in Nightshift's Providers tab)
+- Model: Nemotron 3 Ultra (NIGHTSHIFT_MODEL in litagent/config.py, no automatic routing; confirm the ID in Nightshift's Providers tab)
 - Structured output method: response_format json_object + schema in the system prompt, unless Nightshift supports json_schema for this model
 
 Requirements:
@@ -78,19 +78,23 @@ Plan first and show me the plan before writing code.
 
 ## 3. Clusterer
 
-Done. Remaining: full text at High/Ultra (Markovian engine), if time allows.
+Implemented and optimized: pinned CPU SemCSE cosine/CLS embeddings (MiniLM fast baseline),
+complete-linkage grouping, retained single-paper outliers, MMR label examples, Nightshift labels,
+bounded grading redo, offline model loading and Docker build-time provisioning. Verify with
+`scripts/check_threshold.py` and `scripts/check_clusters.py`. Full-text retrieval and the
+Meterless Markovian reasoning engine are still separate TODOs.
 
 ```
 Implement the real Clusterer in litagent/agents/clusterer.py, following docs/agents/clusterer.md and prompts/cluster_labeler.md.
 
 Decisions:
-- Embedding model: BAAI/bge-small-en-v1.5 via fastembed (Nightshift has no embeddings endpoint)
-- Text to embed: title + abstract, mean-centered per run
-- Single-paper groups (outliers): kept as "unclustered" for the Gap finder
-- Threshold: 0.05 on mean-centered cosine with average linkage (calibrated)
+- Embedding model: CLAUSE-Bielefeld/SemCSE_cosine, pinned revision in config.py, CPU only; MiniLM optional
+- Text to embed: title + abstract; supplied full text at High/Ultra, metadata fallback logged
+- Single-paper groups (outliers): keep as explicit "Unclustered" groups, without a labeller call
+- Threshold: start at 0.7 (config.cluster_similarity_threshold)
 
 Requirements:
-- Use the existing cosine_similarity_matrix and group_by_threshold.
+- Use cosine_similarity_matrix and complete-linkage grouping; keep group_by_threshold as an experimental baseline.
 - Label each group with the LLM; pass the grading agent's fix into the prompt when given.
 - The Docker image must not download models at runtime: download the embedding model in the Dockerfile at build time. No local GPU.
 - Write a small script (scripts/check_threshold.py) that runs on data/sample/ and prints the number of clusters and their sizes for thresholds 0.5-0.9, so we can check 0.7 works.

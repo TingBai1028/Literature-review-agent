@@ -1,57 +1,55 @@
-"""Check the Clusterer's similarity threshold on real papers, before changing it in config.py.
+"""Compare cosine thresholds on saved real papers, with no LLM or network calls.
 
-    python scripts/check_threshold.py                      # every topic in data/sample/
-    python scripts/check_threshold.py data/raw/*.json      # your own downloads (scripts/download_sample_data.py)
-    python scripts/check_threshold.py --papers 30          # as many papers as a Normal run keeps
-
-For each topic and threshold it prints the number of clusters (groups of >= min_cluster_size), their
-sizes, how many papers fit no group, and the largest cluster's share. A good threshold gives several
-clusters, a largest share under the grader's 40% limit, and few unclustered papers.
+    python scripts/check_threshold.py
+    python scripts/check_threshold.py --limit 30 --output logs/thresholds.json
 """
 
 from __future__ import annotations
 
 import argparse
-import glob
 import json
 import sys
-import time
 from pathlib import Path
-
-import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from litagent.agents.clusterer import average_linkage, center, cosine_similarity_matrix, embed  # noqa: E402
-from litagent.config import EMBEDDING_MODEL, Settings  # noqa: E402
+from litagent.agents.clusterer import cosine_similarity_matrix, embed, group_by_threshold  # noqa: E402
+from litagent.config import CLUSTER_THRESHOLD_SWEEP, EMBEDDING_PROFILES, Settings  # noqa: E402
 from litagent.schemas import Paper  # noqa: E402
+from litagent.similarity import complete_linkage_groups, paper_similarity, partition_metrics  # noqa: E402
 
-THRESHOLDS = [round(t, 2) for t in np.arange(-0.05, 0.31, 0.05)]  # mean-centered cosine
+SAMPLES = Path(__file__).resolve().parents[1] / "data/sample"
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("files", nargs="*", default=sorted(glob.glob("data/sample/*.json")))
-    parser.add_argument("--papers", type=int, default=60, help="Papers per topic (Normal keeps 30, Medium 60)")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--profile", choices=EMBEDDING_PROFILES)
+    parser.add_argument("--legacy", action="store_true", help="Compare the original cosine connected-components baseline")
     args = parser.parse_args()
+    if args.limit is not None and args.limit < 1:
+        parser.error("--limit must be positive")
     settings = Settings()
-    print(f"Embedding model: {EMBEDDING_MODEL}; current threshold {settings.cluster_similarity_threshold}; "
-          f"min cluster size {settings.min_cluster_size}\n")
-
-    for file in args.files:
-        papers = [p for p in (Paper.model_validate(d) for d in json.loads(Path(file).read_text())) if p.abstract][:args.papers]
-        start = time.monotonic()
-        sim = cosine_similarity_matrix(center(embed([f"{p.title}. {p.abstract}" for p in papers])))
-        print(f"== {Path(file).stem}: {len(papers)} papers, embedded in {time.monotonic() - start:.1f} s ==")
-        print(f"{'threshold':>9}  {'clusters':>8}  {'largest':>7}  {'unclustered':>11}  sizes")
-        for t in THRESHOLDS:
-            groups = average_linkage(sim, t)
-            sizes = sorted((len(g) for g in groups if len(g) >= settings.min_cluster_size), reverse=True)
-            unclustered = len(papers) - sum(sizes)
-            largest = max(sizes, default=0) / len(papers)
-            flag = "  <- over 40%" if largest > 0.4 else ""
-            print(f"{t:>9.2f}  {len(sizes):>8}  {largest:>6.0%}  {unclustered:>11}  {sizes[:12]}{flag}")
-        print()
+    if args.profile:
+        settings.embedding_profile = args.profile
+    report = []
+    for path in sorted(SAMPLES.glob("*.json")):
+        papers = [Paper.model_validate(p) for p in json.loads(path.read_text())][:args.limit]
+        vectors = embed([f"{p.title}. {p.abstract or ''}" for p in papers], settings)
+        similarity = cosine_similarity_matrix(vectors) if args.legacy else paper_similarity(papers, vectors, settings).combined
+        for threshold in CLUSTER_THRESHOLD_SWEEP:
+            groups = group_by_threshold(similarity, threshold) if args.legacy else complete_linkage_groups(similarity, threshold)
+            sizes = sorted((len(g) for g in groups), reverse=True)
+            row = {"sample": path.stem, "papers": len(papers), "threshold": threshold,
+                   "clusters": len(groups), "sizes": sizes, "profile": settings.embedding_profile,
+                   "linkage": "connected" if args.legacy else "complete",
+                   "metrics": partition_metrics(similarity, groups)}
+            report.append(row)
+            print(f"{path.stem} threshold={threshold:.1f} clusters={len(groups)} sizes={sizes}")
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(report, indent=2) + "\n")
 
 
 if __name__ == "__main__":

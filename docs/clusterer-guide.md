@@ -1,5 +1,7 @@
 # Clusterer: how it works, what was decided, what's open
 
+> **Note:** this guide describes the first Clusterer (fastembed `bge-small`, mean-centered average linkage). It has since been replaced by SemCSE embeddings with complete linkage; the current design is in [agents/clusterer.md](agents/clusterer.md).
+
 The Clusterer is step 3 of the pipeline. It takes the papers the Retriever found (30–150, all on one topic) and groups them into labelled research ideas: the clusters on the paper map. The Connection finder and Gap finder work inside these clusters, so their quality depends on it.
 
 - **Code:** `litagent/agents/clusterer.py`

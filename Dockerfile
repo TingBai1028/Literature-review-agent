@@ -1,18 +1,28 @@
+FROM node:22-slim AS frontend-build
+WORKDIR /frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY frontend/ ./
+RUN npm run build
+
 FROM python:3.11-slim
 
 WORKDIR /app
+ARG EMBEDDING_PROFILE=semcse
+ENV EMBEDDING_PROFILE=${EMBEDDING_PROFILE}
 
 # Dependencies are installed at build time; nothing is installed or downloaded at runtime.
 COPY requirements.txt .
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Bake the Clusterer's embedding model into the image (keep in sync with config.EMBEDDING_MODEL;
-# tests/test_clusterer.py checks it), so the container never downloads a model at runtime.
-ARG EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
-ENV EMBEDDING_CACHE_DIR=/app/models
-RUN python -c "from fastembed import TextEmbedding; TextEmbedding('${EMBEDDING_MODEL}', cache_dir='/app/models')"
-
+# Isolate model provisioning from application changes so rebuilding an agent does not redownload weights.
+COPY litagent/config.py litagent/trace.py litagent/__init__.py ./litagent/
+COPY litagent/integrations/embeddings.py litagent/integrations/__init__.py ./litagent/integrations/
+COPY scripts/setup_embeddings.py ./scripts/setup_embeddings.py
+RUN python scripts/setup_embeddings.py
 COPY . .
+COPY --from=frontend-build /frontend/dist ./frontend/dist
 RUN mkdir -p /app/logs
 
 # Zetaris and Nightshift run outside this container: point their URLs at
