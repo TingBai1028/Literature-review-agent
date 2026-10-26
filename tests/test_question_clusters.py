@@ -165,6 +165,27 @@ def test_independent_verifier_can_downgrade_a_broad_initial_match(monkeypatch):
     assert result["P0"].relevance == "supporting" and len(observed) == 2
 
 
+def test_the_verifier_sees_every_span_and_a_rejected_direct_paper_stays_supporting(monkeypatch):
+    ps = corpus()[:1]
+    ps[0].abstract = " ".join(f"Sentence {n} describes task P0 with a controlled experiment and its measured outcome." for n in range(6))
+    seen = []
+    def assess(prompt, message, *args, **kwargs):
+        payload = json.loads(message)
+        verify = payload["task_version"].startswith("question_relevance_verify")
+        seen.append(len(payload["papers"][0]["spans"]))
+        return QuestionRelevanceBatch(assessments=[QuestionRelevanceProposal(paper_id="P0",
+            relevance="uncertain" if verify else "direct", reason="Checked: the method is not named." if verify else "On the subject.",
+            evidence=[] if verify else [EvidenceReference(paper_id="P0", span_id="S1")])])
+    monkeypatch.setattr(question_clusters, "complete_json", assess)
+    settings = Settings(cluster_evidence_span_chars=120)
+    result = question_clusters.assess_relevance(ps, [ps[0].abstract], np.array([.9]), "A specific question", settings, None)
+    # Real run 27 Oct: shown only the cited span, the verifier rejected both direct papers of an MDP question.
+    assert seen[0] > 1 and seen[1] == seen[0]
+    # The verifier decides admission as direct; it does not erase the first check's quoted relevance.
+    assert result["P0"].relevance == "supporting" and result["P0"].reason == "Checked: the method is not named."
+    assert result["P0"].evidence
+
+
 def side(cid, ids):
     return QuestionCluster(id=cid, label="A topic", rationale="A topic", kind="side", question="A question",
         paper_ids=ids, paper_details=[PaperClusterDetail(paper_id=pid, question_similarity=.2, relevance="uncertain", reason="Not assessed") for pid in ids])

@@ -60,17 +60,25 @@ def assess_relevance(papers: list[Paper], texts: list[str], similarities: np.nda
                                                relevance="uncertain", reason=reason)
     def assess(batch: list[dict]) -> dict[str, PaperClusterDetail]:
         found = _assess_batch(batch, details, question, settings, "question_relevance", fix)
-        # Verify only the evidence selected for proposed main members. No producer reason,
-        # score or prior verdict is supplied; a fresh Nightshift scope isolates the call.
-        direct = [{**p, "spans": [s for s in p["spans"] if any(s["quote"] == e.quote for e in found[p["id"]].evidence)]}
-                  for p in batch if found[p["id"]].relevance == "direct"]
+        # Verify proposed main members on the same source spans the first check saw. No producer reason, score or
+        # prior verdict is supplied; a fresh Nightshift scope isolates the call. Real run 27 Oct: with only the
+        # selected span, every constraint stated elsewhere in the abstract counted as unmet, and both direct
+        # papers of a four-constraint MDP question were rejected.
+        direct = [p for p in batch if found[p["id"]].relevance == "direct"]
         if direct:
             before = {p["id"] for p in direct}
             checked = _assess_batch(direct, {**details, **found}, question, settings, "question_relevance_verify", None)
+            # The check decides admission as direct. It does not erase the source-quoted relevance the first check
+            # found: a rejected paper stays supporting, with the first check's evidence and the check's reason.
+            for pid, d in checked.items():
+                if d.relevance == "uncertain":
+                    checked[pid] = found[pid].model_copy(update={"relevance": "supporting", "reason": d.reason})
             found.update(checked)
             if trace := current_trace():
                 trace.log("clusterer", "verify main evidence", f"{sum(d.relevance == 'direct' for d in checked.values())} of {len(before)} accepted",
-                          result={"downgraded_ids": sorted(pid for pid in before if checked[pid].relevance != "direct")},
+                          result={"downgraded_ids": sorted(pid for pid in before if checked[pid].relevance != "direct"),
+                                  "downgraded": [{"paper_id": pid, "now": checked[pid].relevance, "reason": checked[pid].reason}
+                                                 for pid in sorted(before) if checked[pid].relevance != "direct"]},
                           why="Independent assessment of selected original-source spans against every question constraint")
         return found
 

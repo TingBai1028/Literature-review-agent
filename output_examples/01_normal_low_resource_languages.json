@@ -1211,7 +1211,7 @@
             ]
           }
         ],
-        "role_reason": "Chosen as main: of 8 candidate groups it is the most related to the topic (mean question similarity 0.85; 0 of 2 papers judged directly relevant). Added the 3 next most relevant papers to reach 5."
+        "role_reason": "Chosen as main: of 8 candidate groups it is the most related to the topic (mean question similarity 0.85; 0 of 2 papers judged directly relevant). Added the 3 next most relevant papers to reach 5 (supporting before unjudged)."
       },
       {
         "id": "FOUNDATION",
