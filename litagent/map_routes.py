@@ -44,6 +44,17 @@ def map_catalog(settings):
     return {"maps": rows, "warnings": warnings}
 
 
+def nearest_pairs(ids: list[str], similarity, k: int) -> list[dict]:
+    """Undirected pairs linking each paper to its k most similar others, each pair listed once."""
+    pairs = {}
+    for i, source in enumerate(ids):
+        ranked = sorted((j for j in range(len(ids)) if j != i), key=lambda j: (-similarity[i, j], ids[j]))
+        for j in ranked[:k]:
+            key = tuple(sorted((source, ids[j])))
+            pairs[key] = round(float(similarity[i, j]), 4)
+    return [{"source": a, "target": b, "similarity": s} for (a, b), s in sorted(pairs.items())]
+
+
 def install_map_routes(app, get_settings, respond):
     @app.get("/maps")
     def maps(settings=Depends(get_settings)):
@@ -57,6 +68,16 @@ def install_map_routes(app, get_settings, respond):
     def papers(run_id: str, include_full_text: bool = False, settings=Depends(get_settings)):
         return respond(run_id, lambda: {"papers": [p.model_dump(mode="json", exclude=set() if include_full_text else {"full_text"})
             for p in load_version(run_id, settings)[1].papers]})
+
+    @app.get("/cluster/{run_id}/neighbors")
+    def neighbors(run_id: str, k: int = 6, settings=Depends(get_settings)):
+        """Each paper's k most similar papers from the stored similarity matrix, for the force layout (spec G2)."""
+        def read():
+            if not 1 <= k <= 20:
+                raise VersionError("k must be between 1 and 20", 422)
+            _, state, arrays = load_version(run_id, settings)
+            return {"pairs": nearest_pairs([p.id for p in state.papers], arrays.similarity, k)}
+        return respond(run_id, read)
 
     @app.get("/cluster/{run_id}/papers/{paper_id}")
     def paper(run_id: str, paper_id: str, settings=Depends(get_settings)):
