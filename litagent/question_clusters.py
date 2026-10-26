@@ -19,6 +19,7 @@ from litagent.config import Settings
 from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
 from litagent.schemas import (ClusterAlternative, ClusterLabel, Evidence, Paper, PaperClusterDetail,
                              QuestionCluster, QuestionRelevanceBatch)
+from litagent.parallel import parallel_map
 from litagent.sample_data import sample_relevance, sample_similarity
 from litagent.similarity import SimilarityMatrices, cosine_matrix, nearest_pairs
 from litagent.trace import current_trace
@@ -57,21 +58,27 @@ def assess_relevance(papers: list[Paper], texts: list[str], similarities: np.nda
             reason = "Awaiting source-based relevance assessment."
         details[paper.id] = PaperClusterDetail(paper_id=paper.id, question_similarity=float(similarities[i]),
                                                relevance="uncertain", reason=reason)
-    for start in range(0, len(candidates), settings.main_relevance_batch_size):
-        batch = candidates[start:start + settings.main_relevance_batch_size]
-        details.update(_assess_batch(batch, details, question, settings, "question_relevance", fix))
+    def assess(batch: list[dict]) -> dict[str, PaperClusterDetail]:
+        found = _assess_batch(batch, details, question, settings, "question_relevance", fix)
         # Verify only the evidence selected for proposed main members. No producer reason,
         # score or prior verdict is supplied; a fresh Nightshift scope isolates the call.
-        direct = [{**p, "spans": [s for s in p["spans"] if any(s["quote"] == e.quote for e in details[p["id"]].evidence)]}
-                  for p in batch if details[p["id"]].relevance == "direct"]
+        direct = [{**p, "spans": [s for s in p["spans"] if any(s["quote"] == e.quote for e in found[p["id"]].evidence)]}
+                  for p in batch if found[p["id"]].relevance == "direct"]
         if direct:
             before = {p["id"] for p in direct}
-            checked = _assess_batch(direct, details, question, settings, "question_relevance_verify", None)
-            details.update(checked)
+            checked = _assess_batch(direct, {**details, **found}, question, settings, "question_relevance_verify", None)
+            found.update(checked)
             if trace := current_trace():
                 trace.log("clusterer", "verify main evidence", f"{sum(d.relevance == 'direct' for d in checked.values())} of {len(before)} accepted",
                           result={"downgraded_ids": sorted(pid for pid in before if checked[pid].relevance != "direct")},
                           why="Independent assessment of selected original-source spans against every question constraint")
+        return found
+
+    size = settings.main_relevance_batch_size
+    # Batches cover different papers, so they run at the same time (litagent/parallel.py).
+    for found in parallel_map(assess, [candidates[i:i + size] for i in range(0, len(candidates), size)],
+                              settings.llm_concurrency):
+        details.update(found)
     return details
 
 

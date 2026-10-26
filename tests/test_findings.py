@@ -120,7 +120,10 @@ def test_bad_source_spans_fail_after_bounded_repair(model, tmp_path):
     model["bad_refs"] = True
     with pytest.raises(LLMError, match="bounded source validation"):
         connection_finder.find_connections(papers, root.clusters, cfg, context=context(root, arrays))
-    assert len(model["calls"]) == cfg.finding_validation_retries + 1
+    # Each pair group gets exactly one bounded repair; a failing group no longer stops the independent others.
+    from collections import Counter
+    attempts = Counter(tuple(p["pair_id"] for p in data["pairs"]) for _, data in model["calls"])
+    assert attempts and set(attempts.values()) == {cfg.finding_validation_retries + 1}
 
 
 def test_independent_verifier_can_reject_plausible_but_unsupported_claims(model, tmp_path):

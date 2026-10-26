@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import itertools
 import logging
+import threading
 import os
 import re
 import time
@@ -27,6 +28,7 @@ from litagent.finding_engine import (FindingContext, cache_key, cached, check_de
 from litagent.schemas import (Cluster, Connection, CoverageJudgements, CoverageSearch, Evidence, ExplicitGapDrafts,
     FindingAudit, FindingCacheRecord, FindingDependency, Gap, GapCoverage, GapDrafts, GapLabelDecisions, Paper,
     SearchCriteria)
+from litagent.parallel import run_parallel
 from litagent.sample_data import sample_similarity
 from litagent.tools.openalex import OpenAlexError, search_openalex
 from litagent.tools.semantic_scholar import SemanticScholarError, search_semantic_scholar
@@ -158,6 +160,7 @@ class _Run:
         self.source_map, self.fix, self.settings, self.context = source_map, fix, settings, context
         self.fetched: dict[str, str] = {}  # full text read by escalation (spec H5)
         self.escalated: set[str] = set()
+        self.lock = threading.Lock()  # clusters run in parallel; shared bookkeeping changes under this lock
         self.outcomes: dict[str, dict] = {}
         self.checked: dict[str, list[str]] = {}  # gap id -> titles the coverage judge saw
 
@@ -165,8 +168,9 @@ class _Run:
         for c in candidates:
             self.outcomes[c["gap_id"]] = {**{k: c[k] for k in ("pair_id", "paper_ids", "cluster_ids", "scope")},
                                           "gap_type": "inferred"}
-        gaps = []
-        for cluster in clusters:
+        finished: dict[str, list[Gap]] = {}
+
+        def one(cluster: Cluster) -> list[Gap]:
             mine = [c for c in candidates if c["cluster_id"] == cluster.id]
             found = self.write(cluster, mine, {})
             if self.settings.gap_explicit_enabled:
@@ -175,16 +179,29 @@ class _Run:
             if fixes:  # One rewrite per flagged gap, as the orchestrator does for a failed stage.
                 retried = self.write(cluster, [c for c in mine if c["gap_id"] in fixes], fixes)
                 kept += self.grade(cluster, self.coverage(retried), final=True)[0]
-            ranked = self.rank(kept)
-            ranked = self.escalate(cluster, ranked, mine)
-            gaps += ranked
-            # A later timeout keeps the clusters already finished (real run 26 Oct lost 9 finished gaps to one).
-            self.context.partial_gaps = [g.model_copy(deep=True) for g in gaps]
+            ranked = self.escalate(cluster, self.rank(kept), mine)
+            with self.lock:
+                finished[cluster.id] = ranked
+                # A failure elsewhere keeps the clusters already finished (real run 26 Oct lost 9 finished gaps to
+                # one timeout), in cluster order whatever order they finish in.
+                self.context.partial_gaps = [g.model_copy(deep=True) for c in clusters for g in finished.get(c.id, [])]
+                total = sum(map(len, finished.values()))
             if (trace := current_trace()) and ranked:
                 trace.log("gap_finder", "gaps", f"{len(ranked)} in {cluster.id}", phase="partial_result",
-                          message=f"Gap finder: {len(gaps)} gaps so far",
+                          message=f"Gap finder: {total} gaps so far",
                           payload={"gaps": [{"id": g.id, "cluster_id": g.cluster_id, "paper_ids": g.between_paper_ids,
                                              "description": g.description, "label": g.label} for g in ranked]})
+            return ranked
+
+        # Clusters are independent, so each cluster's pipeline runs at the same time (litagent/parallel.py).
+        gaps, failure = [], None
+        for ranked, error in run_parallel(one, clusters, self.settings.llm_concurrency):
+            if error is not None:
+                failure = failure or error
+            else:
+                gaps += ranked
+        if failure is not None:
+            raise failure
         audit = FindingAudit(stage="gaps", candidate_pairs=len(candidates))
         for gid, outcome in self.outcomes.items():
             accepted = outcome.get("decision") == "accepted"
@@ -204,12 +221,14 @@ class _Run:
         (by citations, within a capped budget), log it, and redo that cluster's gaps on the full text."""
         s, ctx = self.settings, self.context
         if (not gaps or getattr(cluster, "kind", None) != "side" or not s.gap_escalation_enabled
-                or not ctx.use_full_text or ctx.full_text_ids is None
-                or len(self.escalated) >= s.gap_escalation_max_clusters):
+                or not ctx.use_full_text or ctx.full_text_ids is None):
             return gaps
+        with self.lock:  # the per-run cap holds even when clusters finish at the same time
+            if len(self.escalated) >= s.gap_escalation_max_clusters:
+                return gaps
+            self.escalated.add(cluster.id)
         from litagent.agents.retriever import attach_full_text
 
-        self.escalated.add(cluster.id)
         top = sorted((self.by_id[pid] for pid in cluster.paper_ids if not self.by_id[pid].full_text),
                      key=lambda p: (-(p.citation_count or 0), p.id))[:s.gap_escalation_papers]
         got = [p for p in attach_full_text(top, s) if p.full_text]
@@ -223,11 +242,12 @@ class _Run:
         if not got:
             return gaps
         ids = {p.id for p in got}
-        for p in got:
-            self.by_id[p.id] = p
-            self.fetched[p.id] = p.full_text
-        ctx.full_text_ids |= ids
-        self.source_map.update(sources(got, s, ctx))
+        with self.lock:
+            for p in got:
+                self.by_id[p.id] = p
+                self.fetched[p.id] = p.full_text
+            ctx.full_text_ids |= ids
+            self.source_map.update(sources(got, s, ctx))
         redo = [c for c in candidates if set(c["paper_ids"]) & ids]
         untouched = [g for g in gaps if not set(g.between_paper_ids) & ids]
         kept, _ = self.grade(cluster, self.coverage(self.write(cluster, redo, {})), final=True)

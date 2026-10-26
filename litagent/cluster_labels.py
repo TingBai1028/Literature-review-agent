@@ -10,6 +10,7 @@ import numpy as np
 
 from litagent.config import Settings
 from litagent.integrations.llm import TokenBudgetExceeded, complete_json, load_prompt
+from litagent.parallel import parallel_map
 from litagent.schemas import ClusterAssessment, ClusterAssessmentBatch, ClusterAssessmentProposals, Evidence, Paper
 from litagent.similarity import representative_indices
 from litagent.trace import current_trace
@@ -238,10 +239,8 @@ def contrastive_labels(papers: list[Paper], texts: list[str], groups: list[list[
                 trace.log("clusterer", "assess cluster", assessment.coherence, result=assessment.model_dump(),
                           why="Title-only group; deterministic abstention without an LLM call")
     contexts = [c for c in contexts if any(p["has_body"] for p in c["papers"])]
-    for start in range(0, len(contexts), settings.cluster_label_batch_size):
-        batch_context = contexts[start:start + settings.cluster_label_batch_size]
-        if only_cluster_ids is not None and not any(c["cluster_id"] in only_cluster_ids for c in batch_context):
-            continue
+
+    def label_batch(batch_context: list[dict]) -> ClusterAssessmentBatch:
         payload = contrastive_payload(batch_context, settings, fix)
         for attempt in range(settings.cluster_label_validation_retries + 1):
             if deadline is not None and time.monotonic() >= deadline:
@@ -251,6 +250,7 @@ def contrastive_labels(papers: list[Paper], texts: list[str], groups: list[list[
             try:
                 batch = resolve_assessments(proposals, batch_context)
                 validate_assessments(batch, batch_context, settings)
+                return batch
             except ValueError as error:
                 if trace := current_trace():
                     trace.log("clusterer", "validate cluster evidence", "rejected", why=str(error),
@@ -260,12 +260,17 @@ def contrastive_labels(papers: list[Paper], texts: list[str], groups: list[list[
                     payload["validation_error"] = str(error)
                     payload["rejected_proposal"] = proposals.model_dump()
                     continue
-                batch = ClusterAssessmentBatch(assessments=abstain_where_invalid(proposals, batch_context, settings))
-            for assessment in batch.assessments:
-                labels[assessment.cluster_id] = assessment
-                if trace := current_trace():
-                    # A nested dict preserves evidence in trace (top-level lists are summarized).
-                    trace.log("clusterer", "assess cluster", assessment.coherence,
-                              result=assessment.model_dump(), why="Exact quotes checked; semantic support still requires review")
-            break
+                return ClusterAssessmentBatch(assessments=abstain_where_invalid(proposals, batch_context, settings))
+
+    size = settings.cluster_label_batch_size
+    batches = [contexts[i:i + size] for i in range(0, len(contexts), size)]
+    batches = [b for b in batches if only_cluster_ids is None or any(c["cluster_id"] in only_cluster_ids for c in b)]
+    # Each batch names different groups, so the batches run at the same time (litagent/parallel.py).
+    for batch in parallel_map(label_batch, batches, settings.llm_concurrency):
+        for assessment in batch.assessments:
+            labels[assessment.cluster_id] = assessment
+            if trace := current_trace():
+                # A nested dict preserves evidence in trace (top-level lists are summarized).
+                trace.log("clusterer", "assess cluster", assessment.coherence,
+                          result=assessment.model_dump(), why="Exact quotes checked; semantic support still requires review")
     return labels

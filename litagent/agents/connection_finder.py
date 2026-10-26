@@ -14,6 +14,7 @@ from litagent.finding_engine import (FindingContext, cached, cache_key, choose_p
     pair_payload, prepare, request, resolve_evidence, sources, verify)
 from litagent.schemas import (DIRECTIONAL_RELATIONS, Cluster, Connection, ConnectionDecisions, Evidence, FindingAudit,
                              FindingCacheRecord, FindingDependency, GroundedConnection, Paper)
+from litagent.parallel import run_parallel
 from litagent.trace import current_trace
 
 
@@ -31,25 +32,38 @@ def find_connections(papers: list[Paper], clusters: list[Cluster], settings: Set
         groups[tuple(pair["cluster_ids"])].append(pair)
     out = []
     context.partial_connections = []
+
+    def produce(group: list[dict]):
+        payload = {"task_version": "connections-v2", "question": context.question, "fix": fix,
+                   "min_quote_chars": settings.finding_min_quote_chars,
+                   "pairs": [pair_payload(p, source_map, clusters) for p in group]}
+        key = cache_key("connections", payload, ConnectionDecisions, settings)
+        record = cached(key, context, settings)
+        reused = record is not None
+        if record is None:
+            record = _assess(group, payload, source_map, papers, settings, context)
+            context.cache[key] = record
+        if (trace := current_trace()) and record.connections:  # live map: edges appear as each group finishes
+            trace.log("connection_finder", "edges", f"{len(record.connections)} accepted", phase="partial_result",
+                      message=f"Connection finder: {len(record.connections)} more edges",
+                      payload={"edges": [{"id": c.id, "source": c.paper_ids[0], "target": c.paper_ids[1],
+                                          "relation": c.relation, "reason_short": c.reason_short} for c in record.connections]})
+        return record, reused
+
     try:
-        for group in groups.values():
-            payload = {"task_version": "connections-v2", "question": context.question, "fix": fix,
-                       "min_quote_chars": settings.finding_min_quote_chars,
-                       "pairs": [pair_payload(p, source_map, clusters) for p in group]}
-            key = cache_key("connections", payload, ConnectionDecisions, settings)
-            record = cached(key, context, settings)
-            reused = record is not None
-            if record is None:
-                record = _assess(group, payload, source_map, papers, settings, context)
-                context.cache[key] = record
+        # Groups compare different pairs, so their model calls run at the same time (litagent/parallel.py);
+        # results are merged in group order, and finished groups are kept if another one fails.
+        failure = None
+        for done, error in run_parallel(produce, list(groups.values()), settings.llm_concurrency):
+            if error is not None:
+                failure = failure or error
+                continue
+            record, reused = done
             merge_record(report, record, context, reused=reused)
             out.extend(c.model_copy(deep=True) for c in record.connections)
             context.partial_connections = list(out)
-            if (trace := current_trace()) and record.connections:
-                trace.log("connection_finder", "edges", f"{len(record.connections)} accepted", phase="partial_result",
-                          message=f"Connection finder: {len(out)} edges so far",
-                          payload={"edges": [{"id": c.id, "source": c.paper_ids[0], "target": c.paper_ids[1],
-                                              "relation": c.relation, "reason_short": c.reason_short} for c in record.connections]})
+        if failure is not None:
+            raise failure
         return out
     finally:
         context.audits.append(report)
