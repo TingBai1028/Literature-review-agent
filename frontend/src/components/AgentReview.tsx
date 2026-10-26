@@ -46,9 +46,9 @@ export function AgentReview({
       if (out.report) {
         onReport(out.report);
         setMessage(
-          out.reused ? "已读取本版本的已有评审，未重复调用模型。" : "",
+          out.reused ? "Loaded this version's existing review; the model was not called again." : "",
         );
-      } else setMessage("当前版本暂无 AI 评分，可点击「AI 自动评分」生成。");
+      } else setMessage("This version has no AI grades yet. Click \"AI grading\" to create them.");
     } catch (e) {
       setError(messageOf(e));
     } finally {
@@ -57,11 +57,11 @@ export function AgentReview({
     }
   };
   return (
-    <section className="agent-review" aria-label="AI 评审建议">
+    <section className="agent-review" aria-label="AI review suggestions">
       <div className="agent-review-header">
         <h3>
           <Bot size={18} />
-          AI 评审建议
+          AI review suggestions
         </h3>
         <div className="agent-review-actions">
           <button
@@ -69,7 +69,7 @@ export function AgentReview({
             disabled={busy}
             onClick={() => void load(false)}
           >
-            查看已有评分
+            Show existing grades
           </button>
           <button
             className="secondary-button"
@@ -81,12 +81,12 @@ export function AgentReview({
             ) : (
               <Bot size={15} />
             )}
-            {busy ? "正在评审…" : "AI 自动评分"}
+            {busy ? "Reviewing…" : "AI grading"}
           </button>
         </div>
       </div>
       <p className="muted small">
-        对本版本的具体关联与研究假设逐项评分，保留独立原文引文。人工记录单独保存。
+        Grades each connection and hypothesis in this version and keeps independent source quotes. Human reviews are saved separately.
       </p>
       {error && (
         <p className="inline-error" role="alert">
@@ -102,25 +102,25 @@ export function AgentReview({
         <div className="agent-review-result">
           <strong>
             {assessment.status === "sample"
-              ? "样例流程 · 未评分"
+              ? "Sample flow · not graded"
               : assessment.status === "needs_hypothesis"
-                ? "待明确具体假设 · 未评分"
+                ? "Needs a concrete hypothesis · not graded"
                 : assessment.status === "insufficient_sources"
-                  ? "缺少原文 · 未评分"
-                  : `AI 建议：${({ supported: "有依据", unsupported: "不支持", uncertain: "资料不足" } as const)[assessment.verdict!]} · ${assessment.total}/9`}
+                  ? "Missing source text · not graded"
+                  : `AI suggestion: ${({ supported: "Supported", unsupported: "Not supported", uncertain: "Insufficient evidence" } as const)[assessment.verdict!]} · ${assessment.total}/9`}
           </strong>
           {assessment.scores && (
             <dl className="agent-review-scores">
               <div>
-                <dt>原文支持</dt>
+                <dt>Source support</dt>
                 <dd>{assessment.scores.source_support}/3</dd>
               </div>
               <div>
-                <dt>问题相关性</dt>
+                <dt>Relevance to the question</dt>
                 <dd>{assessment.scores.relevance}/3</dd>
               </div>
               <div>
-                <dt>可检验性</dt>
+                <dt>Testability</dt>
                 <dd>{assessment.scores.testability}/3</dd>
               </div>
             </dl>
@@ -136,7 +136,7 @@ export function AgentReview({
           {assessment.evidence.length > 0 && (
             <details>
               <summary>
-                查看 Agent 引用的原文（{assessment.evidence.length} 段）
+                Show the agent's source quotes ({assessment.evidence.length})
               </summary>
               {assessment.evidence.map((e, i) => (
                 <figure key={i}>
@@ -150,8 +150,8 @@ export function AgentReview({
             </details>
           )}
           <p className="muted small">
-            AI 建议仅用于辅助审核，评分不代表准确率，也不确认全球新颖性。
-            {report?.model && `模型：${report.model}`}
+            AI suggestions only support human review. Grades are not accuracy and do not confirm global novelty.
+            {report?.model && `Model: ${report.model}`}
           </p>
         </div>
       )}

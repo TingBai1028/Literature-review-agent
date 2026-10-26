@@ -16,7 +16,7 @@ export const topicColor = (c: Cluster, i: number) =>
       ? "#9a7438"
       : colors[i % colors.length];
 export const roleName = (c?: Cluster) =>
-  c?.kind === "main" ? "主簇" : c?.kind === "foundation" ? "基础簇" : "侧簇";
+  c?.kind === "main" ? "Main cluster" : c?.kind === "foundation" ? "Foundation cluster" : "Side cluster";
 export function TopicSidebar({
   clusters,
   papers,
@@ -53,14 +53,14 @@ export function TopicSidebar({
   return (
     <aside
       className={`topic-sidebar ${mobileOpen ? "mobile-open" : ""}`}
-      aria-label="研究主题导航"
+      aria-label="Topic navigation"
     >
       <div className="sidebar-heading">
-        <h2>研究主题</h2>
+        <h2>Topics</h2>
         <button
           className="icon-button"
-          aria-label="新建地图"
-          title="从论文记录新建地图"
+          aria-label="New map"
+          title="New map from paper records"
           onClick={onNew}
         >
           <Plus size={18} />
@@ -71,8 +71,8 @@ export function TopicSidebar({
         <input
           value={search}
           onChange={(e) => onSearch(e.target.value)}
-          placeholder="搜索论文或主题"
-          aria-label="搜索论文或主题"
+          placeholder="Search papers or topics"
+          aria-label="Search papers or topics"
         />
       </label>
       <nav className="topic-list">
@@ -105,17 +105,17 @@ export function TopicSidebar({
             </button>
           );
         })}
-        {!shown.length && <p className="muted small">没有匹配的主题。</p>}
+        {!shown.length && <p className="muted small">No matching topics.</p>}
       </nav>
       {matches.length > 7 && (
         <button className="show-topics" onClick={() => setAll((v) => !v)}>
           <MoreHorizontal size={20} />
-          {all ? "收起主题" : `查看全部 ${matches.length} 个主题`}
+          {all ? "Show fewer topics" : `Show all ${matches.length} topics`}
         </button>
       )}
       <div className="sidebar-note">
         <Info size={16} />
-        <span>研究假设仍需人工核验</span>
+        <span>Hypotheses still need human review</span>
       </div>
     </aside>
   );

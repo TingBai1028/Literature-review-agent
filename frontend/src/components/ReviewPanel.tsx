@@ -44,16 +44,16 @@ export function ReviewPanel({
   }, [map.run_id]);
   const item = pack?.items.find((i) => i.id === selected);
   return (
-    <section className="review-workspace" aria-label="人工验收工作区">
+    <section className="review-workspace" aria-label="Human review workspace">
       <aside className="review-queue">
-        <h2>验收材料</h2>
+        <h2>Review items</h2>
         <p className="muted small">
           {pack
-            ? `${pack.summary.reviewed} / ${pack.summary.total} 已完成`
-            : "正在准备原文…"}
+            ? `${pack.summary.reviewed} / ${pack.summary.total} done`
+            : "Preparing sources…"}
         </p>
         <p className="muted small">
-          先查看原文，再填写判断。模型评分默认隐藏。
+          Read the sources first, then give your judgement. Model grades are hidden by default.
         </p>
         {pack?.items.map((i, n) => (
           <button
@@ -75,16 +75,16 @@ export function ReviewPanel({
               <strong>
                 {i.kind === "gap"
                   ? i.scope === "main_side"
-                    ? "主簇 ↔ 侧簇候选"
-                    : "簇内缺口候选"
-                  : "关联核验"}
+                    ? "Main ↔ side candidate"
+                    : "Within-cluster gap candidate"
+                  : "Connection check"}
               </strong>
               <small>{i.papers.map((p) => p.title).join(" / ")}</small>
             </div>
           </button>
         ))}
         {pack && !pack.items.length && (
-          <p className="muted">当前版本没有可核验的论文对。</p>
+          <p className="muted">This version has no paper pairs to check.</p>
         )}
       </aside>
       <div className="review-detail">
@@ -115,7 +115,7 @@ export function ReviewPanel({
           />
         ) : (
           <div className="center-message">
-            {error || "请选择一项验收材料。"}
+            {error || "Choose a review item."}
           </div>
         )}
       </div>
@@ -178,15 +178,15 @@ function ReviewForm({
     setError("");
     setSaved(false);
     if (!verdict) {
-      setError("请选择一项判断：有依据、不支持或资料不足。");
+      setError("Choose a judgement: supported, not supported or insufficient evidence.");
       return;
     }
     if (!reviewer.trim()) {
-      setError("请填写审核者姓名或审核标识，可使用单字或缩写。");
+      setError("Enter a reviewer name or ID; initials are fine.");
       return;
     }
     if (rationale.trim().length < 10) {
-      setError("判断理由至少需要 10 个字符，请补充具体依据。");
+      setError("The reason needs at least 10 characters; add the specific basis.");
       return;
     }
     if (
@@ -198,7 +198,7 @@ function ReviewForm({
           ),
       )
     ) {
-      setError("明确判断需要分别引用两篇论文的原文，每段至少 20 个字符。");
+      setError("A definite judgement needs a quote from each paper, at least 20 characters each.");
       return;
     }
     setBusy(true);
@@ -228,7 +228,7 @@ function ReviewForm({
   return (
     <>
       <div className="review-title">
-        <h2>{item.kind === "gap" ? "核验可检验的研究假设" : "核验论文关联"}</h2>
+        <h2>{item.kind === "gap" ? "Check a testable hypothesis" : "Check a paper connection"}</h2>
         <button
           className="quiet-button"
           onClick={async () => {
@@ -247,22 +247,22 @@ function ReviewForm({
           }}
         >
           <Eye size={15} />
-          查看模型判断
+          Show model judgement
         </button>
       </div>
       <p className="review-question">
-        {item.claim || `根据两篇原文，是否能提出贴合以下研究问题的可检验假设？`}
+        {item.claim || `From the two sources, can you state a testable hypothesis that fits this research question?`}
       </p>
       {!item.claim && <p className="muted">{map.question}</p>}
       {item.proposed_test && (
-        <p className="muted">建议实验：{item.proposed_test}</p>
+        <p className="muted">Proposed experiment: {item.proposed_test}</p>
       )}
       <p className="muted small">
-        请判断两篇论文之间的具体关联或研究假设，而不是分别评价论文质量。“有依据”不等同于确认全球研究空白。
+        Judge the specific connection or hypothesis between the two papers, not the quality of each paper. "Supported" does not confirm a global research gap.
       </p>
       {!item.claim && (
         <p className="notice">
-          当前只有候选论文对，尚未提出具体假设。可以记录探索意见；确认科学结论前需要先明确可检验的问题。
+          There is only a candidate pair so far, with no concrete hypothesis. You can note exploratory comments; state a testable question before confirming a scientific conclusion.
         </p>
       )}
       <AgentReview
@@ -276,10 +276,10 @@ function ReviewForm({
       />
       {assessment && (
         <div className="notice">
-          <strong>模型判断：{assessment.decision}</strong>
+          <strong>Model judgement: {assessment.decision}</strong>
           <p>
             {assessment.reason ||
-              "该条为已保留关联，具体判断由原文与人工核验。"}
+              "This is a kept connection; the sources and human review decide."}
           </p>
         </div>
       )}
@@ -288,11 +288,11 @@ function ReviewForm({
           <article key={p.id}>
             <p className="source-caption">
               {p.year ?? ""} ·{" "}
-              {p.source_field === "full_text" ? "已提供全文" : "原始摘要"}
+              {p.source_field === "full_text" ? "Full text provided" : "Original abstract"}
             </p>
             <h3>{p.title}</h3>
             <div className="review-source-text">
-              {p.source_text || "无可核验正文"}
+              {p.source_text || "No text to check"}
             </div>
             <button
               className="text-button"
@@ -300,13 +300,13 @@ function ReviewForm({
               disabled={!p.source_text}
             >
               <Quote size={14} />
-              引用选中文字或首段原文
+              Quote the selection or the first passage
             </button>
             {evidence.find((e) => e.paper_id === p.id) && (
               <label className="form-field small">
-                已选引文
+                Selected quote
                 <textarea
-                  aria-label={`引文 ${p.id}`}
+                  aria-label={`Quote ${p.id}`}
                   rows={3}
                   value={evidence.find((e) => e.paper_id === p.id)?.quote}
                   onChange={(e) =>
@@ -332,12 +332,12 @@ function ReviewForm({
         }}
       >
         <fieldset>
-          <legend>你的判断</legend>
+          <legend>Your judgement</legend>
           <div className="judgment-options">
             {[
-              ["supported", "有依据"],
-              ["unsupported", "不支持"],
-              ["uncertain", "资料不足"],
+              ["supported", "Supported"],
+              ["unsupported", "Not supported"],
+              ["uncertain", "Insufficient evidence"],
             ].map(([v, label]) => (
               <label key={v}>
                 <input
@@ -356,7 +356,7 @@ function ReviewForm({
           </div>
         </fieldset>
         <label className="form-field">
-          审核者
+          Reviewer
           <input
             value={reviewer}
             onChange={(e) => {
@@ -364,12 +364,12 @@ function ReviewForm({
               setSaved(false);
               setError("");
             }}
-            placeholder="填写你的姓名或审核标识"
+            placeholder="Your name or reviewer ID"
             maxLength={80}
           />
         </label>
         <label className="form-field">
-          判断理由
+          Reason
           <textarea
             value={rationale}
             onChange={(e) => {
@@ -378,7 +378,7 @@ function ReviewForm({
               setError("");
             }}
             rows={3}
-            placeholder="说明具体任务、方法、数据或评测设置上的依据"
+            placeholder="Explain the basis in tasks, methods, data or evaluation setup"
           />
         </label>
         {error && (
@@ -388,10 +388,10 @@ function ReviewForm({
         )}
         <div className="review-submit">
           <span className="muted small">
-            {saved ? "判断已保存至当前版本。" : "记录仅在主动提交后保存。"}
+            {saved ? "Judgement saved to the active version." : "Nothing is saved until you submit."}
           </span>
           <button className="primary-button" disabled={busy} type="submit">
-            {busy ? "正在保存…" : "保存人工判断"}
+            {busy ? "Saving…" : "Save judgement"}
           </button>
         </div>
       </form>

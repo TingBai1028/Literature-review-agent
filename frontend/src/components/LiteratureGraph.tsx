@@ -157,15 +157,15 @@ export function LiteratureGraph({
     (filter === "gaps" && !map.gaps.length) ||
     (filter === "connections" && !map.connections.length);
   return (
-    <section className="graph-panel" aria-label="交互论文地图">
+    <section className="graph-panel" aria-label="Interactive paper map">
       <div className="graph-toolbar">
-        <div className="segmented" aria-label="地图筛选">
+        <div className="segmented" aria-label="Map filter">
           {(
             [
-              ["all", "全部"],
-              ["main_side", "主簇与侧簇"],
-              ["connections", "图 1 · 关联"],
-              ["gaps", "图 2 · 研究空白"],
+              ["all", "All"],
+              ["main_side", "Main & side"],
+              ["connections", "Graph 1 · Connections"],
+              ["gaps", "Graph 2 · Gaps"],
             ] as [Filter, string][]
           ).map(([key, label]) => (
             <button
@@ -183,13 +183,13 @@ export function LiteratureGraph({
           onClick={() => setView({ x: 0, y: 0, scale: 1 })}
         >
           <RotateCcw size={15} />
-          重置视图
+          Reset view
         </button>
       </div>
       {!noFindings && (
         <div className="graph-mobile-caption">
-          <span>{selectedGroup?.label ?? "点选主题或论文查看原文"}</span>
-          <small>可拖动地图 · 使用＋放大查看</small>
+          <span>{selectedGroup?.label ?? "Select a topic or paper to see its sources"}</span>
+          <small>Drag to pan · use + to zoom in</small>
         </div>
       )}
       <div className="graph-canvas">
@@ -198,25 +198,25 @@ export function LiteratureGraph({
             <h2>
               {filter === "gaps"
                 ? map.analysis?.pending_stages.includes("gaps")
-                  ? "图 2（研究空白）尚未生成"
-                  : "暂无通过核验的研究假设"
-                : "暂无通过核验的关联"}
+                  ? "Graph 2 (research gaps) has not been built yet"
+                  : "No hypotheses have passed the checks yet"
+                : "No connections have passed the checks yet"}
             </h2>
-            <p>当前版本保留了核验结果与弃权记录。</p>
+            <p>This version keeps the check results and abstentions.</p>
             <button className="secondary-button" onClick={onReview}>
-              查看候选验收
+              Review candidates
             </button>
           </div>
         ) : !layout ? (
           <div className="graph-empty">
-            <p>正在按相似度排布论文…</p>
+            <p>Laying out papers by similarity…</p>
           </div>
         ) : (
           <svg
             ref={svg}
             viewBox="0 0 1000 790"
             className="map-svg"
-            aria-label={`论文地图，${papers.length} 篇论文`}
+            aria-label={`Paper map, ${papers.length} papers`}
             onPointerDown={panStart}
             onPointerMove={panMove}
             onPointerUp={() => {
@@ -241,7 +241,7 @@ export function LiteratureGraph({
                         data-interactive="true"
                         role="button"
                         tabIndex={0}
-                        aria-label={`主题：${c.label}`}
+                        aria-label={`Topic: ${c.label}`}
                         d={path}
                         fill={color}
                         fillOpacity={main ? 0.2 : 0.1}
@@ -267,7 +267,7 @@ export function LiteratureGraph({
                         >
                           {(main
                             ? [
-                                "主簇 · " +
+                                "Main · " +
                                   wrap(
                                     c.label.replace(/^Sample main:\s*/, ""),
                                   )[0],
@@ -278,7 +278,7 @@ export function LiteratureGraph({
                                   selection?.type === "paper" &&
                                   c.paper_ids.includes(selection.id)
                                 )
-                              ? [`${c.paper_ids.length} 篇`]
+                              ? [`${c.paper_ids.length} papers`]
                               : wrap(c.label)
                           ).map((line, j) => (
                             <tspan key={j} x={x} dy={j ? 16 : 0}>
@@ -317,7 +317,7 @@ export function LiteratureGraph({
                         data-interactive="true"
                         role="button"
                         tabIndex={0}
-                        aria-label={`查看关联：${c.reason_short ?? c.description}`}
+                        aria-label={`View connection: ${c.reason_short ?? c.description}`}
                         x1={a.x}
                         y1={a.y}
                         x2={b.x}
@@ -360,7 +360,7 @@ export function LiteratureGraph({
                       data-interactive="true"
                       role="button"
                       tabIndex={0}
-                      aria-label={`查看研究假设：${g.description}`}
+                      aria-label={`View hypothesis: ${g.description}`}
                       onClick={() => onSelect({ type: "gap", id: g.id })}
                       onKeyDown={(e) => edgeEnter(e, { type: "gap", id: g.id })}
                     >
@@ -408,7 +408,7 @@ export function LiteratureGraph({
                       tabIndex={0}
                       className="paper-node"
                       style={{ transform: `translate(${p.x}px, ${p.y}px)` }}
-                      aria-label={`论文：${paperMap.get(id)?.title ?? id}`}
+                      aria-label={`Paper: ${paperMap.get(id)?.title ?? id}`}
                       opacity={dim ? 0.15 : 1}
                       onClick={() => onSelect({ type: "paper", id })}
                       onKeyDown={(e) => edgeEnter(e, { type: "paper", id })}
@@ -458,32 +458,32 @@ export function LiteratureGraph({
       <div className="graph-bottom">
         <div
           className="graph-legend"
-          title="位置由论文相似度决定：越相似越靠近。节点越大引用越多，颜色越深越新；色块表示簇，主簇在中央并加粗描边。连线只连接论文：悬停看关联原因，点击看完整说明、依据和相似度。"
+          title="Position follows paper similarity: more similar papers sit closer. Bigger nodes have more citations; darker nodes are newer. Shaded areas are clusters, with the main cluster in the centre and outlined in bold. Lines join papers only: hover for the reason, click for the full explanation, evidence and similarity."
         >
           <span>
             <i style={{ background: "#28584b" }} />
-            主簇
+            Main cluster
           </span>
           <span>
             <i style={{ background: "#9a7438" }} />
-            基础簇
+            Foundation cluster
           </span>
           <span>
             <i style={{ background: "#d9e8e0" }} />
-            侧簇
+            Side cluster
           </span>
           <span>
             <b className="legend-line" />
-            关联
+            Connection
           </span>
           <span>
             <b className="legend-line dashed" />
-            研究空白
+            Research gap
           </span>
         </div>
         <div className="zoom-controls">
           <button
-            aria-label="缩小地图"
+            aria-label="Zoom out"
             onClick={() =>
               setView((v) => ({ ...v, scale: Math.max(0.55, v.scale - 0.15) }))
             }
@@ -491,7 +491,7 @@ export function LiteratureGraph({
             <Minus size={18} />
           </button>
           <button
-            aria-label="放大地图"
+            aria-label="Zoom in"
             onClick={() =>
               setView((v) => ({ ...v, scale: Math.min(2.5, v.scale + 0.15) }))
             }

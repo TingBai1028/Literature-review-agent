@@ -255,6 +255,11 @@ def test_literal_metric_guard_rejects_false_omission_even_when_auditor_approves(
     ("摘要未说明完整的评测指标。", False),
     ("摘要未说明 COMET 指标版本。", False),
     ("摘要未说明基座模型，但明确报告 COMET 指标。", False),
+    ("The abstract does not state the base model, training data or evaluation metrics.", True),
+    ("The abstract does not report evaluation metrics.", True),
+    ("The abstract does not state the full evaluation metrics.", False),
+    ("The abstract does not state the COMET metric version.", False),
+    ("The abstract does not state the base model, but it reports the COMET metric.", False),
 ])
 def test_metric_absence_guard_preserves_qualified_missing_details(text, expected):
     assert review_agent._unqualified_metric_omission(text) is expected

@@ -34,16 +34,16 @@ export function ActivityFeed({
     <aside
       className={inline ? "activity-feed inline" : "activity-feed"}
       aria-live="polite"
-      aria-label="运行动态"
+      aria-label="Run activity"
     >
       <header>
         <LoaderCircle size={14} className="spin" />
         <strong>{title}</strong>
-        {working && <span>· {agentNames[working] ?? working}正在工作</span>}
+        {working && <span>· {agentNames[working] ?? working} is working</span>}
       </header>
       {fetched && (
         <p className="feed-counter">
-          已获取 {fetched.papers_fetched} / {fetched.target} 篇
+          Fetched {fetched.papers_fetched} / {fetched.target} papers
         </p>
       )}
       <ol>
@@ -56,7 +56,7 @@ export function ActivityFeed({
       </ol>
       {onShowAll && (
         <button className="text-button small" onClick={onShowAll}>
-          查看完整推理过程（{events.length} 步）
+          Show full reasoning ({events.length} steps)
         </button>
       )}
     </aside>

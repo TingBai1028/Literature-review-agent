@@ -31,7 +31,7 @@ export async function request<T>(
   const result = await response.json();
   if (!response.ok || result.status === "error")
     throw new ApiError(
-      result.error?.message ?? `请求失败 (${response.status})`,
+      result.error?.message ?? `Request failed (${response.status})`,
       response.status,
     );
   return result.output as T;
@@ -39,6 +39,6 @@ export async function request<T>(
 export const messageOf = (error: unknown) =>
   error instanceof Error
     ? error.name === "TimeoutError"
-      ? "请求等待超时，服务可能仍在处理。请刷新版本列表，避免重复执行。"
+      ? "The request timed out, but the server may still be working. Refresh the version list instead of running it again."
       : error.message
-    : "请求未完成，请重试。";
+    : "The request did not complete. Please try again.";

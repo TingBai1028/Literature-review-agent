@@ -23,7 +23,7 @@ async function clickMovablePaper(
     (p: any) => p.id === move.paper_id,
   ).title;
   await page
-    .getByRole("button", { name: `论文：${title}`, exact: true })
+    .getByRole("button", { name: `Paper: ${title}`, exact: true })
     .click();
 }
 const test = base.extend<{ appUrl: string }>({
@@ -97,33 +97,33 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   });
   await page.goto(appUrl);
   await expect(
-    page.getByRole("heading", { name: "研究主题", exact: true }),
+    page.getByRole("heading", { name: "Topics", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".paper-node")).toHaveCount(6);
   await expect(
-    page.getByText("样例模式：分组、相似度和评分为占位结果。"),
+    page.getByText("Sample mode: clusters, similarities and grades are placeholders."),
   ).toBeVisible();
-  await page.getByRole("button", { name: "运行分析", exact: true }).click();
+  await page.getByRole("button", { name: "Run analysis", exact: true }).click();
   // Graph 1 opens first; wait until Graph 2 has replaced it as the active version.
   await expect(
-    page.getByText("图 2（研究空白）已生成", { exact: false }),
+    page.getByText("Graph 2 (research gaps) is ready", { exact: false }),
   ).toBeVisible();
   await expect(page.locator(".version-selector select")).not.toHaveValue(
     "qa-root",
   );
   const analyzed = await page.locator(".version-selector select").inputValue();
-  await page.getByRole("button", { name: "图 1 · 关联", exact: true }).click();
+  await page.getByRole("button", { name: "Graph 1 · Connections", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "关联证据", exact: true }),
+    page.getByRole("heading", { name: "Connection evidence", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".inspector blockquote")).toHaveCount(2);
   const original = (
     await (await request.get(appUrl + "/cluster/qa-root")).json()
   ).output;
   expect(original.connections).toHaveLength(0);
-  await page.getByRole("button", { name: "全部", exact: true }).click();
+  await page.getByRole("button", { name: "All", exact: true }).click();
   await clickMovablePaper(page, request, appUrl, analyzed);
-  const target = page.getByLabel("选择移动目标");
+  const target = page.getByLabel("Choose where to move");
   await expect(target.locator("option")).not.toHaveCount(1);
   const option = await target
     .locator('option:not([value=""]):not([disabled])')
@@ -131,13 +131,13 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
     .getAttribute("value");
   expect(option).toBeTruthy();
   await target.selectOption(option!);
-  await page.getByRole("button", { name: "预览移动", exact: true }).click();
+  await page.getByRole("button", { name: "Preview move", exact: true }).click();
   await expect(
-    page.getByRole("dialog", { name: "预览分组变更" }),
+    page.getByRole("dialog", { name: "Preview cluster changes" }),
   ).toBeVisible();
   await expect(page.locator(".change-row")).toHaveCount(2);
   await page
-    .getByRole("button", { name: "应用并生成新版本", exact: true })
+    .getByRole("button", { name: "Apply as a new version", exact: true })
     .click();
   await expect(page.locator(".version-selector select")).not.toHaveValue(
     analyzed,
@@ -149,53 +149,53 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   expect(changed.clusters.flatMap((c: any) => c.paper_ids).sort()).toEqual(
     original.clusters.flatMap((c: any) => c.paper_ids).sort(),
   );
-  await page.getByRole("button", { name: "版本记录", exact: true }).click();
+  await page.getByRole("button", { name: "Versions", exact: true }).click();
   const row = page
     .locator(".version-row")
     .filter({ has: page.getByText(analyzed, { exact: true }) });
-  await row.getByRole("button", { name: "设为当前版本", exact: true }).click();
+  await row.getByRole("button", { name: "Make active", exact: true }).click();
   await expect(page.locator(".version-selector select")).toHaveValue(analyzed);
   const history = (
     await (await request.get(appUrl + `/cluster/${analyzed}/versions`)).json()
   ).output;
   expect(history.active_head.run_id).toBe(analyzed);
   expect(history.versions).toHaveLength(4); // root, Graph 1, Graph 2, moved
-  await page.getByRole("button", { name: "人工验收", exact: true }).click();
+  await page.getByRole("button", { name: "Human review", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "验收材料", exact: true }),
+    page.getByRole("heading", { name: "Review items", exact: true }),
   ).toBeVisible();
   const queue = (
     await (await request.get(appUrl + `/cluster/${analyzed}/review`)).json()
   ).output.summary.total;
   expect(queue).toBeGreaterThan(0);
-  await expect(page.getByText(`0 / ${queue} 已完成`)).toBeVisible();
-  await page.getByRole("button", { name: "保存人工判断", exact: true }).click();
+  await expect(page.getByText(`0 / ${queue} done`)).toBeVisible();
+  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
   await expect(page.getByRole("alert")).toHaveText(
-    "请选择一项判断：有依据、不支持或资料不足。",
+    "Choose a judgement: supported, not supported or insufficient evidence.",
   );
-  await page.getByLabel("有依据", { exact: true }).check();
-  await page.getByRole("button", { name: "保存人工判断", exact: true }).click();
+  await page.getByLabel("Supported", { exact: true }).check();
+  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
   await expect(page.getByRole("alert")).toHaveText(
-    "请填写审核者姓名或审核标识，可使用单字或缩写。",
+    "Enter a reviewer name or ID; initials are fine.",
   );
-  await page.getByLabel("审核者", { exact: true }).fill("X");
-  await page.getByRole("button", { name: "保存人工判断", exact: true }).click();
+  await page.getByLabel("Reviewer", { exact: true }).fill("X");
+  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
   await expect(page.getByRole("alert")).toHaveText(
-    "判断理由至少需要 10 个字符，请补充具体依据。",
+    "The reason needs at least 10 characters; add the specific basis.",
   );
   await page
-    .getByLabel("判断理由", { exact: true })
+    .getByLabel("Reason", { exact: true })
     .fill(
       "Sample-only UI regression: the displayed original source excerpts are selected for this temporary test.",
     );
   const quotes = page.getByRole("button", {
-    name: "引用选中文字或首段原文",
+    name: "Quote the selection or the first passage",
     exact: true,
   });
   await quotes.nth(0).click();
   await quotes.nth(1).click();
-  await page.getByRole("button", { name: "保存人工判断", exact: true }).click();
-  await expect(page.getByText("判断已保存至当前版本。")).toBeVisible();
+  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
+  await expect(page.getByText("Judgement saved to the active version.")).toBeVisible();
   const review = (
     await (await request.get(appUrl + `/cluster/${analyzed}/review`)).json()
   ).output;
@@ -206,24 +206,24 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   ).toBe("X");
   expect(review.summary.semantic_accuracy).toBeNull();
   await page.screenshot({ path: info.outputPath("review-saved.png") });
-  await page.getByRole("button", { name: "查看已有评分", exact: true }).click();
+  await page.getByRole("button", { name: "Show existing grades", exact: true }).click();
   await expect(
-    page.getByText("当前版本暂无 AI 评分，可点击「AI 自动评分」生成。"),
+    page.getByText('This version has no AI grades yet. Click "AI grading" to create them.'),
   ).toBeVisible();
-  await page.getByRole("button", { name: "AI 自动评分", exact: true }).click();
+  await page.getByRole("button", { name: "AI grading", exact: true }).click();
   await expect(
-    page.getByText("样例流程 · 未评分", { exact: true }),
+    page.getByText("Sample flow · not graded", { exact: true }),
   ).toBeVisible();
   const afterAgent = (
     await (await request.get(appUrl + `/cluster/${analyzed}/review`)).json()
   ).output;
   expect(afterAgent).toEqual(review);
-  await page.getByRole("button", { name: "AI 自动评分", exact: true }).click();
+  await page.getByRole("button", { name: "AI grading", exact: true }).click();
   await expect(
-    page.getByText("已读取本版本的已有评审，未重复调用模型。"),
+    page.getByText("Loaded this version's existing review; the model was not called again."),
   ).toBeVisible();
-  await page.getByRole("button", { name: "保存人工判断", exact: true }).click();
-  await expect(page.getByText("判断已保存至当前版本。")).toBeVisible();
+  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
+  await expect(page.getByText("Judgement saved to the active version.")).toBeVisible();
   const seen = (
     await (await request.get(appUrl + `/cluster/${analyzed}/review`)).json()
   ).output;
@@ -233,18 +233,18 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   ).toBe(true);
   await page.locator(".review-item").nth(3).click();
   await expect(
-    page.getByText("待明确具体假设 · 未评分", { exact: true }),
+    page.getByText("Needs a concrete hypothesis · not graded", { exact: true }),
   ).toBeVisible();
   await page.screenshot({ path: info.outputPath("agent-review-sample.png") });
-  await page.getByRole("button", { name: "论文地图", exact: true }).click();
-  await page.getByRole("button", { name: "新建地图", exact: true }).click();
-  const dialog = page.getByRole("dialog", { name: "新建研究地图" });
+  await page.getByRole("button", { name: "Paper map", exact: true }).click();
+  await page.getByRole("button", { name: "New map", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "New research map" });
   await expect(dialog).toBeVisible();
-  await dialog.getByRole("button", { name: "导入记录", exact: true }).click();
+  await dialog.getByRole("button", { name: "Import records", exact: true }).click();
   await dialog
-    .getByRole("textbox", { name: "研究问题", exact: true })
-    .fill("新的样例问题：如何比较两种适配方法？");
-  await dialog.getByRole("button", { name: "建立地图", exact: true }).click();
+    .getByRole("textbox", { name: "Research question", exact: true })
+    .fill("New sample question: how do two adaptation methods compare?");
+  await dialog.getByRole("button", { name: "Build map", exact: true }).click();
   await expect(page.locator(".version-selector select")).not.toHaveValue(
     analyzed,
   );
@@ -253,10 +253,10 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
     await (await request.get(appUrl + `/cluster/${next}/review`)).json()
   ).output;
   expect(newReview.summary.reviewed).toBe(0);
-  await page.getByRole("button", { name: "新建地图", exact: true }).click();
-  const importDialog = page.getByRole("dialog", { name: "新建研究地图" });
+  await page.getByRole("button", { name: "New map", exact: true }).click();
+  const importDialog = page.getByRole("dialog", { name: "New research map" });
   await importDialog
-    .getByRole("button", { name: "导入记录", exact: true })
+    .getByRole("button", { name: "Import records", exact: true })
     .click();
   await importDialog
     .locator('input[type="file"]')
@@ -264,42 +264,42 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
       path.join(root, "input_examples/cluster-map/lora-translation.json"),
     );
   await expect(
-    importDialog.getByRole("textbox", { name: "研究问题", exact: true }),
+    importDialog.getByRole("textbox", { name: "Research question", exact: true }),
   ).toHaveValue(
     "How does LoRA fine-tuning improve machine translation for low-resource languages?",
   );
   await importDialog
-    .getByRole("button", { name: "建立地图", exact: true })
+    .getByRole("button", { name: "Build map", exact: true })
     .click();
   await expect(page.locator(".paper-node")).toHaveCount(3);
   // Question -> search -> Human review 1 (keep/remove, feedback re-plan) -> map.
-  await page.getByRole("button", { name: "新建地图", exact: true }).click();
-  const searchDialog = page.getByRole("dialog", { name: "新建研究地图" });
+  await page.getByRole("button", { name: "New map", exact: true }).click();
+  const searchDialog = page.getByRole("dialog", { name: "New research map" });
   await searchDialog
-    .getByRole("textbox", { name: "研究问题", exact: true })
+    .getByRole("textbox", { name: "Research question", exact: true })
     .fill("How do large language models handle low-resource languages?");
   await searchDialog
-    .getByRole("button", { name: "检索论文", exact: true })
+    .getByRole("button", { name: "Search papers", exact: true })
     .click();
-  const results = searchDialog.getByRole("region", { name: "检索结果审核" });
+  const results = searchDialog.getByRole("region", { name: "Search result review" });
   // Fast (the default mode) shows the best 50 and keeps the rest as the backup pool.
-  await expect(results.getByText("保留 50 / 50 篇")).toBeVisible();
-  await expect(results.locator(".plan-criteria")).toContainText("（默认）");
+  await expect(results.getByText("Keeping 50 / 50 papers")).toBeVisible();
+  await expect(results.locator(".plan-criteria")).toContainText("(default)");
   await results.getByRole("textbox").fill("Only papers since 2023");
   const replan = page.waitForRequest(
     (r) =>
       r.url().endsWith("/search") && !!r.postDataJSON().input.previous_plan,
   );
-  await results.getByRole("button", { name: "按反馈重新检索" }).click();
+  await results.getByRole("button", { name: "Search again with feedback" }).click();
   expect((await replan).postDataJSON().input.feedback).toBe(
     "Only papers since 2023",
   );
   await expect(results.getByRole("textbox")).toHaveValue("");
-  await results.getByRole("button", { name: "全部取消" }).click();
+  await results.getByRole("button", { name: "Deselect all" }).click();
   for (const box of (await results.getByRole("checkbox").all()).slice(0, 4))
     await box.check();
   await searchDialog
-    .getByRole("button", { name: "用保留的 4 篇建立地图", exact: true })
+    .getByRole("button", { name: "Build the map from 4 kept papers", exact: true })
     .click();
   await expect(searchDialog).toBeHidden();
   await expect(page.locator(".paper-node")).toHaveCount(4);
@@ -325,16 +325,16 @@ test("mobile: readable map, topic navigation, evidence and no horizontal overflo
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await page.getByRole("button", { name: "切换主题导航", exact: true }).click();
-  await expect(page.getByLabel("搜索论文或主题")).toBeVisible();
+  await page.getByRole("button", { name: "Toggle topic navigation", exact: true }).click();
+  await expect(page.getByLabel("Search papers or topics")).toBeVisible();
   await page.locator(".topic-row").first().click();
   await expect(page.locator(".topic-sidebar")).not.toBeVisible();
   await page.locator(".inspector .paper-list button").first().click();
   await expect(
-    page.getByRole("heading", { name: "论文详情", exact: true }),
+    page.getByRole("heading", { name: "Paper details", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".inspector blockquote")).toHaveCount(1);
-  await page.getByRole("button", { name: "放大地图", exact: true }).click();
+  await page.getByRole("button", { name: "Zoom in", exact: true }).click();
   const canvas = page.locator(".map-svg");
   await canvas.scrollIntoViewIfNeeded();
   const beforePan = await canvas
@@ -359,14 +359,14 @@ test("mobile: readable map, topic navigation, evidence and no horizontal overflo
     beforePan!,
   );
   await touch.detach();
-  await page.getByRole("button", { name: "重置视图", exact: true }).click();
+  await page.getByRole("button", { name: "Reset view", exact: true }).click();
   await page.screenshot({
     path: info.outputPath("mobile-map.png"),
     fullPage: true,
   });
-  await page.getByRole("button", { name: "人工验收", exact: true }).click();
+  await page.getByRole("button", { name: "Human review", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "验收材料", exact: true }),
+    page.getByRole("heading", { name: "Review items", exact: true }),
   ).toBeVisible();
   expect(
     await page.evaluate(
@@ -382,17 +382,17 @@ test("stale preview conflict is visible inside the dialog and does not move pape
   appUrl,
 }) => {
   await page.goto(appUrl);
-  await page.getByRole("button", { name: "运行分析", exact: true }).click();
+  await page.getByRole("button", { name: "Run analysis", exact: true }).click();
   // Graph 1 opens first; wait until Graph 2 has replaced it as the active version.
   await expect(
-    page.getByText("图 2（研究空白）已生成", { exact: false }),
+    page.getByText("Graph 2 (research gaps) is ready", { exact: false }),
   ).toBeVisible();
   await expect(page.locator(".version-selector select")).not.toHaveValue(
     "qa-root",
   );
   const id = await page.locator(".version-selector select").inputValue();
   await clickMovablePaper(page, request, appUrl, id);
-  const target = page.getByLabel("选择移动目标");
+  const target = page.getByLabel("Choose where to move");
   await expect(target.locator("option")).not.toHaveCount(1);
   await target.selectOption(
     (await target
@@ -400,8 +400,8 @@ test("stale preview conflict is visible inside the dialog and does not move pape
       .first()
       .getAttribute("value"))!,
   );
-  await page.getByRole("button", { name: "预览移动", exact: true }).click();
-  const dialog = page.getByRole("dialog", { name: "预览分组变更" });
+  await page.getByRole("button", { name: "Preview move", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Preview cluster changes" });
   await expect(dialog).toBeVisible();
   const current = (await (await request.get(appUrl + `/cluster/${id}`)).json())
     .output;
@@ -417,11 +417,11 @@ test("stale preview conflict is visible inside the dialog and does not move pape
     ).ok(),
   ).toBe(true);
   await dialog
-    .getByRole("button", { name: "应用并生成新版本", exact: true })
+    .getByRole("button", { name: "Apply as a new version", exact: true })
     .click();
   await expect(dialog.getByRole("alert")).toContainText("no longer active");
   await expect(
-    dialog.getByRole("button", { name: "应用并生成新版本", exact: true }),
+    dialog.getByRole("button", { name: "Apply as a new version", exact: true }),
   ).toBeDisabled();
   const versions = (
     await (await request.get(appUrl + "/cluster/qa-root/versions")).json()
@@ -444,31 +444,31 @@ test("live map while a map is built, provenance on elements, and the reasoning p
     await new Promise((r) => setTimeout(r, 2500));
     await route.fulfill({ response });
   });
-  await page.getByRole("button", { name: "新建地图", exact: true }).click();
-  const dialog = page.getByRole("dialog", { name: "新建研究地图" });
-  await dialog.getByRole("button", { name: "导入记录", exact: true }).click();
+  await page.getByRole("button", { name: "New map", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "New research map" });
+  await dialog.getByRole("button", { name: "Import records", exact: true }).click();
   await dialog
     .locator('input[type="file"]')
     .setInputFiles(
       path.join(root, "input_examples/cluster-map/lora-translation.json"),
     );
-  await dialog.getByRole("button", { name: "建立地图", exact: true }).click();
-  const feed = page.getByRole("complementary", { name: "运行动态" });
+  await dialog.getByRole("button", { name: "Build map", exact: true }).click();
+  const feed = page.getByRole("complementary", { name: "Run activity" });
   await expect(feed).toBeVisible();
-  await expect(feed).toContainText("聚类代理");
+  await expect(feed).toContainText("Clusterer");
   await expect(page.locator(".live-build .paper-node")).toHaveCount(3);
   await expect(page.locator(".live-build")).toHaveCount(0, { timeout: 15000 });
   // B6: every element says which agent made it and why.
   await page.locator(".paper-node").first().click();
   const provenance = page.locator(".provenance");
-  await expect(provenance).toContainText("检索代理");
-  await expect(provenance).toContainText("聚类代理");
+  await expect(provenance).toContainText("Retriever");
+  await expect(provenance).toContainText("Clusterer");
   // B4: the reasoning panel lists each agent's steps, labelled code or LLM, with raw details behind a toggle.
-  await provenance.getByRole("button", { name: "查看推理过程" }).click();
-  await expect(page.getByRole("heading", { name: "推理过程" })).toBeVisible();
-  const clusterer = page.locator(".agent-log").filter({ hasText: "聚类代理" });
+  await provenance.getByRole("button", { name: "Show reasoning" }).click();
+  await expect(page.getByRole("heading", { name: "Reasoning" })).toBeVisible();
+  const clusterer = page.locator(".agent-log").filter({ hasText: "Clusterer" });
   await clusterer.locator("summary").first().click();
-  await expect(clusterer.locator(".kind").first()).toHaveText(/代码|LLM|人工/);
+  await expect(clusterer.locator(".kind").first()).toHaveText(/Code|LLM|Human/);
   await expect(clusterer).toContainText("assign cluster roles");
   expect(errors).toEqual([]);
 });
@@ -481,16 +481,16 @@ test("each cluster shows its card: summary, years, citations and analysis depth"
   await expect(page.locator(".paper-node")).toHaveCount(6);
   await page
     .locator(".topic-list button")
-    .filter({ hasText: "主簇" })
+    .filter({ hasText: "Main cluster" })
     .first()
     .click();
   const card = page.locator(".cluster-card");
-  await expect(card).toContainText("全文分析");
+  await expect(card).toContainText("Full-text analysis");
   await expect(card).toContainText("Sample mode: placeholder summary");
   await page
     .locator(".topic-list button")
     .filter({ hasText: "Sample side" })
     .first()
     .click();
-  await expect(card).toContainText("元数据分析");
+  await expect(card).toContainText("Metadata analysis");
 });

@@ -1251,6 +1251,11 @@ blockquote {
   }
   .top-nav button {
     font-size: 12.5px;
+    text-transform: capitalize;
+  }
+  /* "Paper map" and "Human review" become "Map" and "Review" so the nav fits beside the wordmark */
+  .top-nav .nav-qualifier {
+    display: none;
   }
   .header-actions {
     width: 100%;

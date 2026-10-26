@@ -29,9 +29,16 @@ def _metric_mentions(source, settings):
 
 
 def _unqualified_metric_omission(text):
+    # Reviews are written in English; the Chinese form stays for reports saved before the switch.
     match = re.search(r"未(?:明确)?(?:说明|给出|披露|报告|提及|列出)[^，,。；;！？!?]*"
                       r"(?:评测|评估|评价)?指标\s*(?:[，,。；;]|$)", text)
-    return bool(match and not re.search(r"完整|全部|详细|具体|版本|定义|实现|配置", match.group()))
+    if match:
+        return not re.search(r"完整|全部|详细|具体|版本|定义|实现|配置", match.group())
+    match = re.search(r"\b(?:does|do|did)\s+not\s+(?:clearly\s+|explicitly\s+)?(?:state|give|disclose|report|mention|list|"
+                      r"specify)\b(?:(?!\b(?:but|while|whereas|although|however)\b)[^.;!?])*?\bmetrics?\b\s*(?:[.,;]|$)",
+                      text, re.IGNORECASE)
+    return bool(match and not re.search(r"\b(?:full|complete|all|detailed|specific|versions?|definitions?|"
+                                        r"implementations?|configurations?)\b", match.group(), re.IGNORECASE))
 
 
 def _inputs(run_id, settings):
@@ -110,7 +117,7 @@ def _audit_explanations(payload, output, settings, deadline):
     statements = {d.item_id: [
         {"statement_id": f"s{n}", "text": text}
         for n, text in enumerate(part.strip() for field in [d.reason, *d.limitations]
-                                 for part in re.split(r"(?<=[。！？!?])\s*|\n+", field) if part.strip())]
+                                 for part in re.split(r"(?<=[。！？])\s*|(?<=[.!?])\s+|\n+", field) if part.strip())]
         for d in output.decisions}
     audit_input = {**payload, "draft_explanations": [
         {"item_id": d.item_id, "reason": d.reason, "limitations": d.limitations,
@@ -215,13 +222,13 @@ def run_review(run_id, expected_version_token, settings):
             for item in payload["items"]:
                 if not item["claim"]:
                     assessed.append(ReviewAgentAssessment(item_id=item["id"], status="needs_hypothesis",
-                        reason="当前只有论文对，尚无具体研究假设。请先明确研究问题、比较方法和实验设置，再评分。"))
+                        reason="There is only a paper pair, with no concrete hypothesis yet. State the research question, the methods to compare and the experimental setup before grading."))
                 elif not set(item["paper_ids"]) <= set(source_map):
                     assessed.append(ReviewAgentAssessment(item_id=item["id"], status="insufficient_sources",
-                        verdict="uncertain", reason="缺少可核验的双方正文，暂不评分。"))
+                        verdict="uncertain", reason="Checkable text from both papers is missing, so this item is not graded."))
                 elif settings.sample_mode:
                     assessed.append(ReviewAgentAssessment(item_id=item["id"], status="sample",
-                        reason="样例模式：展示 Agent 评审流程，未调用模型，不提供科学质量评分。"))
+                        reason="Sample mode: shows the agent review flow; no model was called and no scientific quality grade is given."))
                 else:
                     gradable.append(item)
             if gradable:
@@ -237,8 +244,8 @@ def run_review(run_id, expected_version_token, settings):
                 "items": [by_id[item["id"]].model_dump(mode="json") for item in payload["items"]],
                 "explanation_check": {"method": "separate_context_source_attribution",
                                       "checked_item_ids": [item["id"] for item in gradable]},
-                "limitations": ["只评估当前具体结论及已提供原文，不检索外部文献，也不确认全球新颖性。",
-                    "分数是模型的分项判断，不是准确率；解释经独立上下文核验，但使用同一配置模型，仍可能存在共同偏差。"]}
+                "limitations": ["Assesses only the current specific claims and the supplied source text; it does not search external literature or confirm global novelty.",
+                    "Scores are the model's per-criterion judgements, not accuracy. Explanations are checked in a separate context but by the same configured model, so they may share its biases."]}
             atomic_json(path_for(settings, "review-agent", key), {"checksum": digest(report), "report": report})
             trace.log("review_agent", "save separate AI report", "done",
                       result={"scored": len(gradable), "unscored": len(assessed) - len(gradable)},
