@@ -35,7 +35,7 @@ Five agents run in sequence, each followed by a check:
 | 2 | Retriever: finds papers through scholarly APIs | Human review 1 |
 | 3 | Clusterer: groups papers into labelled ideas | Grading agent |
 | 4 | Connection finder: links papers within and between clusters | Grading agent |
-| 5 | Gap finder: finds research gaps inside clusters | Grading agent, then Human review 2 |
+| 5 | [Gap finder](docs/agents/gap_finder.md): finds research gaps inside clusters | Grading agent, then Human review 2 |
 
 Per-agent specs are in [docs/agents/](docs/agents/).
 
