@@ -73,7 +73,8 @@ def retrieve_pool(plan: SearchPlan, settings: Settings, signed_in: bool = False)
         for source in settings.retrieval_sources:
             search = globals()[SOURCES[source]]  # looked up per call so tests can replace a source
             try:
-                found = search(query, plan.criteria, limit=per_search, open_access_only=not signed_in)
+                options = {"settings": settings} if source == "openalex" else {}
+                found = search(query, plan.criteria, limit=per_search, open_access_only=not signed_in, **options)
             except SEARCH_ERRORS as e:
                 failures.append(f"{source}: {e}")
                 _log(f"search {source}", "failed", query, "next search", str(e))

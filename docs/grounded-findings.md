@@ -127,6 +127,11 @@ are never promoted into real findings.
 
 ## Coverage checks
 
+Coverage now uses an exact-query public-response cache, a shared local OpenAlex daily request cap
+and a per-invocation allowance of 10 new HTTP attempts. A daily-limit response pauses new requests
+until reset; Semantic Scholar is a fallback when configured. Budget-deferred checks stay explicitly
+unavailable. See [search budgets and cache policy](search-budget.md) for configuration and limits.
+
 A gap must arise from explicit source limitations or a meaningful supported cross-paper
 comparison, rather than a missing mention in two abstracts. Independent verification
 can reject even a plausible question whose supplied quotes do not support it.

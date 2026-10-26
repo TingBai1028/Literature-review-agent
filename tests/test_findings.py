@@ -212,6 +212,19 @@ def test_unavailable_search_never_becomes_negative_novelty_evidence(model, tmp_p
     assert len(model["searches"]) > count  # A failed search is not reusable absence evidence.
 
 
+def test_exhausted_coverage_allowance_keeps_hypotheses_explicitly_unverified(model, tmp_path, monkeypatch):
+    from litagent.tools.openalex import search_openalex
+    root, cfg, papers, arrays = snapshot(tmp_path, settings=replace(gap_settings(tmp_path), gap_coverage_max_requests=0))
+    monkeypatch.setattr(gap_finder, "search_openalex", search_openalex)
+    monkeypatch.setenv("SCHOLARLY_SEARCH_DB", str(tmp_path / "search.sqlite3"))
+    monkeypatch.delenv("SEMANTIC_SCHOLAR_API_KEY", raising=False)
+    monkeypatch.setattr("litagent.tools.openalex.httpx.get", lambda *a, **kw: pytest.fail("No allowance for HTTP"))
+    found = gap_finder.find_gaps(papers, root.clusters, [], cfg, context=context(root, arrays))
+    assert found and all(g.coverage_status == "unavailable" for g in found)
+    assert all(g.coverage.status == "unavailable" for g in found)
+    assert all("external verification deferred" in s.error for g in found for s in g.coverage.searches)
+
+
 def test_invented_filling_study_cannot_drop_a_gap(model, tmp_path):
     root, cfg, papers, arrays = snapshot(tmp_path, settings=gap_settings(tmp_path))
     model["hits"] = [Paper(id="EXTERNAL", title="A controlled comparison", source="openalex",
