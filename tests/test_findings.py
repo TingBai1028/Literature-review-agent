@@ -214,9 +214,9 @@ def test_unavailable_search_never_becomes_negative_novelty_evidence(model, tmp_p
 
 def test_exhausted_coverage_allowance_keeps_hypotheses_explicitly_unverified(model, tmp_path, monkeypatch):
     from litagent.tools.openalex import search_openalex
-    root, cfg, papers, arrays = snapshot(tmp_path, settings=replace(gap_settings(tmp_path), gap_coverage_max_requests=0))
+    root, cfg, papers, arrays = snapshot(tmp_path, settings=replace(gap_settings(tmp_path), gap_coverage_max_requests=0,
+                                                                    scholarly_search_db=str(tmp_path / "search.sqlite3")))
     monkeypatch.setattr(gap_finder, "search_openalex", search_openalex)
-    monkeypatch.setenv("SCHOLARLY_SEARCH_DB", str(tmp_path / "search.sqlite3"))
     monkeypatch.delenv("SEMANTIC_SCHOLAR_API_KEY", raising=False)
     monkeypatch.setattr("litagent.tools.openalex.httpx.get", lambda *a, **kw: pytest.fail("No allowance for HTTP"))
     found = gap_finder.find_gaps(papers, root.clusters, [], cfg, context=context(root, arrays))
