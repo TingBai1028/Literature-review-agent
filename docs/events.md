@@ -55,3 +55,17 @@ Each event is one `data:` line holding JSON:
 | clusterer | clusters named | `clusters`: plus `label`, `role_reason` |
 | connection_finder | each batch of accepted edges | `edges`: `id`, `source`, `target`, `relation`, `reason_short` |
 | gap_finder | each cluster's gaps | `gaps`: `id`, `cluster_id`, `paper_ids`, `description`, `label` |
+
+## In the map UI
+
+- **Live map (spec A2, A4).** Building a map: papers appear, glide into their clusters as soon as they are
+  grouped (the grouped event carries the same nearest-neighbour pairs as the saved map, so nothing jumps when the
+  run finishes), then the clusters get their names. Analysis: edges draw in as each batch is accepted (Graph 1),
+  then gap markers appear (Graph 2). The map can be panned, zoomed and clicked throughout.
+- **Activity feed (A3).** While a run is in progress a panel shows each start, partial result, end and setback
+  as a plain sentence, newest at the bottom, and names the agent at work. The search dialog shows the
+  retriever's running count ("已获取 N / 300 篇").
+- **Reasoning panel (B4, B5).** The 推理过程 tab lists every agent's steps for the open version and its whole
+  lineage (map, Graph 1, Graph 2, refreshes, moves), read from `GET /runs/{run_id}/log`. Each step is marked
+  代码 or LLM; critiques, retries, fallbacks and errors are highlighted; raw data is behind 详情.
+- **Provenance (B6).** Selecting a paper, cluster, edge or gap shows which agent created it and why.
