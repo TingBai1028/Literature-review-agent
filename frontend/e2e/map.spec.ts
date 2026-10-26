@@ -282,7 +282,8 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
     .getByRole("button", { name: "检索论文", exact: true })
     .click();
   const results = searchDialog.getByRole("region", { name: "检索结果审核" });
-  await expect(results.getByText("保留 30 / 30 篇")).toBeVisible();
+  // Fast (the default mode) shows the best 50 and keeps the rest as the backup pool.
+  await expect(results.getByText("保留 50 / 50 篇")).toBeVisible();
   await expect(results.locator(".plan-criteria")).toContainText("（默认）");
   await results.getByRole("textbox").fill("Only papers since 2023");
   const replan = page.waitForRequest(
