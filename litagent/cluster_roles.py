@@ -98,10 +98,14 @@ def _main(papers, similarity, question_similarity, relevance, scores, ranked, se
         reason += f" Added {len(direct)} more papers judged directly relevant (main holds up to {high})."
         plan.decisions.append({"step": "main size", "decision": f"added {len(direct)} direct",
                                "why": "papers judged directly relevant belong in main even when grouping split them off"})
-    added = [i for i in ranked if i not in members][:max(0, low - len(members))]
+    # Filling up to the minimum prefers papers the relevance check called supporting over unjudged or off-topic
+    # ones (real run 27 Oct: a stopping-time paper judged off-topic filled main on embedding similarity alone).
+    tier = {"direct": 0, "supporting": 1}
+    added = sorted((i for i in ranked if i not in members), key=lambda i: (tier.get(relevance[i], 2), ranked.index(i)))
+    added = added[:max(0, low - len(members))]
     if added:
         members += added
-        reason += f" Added the {len(added)} next most relevant papers to reach {low}."
+        reason += f" Added the {len(added)} next most relevant papers to reach {low} (supporting before unjudged)."
         plan.decisions.append({"step": "main size", "decision": f"added {len(added)}", "why": f"main needs at least {low}"})
     return sorted(members, key=ranked.index), reason
 

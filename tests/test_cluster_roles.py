@@ -39,6 +39,15 @@ def test_small_main_is_filled_with_the_next_most_relevant_papers():
     assert plan.main == [0, 1, 2, 3, 4] and "Added the 3 next most relevant papers to reach 5" in plan.main_reason
 
 
+def test_main_is_filled_with_supporting_papers_before_unjudged_ones():
+    ps = papers(12)
+    question = np.array([.9, .85, .6, .55, .5, .45, .3, .3, .2, .2, .1, .1])
+    relevance = ["uncertain"] * 6 + ["supporting"] * 3 + ["uncertain"] * 3
+    plan = assign_roles(ps, blocks(2, 10), question, relevance, Settings())
+    # Real run 27 Oct: an off-topic paper filled main on cosine alone while on-topic supporting papers stayed out.
+    assert sorted(plan.main) == [0, 1, 6, 7, 8] and "supporting before unjudged" in plan.main_reason
+
+
 def test_llm_relevance_check_can_outweigh_a_slightly_higher_cosine():
     ps = papers(10)
     question = np.r_[np.full(5, .62), np.full(5, .6)]
