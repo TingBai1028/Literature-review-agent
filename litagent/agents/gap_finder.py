@@ -19,6 +19,7 @@ import time
 from collections import defaultdict
 
 from litagent.agents.connection_finder import first_sentence
+from litagent.cluster_cards import compact
 from litagent.cluster_state import digest
 from litagent.config import Settings
 from litagent.finding_engine import (FindingContext, cache_key, cached, check_deadline, merge_record, now, prepare,
@@ -81,6 +82,11 @@ def find_gaps(
         if record is None:
             record = _Run(papers, source_map, fix, settings, context).assess(candidates, clusters)
             context.cache[key] = record
+        # Escalated full text (spec H5) goes back into the caller's papers: the stage grader checks every quote
+        # against them, and the saved version keeps them.
+        for i, paper in enumerate(papers):
+            if paper.id in record.full_text and not paper.full_text:
+                papers[i] = paper.model_copy(update={"full_text": record.full_text[paper.id]})
         merge_record(report, record, context, reused=reused)
         context.partial_gaps = [g.model_copy(deep=True) for g in record.gaps]
         return context.partial_gaps
@@ -150,6 +156,8 @@ class _Run:
                  context: FindingContext | None):
         self.by_id = {p.id: p for p in papers}
         self.source_map, self.fix, self.settings, self.context = source_map, fix, settings, context
+        self.fetched: dict[str, str] = {}  # full text read by escalation (spec H5)
+        self.escalated: set[str] = set()
         self.outcomes: dict[str, dict] = {}
         self.checked: dict[str, list[str]] = {}  # gap id -> titles the coverage judge saw
 
@@ -168,6 +176,7 @@ class _Run:
                 retried = self.write(cluster, [c for c in mine if c["gap_id"] in fixes], fixes)
                 kept += self.grade(cluster, self.coverage(retried), final=True)[0]
             ranked = self.rank(kept)
+            ranked = self.escalate(cluster, ranked, mine)
             gaps += ranked
             if (trace := current_trace()) and ranked:
                 trace.log("gap_finder", "gaps", f"{len(ranked)} in {cluster.id}", phase="partial_result",
@@ -183,7 +192,44 @@ class _Run:
             audit.rejected += not accepted and not outcome.get("abstained", False)
         deps = {g.id: FindingDependency(global_map=False, cluster_ids=[g.cluster_id], paper_ids=g.between_paper_ids)
                 for g in gaps}
-        return FindingCacheRecord(stage="gaps", created_at=now(), gaps=gaps, dependencies=deps, audit=audit)
+        return FindingCacheRecord(stage="gaps", created_at=now(), gaps=gaps, dependencies=deps, audit=audit,
+                                  full_text=self.fetched)
+
+    # ----- Spec H5: escalate a side cluster to full text -----
+
+    def escalate(self, cluster: Cluster, gaps: list[Gap], candidates: list[dict]) -> list[Gap]:
+        """A side cluster that turns out to hold kept gaps is central to them: read full text for its top papers
+        (by citations, within a capped budget), log it, and redo that cluster's gaps on the full text."""
+        s, ctx = self.settings, self.context
+        if (not gaps or getattr(cluster, "kind", None) != "side" or not s.gap_escalation_enabled
+                or not ctx.use_full_text or ctx.full_text_ids is None
+                or len(self.escalated) >= s.gap_escalation_max_clusters):
+            return gaps
+        from litagent.agents.retriever import attach_full_text
+
+        self.escalated.add(cluster.id)
+        top = sorted((self.by_id[pid] for pid in cluster.paper_ids if not self.by_id[pid].full_text),
+                     key=lambda p: (-(p.citation_count or 0), p.id))[:s.gap_escalation_papers]
+        got = [p for p in attach_full_text(top, s) if p.full_text]
+        if trace := current_trace():
+            trace.log("gap_finder", "escalate to full text", f"{len(got)} of {len(top)} papers", phase="partial_result",
+                      message=f"Gap finder: side cluster \"{cluster.label}\" holds {len(gaps)} gaps, so its top "
+                              f"{len(top)} papers were read in full ({len(got)} PDFs available)",
+                      why=f"Spec H5 escalation, capped at {s.gap_escalation_max_clusters} cluster(s) and "
+                          f"{s.gap_escalation_papers} papers", payload={"cluster_id": cluster.id,
+                                                                       "paper_ids": [p.id for p in got]})
+        if not got:
+            return gaps
+        ids = {p.id for p in got}
+        for p in got:
+            self.by_id[p.id] = p
+            self.fetched[p.id] = p.full_text
+        ctx.full_text_ids |= ids
+        self.source_map.update(sources(got, s, ctx))
+        redo = [c for c in candidates if set(c["paper_ids"]) & ids]
+        untouched = [g for g in gaps if not set(g.between_paper_ids) & ids]
+        kept, _ = self.grade(cluster, self.coverage(self.write(cluster, redo, {})), final=True)
+        return self.rank(untouched + kept)
 
     # ----- Stage 2: gap writer -----
 
@@ -193,6 +239,7 @@ class _Run:
         ids = sorted({pid for c in candidates for pid in c["paper_ids"]})
         payload = {"task_version": "gap-writer-v1", "question": self.context.question, "fix": self.fix,
                    "cluster": {"id": cluster.id, "label": cluster.label},
+                   "cluster_cards": compact(self.context.cards),
                    "min_quote_chars": self.settings.finding_min_quote_chars,
                    "papers": [self.source_map[pid] for pid in ids],
                    "candidates": [{"gap_id": c["gap_id"], "paper_ids": c["paper_ids"],
@@ -364,7 +411,7 @@ class _Run:
         if not gaps:
             return [], {}
         payload = {"task_version": "gap-grader-v1", "research_area": self.context.question or cluster.label,
-                   "cluster": cluster.label,
+                   "cluster": cluster.label, "cluster_cards": compact(self.context.cards),
                    "gaps": [{"gap_id": g.id, "type": g.gap_type, "claim": g.description, "warrant": g.warrant,
                              "grounds": [{"paper_id": e.paper_id, "title": self.by_id[e.paper_id].title, "quote": e.quote}
                                          for e in g.evidence],

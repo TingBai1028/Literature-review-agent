@@ -12,6 +12,7 @@ from pathlib import Path
 
 from openai import OpenAIError
 
+from litagent.cluster_cards import full_text_ids
 from litagent.cluster_state import VersionError, atomic_json, digest, file_hash, load_version, path_for, version_lock
 from litagent.finding_engine import FindingContext, exact_ids, resolve_evidence, sources
 from litagent.finding_review import prepare_review
@@ -44,7 +45,8 @@ def _inputs(run_id, settings):
     result, state, _ = load_version(run_id, settings)
     if len(pack["items"]) > settings.review_agent_max_items:
         raise VersionError("Review queue exceeds the configured Agent item limit", 422)
-    context = FindingContext(question=result.question, use_full_text=result.use_full_text)
+    context = FindingContext(question=result.question, use_full_text=result.use_full_text,
+                             full_text_ids=full_text_ids(result.clusters))
     source_map = sources(state.papers, settings, context, limit=settings.review_agent_source_chars)
     # Explicit allowlist: no human labels/reasons, old model verdicts/scores, or similarities.
     items = [{k: item[k] for k in ("id", "kind", "paper_ids", "claim", "proposed_test")}

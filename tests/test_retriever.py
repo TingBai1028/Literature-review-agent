@@ -166,7 +166,7 @@ def test_nothing_found_returns_empty_list(monkeypatch):
     assert retrieve(make_plan(), real_settings()) == []
 
 
-def test_full_text_effort_fetches_open_access_pdfs_and_falls_back_to_abstracts(monkeypatch, tmp_path):
+def test_full_text_helper_fetches_open_access_pdfs_and_retrieval_never_does(monkeypatch, tmp_path):
     from litagent.tools.fulltext import FullTextError
     oa = paper("W1").model_copy(update={"is_open_access": True, "pdf_url": "https://x/1.pdf"})
     landing = paper("W2").model_copy(update={"is_open_access": True, "pdf_url": "https://x/landing"})
@@ -179,8 +179,11 @@ def test_full_text_effort_fetches_open_access_pdfs_and_falls_back_to_abstracts(m
             raise FullTextError("not a PDF (probably a landing page)")
         return "Full body text of the paper."
     monkeypatch.setattr(retriever, "fetch_full_text", fetch)
+    # Retrieval never downloads PDFs (spec H1); the helper runs later, for main and foundation papers only.
+    assert all(p.full_text is None for p in retrieve(make_plan(queries=["q1"], effort=Effort.HIGH), real_settings()))
+    assert fetched == []
     with Trace(str(tmp_path)) as trace:
-        papers = retrieve(make_plan(queries=["q1"], effort=Effort.HIGH), real_settings())
+        papers = retriever.attach_full_text([oa, landing, closed], real_settings())
     assert sorted(fetched) == ["https://x/1.pdf", "https://x/landing"]
     assert {p.id: p.full_text for p in papers} == {"W1": "Full body text of the paper.", "W2": None, "W3": None}
     event = next(e for e in trace.events if e["action"] == "full text")

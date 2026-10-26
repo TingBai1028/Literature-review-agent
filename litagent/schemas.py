@@ -521,6 +521,7 @@ class FindingCacheRecord(BaseModel):
     gaps: list[Gap] = Field(default_factory=list)
     dependencies: dict[str, FindingDependency] = Field(default_factory=dict)
     audit: FindingAudit
+    full_text: dict[str, str] = Field(default_factory=dict)  # texts the gap finder fetched by escalation (spec H5)
 
 
 class FindingAnalysis(BaseModel):
@@ -576,6 +577,32 @@ class RunResult(BaseModel):
     paper_map: dict[str, Any] | None = None  # Meterless world model graph (nodes + edges) for the front end
     usage: TokenUsage | None = None
     backup_pool_size: int = 0  # Fast/Pro: ranked papers kept in logs/backup-pool-<run_id>.json, not shown
+    cluster_cards: list[ClusterCard] = Field(default_factory=list)
+
+
+class ClusterCard(BaseModel):
+    """One cluster summarised once (spec H3); downstream agents read cards instead of every paper's text."""
+
+    cluster_id: str
+    role: Literal["main", "foundation", "side"]
+    label: str
+    rationale: str
+    paper_ids: list[str]
+    year_range: tuple[int, int] | None = None
+    citations: dict[str, float] = Field(default_factory=dict)  # median, max
+    keywords: list[str] = Field(default_factory=list)
+    summary: str
+    analysis_depth: Literal["full_pdf", "metadata"]
+    papers_with_full_text: int = 0
+
+
+class ClusterCardSummary(BaseModel):
+    cluster_id: str
+    summary: str = Field(min_length=1, description="3-5 sentences on what the cluster's papers study and find")
+
+
+class ClusterCardSummaries(BaseModel):
+    cards: list[ClusterCardSummary]
 
 
 class ClusterMapResult(BaseModel):
@@ -596,6 +623,7 @@ class ClusterMapResult(BaseModel):
     version_token: str | None = None
     regeneration: RegenerationSummary | None = None
     backup_pool_size: int = 0  # Fast/Pro: papers left in the backup pool for "refresh"
+    cluster_cards: list[ClusterCard] = Field(default_factory=list)
     refresh: dict[str, Any] | None = None  # set on a version made by refresh: papers swapped in and out
     connections: list[GroundedConnection | Connection] = Field(default_factory=list)
     gaps: list[GroundedGap | Gap] = Field(default_factory=list)

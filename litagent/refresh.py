@@ -16,6 +16,7 @@ import numpy as np
 
 from litagent.agents import grader
 from litagent.agents.clusterer import _text_for
+from litagent.cluster_cards import build_cards
 from litagent.cluster_roles import side_groups
 from litagent.cluster_state import (ClusteringArtifacts, VersionError, effective_settings, head, load_version, path_for,
                                     save_version, set_head, version_lock)
@@ -139,6 +140,7 @@ def _refresh(source, state, arrays, cfg: Settings, child_id: str) -> ClusterMapR
                     child.warnings.append("Cluster map did not pass grading; retained for review without automatic regeneration.")
             except (TokenBudgetExceeded, LLMError) as error:
                 child.warnings.append(f"Refreshed map was not graded: {error}")
+            child.cluster_cards = build_cards(papers, child.clusters, child.question, cfg)  # side cards changed (H3)
             child.paper_map, child.usage = world.to_graph_json(), meter.usage
             kept_findings = {f.id for f in [*child.connections, *child.gaps]}
             save_version(child, papers, state.effort, ClusteringArtifacts(paper_vectors=vectors, question_vector=question,
