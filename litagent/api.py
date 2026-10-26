@@ -23,12 +23,13 @@ from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from litagent.config import EFFORT_PROFILES, Effort, Settings
 from litagent.cluster_preview import run_cluster_map
 from litagent import cluster_regeneration
+from litagent.events import stream_events
 from litagent.finding_analysis import analyze_cluster_map
 from litagent.cluster_state import VersionError, path_for, version_lock
 from litagent.human_review import RequestReviewer
@@ -119,6 +120,7 @@ class ActivateVersionRequest(BaseModel):
 class AnalyzeMapRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     expected_version_token: str = Field(pattern=r"^[a-f0-9]{32}$")
+    run_id: str | None = Field(default=None, pattern=RUN_ID_PATTERN)  # the new version's ID, to subscribe to its events first
     request_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{32}$")
     # ["connections"] returns Graph 1 at once; ["gaps"] on that version adds Graph 2. Default: both.
     stages: list[Literal["connections", "gaps"]] | None = Field(default=None, min_length=1)
@@ -168,6 +170,17 @@ def run(req: RunRequest, settings: Settings = Depends(get_settings)) -> Any:
     except Exception as e:  # the trace already has the error and the failing stage
         return _error(run_id, 500, type(e).__name__, str(e))
     return {"run_id": run_id, "status": "success", "output": result.model_dump(mode="json")}
+
+
+@app.get("/runs/{run_id}/events")
+async def run_events(run_id: str, after: int = -1, settings: Settings = Depends(get_settings)) -> Any:
+    """Server-sent progress events for a run (spec A1); see docs/events.md."""
+    if not re.fullmatch(RUN_ID_PATTERN, run_id):
+        return _error(None, 422, "InvalidInput", "Invalid run ID")
+    path = Path(settings.logs_dir) / f"trace-{run_id}.jsonl"
+    return StreamingResponse(stream_events(path, run_id, after, wait_s=settings.event_stream_wait_s,
+                                           max_s=settings.run_timeout_s + settings.event_stream_grace_s),
+                             media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
 @app.get("/world/{run_id}")
@@ -247,7 +260,7 @@ def cluster_versions(run_id: str, settings: Settings = Depends(get_settings)):
 @app.post("/cluster/{run_id}/analyze")
 def analyze_saved_map(run_id: str, req: AnalyzeMapRequest, settings: Settings = Depends(get_settings)):
     return _version_response(run_id, lambda: analyze_cluster_map(run_id, req.expected_version_token, settings, req.request_id,
-                                                                 req.stages))
+                                                                 req.stages, child_run_id=req.run_id))
 
 
 @app.get("/cluster/{run_id}")

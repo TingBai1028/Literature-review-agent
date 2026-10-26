@@ -40,23 +40,31 @@ def run_search(question: str, effort: Effort, settings: Settings, *, feedback: s
         result = SearchResult(search_id=trace.run_id, status="ok", sample_mode=settings.sample_mode)
         trace.log("orchestrator", "start search review", "plan and retrieve", question, "planner",
                   why=f"Web Human review 1; effort={effort.value}; re-plan={previous_plan is not None}")
+        failed = False
         try:
+            trace.log("planner", "start", "plan searches", phase="start", message="Planner: turning the question into searches")
             planned = planner.plan(question, effort, settings, feedback, previous_plan)
             if planned.status == "need_topic" or planned.plan is None:
                 result.status, result.message_to_user = "need_topic", planned.message_to_user
-                trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic")
+                trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic",
+                          phase="done", message="Planner: no clear topic, asking you for one")
                 return result
             result.plan = plan = planned.plan
             trace.log("planner", "plan", "plan created", plan, "retriever",
-                      why=f"{plan.rationale or 'no rationale given'}; defaults used: {plan.used_defaults}")
+                      why=f"{plan.rationale or 'no rationale given'}; defaults used: {plan.used_defaults}", phase="done",
+                      message=f"Planner: {len(plan.queries)} search queries, up to {plan.max_papers} papers")
+            trace.log("retriever", "start", "search sources", phase="start",
+                      message=f"Retriever: searching for up to {plan.max_papers} papers")
             papers = retriever.retrieve(plan, settings, signed_in=signed_in)
             if not papers:
                 result.status = "no_results"
                 result.message_to_user = retriever.no_results_message(plan)
-                trace.log("retriever", "retrieve", "0 papers", next_step="ask user to broaden", why=result.message_to_user)
+                trace.log("retriever", "retrieve", "0 papers", next_step="ask user to broaden", why=result.message_to_user,
+                          phase="done", message="Retriever: no papers found")
                 return result
             trace.log("retriever", "retrieve", f"{len(papers)} papers", next_step="zetaris",
-                      why="sample papers from data/sample/" if settings.sample_mode else f"queries: {plan.queries}")
+                      why="sample papers from data/sample/" if settings.sample_mode else f"queries: {plan.queries}",
+                      phase="done", message=f"Retriever: kept {len(papers)} papers", payload={"paper_ids": [p.id for p in papers]})
             result.papers = _through_zetaris(papers, settings, trace.run_id, result)
             summary = retriever.summarise(result.papers, plan, settings)
             result.summary, result.follow_up_question = summary.summary, summary.follow_up_question
@@ -64,10 +72,14 @@ def run_search(question: str, effort: Effort, settings: Settings, *, feedback: s
                       why="The web reviewer keeps/removes papers or sends feedback; nothing is auto-approved")
             return result
         except Exception as error:
-            trace.error("orchestrator", "search review", error, next_step="return error to caller")
+            failed = True
+            trace.error("orchestrator", "search review", error, next_step="return error to caller", terminal=True)
             raise
         finally:
             result.usage = meter.usage
+            if not failed:
+                trace.log("orchestrator", "finish search review", result.status, phase="done", terminal=True,
+                          message=f"Search finished: {result.status}, {len(result.papers)} papers to review")
 
 
 def _through_zetaris(papers: list[Paper], settings: Settings, run_id: str, result: SearchResult) -> list[Paper]:

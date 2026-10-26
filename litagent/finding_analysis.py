@@ -30,6 +30,11 @@ def run_finding_stages(result, papers, settings, world, context: FindingContext,
     try:
         for stage in (s for s in STAGES if s in stages):
             phase = "produce"
+            agent = {"connections": "connection_finder", "gaps": "gap_finder"}[stage]
+            if trace := current_trace():
+                trace.log(agent, "start", f"find {stage}", phase="start",
+                          message={"connections": "Connection finder: linking papers (Graph 1)",
+                                   "gaps": "Gap finder: looking for research gaps (Graph 2)"}[stage])
             check_deadline(context)
             if stage == "connections":
                 result.connections = connection_finder.find_connections(papers, result.clusters, settings, context=context)
@@ -38,6 +43,11 @@ def run_finding_stages(result, papers, settings, world, context: FindingContext,
             output = getattr(result, stage)
             {"connections": world.write_connections, "gaps": world.write_gaps}[stage](output)
             written.add(stage)
+            if trace := current_trace():
+                trace.log(agent, stage, f"{len(output)} {stage}", phase="done",
+                          message=f"{'Connection finder' if stage == 'connections' else 'Gap finder'}: {len(output)} {stage} "
+                                  f"ready ({'Graph 1' if stage == 'connections' else 'Graph 2'}); grading next",
+                          payload={"ids": [item.id for item in output]})
             phase = "grade"
             check_deadline(context)
             grade = grader.grade(stage, output, papers, settings, **grader.finding_scope(context, stage))
@@ -83,7 +93,8 @@ def _active_or_partial_descendant(source, settings):
 
 
 def analyze_cluster_map(run_id: str, expected_version_token: str, settings: Settings,
-                        request_id: str | None = None, stages: list[str] | None = None):
+                        request_id: str | None = None, stages: list[str] | None = None,
+                        child_run_id: str | None = None):
     """Run the finding stages on a saved map as a new immutable child version. With stages=["connections"] the
     child is Graph 1 (active at once, gaps pending); stages=["gaps"] on that child adds Graph 2 and keeps its edges."""
     request_id = request_id or uuid.uuid4().hex
@@ -106,7 +117,11 @@ def analyze_cluster_map(run_id: str, expected_version_token: str, settings: Sett
             raise VersionError("Source version token changed; refresh the map")
         _active_or_partial_descendant(source, settings)
         cfg = effective_settings(state, settings)
-        child_id = new_run_id()
+        # A client-chosen ID lets the UI subscribe to the new version's events before the analysis starts.
+        child_id = child_run_id or new_run_id()
+        if child_run_id and any(path_for(settings, prefix, child_id, suffix).exists() for prefix, suffix in (
+                ("cluster-map", "json"), ("cluster-state", "json"), ("trace", "jsonl"))):
+            raise VersionError("Run ID already exists; choose a new ID for the analysis")
         receipt = {"status": "running", "source_run_id": run_id, "source_version_token": expected_version_token,
                    "child_run_id": child_id, "stages": stages}
         with version_lock(settings, child_id):
@@ -168,5 +183,7 @@ def _analyze(source, state, arrays, cfg, child_id, request_id, stages=STAGES):
         trace.log("orchestrator", "save finding version", child.status,
                   result={"connections": len(child.connections), "gaps": len(child.gaps),
                           "pending_stages": child.analysis.pending_stages},
-                  why="Grade failures remain visible; source snapshots are unchanged; hypotheses never establish global novelty")
+                  why="Grade failures remain visible; source snapshots are unchanged; hypotheses never establish global novelty",
+                  phase="done", terminal=True,
+                  message=f"Saved version {child.run_id}: {len(child.connections)} connections, {len(child.gaps)} gaps")
         return child

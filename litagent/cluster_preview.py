@@ -56,6 +56,8 @@ def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, setting
         try:
             if time.monotonic() - started > settings.run_timeout_s:
                 raise _PreviewTimeLimit
+            trace.log("clusterer", "start", "cluster papers", phase="start",
+                      message=f"Clusterer: grouping {len(papers)} papers and choosing the main cluster")
             result.clusters = clusterer.cluster(papers, effort, settings, question=question, artifacts=artifacts)
             partition_indices(papers, result.clusters)
             mains = [c for c in result.clusters if isinstance(c, QuestionCluster) and c.kind == "main"]
@@ -63,6 +65,10 @@ def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, setting
                 raise ValueError("A question map must have exactly one main cluster")
             result.main_cluster_id = mains[0].id if mains else None
             world.write_clusters(result.clusters)
+            trace.log("clusterer", "clusters", f"{len(result.clusters)} clusters", phase="done",
+                      message=f"Clusterer: {len(result.clusters)} clusters ready",
+                      payload={"clusters": [{"id": c.id, "kind": getattr(c, "kind", None), "label": c.label,
+                                             "paper_ids": c.paper_ids} for c in result.clusters]})
             if settings.sample_mode:
                 result.warnings.append("Sample mode: TF-IDF relevance, stored similarity and placeholder labels; no model calls.")
             if time.monotonic() - started > settings.run_timeout_s:
@@ -80,7 +86,7 @@ def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, setting
             result.warnings.append(reason)
             trace.log("clusterer", "preview limit", "partial", why=reason)
         except Exception as error:
-            trace.error("clusterer", "cluster preview", error, next_step="return error")
+            trace.error("clusterer", "cluster preview", error, next_step="return error", terminal=True)
             raise
         result.paper_map = world.to_graph_json()
         result.usage = meter.usage
@@ -88,9 +94,17 @@ def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, setting
                 and artifacts.similarity is not None):
             save_version(result, papers, effort, artifacts, settings)
             set_head(result, settings)
+            _finish(trace, result)
             return result
         path = Path(settings.logs_dir) / f"cluster-map-{trace.run_id}.json"
         temporary = path.with_name(path.name + f".{uuid.uuid4().hex}.tmp")
         temporary.write_text(result.model_dump_json(indent=2) + "\n", encoding="utf-8")
         temporary.replace(path)
+        _finish(trace, result)
         return result
+
+
+def _finish(trace, result: ClusterMapResult) -> None:
+    """The run's terminal event, written after the map is saved so a client can load it."""
+    trace.log("orchestrator", "finish cluster map", result.status, phase="done", terminal=True,
+              message=f"Cluster map saved ({result.status}): {len(result.clusters)} clusters")

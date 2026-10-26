@@ -1,8 +1,15 @@
 """Run log: one JSON line per step in logs/trace-<run_id>.jsonl, plus a readable [INFO] line on stdout.
 
 Judges reward traces that show how the agent got its answer, so log from day one.
-Every event has: timestamp, run_id, agent_name, action, decision, result, next, why.
+Every event has: timestamp, run_id, agent_name, action, decision, result, next, why, plus
+- phase: start | step | partial_result | done | error (progress events, see docs/events.md)
+- step_kind: code | llm | human (spec B2; a model name means llm, the human agent means human)
+- message: one plain sentence for the activity feed and reasoning panel
+- payload: optional data kept whole (bounded by the caller), e.g. paper ids for the live map
+- terminal: true on the run's last event, so the event stream knows when to stop
 LLM calls add the model that handled the request and token usage.
+The same file feeds the live event stream (GET /runs/{run_id}/events), so one log serves
+both the map animation and the reasoning text (spec A1, B3).
 Secrets are masked before anything is written or printed.
 """
 
@@ -32,6 +39,8 @@ _SECRET_PATTERNS = [
     re.compile(r"()\bsk-[A-Za-z0-9_-]{8,}"),
     re.compile(r"(?i)((?:api[_-]?key|token|password|secret)[\"']?\s*[:=]\s*[\"']?)[^\s\"',}]{4,}"),
 ]
+
+PHASES = ("start", "step", "partial_result", "done", "error")
 
 _current: ContextVar[Trace | None] = ContextVar("current_trace", default=None)
 
@@ -80,9 +89,17 @@ class Trace:
         next_step: str = "",
         why: str = "",
         level: int = logging.INFO,
+        *,
+        phase: str = "step",
+        step_kind: str | None = None,
+        message: str | None = None,
+        payload: Any = None,
+        terminal: bool = False,
         **extra: Any,
     ) -> None:
         """`extra` is for optional fields such as model, tokens, duration_ms or error."""
+        if phase not in PHASES:
+            raise ValueError(f"phase must be one of {PHASES}")
         event = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "run_id": self.run_id,
@@ -92,6 +109,11 @@ class Trace:
             "result": _short(result),
             "next": next_step,
             "why": why,
+            "phase": phase,
+            "step_kind": step_kind or ("llm" if extra.get("model") else "human" if agent_name == "human" else "code"),
+            "message": message or _message(action, decision, why),
+            **({"payload": payload} if payload is not None else {}),
+            **({"terminal": True} if terminal else {}),
             **{k: _short(v) for k, v in extra.items() if v is not None},
         }
         line = mask(json.dumps(event, ensure_ascii=False))
@@ -105,10 +127,12 @@ class Trace:
             text += f" (next: {next_step})"
         logger.log(level, mask(text))
 
-    def error(self, agent_name: str, action: str, exc: BaseException, next_step: str) -> None:
+    def error(self, agent_name: str, action: str, exc: BaseException, next_step: str, terminal: bool = False) -> None:
+        """terminal=True when the flow ends with this error (it is raised to the caller)."""
         self.log(
             agent_name, action, "error", next_step=next_step, why="exception raised",
             level=logging.ERROR, error={"type": type(exc).__name__, "message": str(exc)},
+            phase="error", message=f"{action} failed: {type(exc).__name__}", terminal=terminal,
         )
 
 
@@ -120,6 +144,11 @@ def mask(text: str) -> str:
     for pattern in _SECRET_PATTERNS:
         text = pattern.sub(lambda m: m.group(1) + "***", text)
     return text
+
+
+def _message(action: str, decision: str, why: str, limit: int = 300) -> str:
+    text = f"{action}: {decision}" + (f". {why}" if why else "")
+    return text if len(text) <= limit else text[:limit] + "..."
 
 
 def _short(value: Any, limit: int = 500) -> Any:

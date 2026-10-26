@@ -45,6 +45,11 @@ def find_connections(papers: list[Paper], clusters: list[Cluster], settings: Set
             merge_record(report, record, context, reused=reused)
             out.extend(c.model_copy(deep=True) for c in record.connections)
             context.partial_connections = list(out)
+            if (trace := current_trace()) and record.connections:
+                trace.log("connection_finder", "edges", f"{len(record.connections)} accepted", phase="partial_result",
+                          message=f"Connection finder: {len(out)} edges so far",
+                          payload={"edges": [{"id": c.id, "source": c.paper_ids[0], "target": c.paper_ids[1],
+                                              "relation": c.relation, "reason_short": c.reason_short} for c in record.connections]})
         return out
     finally:
         context.audits.append(report)
