@@ -161,3 +161,18 @@ Container verification mounts the updated application, prompts, tests and evals 
 into the existing `litagent-similarity:local` dependency/model image; that image was not rebuilt.
 Real side-topic quality still requires the pending blind human review described in
 [the first-phase report](main-side-clusters.md).
+
+## Refresh from the backup pool
+
+`POST /cluster/{run_id}/refresh` with `{"expected_version_token": "..."}` (spec F5) builds on the same version
+machinery: a new immutable child that becomes the active version, with history and rollback as above.
+
+- Main and foundation clusters stay exactly as they are (members, labels, role reasons).
+- Side papers are swapped for the next-best papers of the ranked backup pool: all of them when the pool is large
+  enough, otherwise the least question-relevant ones first, so the map keeps its size. Swapped-out papers return
+  to the end of the pool.
+- Only the incoming papers are embedded; the stored vectors of the other papers are reused. Side papers are
+  regrouped (groups under 3 merge into their nearest group) and relabelled.
+- Connections and gaps that touch a swapped-out paper are dropped; if the source was analysed, both finding
+  stages are marked pending, so "运行分析" rebuilds Graph 1 and Graph 2.
+- Only the active version can be refreshed, and only maps built with a pool (Fast or Pro).

@@ -24,6 +24,7 @@
       "effort": "high",
       "max_papers": 100,
       "token_budget": 700000,
+      "retrieval_target": null,
       "used_defaults": [
         "paper_types=primary+review"
       ],
@@ -150,7 +151,8 @@
           "W3165774652",
           "W3186340132",
           "W4285816840"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4401209403",
@@ -304,7 +306,8 @@
           "W4396721167",
           "W4396895148",
           "W6681348091"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W3163965514",
@@ -373,7 +376,8 @@
           "W3146944767",
           "W6768757793",
           "W6769989246"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4300861364",
@@ -458,7 +462,8 @@
           "W4310159409",
           "W6702248584",
           "W6791955017"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4402753025",
@@ -641,7 +646,8 @@
           "W4399540271",
           "W4404617189",
           "W6857214229"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W3132448805",
@@ -726,7 +732,8 @@
           "W3199799076",
           "W3216341763",
           "W4210861939"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4391338754",
@@ -817,7 +824,8 @@
           "W4388627063",
           "W4388946853",
           "W4396895148"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4409112594",
@@ -1027,7 +1035,8 @@
           "W6838400046",
           "W6847388479",
           "W7009275973"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4328048207",
@@ -1098,7 +1107,8 @@
           "W4317802023",
           "W4321596020",
           "W4396895148"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4318716433",
@@ -1156,7 +1166,8 @@
           "W6802074738",
           "W6803907487",
           "W6809934799"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W3184615727",
@@ -1337,7 +1348,8 @@
           "W4298289240",
           "W6767936637",
           "W6927309550"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W3186340132",
@@ -1418,7 +1430,8 @@
           "W3186340132",
           "W3198971594",
           "W4244821183"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4205835872",
@@ -1492,7 +1505,8 @@
           "W3163965514",
           "W3176355504",
           "W4242341673"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4367156817",
@@ -1511,7 +1525,8 @@
         "doi": "https://doi.org/10.47533/2020.1606-146x.192",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4410621619",
@@ -1630,7 +1645,8 @@
           "W4396721167",
           "W6769989246",
           "W6950304745"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4406537183",
@@ -1754,7 +1770,8 @@
           "W4392858197",
           "W4396721167",
           "W7213424650"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4367301305",
@@ -1793,7 +1810,8 @@
           "W4392302569",
           "W4396721167",
           "W4401209403"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4389480950",
@@ -1860,7 +1878,8 @@
           "W4389174567",
           "W6685630948",
           "W7073950896"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4229031603",
@@ -1984,7 +2003,8 @@
           "W6829887170",
           "W6842442704",
           "W6950304745"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4390536911",
@@ -2066,7 +2086,8 @@
           "W4321769975",
           "W4377968189",
           "W4380739447"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4390501271",
@@ -2129,7 +2150,8 @@
           "W4310957810",
           "W4312114236",
           "W4327550249"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4214530112",
@@ -2193,7 +2215,8 @@
           "W3129073614",
           "W3158144848",
           "W6601258443"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4225919313",
@@ -2253,7 +2276,8 @@
           "W3088859474",
           "W4205880200",
           "W4206076613"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4409170867",
@@ -2270,7 +2294,8 @@
         "doi": "https://doi.org/10.2139/ssrn.5203752",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W3169629772",
@@ -2339,7 +2364,8 @@
           "W4233120011",
           "W4394664408",
           "W6756396466"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W3167623110",
@@ -2483,7 +2509,8 @@
           "W4238157267",
           "W4246510417",
           "W4250981202"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4308930019",
@@ -2691,7 +2718,8 @@
           "W6768021236",
           "W6771917389",
           "W6807695228"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W7165660686",
@@ -2710,7 +2738,8 @@
         "doi": "https://doi.org/10.58482/ijeresm.v5i2.7",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W3183921815",
@@ -2793,7 +2822,8 @@
           "W3202243296",
           "W4234864230",
           "W6769989246"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4405153727",
@@ -2810,7 +2840,8 @@
         "doi": "https://doi.org/10.20546/ijcmas.2024.1308.023",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4312518579",
@@ -2835,7 +2866,8 @@
           "W3216341763",
           "W4214937996",
           "W4286488966"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4399595373",
@@ -2853,7 +2885,8 @@
         "doi": "https://doi.org/10.2172/2371241",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4283013935",
@@ -3281,7 +3314,8 @@
           "W6677594458",
           "W6809880626",
           "W6986275757"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W7116299005",
@@ -3298,7 +3332,8 @@
         "doi": "https://doi.org/10.5281/zenodo.17996538",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4311253683",
@@ -3370,7 +3405,8 @@
           "W4213377513",
           "W4299535408",
           "W6771992713"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W3185577893",
@@ -3387,7 +3423,8 @@
         "doi": "https://doi.org/10.5258/soton/p0099",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W7213516358",
@@ -3406,7 +3443,8 @@
         "doi": "https://doi.org/10.5281/zenodo.22688030",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W7220302866",
@@ -3423,7 +3461,8 @@
         "doi": null,
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4417148774",
@@ -3467,7 +3506,8 @@
         "doi": "https://doi.org/10.48550/arxiv.2503.13522",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4200213155",
@@ -3577,7 +3617,8 @@
           "W4385970328",
           "W6784333009",
           "W6793665192"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4417496152",
@@ -3594,7 +3635,8 @@
         "doi": "https://doi.org/10.61173/rsjk7x31",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4224939843",
@@ -3657,7 +3699,8 @@
           "W3177828909",
           "W3179485843",
           "W3186179742"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W7142067576",
@@ -3674,7 +3717,8 @@
         "doi": "https://doi.org/10.52783/cana.v32.4850",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4311293038",
@@ -3741,7 +3785,8 @@
           "W3199799076",
           "W3216165545",
           "W4394664408"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W3111382885",
@@ -3823,7 +3868,8 @@
           "W4309609199",
           "W6757570504",
           "W6759402996"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4411723436",
@@ -3876,7 +3922,8 @@
           "W4410495405",
           "W4410795145",
           "W4414589084"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4400315590",
@@ -3953,7 +4000,8 @@
           "W4292458166",
           "W4309908854",
           "W4388498398"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W7214551647",
@@ -3970,7 +4018,8 @@
         "doi": "https://doi.org/10.5281/zenodo.22994642",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4413579388",
@@ -4011,7 +4060,8 @@
           "W4387335280",
           "W4392490413",
           "W4393319610"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4409190911",
@@ -4144,7 +4194,8 @@
           "W6873298827",
           "W6876065127",
           "W7064020139"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4375863182",
@@ -4186,7 +4237,8 @@
           "W4281790889",
           "W4285169958",
           "W4309094945"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4407173261",
@@ -4268,7 +4320,8 @@
           "W6950220981",
           "W7133244780",
           "W7133244980"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4399982595",
@@ -4329,7 +4382,8 @@
           "W3186179742",
           "W4206189484",
           "W4317703013"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W3159267658",
@@ -4384,7 +4438,8 @@
           "W3163965514",
           "W4212774754",
           "W6753955284"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4321613637",
@@ -4474,7 +4529,8 @@
           "W4364302723",
           "W6604044515",
           "W6629259071"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W7170043904",
@@ -4495,7 +4551,8 @@
         "doi": "https://doi.org/10.71143/y3ptrr62",
         "source": "openalex",
         "full_text": null,
-        "references": null
+        "references": null,
+        "reference_count": null
       },
       {
         "id": "W4382401741",
@@ -4570,7 +4627,8 @@
           "W4281790889",
           "W4309506674",
           "W4312066779"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W7202087238",
@@ -4603,7 +4661,8 @@
           "W4406440058",
           "W7128427870",
           "W7138074334"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4246182489",
@@ -4660,7 +4719,8 @@
           "W3128355392",
           "W4244821183",
           "W4381304672"
-        ]
+        ],
+        "reference_count": null
       },
       {
         "id": "W4296164039",
@@ -4721,7 +4781,8 @@
           "W3186179742",
           "W6684519065",
           "W6791955017"
-        ]
+        ],
+        "reference_count": null
       }
     ],
     "clusters": [
@@ -14840,6 +14901,7 @@
       "llm_calls": 0,
       "estimated_calls": 0,
       "budget": 700000
-    }
+    },
+    "backup_pool_size": 0
   }
 }
