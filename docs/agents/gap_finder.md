@@ -167,6 +167,11 @@ abstract. The LLM selects sentences that state missing knowledge ("remains unkno
 straight to the coverage search and grading agent. Output: gaps with `gap_type: "explicit"`. Drops:
 the same as stages 3 and 4.
 
+**Request size.** The writer, the coverage judge and the grading agent send at most `gap_llm_batch_size` (5)
+candidates or gaps per request, so each stays well inside the 90 s model limit, and each finished cluster's gaps
+are kept as a partial result if a later request fails (a real run on 26 Oct lost 9 finished gaps to one timeout
+of a 15-candidate request).
+
 **Inputs (spec H4).** The gap writer and the grading agent also receive every cluster's card (see the
 [Clusterer](clusterer.md#analysis-depth-and-cluster-cards-spec-h)) as context. Quotes come only from the
 candidate's own two papers: full-text passages for main and foundation papers, abstracts for side papers.
