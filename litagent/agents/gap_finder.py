@@ -12,15 +12,11 @@ Optional (gap_explicit_enabled): gaps the authors state themselves skip stages 1
 from __future__ import annotations
 
 import itertools
-import json
 import logging
 import os
 import re
 import time
 from collections import defaultdict
-from pathlib import Path
-
-import numpy as np
 
 from litagent.agents.connection_finder import first_sentence
 from litagent.cluster_state import digest
@@ -30,12 +26,11 @@ from litagent.finding_engine import (FindingContext, cache_key, cached, check_de
 from litagent.schemas import (Cluster, Connection, CoverageJudgements, CoverageSearch, Evidence, ExplicitGapDrafts,
     FindingAudit, FindingCacheRecord, FindingDependency, Gap, GapCoverage, GapDrafts, GapLabelDecisions, Paper,
     SearchCriteria)
+from litagent.sample_data import sample_similarity
 from litagent.tools.openalex import OpenAlexError, search_openalex
 from litagent.tools.semantic_scholar import SemanticScholarError, search_semantic_scholar
 from litagent.trace import current_trace, mask
 
-# Precomputed by scripts/build_sample_gap_inputs.py: sample mode has no embedding model.
-SAMPLE_SIMILARITY_DIR = Path(__file__).resolve().parents[2] / "data" / "sample" / "similarity"
 KEPT_LABELS = ("novel", "known_open")
 COVERAGE_SCOPE = "Top results of one OpenAlex / Semantic Scholar query; this does not establish global novelty."
 _EXPLICIT_CUE = re.compile(r"remains? (?:unknown|unclear|unexplored|open)|future (?:work|research)|"
@@ -416,7 +411,7 @@ class _Run:
 def _sample_gaps(papers: list[Paper], clusters: list[Cluster], settings: Settings) -> list[Gap]:
     """Sample mode: stage 1 runs for real on the stored similarity matrix and reference lists; stages 2-4 are
     labelled placeholders (no LLM, no network), so the output shape and the trace match a real run."""
-    similarity = _sample_similarity(papers)
+    similarity = sample_similarity(papers)
     if similarity is None:
         _log("candidates", "-", "dropped", "No stored similarity covers these papers; run scripts/build_sample_gap_inputs.py")
         return []
@@ -446,16 +441,6 @@ def _sample_gaps(papers: list[Paper], clusters: list[Cluster], settings: Setting
             run.keep("coverage", g.id, "Sample mode: no network, coverage search skipped")
         gaps += run.rank(found)
     return gaps
-
-
-def _sample_similarity(papers: list[Paper]) -> np.ndarray | None:
-    for path in sorted(SAMPLE_SIMILARITY_DIR.glob("*.json")):
-        data = json.loads(path.read_text(encoding="utf-8"))
-        index = {pid: i for i, pid in enumerate(data["paper_ids"])}
-        if all(p.id in index for p in papers):
-            rows = [index[p.id] for p in papers]
-            return np.asarray(data["similarity"], dtype=float)[np.ix_(rows, rows)]
-    return None
 
 
 def _explicit_sentences(abstract: str | None) -> list[str]:

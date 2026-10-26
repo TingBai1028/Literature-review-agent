@@ -200,8 +200,6 @@ def validate_snapshot(result: ClusterMapResult, papers: list[Paper], arrays: Clu
         for detail in cluster.paper_details:
             if abs(detail.question_similarity - scores[indices[detail.paper_id]]) > tolerance:
                 raise VersionError("Cached query scores do not match the original paper-vector rows")
-            if cluster.kind == "main" and detail.question_similarity < result.main_similarity_threshold:
-                raise VersionError("Main member is below the original question gate")
             paper = papers[indices[detail.paper_id]]
             if any(not e.quote or not any(e.quote in source for source in (paper.abstract, paper.full_text) if source)
                    for e in detail.evidence):

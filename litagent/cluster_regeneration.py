@@ -62,14 +62,14 @@ def candidates(run_id: str, settings: Settings, *, near_only: bool = False, pape
     cfg = effective_settings(state, settings)
     items = []
     for source in result.clusters:
-        if source.kind == "main":
+        if source.kind != "side":  # main and foundation come from the role rules
             continue
         for detail in source.paper_details:
             if paper_id is not None and detail.paper_id != paper_id:
                 continue
             i = indices[detail.paper_id]
             for target in result.clusters:
-                if target.kind == "main" or target.id == source.id:
+                if target.kind != "side" or target.id == source.id:
                     continue
                 scores = arrays.similarity[i, [indices[pid] for pid in target.paper_ids]]
                 mean, minimum = float(scores.mean()), float(scores.min())
@@ -102,8 +102,9 @@ def _simulate(result: ClusterMapResult, moves: list[ClusterMove], state, arrays,
         if move.paper_id not in owner or move.target_cluster_id not in clusters:
             raise VersionError("Unknown paper or target cluster", 422)
         source, target = clusters[owner[move.paper_id]], clusters[move.target_cluster_id]
-        if source.kind == "main" or target.kind == "main":
-            raise VersionError("Main membership is frozen; re-assess the question and its source evidence in a new map", 422)
+        if source.kind != "side" or target.kind != "side":
+            raise VersionError("Main and foundation membership is frozen; their roles come from relevance and citation "
+                               "rules, so build a new map to change them", 422)
         if source.id == target.id:
             raise VersionError("Source and target cluster must differ", 422)
     # Apply all membership edits before checking scores; sequential admission is unsafe.
@@ -126,25 +127,26 @@ def _simulate(result: ClusterMapResult, moves: list[ClusterMove], state, arrays,
             cluster.paper_details.append(detail)
         output.append(QuestionCluster.model_validate(cluster.model_dump()))
     indices = {p.id: i for i, p in enumerate(state.papers)}
-    changed = {c.cluster_id for c in changes}
+    # Each incoming paper must meet the cutoff against its target's final members (complete: every pair;
+    # average: the mean, so it cannot hide behind strong old pairs). Clusters that only lose papers are not
+    # re-checked: removing a paper never adds a weak pair, and a side cluster that absorbed a small group
+    # (cluster_roles.py) need not meet the cutoff for every old pair.
+    incoming: dict[str, list[str]] = {}
+    for move in moves:
+        incoming.setdefault(move.target_cluster_id, []).append(move.paper_id)
     errors = []
     for cluster in output:
-        if cluster.kind == "main" or cluster.id not in changed or len(cluster.paper_ids) < 2:
+        if cluster.kind != "side" or cluster.id not in incoming:
             continue
-        idx = [indices[pid] for pid in cluster.paper_ids]
-        block = arrays.similarity[np.ix_(idx, idx)]
-        pairs = block[np.triu_indices(len(idx), 1)]
-        criterion = float(pairs.min() if cfg.side_linkage == "complete" else pairs.mean())
-        if criterion < cfg.side_similarity_threshold:
-            errors.append(f"{cluster.id}: final {cfg.side_linkage} score {criterion:.6f} < {cfg.side_similarity_threshold:.6f}")
-        # With average linkage, an incoming paper cannot hide behind many strong old pairs.
-        if cfg.side_linkage == "average":
-            for move in moves:
-                if move.target_cluster_id == cluster.id:
-                    rest = [indices[pid] for pid in cluster.paper_ids if pid != move.paper_id]
-                    score = float(arrays.similarity[indices[move.paper_id], rest].mean())
-                    if score < cfg.side_similarity_threshold:
-                        errors.append(f"{move.paper_id}: mean similarity to final target members is below the cutoff")
+        for pid in incoming[cluster.id]:
+            rest = [indices[other] for other in cluster.paper_ids if other != pid]
+            if not rest:
+                continue
+            values = arrays.similarity[indices[pid], rest]
+            score = float(values.min() if cfg.side_linkage == "complete" else values.mean())
+            if score < cfg.side_similarity_threshold:
+                errors.append(f"{pid}: final {cfg.side_linkage} score {score:.6f} against {cluster.id} members "
+                              f"< {cfg.side_similarity_threshold:.6f}")
     attach_alternatives(output, state.papers, arrays.similarity, cfg)
     return output, changes, errors
 

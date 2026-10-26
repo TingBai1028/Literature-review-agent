@@ -13,11 +13,13 @@ The pass mark is 7 out of 9. If the total is below 7, give exactly one concrete 
 ## Stage rubrics
 
 ### clusters
-- When `kind` is present, distinguish roles: the single main cluster is a pool of
-  papers directly answering `question`, and side clusters organize remaining topics.
-  Judge main by directness and source support, not uniform methods, a 40% size cap,
-  or a requirement that every pair has high content similarity. Main may be absent
-  if no paper directly answers the question. Judge side groups by thematic coherence.
+- When `kind` is present, distinguish roles. There is exactly one main cluster: the 5-10
+  papers most related to the topic in `question` (not only papers that answer it directly).
+  Foundation clusters hold older, highly cited work the topic builds on; judge them by
+  whether the papers are plausible classic background for the main cluster, not by a
+  shared method. Side clusters organize the remaining topics; judge them by thematic
+  coherence. `role_reason` states how code chose each role; check it against the papers.
+  Do not apply a 40% size cap to main or foundation.
 - `also_related`/runner-up scores are hints, not duplicate memberships or evidence of
   a scientific connection. Do not require moving papers merely because a score is high.
 - Each label is specific and describes all papers in the cluster.

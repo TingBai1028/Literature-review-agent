@@ -6,16 +6,13 @@ import time
 import uuid
 from pathlib import Path
 
-import numpy as np
-
 from litagent.agents import clusterer, grader
 from litagent.cluster_audit import partition_indices
 from litagent.cluster_state import ClusteringArtifacts, VersionError, path_for, save_version, set_head, version_lock
 from litagent.config import EFFORT_PROFILES, Effort, Settings
 from litagent.integrations.llm import TokenBudgetExceeded, TokenMeter
 from litagent.integrations.meterless import ResearchWorld
-from litagent.schemas import ClusterMapResult, Paper, PaperClusterDetail, QuestionCluster
-from litagent.question_clusters import attach_alternatives, cluster_id, label_side_groups
+from litagent.schemas import ClusterMapResult, Paper, QuestionCluster
 from litagent.trace import Trace, new_run_id
 
 
@@ -60,31 +57,14 @@ def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, setting
             if time.monotonic() - started > settings.run_timeout_s:
                 raise _PreviewTimeLimit
             result.clusters = clusterer.cluster(papers, effort, settings, question=question, artifacts=artifacts)
-            if settings.sample_mode and settings.cluster_map_mode == "question":
-                # Synthetic, explicitly marked sample scores exercise the same API with no models.
-                artifacts.paper_vectors = np.tile([1., 0.], (len(papers), 1))
-                artifacts.question_vector = np.array([0., 1.])
-                artifacts.similarity = np.ones((len(papers), len(papers)))
-                positions = {p.id: i for i, p in enumerate(papers)}
-                ids = [cluster_id(c.paper_ids) for c in result.clusters]
-                if set(ids) & set(positions):
-                    raise VersionError("Paper IDs conflict with generated cluster IDs", 422)
-                groups = [[positions[pid] for pid in c.paper_ids] for c in result.clusters]
-                labels = label_side_groups(papers, [p.title for p in papers], groups, artifacts.similarity, ids, settings)
-                result.clusters = [QuestionCluster(**{**c.model_dump(), **labels[cid].model_dump(), "id": cid}, kind="side", question=question,
-                    paper_details=[PaperClusterDetail(paper_id=pid, question_similarity=0., relevance="uncertain",
-                        reason="Sample placeholder: relevance was not assessed.") for pid in c.paper_ids]) for c, cid in zip(result.clusters, ids)]
-                attach_alternatives(result.clusters, papers, artifacts.similarity, settings)
             partition_indices(papers, result.clusters)
             mains = [c for c in result.clusters if isinstance(c, QuestionCluster) and c.kind == "main"]
-            if len(mains) > 1:
-                raise ValueError("Question map may contain at most one main cluster")
+            if len(mains) > 1 or (settings.cluster_map_mode == "question" and not mains):
+                raise ValueError("A question map must have exactly one main cluster")
             result.main_cluster_id = mains[0].id if mains else None
             world.write_clusters(result.clusters)
             if settings.sample_mode:
-                result.warnings.append("Sample mode: placeholder topics, synthetic similarity=1 and question scores=0; no relevance assessment.")
-            elif settings.cluster_map_mode == "question" and not mains:
-                result.warnings.append("No paper passed both the question-similarity gate and source-backed direct-relevance assessment.")
+                result.warnings.append("Sample mode: TF-IDF relevance, stored similarity and placeholder labels; no model calls.")
             if time.monotonic() - started > settings.run_timeout_s:
                 raise _PreviewTimeLimit
             result.grade = grader.grade("clusters", result.clusters, papers, settings)
