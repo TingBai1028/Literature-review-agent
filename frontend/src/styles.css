@@ -402,6 +402,16 @@ h3 {
   stroke: #244c3e;
   stroke-width: 2.5;
 }
+/* A paper named in agent-written text (it was its ID, e.g. W2951392766); hover shows the full reference */
+.paper-ref {
+  color: var(--green);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+a.paper-ref {
+  cursor: pointer;
+}
 .graph-notice {
   margin: 0 0 8px;
   padding: 8px 12px;
@@ -1935,4 +1945,18 @@ blockquote {
   max-height: 220px;
   margin: 8px 0;
   box-shadow: none;
+}
+/* Beside the map at the top of the side column, so it never covers the graph; it stays in view while the column
+   scrolls. */
+.activity-feed.side {
+  position: sticky;
+  top: 0;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: auto;
+  max-height: 40vh;
+  margin: 0 0 16px;
+  box-shadow: none;
+  z-index: 2;
 }

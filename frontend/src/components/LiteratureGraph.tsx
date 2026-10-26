@@ -4,6 +4,7 @@ import { request } from "../api";
 import { blobPath, forceLayout, yearShade, type Neighbor } from "../layout";
 import type { Filter, MapResult, Paper, Selection } from "../types";
 import { topicColor } from "./TopicSidebar";
+import { namePapers } from "../paperNames";
 // The whole label, in lines of about 28 characters: English cluster names run to ~90 characters, and the
 // old two-line cap cut most of them off.
 const LABEL_CHARS = 28;
@@ -359,7 +360,7 @@ export function LiteratureGraph({
                         data-interactive="true"
                         role="button"
                         tabIndex={0}
-                        aria-label={`View connection: ${c.reason_short ?? c.description}`}
+                        aria-label={`View connection: ${namePapers(c.reason_short ?? c.description, papers)}`}
                         x1={a.x}
                         y1={a.y}
                         x2={b.x}
@@ -402,7 +403,7 @@ export function LiteratureGraph({
                       data-interactive="true"
                       role="button"
                       tabIndex={0}
-                      aria-label={`View hypothesis: ${g.description}`}
+                      aria-label={`View hypothesis: ${namePapers(g.description, papers)}`}
                       onClick={() => onSelect({ type: "gap", id: g.id })}
                       onKeyDown={(e) => edgeEnter(e, { type: "gap", id: g.id })}
                     >
@@ -488,7 +489,7 @@ export function LiteratureGraph({
                       pointerEvents="none"
                     >
                       <div className="edge-tooltip">
-                        {hoveredEdge.reason_short ?? hoveredEdge.description}
+                        {namePapers(hoveredEdge.reason_short ?? hoveredEdge.description, papers)}
                       </div>
                     </foreignObject>
                   ) : null;

@@ -1,4 +1,5 @@
 import type { MapResult, Paper, Selection } from "../types";
+import { PaperText } from "../paperNames";
 
 const relationNames: Record<string, string> = {
   builds_on: "Builds on",
@@ -29,7 +30,9 @@ export function Provenance({
         {rows.map(([agent, why]) => (
           <div key={agent}>
             <dt>{agent}</dt>
-            <dd>{why}</dd>
+            <dd>
+              <PaperText text={why} papers={papers} />
+            </dd>
           </div>
         ))}
       </dl>

@@ -8,11 +8,13 @@ export function ActivityFeed({
   title,
   onShowAll,
   inline = false,
+  side = false,
 }: {
   events: RunEvent[];
   title: string;
   onShowAll?: () => void;
-  inline?: boolean; // inside a dialog instead of floating over the map
+  inline?: boolean; // inside a dialog
+  side?: boolean; // at the top of the side column, beside the map (it used to float over the map)
 }) {
   const end = useRef<HTMLLIElement>(null);
   useEffect(() => {
@@ -32,7 +34,7 @@ export function ActivityFeed({
   const shown = events.filter((e) => e.phase !== "step" || isSetback(e));
   return (
     <aside
-      className={inline ? "activity-feed inline" : "activity-feed"}
+      className={`activity-feed${inline ? " inline" : ""}${side ? " side" : ""}`}
       aria-live="polite"
       aria-label="Run activity"
     >
