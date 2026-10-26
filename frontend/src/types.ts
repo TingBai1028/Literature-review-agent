@@ -100,6 +100,8 @@ export interface MapResult {
   gaps: Gap[];
   warnings: string[];
   grade?: Grade | null;
+  backup_pool_size?: number;
+  refresh?: { swapped_in: string[]; swapped_out: string[] } | null;
   analysis?: {
     completed_stages?: string[];
     pending_stages: string[];
@@ -240,6 +242,7 @@ export interface SearchResult {
   message_to_user: string | null;
   plan: SearchPlan | null;
   papers: (Paper & { citation_count?: number | null; is_review?: boolean | null })[];
+  backup_papers?: Paper[];
   summary: string | null;
   follow_up_question: string | null;
   warnings: string[];

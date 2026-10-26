@@ -19,6 +19,28 @@ Code: `litagent/agents/retriever.py` · Tools: `litagent/tools/`
 7. **Run log:** papers per query, failed queries, duplicates removed, papers without abstract, citation filter, papers below the relevance floor and scoring time, final count; LLM summary fallback.
 8. **Guardrails:** respect API rate limits; no paywalled downloads without a licence check.
 
+## Fast and Pro modes, backup pool (spec F)
+
+The UI offers two modes; the older levels stay accepted for saved maps and scripts (normal ≤ fast ≤ pro ≤ ultra).
+
+| Mode | Retrieval target (soft) | Shown on the map | Full text |
+| --- | --- | --- | --- |
+| Fast | 300 papers | 50 | no |
+| Pro | 1,000 papers | 50 | yes |
+
+- `[code]` The target is spread over the queries (`ceil(target / queries)` per search; each tool caps its page size).
+  Falling short is normal: the trace and a progress event state the retrieved count, the target and why.
+- `[code]` After the relevance floor every paper is ranked with
+  `score = w · r + (1 − w) · log(1 + c) / log(1 + c_max)`, where `r` is relevance scaled so the most relevant
+  paper is 1, `c` the citation count and `w = rank_relevance_weight` (0.7). Highly cited papers rise in every list.
+- `[code]` The best 50 papers whose bibliography is not empty are shown. Everything else is the ranked **backup
+  pool**; a paper with zero references (OpenAlex `referenced_works_count` / Semantic Scholar `referenceCount` = 0)
+  is never shown, only pooled. Unknown counts (arXiv) are not penalised.
+- The pool is returned by `/search` (`backup_papers`), stored with the map version, carried to every child
+  version, and stored as `logs/backup-pool-<run_id>.json` for `/run`.
+- **Refresh** (`POST /cluster/{run_id}/refresh`, the map's "换一批论文" button) swaps the side-cluster papers for
+  the next-best pool papers; see [cluster regeneration](../cluster-regeneration.md#refresh-from-the-backup-pool).
+
 **Open question:** institutional access via school login. Check the university's licence terms (publishers usually forbid automated bulk downloading). Safer alternative: signed-in users upload PDFs they already have.
 
 **Input:** `SearchPlan` · **Output:** `list[Paper]`, `RetrievalSummary`

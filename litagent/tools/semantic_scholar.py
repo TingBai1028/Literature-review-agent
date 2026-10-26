@@ -24,7 +24,7 @@ BASE_URL = "https://api.semanticscholar.org/graph/v1/paper/search"
 TIMEOUT_S = 30
 MAX_LIMIT = 100
 MAX_WAIT_S = 5
-FIELDS = "title,abstract,year,authors,citationCount,isOpenAccess,openAccessPdf,externalIds,publicationTypes"
+FIELDS = "title,abstract,year,authors,citationCount,referenceCount,isOpenAccess,openAccessPdf,externalIds,publicationTypes"
 
 
 class SemanticScholarError(RuntimeError):
@@ -94,6 +94,7 @@ def _to_paper(item: dict) -> Paper:
         year=item.get("year"),
         authors=[a["name"] for a in item.get("authors") or [] if a.get("name")],
         citation_count=item.get("citationCount"),
+        reference_count=item.get("referenceCount"),
         is_review="Review" in (item.get("publicationTypes") or []),
         is_open_access=bool(item.get("isOpenAccess") or pdf),
         pdf_url=pdf,

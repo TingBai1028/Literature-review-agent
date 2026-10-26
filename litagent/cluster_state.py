@@ -50,6 +50,7 @@ class ClusterState(BaseModel):
     label_keys: dict[str, str]
     finding_dependencies: dict[str, FindingDependency] = Field(default_factory=dict)
     finding_cache: dict[str, FindingCacheRecord] = Field(default_factory=dict)
+    backup_papers: list[Paper] = Field(default_factory=list)  # ranked pool that "refresh" swaps in (spec F4-F5)
     array_hash: str
     result_hash: str
 
@@ -212,7 +213,8 @@ def validate_snapshot(result: ClusterMapResult, papers: list[Paper], arrays: Clu
 def save_version(result: ClusterMapResult, papers: list[Paper], effort: Effort, artifacts: ClusteringArtifacts,
                  settings: Settings, *, dependencies: dict[str, FindingDependency] | None = None,
                  keys: dict[str, str] | None = None,
-                 finding_cache: dict[str, FindingCacheRecord] | None = None) -> ClusterState:
+                 finding_cache: dict[str, FindingCacheRecord] | None = None,
+                 backup_papers: list[Paper] | None = None) -> ClusterState:
     if path_for(settings, "cluster-state", result.run_id).exists():
         raise VersionError("Cluster versions are immutable; use a new run ID")
     validate_artifacts(papers, artifacts)
@@ -235,7 +237,7 @@ def save_version(result: ClusterMapResult, papers: list[Paper], effort: Effort, 
                 else EMBEDDING_PROFILES[settings.embedding_profile],
         label_keys=keys if keys is not None else label_keys(papers, result.clusters, artifacts.similarity,
                                                          result.use_full_text, settings),
-        finding_dependencies=dependencies or {}, finding_cache=finding_cache or {},
+        finding_dependencies=dependencies or {}, finding_cache=finding_cache or {}, backup_papers=backup_papers or [],
         array_hash=file_hash(array_path), result_hash=digest(payload))
     atomic_json(path_for(settings, "cluster-map", result.run_id), payload)
     # The state file is the ready marker, bound to both result and numeric cache.

@@ -17,6 +17,11 @@ load_dotenv()
 
 
 class Effort(str, Enum):
+    """Fast and Pro are the two modes the UI offers (spec F, 26 Oct). The four older levels stay accepted for
+    saved maps, scripts and the example inputs; thoroughness order: normal <= fast <= pro <= ultra."""
+
+    FAST = "fast"
+    PRO = "pro"
     NORMAL = "normal"
     MEDIUM = "medium"
     HIGH = "high"
@@ -25,10 +30,13 @@ class Effort(str, Enum):
 
 @dataclass(frozen=True)
 class EffortProfile:
-    max_papers: int
+    max_papers: int  # papers shown on the map
     use_full_text: bool  # False = metadata only, True = download and read PDFs
     token_budget: int  # whole run, retries and redos included (see measured usage below)
     num_queries: int  # search queries the Planner writes; more papers -> more phrasings
+    # Fast/Pro: papers to retrieve (a soft target). Everything beyond max_papers becomes the ranked backup pool
+    # that "refresh" swaps in. None = retrieve max_papers and keep no pool (the older levels).
+    retrieval_target: int | None = None
 
 
 # Caps from measured real 30-paper /runs (26 Oct, docs/evaluation.md): planning + summary ~6k, each
@@ -37,6 +45,10 @@ class EffortProfile:
 # 50k Normal budget stopped every real run inside clustering, and 150k inside the connection redo.
 # Relevance batches and grader input grow with the paper count, so the caps scale with it.
 EFFORT_PROFILES: dict[Effort, EffortProfile] = {
+    # Spec F defaults (open questions, 26 Oct): Fast retrieves at least 300, Pro about 1,000; both show ~50.
+    # LLM work scales with the shown papers, not the pool, so budgets sit between the old levels.
+    Effort.FAST: EffortProfile(max_papers=50, use_full_text=False, token_budget=350_000, num_queries=3, retrieval_target=300),
+    Effort.PRO: EffortProfile(max_papers=50, use_full_text=True, token_budget=800_000, num_queries=5, retrieval_target=1000),
     Effort.NORMAL: EffortProfile(max_papers=30, use_full_text=False, token_budget=250_000, num_queries=2),
     Effort.MEDIUM: EffortProfile(max_papers=60, use_full_text=False, token_budget=450_000, num_queries=3),
     Effort.HIGH: EffortProfile(max_papers=100, use_full_text=True, token_budget=700_000, num_queries=4),
@@ -120,6 +132,7 @@ class Settings:
 
     # Retriever ranking: share of relevance vs citations per year (team decision, 24 Oct). It only orders the
     # papers already chosen by relevance; citations never bring an off-topic paper into the list (26 Oct).
+    # Fast/Pro rank the whole pool with w = this weight (spec F2): w * relevance + (1 - w) * log-scaled citations.
     rank_relevance_weight: float = 0.7
     # Relevance floor: question-paper cosine with the clustering embedding model, on the same scale as
     # main_similarity_threshold. On a 494-paper average-reward-MDP pool, papers above 0.5 were MDP theory and

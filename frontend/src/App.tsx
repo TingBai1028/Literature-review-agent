@@ -46,11 +46,16 @@ export default function App() {
     !!data &&
     data.map.run_id === data.versions.active_head.run_id &&
     data.map.sample_mode === ws.config.sample_mode;
-  const create = (q: string, effort: string, papers: Paper[]) =>
+  const create = (
+    q: string,
+    effort: string,
+    papers: Paper[],
+    backup: Paper[] = [],
+  ) =>
     void operate("正在建立地图", async () => {
       let selected = papers;
       if (
-        (effort === "high" || effort === "ultra") &&
+        (effort === "high" || effort === "ultra" || effort === "pro") &&
         papers === data?.papers
       ) {
         selected = (
@@ -61,7 +66,9 @@ export default function App() {
       }
       const map = await request<MapResult>("/cluster", {
         method: "POST",
-        body: { input: { query: q, effort, papers: selected } },
+        body: {
+          input: { query: q, effort, papers: selected, backup_papers: backup },
+        },
         timeout: (ws.config.run_timeout_s + 120) * 1000,
       });
       setDialog(null);
@@ -69,6 +76,24 @@ export default function App() {
       await ws.open(map.run_id);
       if (map.status === "partial")
         setNotice("地图已保存为待完成版本，可继续分析。");
+    });
+  // Spec F5: swap the side papers for the next-best backup papers; main and foundation stay.
+  const refresh = () =>
+    data &&
+    void operate("正在换一批论文", async () => {
+      const map = await request<MapResult>(
+        `/cluster/${data.map.run_id}/refresh`,
+        {
+          method: "POST",
+          body: { expected_version_token: data.map.version_token },
+          timeout: (ws.config.run_timeout_s + 120) * 1000,
+        },
+      );
+      await ws.open(map.run_id);
+      setNotice(
+        `已换入 ${map.refresh?.swapped_in.length ?? 0} 篇备选论文，主簇和基础簇保持不变。` +
+          (map.analysis ? "关联和研究空白需要重新运行分析。" : ""),
+      );
     });
   // Spec E: Graph 1 (paper edges) is opened as soon as it is ready; Graph 2 (gaps) follows on that version.
   const runStage = (map: MapResult, stage: "connections" | "gaps") =>
@@ -135,6 +160,19 @@ export default function App() {
               disabled={!data || !!busy}
             >
               版本记录
+            </button>
+            <button
+              className="text-button"
+              onClick={refresh}
+              disabled={
+                !data || !!busy || !editable || !data.map.backup_pool_size
+              }
+              title="把侧簇论文换成备选池中排名靠前的论文；主簇和基础簇不变"
+            >
+              换一批论文
+              {data?.map.backup_pool_size
+                ? ` · 备选 ${data.map.backup_pool_size}`
+                : ""}
             </button>
             <button
               className="primary-button analyze-button"

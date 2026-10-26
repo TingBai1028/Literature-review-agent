@@ -312,7 +312,7 @@ def _generate_child(source, state, arrays, output, plan, keys, cfg) -> ClusterMa
             dependencies = {fid: dep for fid, dep in (context.dependencies if analyze else state.finding_dependencies).items()
                             if fid in {x.id for x in [*child.connections, *child.gaps]}}
             save_version(child, state.papers, state.effort, arrays, cfg, dependencies=dependencies, keys=keys,
-                         finding_cache=context.cache if analyze else state.finding_cache)
+                         finding_cache=context.cache if analyze else state.finding_cache, backup_papers=state.backup_papers)
             trace.log("clusterer", "save regenerated version", child.status,
                       result={"parent": source.run_id, "relabelled": plan.relabel_cluster_ids,
                               "reused_labels": plan.reused_label_cluster_ids, "pending_stages": pending},

@@ -146,6 +146,7 @@ def apply_defaults(plan: SearchPlan, settings: Settings) -> SearchPlan:
 
     profile = EFFORT_PROFILES[plan.effort]
     plan.max_papers = profile.max_papers
+    plan.retrieval_target = profile.retrieval_target
     plan.token_budget = profile.token_budget
     plan.used_defaults = used
     return plan

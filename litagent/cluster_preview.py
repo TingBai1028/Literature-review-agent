@@ -21,18 +21,18 @@ class _PreviewTimeLimit(Exception):
 
 
 def run_cluster_map(papers: list[Paper], question: str, effort: Effort, settings: Settings,
-                    run_id: str | None = None) -> ClusterMapResult:
+                    run_id: str | None = None, backup_papers: list[Paper] = ()) -> ClusterMapResult:
     question = question.strip()
     run_id = run_id or new_run_id()
     with version_lock(settings, run_id):
         if any(path_for(settings, prefix, run_id, suffix).exists() for prefix, suffix in (
                 ("cluster-map", "json"), ("cluster-state", "json"), ("world", "json"), ("trace", "jsonl"))):
             raise VersionError("Run ID already exists; create a new immutable version")
-        return _run_cluster_map(papers, question, effort, settings, run_id)
+        return _run_cluster_map(papers, question, effort, settings, run_id, list(backup_papers))
 
 
 def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, settings: Settings,
-                     run_id: str) -> ClusterMapResult:
+                     run_id: str, backup_papers: list[Paper]) -> ClusterMapResult:
     if not question.strip() or not papers or len({p.id for p in papers}) != len(papers):
         raise ValueError("Clustering requires a question and unique paper IDs")
     profile = EFFORT_PROFILES[effort]
@@ -92,7 +92,8 @@ def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, setting
         result.usage = meter.usage
         if (result.clusters and all(isinstance(c, QuestionCluster) for c in result.clusters)
                 and artifacts.similarity is not None):
-            save_version(result, papers, effort, artifacts, settings)
+            result.backup_pool_size = len(backup_papers)
+            save_version(result, papers, effort, artifacts, settings, backup_papers=backup_papers)
             set_head(result, settings)
             _finish(trace, result)
             return result

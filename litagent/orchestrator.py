@@ -16,7 +16,9 @@ the trace and re-raised for the caller (CLI or API).
 
 from __future__ import annotations
 
+import json
 import time
+from pathlib import Path
 from typing import Callable, TypeVar
 
 from openai import OpenAIError
@@ -100,7 +102,7 @@ def run_pipeline(
                 stage = "retriever"
                 check_time(stage)
                 mark("retriever", "start", f"Retriever: searching for up to {plan.max_papers} papers")
-                papers = retriever.retrieve(plan, settings, signed_in=signed_in)
+                papers, backup = retriever.retrieve_pool(plan, settings, signed_in=signed_in)
                 if not papers:
                     message = retriever.no_results_message(plan)
                     trace.log("retriever", "retrieve", "0 papers", next_step="ask user to broaden", why=message)
@@ -123,7 +125,9 @@ def run_pipeline(
                 references = {p.id: p.references for p in papers}
                 papers = [p.model_copy(update={"references": references.get(p.id)}) for p in store.get_papers()]
 
-                result = RunResult(run_id=trace.run_id, status="done", plan=plan, papers=papers)
+                result = RunResult(run_id=trace.run_id, status="done", plan=plan, papers=papers, backup_pool_size=len(backup))
+                if backup:  # spec F4: the ranked backup pool is stored with the run
+                    _save_pool(settings, trace.run_id, backup)
                 if store.fallback_reason:
                     result.warnings.append(f"Zetaris unavailable, used the in-memory papers instead ({store.fallback_reason})")
 
@@ -205,6 +209,11 @@ def run_pipeline(
         except Exception as e:
             trace.error(stage, "run stage", e, next_step="return error to caller", terminal=True)
             raise
+
+
+def _save_pool(settings: Settings, run_id: str, backup) -> None:
+    path = Path(settings.logs_dir) / f"backup-pool-{run_id}.json"
+    path.write_text(json.dumps([p.model_dump(mode="json") for p in backup], ensure_ascii=False), encoding="utf-8")
 
 
 def _graded_stage(

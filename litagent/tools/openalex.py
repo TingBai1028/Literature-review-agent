@@ -24,7 +24,7 @@ TIMEOUT_S = 30
 MAX_PER_PAGE = 200
 MAX_WAIT_S = 5  # a 429 asking us to wait longer than this means the daily budget is used up
 FIELDS = ("id,doi,display_name,publication_year,type,cited_by_count,open_access,authorships,abstract_inverted_index,"
-          "referenced_works")
+          "referenced_works,referenced_works_count")
 # Leave out works that aren't papers (datasets, errata, paratext, ...)
 TYPE_FILTER = {
     "both": "article|preprint|review",
@@ -118,6 +118,7 @@ def _to_paper(work: dict) -> Paper:
         source="openalex",
         # An empty list usually means OpenAlex has no reference data, not that the paper cites nothing.
         references=[w.rsplit("/", 1)[-1] for w in work["referenced_works"]] if work.get("referenced_works") else None,
+        reference_count=work.get("referenced_works_count"),
     )
 
 

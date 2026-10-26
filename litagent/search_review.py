@@ -27,6 +27,7 @@ class SearchResult(BaseModel):
     message_to_user: str | None = None
     plan: SearchPlan | None = None
     papers: list[Paper] = Field(default_factory=list)
+    backup_papers: list[Paper] = Field(default_factory=list)  # Fast/Pro: ranked pool that "refresh" swaps in
     summary: str | None = None
     follow_up_question: str | None = None
     warnings: list[str] = Field(default_factory=list)
@@ -55,7 +56,7 @@ def run_search(question: str, effort: Effort, settings: Settings, *, feedback: s
                       message=f"Planner: {len(plan.queries)} search queries, up to {plan.max_papers} papers")
             trace.log("retriever", "start", "search sources", phase="start",
                       message=f"Retriever: searching for up to {plan.max_papers} papers")
-            papers = retriever.retrieve(plan, settings, signed_in=signed_in)
+            papers, result.backup_papers = retriever.retrieve_pool(plan, settings, signed_in=signed_in)
             if not papers:
                 result.status = "no_results"
                 result.message_to_user = retriever.no_results_message(plan)

@@ -146,7 +146,8 @@ def _analyze(source, state, arrays, cfg, child_id, request_id, stages=STAGES):
         keep = "connections" not in stages
         child = source.model_copy(deep=True, update={"run_id": child_id, "stage": "findings", "status": "done",
             "parent_run_id": source.run_id, "revision": source.revision + 1, "version_token": uuid.uuid4().hex,
-            "regeneration": None, "connections": source.connections if keep else [], "gaps": [], "paper_map": None,
+            "regeneration": None, "refresh": None, "connections": source.connections if keep else [], "gaps": [],
+            "paper_map": None,
             "analysis": FindingAnalysis(request_id=request_id, source_run_id=source.run_id,
                 completed_stages=["connections"] if keep else [],
                 grades={k: v for k, v in source.analysis.grades.items() if k == "connections"} if keep else {}),
@@ -179,7 +180,8 @@ def _analyze(source, state, arrays, cfg, child_id, request_id, stages=STAGES):
         child.paper_map, child.usage = world.to_graph_json(), meter.usage
         ids = {f.id for f in [*child.connections, *child.gaps]}
         save_version(child, state.papers, state.effort, arrays, cfg, keys=state.label_keys,
-            dependencies={k: v for k, v in context.dependencies.items() if k in ids}, finding_cache=context.cache)
+            dependencies={k: v for k, v in context.dependencies.items() if k in ids}, finding_cache=context.cache,
+            backup_papers=state.backup_papers)
         trace.log("orchestrator", "save finding version", child.status,
                   result={"connections": len(child.connections), "gaps": len(child.gaps),
                           "pending_stages": child.analysis.pending_stages},
