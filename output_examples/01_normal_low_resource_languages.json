@@ -2155,7 +2155,7 @@
         "cluster_ids": [
           "MAIN"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W7115677253",
@@ -2165,7 +2165,10 @@
             "paper_id": "W4408280927",
             "quote": "In the field of computational linguistics, addressing machine translation (MT) challenges for low-resource languages remains crucial, as these languages often lack extensive data compared to high-reso"
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "FOUNDATION-K1",
@@ -2177,7 +2180,7 @@
         "cluster_ids": [
           "FOUNDATION"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W4402389783",
@@ -2187,7 +2190,10 @@
             "paper_id": "W4402671168",
             "quote": "Large language models (LLMs) as listwise rerankers have shown impressive zero-shot capabilities in various passage ranking tasks.Despite their success, there is still a gap in existing literature on t"
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-81d2f7cb6b0ea8a1-K1",
@@ -2199,7 +2205,7 @@
         "cluster_ids": [
           "SIDE-81d2f7cb6b0ea8a1"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W4392637283",
@@ -2209,7 +2215,10 @@
             "paper_id": "W4403364915",
             "quote": "Large Language Models (LLMs) have demonstrated exceptional promise in translation tasks for high-resource languages."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       },
       {
         "id": "SIDE-4685f4928b323a6c-K1",
@@ -2221,7 +2230,7 @@
         "cluster_ids": [
           "SIDE-4685f4928b323a6c"
         ],
-        "description": "Sample mode: placeholder connection between two papers in the same group.",
+        "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
         "evidence": [
           {
             "paper_id": "W4392669965",
@@ -2231,7 +2240,10 @@
             "paper_id": "W4404389841",
             "quote": "Folktales are a rich resource of knowledge about the society and culture of a civilisation."
           }
-        ]
+        ],
+        "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+        "evidence_notes": []
       }
     ],
     "gaps": [
@@ -5571,7 +5583,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "MAIN"
           ],
@@ -5584,7 +5596,10 @@
               "paper_id": "W4408280927",
               "quote": "In the field of computational linguistics, addressing machine translation (MT) challenges for low-resource languages remains crucial, as these languages often lack extensive data compared to high-reso"
             }
-          ]
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
         },
         {
           "source": "W4392669965",
@@ -5592,7 +5607,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-4685f4928b323a6c"
           ],
@@ -5605,7 +5620,10 @@
               "paper_id": "W4404389841",
               "quote": "Folktales are a rich resource of knowledge about the society and culture of a civilisation."
             }
-          ]
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
         },
         {
           "source": "W4402389783",
@@ -5613,7 +5631,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "FOUNDATION"
           ],
@@ -5626,7 +5644,10 @@
               "paper_id": "W4402671168",
               "quote": "Large language models (LLMs) as listwise rerankers have shown impressive zero-shot capabilities in various passage ranking tasks.Despite their success, there is still a gap in existing literature on t"
             }
-          ]
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
         },
         {
           "source": "W4392637283",
@@ -5634,7 +5655,7 @@
           "type": "connects-to",
           "by": "connection_finder",
           "kind": "within_cluster",
-          "description": "Sample mode: placeholder connection between two papers in the same group.",
+          "description": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
           "cluster_refs": [
             "SIDE-81d2f7cb6b0ea8a1"
           ],
@@ -5647,7 +5668,10 @@
               "paper_id": "W4403364915",
               "quote": "Large Language Models (LLMs) have demonstrated exceptional promise in translation tasks for high-resource languages."
             }
-          ]
+          ],
+          "reason_short": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "reason_long": "Sample mode: placeholder link between two papers of the same cluster; no reason was assessed.",
+          "evidence_notes": []
         },
         {
           "source": "GAP-71a591bb6f871d38",
