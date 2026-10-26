@@ -310,6 +310,15 @@ export function Inspector({
       ) : gap ? (
         <>
           <h3 className="finding-title">{gap.description}</h3>
+          <p className="small">
+            位于：
+            {gap.between_paper_ids
+              .map((id) => papers.find((p) => p.id === id)?.title ?? id)
+              .join(" ↔ ")}{" "}
+            ·{" "}
+            {map.clusters.find((c) => c.id === gap.cluster_id)?.label ??
+              gap.cluster_id}
+          </p>
           <p className="hypothesis-label">
             {map.sample_mode ? "样例占位" : "待验证研究假设"} ·{" "}
             {gap.scope === "main_side" ? "主簇与侧簇" : "簇内比较"}

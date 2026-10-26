@@ -104,11 +104,15 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
     page.getByText("样例模式：分组、相似度和评分为占位结果。"),
   ).toBeVisible();
   await page.getByRole("button", { name: "运行分析", exact: true }).click();
+  // Graph 1 opens first; wait until Graph 2 has replaced it as the active version.
+  await expect(
+    page.getByText("图 2（研究空白）已生成", { exact: false }),
+  ).toBeVisible();
   await expect(page.locator(".version-selector select")).not.toHaveValue(
     "qa-root",
   );
   const analyzed = await page.locator(".version-selector select").inputValue();
-  await page.getByRole("button", { name: "关联", exact: true }).click();
+  await page.getByRole("button", { name: "图 1 · 关联", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "关联证据", exact: true }),
   ).toBeVisible();
@@ -155,7 +159,7 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
     await (await request.get(appUrl + `/cluster/${analyzed}/versions`)).json()
   ).output;
   expect(history.active_head.run_id).toBe(analyzed);
-  expect(history.versions).toHaveLength(3);
+  expect(history.versions).toHaveLength(4); // root, Graph 1, Graph 2, moved
   await page.getByRole("button", { name: "人工验收", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "验收材料", exact: true }),
@@ -378,6 +382,10 @@ test("stale preview conflict is visible inside the dialog and does not move pape
 }) => {
   await page.goto(appUrl);
   await page.getByRole("button", { name: "运行分析", exact: true }).click();
+  // Graph 1 opens first; wait until Graph 2 has replaced it as the active version.
+  await expect(
+    page.getByText("图 2（研究空白）已生成", { exact: false }),
+  ).toBeVisible();
   await expect(page.locator(".version-selector select")).not.toHaveValue(
     "qa-root",
   );
@@ -417,6 +425,6 @@ test("stale preview conflict is visible inside the dialog and does not move pape
   const versions = (
     await (await request.get(appUrl + "/cluster/qa-root/versions")).json()
   ).output;
-  expect(versions.versions).toHaveLength(2);
+  expect(versions.versions).toHaveLength(3); // root, Graph 1, Graph 2
   expect(versions.active_head.run_id).toBe("qa-root");
 });

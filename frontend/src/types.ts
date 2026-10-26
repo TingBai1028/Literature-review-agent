@@ -100,7 +100,11 @@ export interface MapResult {
   gaps: Gap[];
   warnings: string[];
   grade?: Grade | null;
-  analysis?: { pending_stages: string[]; grades: Record<string, Grade> } | null;
+  analysis?: {
+    completed_stages?: string[];
+    pending_stages: string[];
+    grades: Record<string, Grade>;
+  } | null;
 }
 export interface CatalogItem {
   run_id: string;

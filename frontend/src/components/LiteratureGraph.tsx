@@ -152,8 +152,8 @@ export function LiteratureGraph({
             [
               ["all", "全部"],
               ["main_side", "主簇与侧簇"],
-              ["connections", "关联"],
-              ["gaps", "缺口"],
+              ["connections", "图 1 · 关联"],
+              ["gaps", "图 2 · 研究空白"],
             ] as [Filter, string][]
           ).map(([key, label]) => (
             <button
@@ -185,7 +185,9 @@ export function LiteratureGraph({
           <div className="graph-empty">
             <h2>
               {filter === "gaps"
-                ? "暂无通过核验的研究假设"
+                ? map.analysis?.pending_stages.includes("gaps")
+                  ? "图 2（研究空白）尚未生成"
+                  : "暂无通过核验的研究假设"
                 : "暂无通过核验的关联"}
             </h2>
             <p>当前版本保留了核验结果与弃权记录。</p>

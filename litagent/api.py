@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -120,6 +120,8 @@ class AnalyzeMapRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     expected_version_token: str = Field(pattern=r"^[a-f0-9]{32}$")
     request_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{32}$")
+    # ["connections"] returns Graph 1 at once; ["gaps"] on that version adds Graph 2. Default: both.
+    stages: list[Literal["connections", "gaps"]] | None = Field(default=None, min_length=1)
 
 
 def get_settings() -> Settings:
@@ -244,7 +246,8 @@ def cluster_versions(run_id: str, settings: Settings = Depends(get_settings)):
 
 @app.post("/cluster/{run_id}/analyze")
 def analyze_saved_map(run_id: str, req: AnalyzeMapRequest, settings: Settings = Depends(get_settings)):
-    return _version_response(run_id, lambda: analyze_cluster_map(run_id, req.expected_version_token, settings, req.request_id))
+    return _version_response(run_id, lambda: analyze_cluster_map(run_id, req.expected_version_token, settings, req.request_id,
+                                                                 req.stages))
 
 
 @app.get("/cluster/{run_id}")
