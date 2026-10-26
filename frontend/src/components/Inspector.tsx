@@ -104,6 +104,7 @@ export function Inspector({
     selection?.type === "cluster"
       ? map.clusters.find((c) => c.id === selection.id)
       : null;
+  const card = map.cluster_cards?.find((c) => c.cluster_id === topic?.id);
   return (
     <aside className="inspector" aria-label="详情与证据">
       <h2 className="inspector-heading">
@@ -265,6 +266,27 @@ export function Inspector({
             {roleName(topic)} · {topic.paper_ids.length} 篇论文
           </p>
           {topic.role_reason && <p className="small">{topic.role_reason}</p>}
+          {card && (
+            <section className="inspector-section cluster-card">
+              <h3>
+                簇卡片 ·{" "}
+                {card.analysis_depth === "full_pdf"
+                  ? `全文分析（${card.papers_with_full_text ?? 0} 篇有全文）`
+                  : "元数据分析"}
+              </h3>
+              <p>{card.summary}</p>
+              <p className="muted small">
+                {card.year_range
+                  ? `${card.year_range[0]}–${card.year_range[1]} 年`
+                  : "年份未知"}
+                {card.citations?.max != null &&
+                  ` · 引用中位数 ${card.citations.median} · 最高 ${card.citations.max}`}
+              </p>
+              {card.keywords.length > 0 && (
+                <p className="small">关键词：{card.keywords.join("、")}</p>
+              )}
+            </section>
+          )}
           <p className="muted small">{topic.rationale}</p>
           <div className="paper-list">
             {topic.paper_ids.map((id) => (

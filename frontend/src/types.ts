@@ -39,6 +39,17 @@ export interface Cluster {
   role_reason?: string | null;
   paper_details?: Detail[];
 }
+export interface ClusterCard {
+  cluster_id: string;
+  role: "main" | "foundation" | "side";
+  label: string;
+  summary: string;
+  year_range?: [number, number] | null;
+  citations?: { median?: number; max?: number };
+  keywords: string[];
+  analysis_depth: "full_pdf" | "metadata";
+  papers_with_full_text?: number;
+}
 export interface Connection {
   id: string;
   kind: string;
@@ -102,6 +113,7 @@ export interface MapResult {
   warnings: string[];
   grade?: Grade | null;
   backup_pool_size?: number;
+  cluster_cards?: ClusterCard[];
   refresh?: { swapped_in: string[]; swapped_out: string[] } | null;
   analysis?: {
     completed_stages?: string[];
