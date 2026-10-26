@@ -196,7 +196,9 @@ class Settings:
     cluster_label_text_chars: int = 2000
     cluster_label_max_papers: int = 8
     cluster_label_strategy: str = "contrastive"  # independent retained for controlled comparisons
-    cluster_label_batch_size: int = 4
+    # Groups named per call. 4 made answers long: one batch took 82 of the 90 s limit and two runs timed out
+    # (26 Oct); batches run at the same time, so smaller ones cost no wall time.
+    cluster_label_batch_size: int = 2
     cluster_label_neighbors: int = 2
     cluster_neighbor_text_chars: int = 600
     cluster_label_validation_retries: int = 1
