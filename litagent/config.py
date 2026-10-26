@@ -141,6 +141,14 @@ class Settings:
     # Clustering
     cluster_map_mode: str = "question"  # question-aware main/side map when a question is provided; topic retains legacy behavior
     main_similarity_threshold: float = 0.5  # candidate gate, not a calibrated relevance probability
+    # Cluster roles (docs/agents/clusterer.md): one main cluster of 5-10 papers, at least one foundation
+    # cluster of classic work (3-10 papers), side clusters of at least 3 papers (team defaults, 26 Oct).
+    main_cluster_min_size: int = 5
+    main_cluster_max_size: int = 10
+    main_relevance_weight: float = 0.2  # weight of the LLM relevance check next to question cosine
+    foundation_min_size: int = 3
+    foundation_max_size: int = 10
+    side_min_size: int = 3
     main_relevance_batch_size: int = 10
     main_relevance_text_chars: int = 1400
     side_linkage: str = "complete"  # average is an explicit comparison option

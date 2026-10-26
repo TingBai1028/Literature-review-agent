@@ -60,12 +60,17 @@ def models(monkeypatch):
     return ps, calls
 
 
-def test_main_requires_both_query_gate_and_source_judgment(models):
+# The five-paper corpus is small, so these tests shrink the role sizes to keep all three roles visible.
+ROLES = dict(main_cluster_min_size=2, main_cluster_max_size=3, foundation_min_size=1, side_min_size=1)
+
+
+def test_main_is_the_most_relevant_group_and_relevance_is_judged_from_sources(models):
     ps, calls = models
-    result = clusterer.cluster(ps, Effort.NORMAL, Settings(sample_mode=False), question="First question")
-    assert result[0].kind == "main" and result[0].paper_ids == ["P0"]
+    result = clusterer.cluster(ps, Effort.NORMAL, Settings(sample_mode=False, **ROLES), question="First question")
+    assert [(c.kind, c.paper_ids) for c in result] == [("main", ["P0", "P1", "P2"]), ("foundation", ["P3"]), ("side", ["P4"])]
+    assert result[0].id == "MAIN" and result[0].role_reason.startswith("Chosen as main")
+    assert all(c.role_reason for c in result)
     assert Counter(pid for c in result for pid in c.paper_ids) == Counter(p.id for p in ps)
-    assert all(isinstance(c, QuestionCluster) for c in result)
     by_id = {d.paper_id: d for c in result for d in c.paper_details}
     assert by_id["P1"].question_similarity > .5 and by_id["P1"].relevance == "supporting"
     assert by_id["P2"].relevance == "uncertain" and not by_id["P2"].evidence
@@ -76,19 +81,30 @@ def test_main_requires_both_query_gate_and_source_judgment(models):
 
 def test_relevance_changes_with_the_question_and_ids_are_order_stable(models):
     ps, _ = models
-    settings = Settings(sample_mode=False)
+    settings = Settings(sample_mode=False, **ROLES)
     first = clusterer.cluster(ps, Effort.NORMAL, settings, question="First question")
     reverse = clusterer.cluster(list(reversed(ps)), Effort.NORMAL, settings, question="First question")
     assert [c.model_dump() for c in first] == [c.model_dump() for c in reverse]
     second = clusterer.cluster(ps, Effort.NORMAL, settings, question="Second question")
     assert second[0].paper_ids == ["P3", "P4"]
-    assert first[0].paper_ids == ["P0"]
+    assert first[0].paper_ids == ["P0", "P1", "P2"]
 
 
-def test_no_direct_match_is_a_valid_map(models):
+def test_no_passing_group_still_yields_exactly_one_main(models, monkeypatch):
     ps, _ = models
-    result = clusterer.cluster(ps, Effort.NORMAL, Settings(sample_mode=False, main_similarity_threshold=1), question="First question")
-    assert all(c.kind == "side" for c in result)
+    def supporting(prompt, message, *args, **kwargs):
+        payload = json.loads(message)
+        return QuestionRelevanceBatch(assessments=[QuestionRelevanceProposal(paper_id=p["id"], relevance="supporting",
+            reason="Related task.", evidence=[EvidenceReference(paper_id=p["id"], span_id="S1")]) for p in payload["papers"]])
+    monkeypatch.setattr(question_clusters, "complete_json", supporting)
+    settings = Settings(sample_mode=False, main_similarity_threshold=.95, **ROLES)
+    with Trace(settings.logs_dir) as trace:
+        result = clusterer.cluster(ps, Effort.NORMAL, settings, question="First question")
+    mains = [c for c in result if c.kind == "main"]
+    assert len(mains) == 1 and mains[0].role_reason.startswith("Fallback main")
+    assert mains[0].paper_ids[0] == "P0"  # the most relevant paper overall
+    roles = next(e for e in trace.events if e["action"] == "assign cluster roles")
+    assert "main fallback" in json.dumps(roles["result"])
     assert sum(len(c.paper_ids) for c in result) == len(ps)
 
 
@@ -204,7 +220,8 @@ def test_question_metadata_survives_runresult_json_round_trip(models):
 
 def test_world_stores_hints_without_duplicate_memberships_or_paper_entities(models, tmp_path):
     ps, _ = models
-    clusters = clusterer.cluster(ps, Effort.NORMAL, Settings(sample_mode=False, related_similarity_threshold=0), question="First question")
+    clusters = clusterer.cluster(ps, Effort.NORMAL, Settings(sample_mode=False, related_similarity_threshold=0, **ROLES),
+                                 question="First question")
     world = ResearchWorld("main-side-world", str(tmp_path))
     world.start_attempt(1, "First question")
     world.add_papers(ps)
@@ -265,8 +282,8 @@ def test_preview_sample_mode_with_one_paper_is_offline(monkeypatch, tmp_path):
     settings = Settings(sample_mode=True, logs_dir=str(tmp_path))
     result = run_cluster_map(corpus()[:1], "First question", Effort.NORMAL, settings, "sample-preview")
     assert result.sample_mode and result.status == "done" and len(result.clusters) == 1
-    assert result.main_cluster_id is None and result.usage.llm_calls == 0
-    assert all("Sample mode" in c.label or "Sample mode" in c.rationale for c in result.clusters)
+    assert result.main_cluster_id == "MAIN" and result.usage.llm_calls == 0
+    assert all(c.label.startswith("Sample main") for c in result.clusters)
 
 
 def test_pipeline_passes_the_question_and_preserves_map_if_grading_budget_runs_out(monkeypatch, models, tmp_path):

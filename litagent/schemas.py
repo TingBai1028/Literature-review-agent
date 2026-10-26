@@ -177,11 +177,15 @@ class PaperClusterDetail(BaseModel):
 
 
 class QuestionCluster(Cluster):
-    """Extends the legacy cluster contract only for question-aware runs."""
+    """Extends the legacy cluster contract only for question-aware runs.
 
-    kind: Literal["main", "side"]
+    Roles: one main cluster (the most topic-relevant group), at least one foundation cluster (classic work the
+    topic builds on) and side clusters. role_reason says why the clusterer gave this cluster its role."""
+
+    kind: Literal["main", "foundation", "side"]
     question: str = Field(min_length=1)
     paper_details: list[PaperClusterDetail]
+    role_reason: str | None = None
 
     @model_validator(mode="after")
     def complete_details(self):
@@ -190,8 +194,6 @@ class QuestionCluster(Cluster):
             raise ValueError("Question cluster details must cover every member exactly once")
         if any(a.cluster_id == self.id for p in self.paper_details for a in p.also_related):
             raise ValueError("An alternative must reference another cluster")
-        if self.kind == "main" and any(p.relevance != "direct" or not p.evidence for p in self.paper_details):
-            raise ValueError("Main cluster members require direct relevance and source evidence")
         return self
 
 

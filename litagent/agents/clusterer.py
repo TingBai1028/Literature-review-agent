@@ -19,7 +19,7 @@ from litagent.integrations.embeddings import embed_documents
 from litagent.integrations.llm import complete_json, load_prompt
 from litagent.schemas import Cluster, ClusterLabel, Paper
 from litagent.semantic_groups import semantic_clusters
-from litagent.question_clusters import build_question_clusters
+from litagent.question_clusters import build_question_clusters, sample_role_clusters
 from litagent.similarity import cosine_matrix, paper_similarity, partition_metrics, representative_indices, select_partition
 from litagent.trace import current_trace
 
@@ -29,6 +29,8 @@ def cluster(papers: list[Paper], effort: Effort, settings: Settings, fix: str | 
             artifacts: ClusteringArtifacts | None = None) -> list[Cluster]:
     """`fix` is the grading agent's one suggested fix when the previous attempt failed."""
     if settings.sample_mode:
+        if question is not None and settings.cluster_map_mode == "question":
+            return sample_role_clusters(papers, question.strip(), settings, artifacts)
         return _fake_clusters(papers)
     if not papers:
         return []

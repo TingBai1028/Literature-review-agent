@@ -1,4 +1,4 @@
-"""Question relevance selects the main pool; content similarity organizes remaining papers.
+"""Question relevance picks the main cluster; citations pick foundation work; similarity organizes the rest.
 
 Alternative clusters are numerical hints, never additional membership or scientific claims.
 All scores use the original uncentered embeddings; question and document gates are distinct.
@@ -14,11 +14,13 @@ import time
 import numpy as np
 
 from litagent.cluster_labels import contrastive_labels, evidence_source, relevant_spans, source_spans
+from litagent.cluster_roles import assign_roles
 from litagent.config import Settings
 from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
 from litagent.schemas import (ClusterAlternative, ClusterLabel, Evidence, Paper, PaperClusterDetail,
                              QuestionCluster, QuestionRelevanceBatch)
-from litagent.similarity import SimilarityMatrices, cosine_matrix, linkage_groups, partition_metrics
+from litagent.sample_data import sample_relevance, sample_similarity
+from litagent.similarity import SimilarityMatrices, cosine_matrix
 from litagent.trace import current_trace
 
 
@@ -160,9 +162,9 @@ def attach_alternatives(clusters: list[QuestionCluster], papers: list[Paper], si
                     continue
                 values = similarity[i, [indices[pid] for pid in other.paper_ids]]
                 mean, minimum = float(values.mean()), float(values.min())
-                if other.kind == "main":
-                    eligible = detail.relevance == "direct" and detail.question_similarity >= settings.main_similarity_threshold
-                    constraint = "Main admission also requires the question gate and source-verified direct relevance."
+                if other.kind != "side":
+                    eligible = False
+                    constraint = "Main and foundation membership comes from the role rules, not content similarity."
                 else:
                     content_score = minimum if settings.side_linkage == "complete" else mean
                     eligible = content_score >= settings.side_similarity_threshold and cluster.kind != "main"
@@ -227,34 +229,52 @@ def build_question_clusters(papers: list[Paper], texts: list[str], vectors: np.n
     validate_settings(settings)
     query_scores = cosine_matrix(np.vstack([question_vector, vectors]))[0, 1:]
     details = assess_relevance(papers, texts, query_scores, question, settings, fix)
-    keywords = paper_keywords(papers, settings.paper_keyword_limit)
-    for pid, values in keywords.items():
+    return role_clusters(papers, texts, scores.combined, query_scores, details, question, settings, fix)
+
+
+def sample_role_clusters(papers: list[Paper], question: str, settings: Settings,
+                         artifacts=None) -> list[QuestionCluster]:
+    """Sample mode: the real role rules on offline inputs, with no model calls. Relevance is TF-IDF similarity to
+    the question (scaled so the best paper scores 1); similarity is the stored embedding matrix from
+    data/sample/similarity/, or all 1 for papers without one. Labels are placeholders."""
+    relevance = sample_relevance(papers, question)
+    similarity = sample_similarity(papers)
+    if similarity is None:
+        similarity = np.ones((len(papers), len(papers)))
+    details = {p.id: PaperClusterDetail(paper_id=p.id, question_similarity=float(r), relevance="uncertain",
+                                        reason="Sample mode: TF-IDF similarity to the question; no LLM relevance check.")
+               for p, r in zip(papers, relevance)}
+    if artifacts is not None:
+        # Synthetic vectors whose cosine with the question vector is exactly each paper's sample relevance.
+        artifacts.paper_vectors = np.column_stack([relevance, np.sqrt(np.clip(1 - relevance ** 2, 0, 1))])
+        artifacts.question_vector = np.array([1.0, 0.0])
+        artifacts.similarity = similarity
+    return role_clusters(papers, [p.title for p in papers], similarity, relevance, details, question, settings)
+
+
+def role_clusters(papers: list[Paper], texts: list[str], similarity: np.ndarray, query_scores: np.ndarray,
+                  details: dict[str, PaperClusterDetail], question: str, settings: Settings,
+                  fix: str | None = None) -> list[QuestionCluster]:
+    """One main, at least one foundation and side clusters (litagent/cluster_roles.py), each labelled."""
+    for pid, values in paper_keywords(papers, settings.paper_keyword_limit).items():
         details[pid].keywords = values
-    main = sorted((i for i, p in enumerate(papers) if details[p.id].relevance == "direct"), key=lambda i: papers[i].id)
-    side = sorted((i for i, p in enumerate(papers) if details[p.id].relevance != "direct"), key=lambda i: papers[i].id)
-    side_matrix = scores.combined[np.ix_(side, side)]
-    side_groups = linkage_groups(side_matrix, settings.side_similarity_threshold, settings.side_linkage)
-    ids = [cluster_id([papers[side[i]].id for i in group]) for group in side_groups]
-    if "MAIN" in {p.id for p in papers} or set(ids) & {p.id for p in papers}:
+    plan = assign_roles(papers, similarity, query_scores, [details[p.id].relevance for p in papers], settings)
+    side_reason = (f"Side: papers outside main and foundation, grouped by content similarity "
+                   f"({settings.side_linkage} linkage at {settings.side_similarity_threshold}).")
+    roles = [("main", "MAIN", plan.main, plan.main_reason)]
+    if plan.foundation:
+        roles.append(("foundation", "FOUNDATION", plan.foundation, plan.foundation_reason))
+    roles += [("side", cluster_id([papers[i].id for i in group]), group, side_reason) for group in plan.sides]
+    ids = [cid for _, cid, _, _ in roles]
+    if set(ids) & {p.id for p in papers}:
         raise ValueError("Paper ids conflict with generated cluster ids")
-    if trace := current_trace():
-        trace.log("clusterer", "select main papers", f"{len(main)} direct, {len(side)} remaining",
-                  result={"question": question, "main_paper_ids": [papers[i].id for i in main]},
-                  threshold=settings.main_similarity_threshold,
-                  why="Uncentered query cosine screens candidates; original-source relevance assessment admits main papers")
-        trace.log("clusterer", "group papers", f"{len(side_groups)} side topics", threshold=settings.side_similarity_threshold,
-                  metrics=partition_metrics(side_matrix, side_groups),
-                  why=f"{settings.side_linkage} linkage on remaining papers only; main is a relevance pool, not a topic-diameter cluster")
+    labels = label_side_groups(papers, texts, [group for _, _, group, _ in roles], similarity, ids, settings, fix)
     clusters = []
-    if main:
-        clusters.append(QuestionCluster(id="MAIN", label=f"Main: {question}", kind="main", question=question,
-            paper_ids=[papers[i].id for i in main], paper_details=[details[papers[i].id] for i in main],
-            rationale="These papers passed the question-similarity gate and a source-backed direct-relevance assessment."))
-    side_papers, side_texts = [papers[i] for i in side], [texts[i] for i in side]
-    labels = label_side_groups(side_papers, side_texts, side_groups, side_matrix, ids, settings, fix)
-    for cid, group in zip(ids, side_groups):
-        members = [side_papers[i] for i in group]
+    for kind, cid, group, reason in roles:
         label = labels[cid]
-        clusters.append(QuestionCluster(id=cid, kind="side", question=question, label=label.label,
-            rationale=label.rationale, paper_ids=[p.id for p in members], paper_details=[details[p.id] for p in members]))
-    return attach_alternatives(clusters, papers, scores.combined, settings)
+        if settings.sample_mode:
+            label = ClusterLabel(label=f"Sample {kind}: {papers[group[0]].title}", rationale=label.rationale)
+        members = [papers[i] for i in group]
+        clusters.append(QuestionCluster(id=cid, kind=kind, question=question, label=label.label, rationale=label.rationale,
+            role_reason=reason, paper_ids=[p.id for p in members], paper_details=[details[p.id] for p in members]))
+    return attach_alternatives(clusters, papers, similarity, settings)

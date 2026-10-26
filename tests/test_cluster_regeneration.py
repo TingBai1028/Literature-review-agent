@@ -2,6 +2,7 @@
 
 import json
 from dataclasses import replace
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -268,7 +269,7 @@ def test_average_rejects_incoming_paper_hidden_by_strong_existing_pairs(models, 
     vectors = [[1, 0, 0], [0, 1, 0], [0, .9, .436], [0, .99, .141], [0, .65, .759934], [0, .65, .759934]]
     _, cfg, _, _ = snapshot(tmp_path, vectors=vectors, settings=cfg)
     plan = regen.preview_moves("root", [move("A", "S3")], cfg)
-    assert not plan.applicable and any("mean similarity to final target" in e for e in plan.errors)
+    assert not plan.applicable and any("final average score" in e for e in plan.errors)
     assert regen.preview_moves("root", [move("A", "S2")], cfg).applicable
 
 
@@ -343,11 +344,12 @@ def test_legacy_cache_sample_boundary_frozen_scores_and_lock_conflicts(models, t
 
 
 def test_api_sample_preview_apply_history_and_rollback(tmp_path):
-    cfg = Settings(sample_mode=True, logs_dir=str(tmp_path))
+    # Real sample papers (stored similarity) give two side clusters; at 0.5 a legal side-to-side move exists.
+    cfg = Settings(sample_mode=True, logs_dir=str(tmp_path), side_similarity_threshold=0.5)
     api.app.dependency_overrides[api.get_settings] = lambda: cfg
     try:
         with TestClient(api.app) as client:
-            papers = [Paper(id=f"P{i}", title=f"Example paper {i}", source="test").model_dump() for i in range(6)]
+            papers = json.loads((Path(__file__).resolve().parents[1] / "data/sample/low_resource_languages_llm.json").read_text())[:30]
             body = {"run_id": "api-root", "input": {"query": "Sample research question", "papers": papers}}
             root = client.post("/cluster", json=body).json()["output"]
             assert root["sample_mode"] and root["usage"]["llm_calls"] == 0 and root["version_token"]

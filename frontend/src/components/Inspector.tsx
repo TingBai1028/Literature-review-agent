@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, ArrowRight, BookOpen } from "lucide-react";
 import { request, messageOf } from "../api";
+import { roleName } from "./TopicSidebar";
 import type {
   Candidate,
   Evidence,
@@ -67,7 +68,8 @@ export function Inspector({
     setCandidates([]);
     setError("");
     setFull(null);
-    if (!paper || cluster?.kind === "main") return;
+    if (!paper || cluster?.kind === "main" || cluster?.kind === "foundation")
+      return;
     const abort = new AbortController();
     request<{ candidates: Candidate[] }>(
       `/cluster/${map.run_id}/regenerate/candidates?paper_id=${encodeURIComponent(paper.id)}`,
@@ -177,11 +179,15 @@ export function Inspector({
             <div className="membership">
               <span className="muted">当前归属</span>
               <strong>
-                {cluster?.kind === "main" ? "主簇" : cluster?.label}
+                {cluster?.kind === "side" || !cluster?.kind
+                  ? cluster?.label
+                  : roleName(cluster)}
               </strong>
             </div>
-            {cluster?.kind === "main" ? (
-              <p className="muted small">主簇成员保持固定</p>
+            {cluster?.kind === "main" || cluster?.kind === "foundation" ? (
+              <p className="muted small">
+                主簇和基础簇由相关性与引用规则决定，成员保持固定
+              </p>
             ) : (
               <>
                 {(detail?.also_related ?? []).map((a) => (
@@ -247,9 +253,9 @@ export function Inspector({
         <>
           <h3 className="paper-title">{topic.label}</h3>
           <p className="paper-meta">
-            {topic.kind === "main" ? "主簇" : "侧簇"} · {topic.paper_ids.length}{" "}
-            篇论文
+            {roleName(topic)} · {topic.paper_ids.length} 篇论文
           </p>
+          {topic.role_reason && <p className="small">{topic.role_reason}</p>}
           <p className="muted small">{topic.rationale}</p>
           <div className="paper-list">
             {topic.paper_ids.map((id) => (
