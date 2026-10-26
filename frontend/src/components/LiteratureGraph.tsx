@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import { Minus, Plus, RotateCcw } from "lucide-react";
+import { Maximize2, Minus, Plus, Shuffle } from "lucide-react";
 import { request } from "../api";
 import { blobPath, forceLayout, yearShade, type Neighbor } from "../layout";
 import type { Filter, MapResult, Paper, Selection } from "../types";
@@ -9,7 +9,7 @@ import { namePapers } from "../paperNames";
 // old two-line cap cut most of them off.
 const LABEL_CHARS = 28;
 const NOT_ANALYSED =
-  "Building the map only groups the papers. Click Run analysis (top right) to find paper connections (Graph 1), then research gaps (Graph 2).";
+  "This version has no paper connections (Graph 1) or research gaps (Graph 2) yet. Click Run analysis (top right) to generate them.";
 function wrap(text: string) {
   const words = text.replace(/^Unclustered:\s*/, "").split(/\s+/);
   const lines = [""];
@@ -36,11 +36,13 @@ export function LiteratureGraph({
   onReview,
   analysisHint = false,
   neighbors: supplied,
+  onSwap,
+  swapDisabled = true,
 }: {
   map: MapResult;
   papers: Paper[];
   selection: Selection | null;
-  onSelect: (s: Selection) => void;
+  onSelect: (s: Selection | null) => void;
   filter: Filter;
   onFilter: (f: Filter) => void;
   search: string;
@@ -49,8 +51,13 @@ export function LiteratureGraph({
   analysisHint?: boolean;
   /** A live map passes the neighbours from its events instead of fetching a saved version's. */
   neighbors?: Neighbor[];
+  /** Spec F5: swap side papers for the next-best backup papers (shown with the backup pool's size). */
+  onSwap?: () => void;
+  swapDisabled?: boolean;
 }) {
   const [view, setView] = useState({ x: 0, y: 0, scale: 1 });
+  // "Show the whole map" (beside the zoom buttons) puts back zoom, position and the All filter; the selection stays.
+  const changed = view.x !== 0 || view.y !== 0 || view.scale !== 1 || filter !== "all";
   const drag = useRef<{ x: number; y: number; vx: number; vy: number } | null>(
     null,
   );
@@ -216,13 +223,20 @@ export function LiteratureGraph({
             </button>
           ))}
         </div>
-        <button
-          className="quiet-button reset"
-          onClick={() => setView({ x: 0, y: 0, scale: 1 })}
-        >
-          <RotateCcw size={15} />
-          Reset view
-        </button>
+        <div className="graph-actions">
+          {onSwap && (
+            <button
+              className="quiet-button reset"
+              onClick={onSwap}
+              disabled={swapDisabled || !map.backup_pool_size}
+              title="Replace side-cluster papers with the top-ranked papers from the backup pool; the main and foundation clusters stay the same"
+            >
+              <Shuffle size={15} />
+              Swap papers
+              {map.backup_pool_size ? ` · ${map.backup_pool_size} in backup` : ""}
+            </button>
+          )}
+        </div>
       </div>
       {analysisHint && !map.analysis && !noFindings && (
         <p className="graph-notice">{NOT_ANALYSED}</p>
@@ -344,6 +358,9 @@ export function LiteratureGraph({
                     (filter === "main_side" && c.kind !== "between_clusters")
                   )
                     return null;
+                  const active =
+                    hovered === c.id ||
+                    (selection?.type === "connection" && selection.id === c.id);
                   return (
                     <g key={c.id}>
                       <line
@@ -354,7 +371,7 @@ export function LiteratureGraph({
                         x2={b.x}
                         y2={b.y}
                         stroke="#28584b"
-                        strokeWidth={2.5}
+                        strokeWidth={active ? 5 : 2.5}
                       />
                       <line
                         data-interactive="true"
@@ -399,7 +416,11 @@ export function LiteratureGraph({
                   return m ? (
                     <g
                       key={g.id}
-                      className="gap-marker"
+                      className={
+                        selection?.type === "gap" && selection.id === g.id
+                          ? "gap-marker selected"
+                          : "gap-marker"
+                      }
                       data-interactive="true"
                       role="button"
                       tabIndex={0}
@@ -525,6 +546,17 @@ export function LiteratureGraph({
           </span>
         </div>
         <div className="zoom-controls">
+          <button
+            aria-label="Show the whole map"
+            title="Show the whole map: default zoom and position, all elements"
+            disabled={!changed}
+            onClick={() => {
+              setView({ x: 0, y: 0, scale: 1 });
+              onFilter("all");
+            }}
+          >
+            <Maximize2 size={18} />
+          </button>
           <button
             aria-label="Zoom out"
             onClick={() =>

@@ -359,7 +359,7 @@ test("mobile: readable map, topic navigation, evidence and no horizontal overflo
     beforePan!,
   );
   await touch.detach();
-  await page.getByRole("button", { name: "Reset view", exact: true }).click();
+  await page.getByRole("button", { name: "Show the whole map", exact: true }).click();
   await page.screenshot({
     path: info.outputPath("mobile-map.png"),
     fullPage: true,

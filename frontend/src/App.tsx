@@ -87,8 +87,9 @@ export default function App() {
         question: q,
         title: "Building the map",
       });
+      let built: MapResult;
       try {
-        const map = await request<MapResult>("/cluster", {
+        built = await request<MapResult>("/cluster", {
           method: "POST",
           body: {
             run_id: runId,
@@ -101,9 +102,14 @@ export default function App() {
           },
           timeout: (ws.config.run_timeout_s + 120) * 1000,
         });
-        await ws.open(map.run_id);
+        await ws.open(built.run_id);
       } finally {
         setLive(null);
+      }
+      // One click builds the whole map: Graph 1 (connections) and then Graph 2 (gaps) follow straight away, each
+      // shown as soon as it is ready. Run analysis remains for continuing an unfinished analysis.
+      if (built.status !== "partial") {
+        await analyzeMap(await request<MapResult>(`/cluster/${built.run_id}`), selected);
       }
     });
   // Spec F5: swap the side papers for the next-best backup papers; main and foundation stay.
@@ -136,12 +142,16 @@ export default function App() {
       );
     });
   // Spec E: Graph 1 (paper edges) is opened as soon as it is ready; Graph 2 (gaps) follows on that version.
-  const runStage = (map: MapResult, stage: "connections" | "gaps") => {
+  const runStage = (
+    map: MapResult,
+    stage: "connections" | "gaps",
+    papers: Paper[],
+  ) => {
     const runId = newRunId();
     setLive({
       runId,
       base: map,
-      papers: data?.papers ?? [],
+      papers,
       question: map.question,
       title:
         stage === "connections" ? "Graph 1: finding paper connections" : "Graph 2: finding research gaps",
@@ -157,29 +167,33 @@ export default function App() {
       timeout: (ws.config.run_timeout_s + 120) * 1000,
     }).finally(() => setLive(null));
   };
+  const analyzeMap = async (start: MapResult, papers: Paper[]) => {
+    let map = start;
+    if (!map.analysis?.completed_stages?.includes("connections")) {
+      setBusy("Finding paper connections (Graph 1)");
+      map = await runStage(map, "connections", papers);
+      await ws.open(map.run_id);
+      if (map.status === "partial") {
+        setNotice(
+          "Finished results were kept. The previous version stays active; open this unfinished version to continue the analysis.",
+        );
+        return;
+      }
+    }
+    setBusy("Graph 1 is ready to browse; finding research gaps (Graph 2)");
+    map = await runStage(map, "gaps", papers);
+    await ws.open(map.run_id);
+    setNotice(
+      map.status === "partial"
+        ? "Graph 1 was kept; Graph 2 did not finish. Run the analysis again to continue."
+        : "Graph 2 (research gaps) is ready. Switch to \"Graph 2 · Gaps\" to view it.",
+    );
+  };
   const analyze = () =>
     data &&
-    void operate("Finding paper connections (Graph 1)", async () => {
-      let map = data.map;
-      if (!map.analysis?.completed_stages?.includes("connections")) {
-        map = await runStage(map, "connections");
-        await ws.open(map.run_id);
-        if (map.status === "partial") {
-          setNotice(
-            "Finished results were kept. The previous version stays active; open this unfinished version to continue the analysis.",
-          );
-          return;
-        }
-      }
-      setBusy("Graph 1 is ready to browse; finding research gaps (Graph 2)");
-      map = await runStage(map, "gaps");
-      await ws.open(map.run_id);
-      setNotice(
-        map.status === "partial"
-          ? "Graph 1 was kept; Graph 2 did not finish. Run the analysis again to continue."
-          : "Graph 2 (research gaps) is ready. Switch to \"Graph 2 · Gaps\" to view it.",
-      );
-    });
+    void operate("Finding paper connections (Graph 1)", () =>
+      analyzeMap(data.map, data.papers),
+    );
   return (
     <DialogNotice.Provider value={notice}>
       <div className="app-shell">
@@ -218,24 +232,19 @@ export default function App() {
           </nav>
           <div className="header-actions">
             <button
+              className="text-button"
+              onClick={() => setDialog("new")}
+              disabled={!!busy}
+              title="Build a map for a new research question"
+            >
+              New map
+            </button>
+            <button
               className="text-button history-button"
               onClick={() => setDialog("versions")}
               disabled={!data || !!busy}
             >
               Versions
-            </button>
-            <button
-              className="text-button"
-              onClick={refresh}
-              disabled={
-                !data || !!busy || !editable || !data.map.backup_pool_size
-              }
-              title="Replace side-cluster papers with the top-ranked papers from the backup pool; the main and foundation clusters stay the same"
-            >
-              Swap papers
-              {data?.map.backup_pool_size
-                ? ` · ${data.map.backup_pool_size} in backup`
-                : ""}
             </button>
             <button
               className="primary-button analyze-button"
@@ -328,11 +337,11 @@ export default function App() {
             setTab={setTab}
             editable={editable}
             busy={!!busy}
-            onNew={() => setDialog("new")}
             onOperation={operate}
             onOpen={ws.open}
             timeout={(ws.config.run_timeout_s + 120) * 1000}
             live={live?.base ? { ...live, events } : null}
+            onSwap={refresh}
           />
         )}
         {data && (
@@ -422,22 +431,22 @@ function WorkspaceView({
   setTab,
   editable,
   busy,
-  onNew,
   onOperation,
   onOpen,
   timeout,
   live,
+  onSwap,
 }: {
   data: NonNullable<ReturnType<typeof useWorkspace>["data"]>;
   tab: Tab;
   setTab: (v: Tab) => void;
   editable: boolean;
   busy: boolean;
-  onNew: () => void;
   onOperation: (label: string, action: () => Promise<void>) => Promise<void>;
   onOpen: (id: string) => Promise<void>;
   timeout: number;
   live: (Live & { events: RunEvent[] }) | null;
+  onSwap: () => void;
 }) {
   // During an analysis or refresh the map shows the base version plus everything accepted so far (A2, A4).
   const map = live ? overlay(data.map, live.events) : data.map;
@@ -501,7 +510,6 @@ function WorkspaceView({
               setSelection(s);
               setMobile(false);
             }}
-            onNew={onNew}
             mobileOpen={mobile}
           />
           <LiteratureGraph
@@ -514,6 +522,8 @@ function WorkspaceView({
             search={search}
             onReview={() => setTab("review")}
             analysisHint
+            onSwap={onSwap}
+            swapDisabled={busy || !editable}
           />
           <Inspector
             map={map}
