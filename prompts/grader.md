@@ -56,4 +56,5 @@ specific relationship or testable hypothesis, abstention is accurate and appropr
 
 ## Output
 
-JSON matching the `Grade` schema.
+JSON matching the schema. Write `reasoning` first: explain each score against the papers, then give the
+three scores. `reasoning` is never empty.

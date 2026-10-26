@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 from typing import Literal
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 from litagent.config import CLUSTER_MAX_PAPER_FRACTION, CLUSTER_MAX_SINGLETON_FRACTION, Settings
 from litagent.integrations.llm import complete_json, load_prompt
@@ -88,10 +88,25 @@ def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: 
     return Grade.model_validate(draft.model_dump())
 
 
-def _explained_grade(pass_mark: int) -> type[Grade]:
+def _explained_grade(pass_mark: int) -> type[BaseModel]:
     """The model's grade must explain itself: a live grader once returned 0/0/0 with no reasoning or
-    fix, which would have triggered a costly redo. complete_json repairs such output once."""
-    class GradeDraft(Grade):
+    fix, which would have triggered a costly redo. complete_json repairs such output once.
+
+    `reasoning` comes first and has no default. When it came last with a default of "", Nemotron copied the
+    default: 3 of 4 failed grades returned scores with empty reasoning, and the repair repeated it (26 Oct).
+    """
+    class GradeDraft(BaseModel):
+        stage: Stage
+        reasoning: str = Field(min_length=1, description="Explain each score against the papers before scoring.")
+        accuracy: int = Field(ge=0, le=3)
+        appropriateness: int = Field(ge=0, le=3)
+        actionability: int = Field(ge=0, le=3)
+        fix: str | None = Field(None, description=f"Exactly one concrete fix when the total is below {pass_mark}.")
+
+        @property
+        def total(self) -> int:
+            return self.accuracy + self.appropriateness + self.actionability
+
         @model_validator(mode="after")
         def explained(self):
             if not self.reasoning.strip():
