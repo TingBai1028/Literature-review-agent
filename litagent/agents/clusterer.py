@@ -161,7 +161,7 @@ def group_by_threshold(similarity: np.ndarray, threshold: float) -> list[list[in
 
 def _text_for(paper: Paper, use_full_text: bool) -> str:
     if use_full_text and paper.full_text:
-        return paper.full_text  # TODO: long texts may need Meterless read_in_chunks first
+        return paper.full_text  # long texts are embedded in token chunks and averaged (integrations/embeddings.py)
     return f"{paper.title}. {paper.abstract or ''}"
 
 

@@ -3,8 +3,9 @@
 Loops:
 - No topic -> return a friendly prompt to the user.
 - Human review 1 or 2 not satisfied -> back to the Planner with the user's feedback.
-- Grading agent fails a stage -> redo that stage once with the grader's fix,
-  then continue with a warning (TODO: decide whether to ask the user instead).
+- Grading agent fails a stage -> redo that stage once with the grader's fix, then continue with a warning.
+  The run never stops to ask: a judge's /run must not wait for input. The warning travels with the result,
+  and in the web app the user acts on it (move papers, swap papers, run the analysis again).
 
 Bounds: replans and redos are capped in config.py. The run stops between stages once
 settings.run_timeout_s has passed, and before any LLM call once the effort level's token budget

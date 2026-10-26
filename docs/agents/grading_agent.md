@@ -10,9 +10,9 @@ Code: `litagent/agents/grader.py` · Prompt: `prompts/grader.md`
 3. **Tools:** LLM.
 4. **Memory to keep:** grades are recorded as World Model facts and in the trace.
 5. **Rubric (0–3 × 3):** accuracy · appropriateness · actionability, with stage-specific details in the prompt.
-6. **Stop conditions:** each stage gets one redo (`max_redo_per_stage`), then continues with a warning. TODO: or ask the user?
+6. **Stop conditions:** each stage gets one redo (`max_redo_per_stage`), then continues with a warning. It never stops to ask the user: a judge's `/run` must not wait for input. The warning travels with the result, and in the web app the user acts on it (move or swap papers, run the analysis again).
 7. **Run log:** score per criterion, pass/fail, fix.
-8. **Guardrails:** sees the output and the evidence, not the producing agent's reasoning. TODO: try a different model from the producing agents.
+8. **Guardrails:** sees the output and the evidence, not the producing agent's reasoning. It uses the same model family as the producers (Nemotron 3 Ultra), in a separate context with its own answer-memory scope; a grader from a different model family is listed under next steps in the README.
 
 Question maps include the research question, cluster roles and selected source evidence.
 The producer's per-paper reasons and alternate scores are excluded from the grader input.
@@ -24,7 +24,7 @@ Each model call uses an isolated
 Nightshift H-MEM scope. See [main/side behavior](../main-side-clusters.md).
 
 **Input:** stage, output, papers · **Output:** `Grade`
-**Owner:** TODO · **Status:** Source-based grading, size diagnostics, sample mode and World Model recording implemented.
+**Owner:** Ting Bai and Xin Tian · **Status:** Source-based grading, size diagnostics, sample mode and World Model recording implemented.
 
 **Explained grades (26 Oct).** A live grader once returned 0/0/0 with empty reasoning and no fix, which
 was counted as a failure and triggered an expensive redo. The model's grade is now validated: reasoning

@@ -1,5 +1,7 @@
 # Build prompts for Claude Code
 
+> **Historical record.** These are the prompts used to build the first version of the project (22–24 October 2026), kept for the record. Their TODOs describe that moment and have since been built, decided or listed under Limitations in the README; the current state is in the README and `docs/agents/`.
+
 Paste these one at a time, in this order. Each step depends on the one before.
 `CLAUDE.md` in the repo root already gives Claude Code the project rules, so the prompts stay short.
 The hackathon technical-requirements prompt (Nightshift, Zetaris, `/run`, sample mode, logs, Docker) has already been applied.

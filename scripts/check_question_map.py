@@ -1,4 +1,4 @@
-"""Run the question-aware cluster stage on saved papers; no retrieval or later TODO stages.
+"""Run the question-aware cluster stage on saved papers; no retrieval, connections or gaps.
 
 python scripts/check_question_map.py --question "How does LoRA improve low-resource machine translation?"
 """
