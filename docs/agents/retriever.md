@@ -45,4 +45,4 @@ The UI offers two modes; the older levels stay accepted for saved maps and scrip
 **Open question:** institutional access via school login. Check the university's licence terms (publishers usually forbid automated bulk downloading). Safer alternative: signed-in users upload PDFs they already have.
 
 **Input:** `SearchPlan` · **Output:** `list[Paper]`, `RetrievalSummary`
-**Owner:** TODO · **Status:** OpenAlex, arXiv and Semantic Scholar working (mocked tests; live checks 26 Oct: OpenAlex and arXiv returned results, keyless Semantic Scholar returned 429); LLM summary checked on Nightshift; web Human review 1 via `POST /search`
+**Owner:** Ting Bai and Xin Tian · **Status:** OpenAlex, arXiv and Semantic Scholar working (mocked tests; live checks 26 Oct: OpenAlex and arXiv returned results, keyless Semantic Scholar returned 429); LLM summary checked on Nightshift; web Human review 1 via `POST /search`

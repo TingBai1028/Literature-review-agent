@@ -53,7 +53,7 @@ The first real runs of the evaluation exposed problems that are now fixed and co
 ## Human evaluation (pending)
 
 - **Cluster pairs:** 23 blind pairs in [`evals/cluster-review-low-resource.json`](../evals/cluster-review-low-resource.json). Annotate with `python scripts/annotate_cluster_pairs.py evals/cluster-review-low-resource.json --reviewer NAME`, then score with `python scripts/review_clusters.py --report logs/clusters-20261025-071713-a7873c.json --annotations evals/cluster-review-low-resource.json`.
-- **Connections and gaps:** the active map `20261026-012712-f7888b` has a 7-item queue on the map's 人工验收 page (1 connection, 6 gap candidate pairs, model decisions hidden by default). Seven judgments recorded on the earlier version `20261025-230430-c3fbbf` are kept with that version.
+- **Connections and gaps:** the active map `20261026-012712-f7888b` has a 7-item queue on the map's Human review page (1 connection, 6 gap candidate pairs, model decisions hidden by default). Seven judgments recorded on the earlier version `20261025-230430-c3fbbf` are kept with that version.
 
 ## Reproduce
 

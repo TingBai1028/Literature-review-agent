@@ -1,4 +1,4 @@
-"""A noninteractive, single-pass clustering checkpoint independent of later TODO agents."""
+"""A noninteractive, single-pass clustering checkpoint: the question map, before the Connection and Gap finders run."""
 
 from __future__ import annotations
 

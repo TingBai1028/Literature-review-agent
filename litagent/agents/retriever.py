@@ -87,10 +87,9 @@ def retrieve_pool(plan: SearchPlan, settings: Settings, signed_in: bool = False)
     if not results:
         raise RetrievalError("Every search failed: " + " | ".join(dict.fromkeys(failures)))
 
-    if signed_in:
-        # TODO: institutional access. Check your university's licence terms first:
-        # publisher licences usually forbid automated bulk downloading.
-        pass
+    # Signed in, search results also include papers that are not open access (metadata only). Their full text is
+    # never downloaded: publisher licences usually forbid automated bulk downloading, so institutional access is
+    # deliberately not supported.
 
     found_total = sum(len(r) for r in results)
     merged = merge_ranked(results)

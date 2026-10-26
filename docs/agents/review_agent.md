@@ -1,7 +1,7 @@
 # Independent finding Review Agent
 
 Code: `litagent/agents/review_agent.py`; prompt: `prompts/review_agent.md`.
-The map's **人工验收** page includes **AI 自动评分** and **查看已有评分**.
+The map's **Human review** page includes **AI grading** and **Show existing grades**.
 The former assesses the current version's queue; the latter only reads a saved report.
 Opening the review page does not call the model or reveal its judgments automatically.
 

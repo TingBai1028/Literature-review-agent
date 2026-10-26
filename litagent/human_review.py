@@ -41,7 +41,8 @@ class RequestReviewer(AutoApproveReviewer):
 
 
 class CLIReviewer:
-    """Asks in the terminal. TODO: replace with the front end (chat box + thumbs up/down)."""
+    """Asks in the terminal, for the command line (`python -m litagent`). The web app has its own review steps:
+    the paper list after a search (Human review 1) and the Human review tab of the map (Human review 2)."""
 
     def review_papers(self, summary: RetrievalSummary) -> HumanFeedback:
         print("\n=== Human review 1: papers found ===")

@@ -281,11 +281,12 @@ def load_world(run_id: str, directory: str) -> WorldModel | None:
 
 
 def read_in_chunks(text: str, task: str) -> str:
-    """Markovian engine: read a long full-text paper in chunks, carrying compressed state forward.
+    """Adapter point for the Meterless Markovian engine: read a long paper in chunks, carrying compressed state forward.
 
-    Used at High / Ultra effort. TODO: replace with the Meterless Markovian engine.
+    Not connected, and nothing calls it. Pro / High / Ultra instead read open-access PDF text and give the agents the
+    passages closest to the question (litagent/tools/fulltext.py); see Limitations in the README.
     """
-    raise NotImplementedError("TODO: connect the Meterless Markovian engine")
+    raise NotImplementedError("The Meterless Markovian engine is not connected")
 
 
 def _log(action: str, decision: str, why: str) -> None:

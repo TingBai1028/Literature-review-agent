@@ -14,7 +14,8 @@ If the paper store or Zetaris fails during a run, the store falls back to the in
 papers it was given, records why in `fallback_reason` (the orchestrator turns it into a warning),
 and logs it, so one sponsor outage doesn't break the run. In sample mode only the in-memory copy is used.
 
-TODO (stretch goal): join the user's own library (uploaded PDFs / reference export) as a second source.
+Not built (stretch goal): joining the user's own library (uploaded PDFs or a reference-manager export) as a second
+source in the same Zetaris query.
 """
 
 from __future__ import annotations
