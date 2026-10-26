@@ -259,6 +259,13 @@ def role_clusters(papers: list[Paper], texts: list[str], similarity: np.ndarray,
     for pid, values in paper_keywords(papers, settings.paper_keyword_limit).items():
         details[pid].keywords = values
     plan = assign_roles(papers, similarity, query_scores, [details[p.id].relevance for p in papers], settings)
+    if trace := current_trace():
+        groups = [("MAIN", "main", plan.main)] + ([("FOUNDATION", "foundation", plan.foundation)] if plan.foundation else [])
+        groups += [(f"side-{n}", "side", g) for n, g in enumerate(plan.sides, 1)]
+        trace.log("clusterer", "group papers", f"{len(groups)} clusters", phase="partial_result",
+                  message=f"Clusterer: grouped {len(papers)} papers into {len(groups)} clusters; naming them next",
+                  payload={"clusters": [{"id": cid, "kind": kind, "paper_ids": [papers[i].id for i in g]}
+                                        for cid, kind, g in groups]})
     side_reason = (f"Side: papers outside main and foundation, grouped by content similarity "
                    f"({settings.side_linkage} linkage at {settings.side_similarity_threshold}).")
     roles = [("main", "MAIN", plan.main, plan.main_reason)]
@@ -277,4 +284,9 @@ def role_clusters(papers: list[Paper], texts: list[str], similarity: np.ndarray,
         members = [papers[i] for i in group]
         clusters.append(QuestionCluster(id=cid, kind=kind, question=question, label=label.label, rationale=label.rationale,
             role_reason=reason, paper_ids=[p.id for p in members], paper_details=[details[p.id] for p in members]))
+    if trace := current_trace():
+        trace.log("clusterer", "name clusters", f"{len(clusters)} labels", phase="partial_result",
+                  message="Clusterer: named the clusters; main is " + clusters[0].label,
+                  payload={"clusters": [{"id": c.id, "kind": c.kind, "label": c.label, "paper_ids": c.paper_ids,
+                                         "role_reason": c.role_reason} for c in clusters]})
     return attach_alternatives(clusters, papers, similarity, settings)

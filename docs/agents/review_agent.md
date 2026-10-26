@@ -5,6 +5,17 @@ The map's **人工验收** page includes **AI 自动评分** and **查看已有�
 The former assesses the current version's queue; the latter only reads a saved report.
 Opening the review page does not call the model or reveal its judgments automatically.
 
+## Agent Loop Spec
+
+1. **Goal:** Score each connection claim or gap hypothesis independently, for the human reviewer, without seeing other verdicts.
+2. **Plan (≤5 steps):** `[code]` build the review queue from the map version → `[code]` skip items with no claim (`needs_hypothesis`) or no source text → `[LLM]` score source support, relevance and testability with quoted spans → `[LLM]` check the explanation sentence by sentence against each paper → `[code]` save a separate report.
+3. **Tools:** `complete_json` with its own token budget (`review_agent_token_budget`) and time limit.
+4. **Memory kept:** a model-only report per map version, separate from human annotations and stage grades.
+5. **Rubric (0–3 × 3):** original-source support, research-question relevance, testability (table below).
+6. **Stop conditions:** budget or time limit → keep the finished items and report the rest as not assessed.
+7. **Run log:** each item's decision and reason in its own trace.
+8. **Guardrails:** never sees human labels, earlier model verdicts or producer reasoning; at most `review_agent_max_items` items.
+
 The existing pipeline grader scores an entire stage. This Agent separately reviews each
 explicit Connection claim or Gap hypothesis with three 0–3 dimensions:
 

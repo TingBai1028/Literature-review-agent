@@ -5,6 +5,22 @@ Prompts: `prompts/connection_finder.md`, `prompts/connections_verify.md`.
 
 **Status:** Real source-grounded implementation plus offline sample branch.
 
+## Agent Loop Spec
+
+1. **Goal:** Link papers (never clusters) with edges a human can read: a relation type, a one-sentence reason, a longer reason and the evidence it rests on.
+2. **Plan (≤5 steps):**
+   1. `[code]` Select candidate pairs: main-cluster pairs first, then pairs where one paper cites the other, then by cosine, within per-paper and per-cluster caps.
+   2. `[LLM]` For each pair, choose a relation and write `reason_short`, `reason_long`, evidence notes and span references from both papers, or abstain.
+   3. `[code]` Copy the verbatim quotes from the selected spans; reject a citation claim the reference lists contradict.
+   4. `[LLM]` Independent critic: supported, generic or insufficient; a generic reason is rewritten once with the critic's feedback.
+   5. `[code]` Orient the edge (source → target), add citation notes, write edges to the world model; the `[LLM]` grading agent scores the stage.
+3. **Tools:** `complete_json` (producer and critic, separate Nightshift scopes) → payload → validated decisions → one repair, then `LLMError`; OpenAlex reference lists already stored on each paper.
+4. **Memory kept:** accepted edges and their dependencies → world model and map version; every decision (accepted, abstained, rejected, rewritten) → analysis audit; completed tasks → task cache.
+5. **Rubric (0–3 × 3):** accuracy (every clause supported by both quotes), appropriateness (a specific, non-generic relation), actionability (the reason tells a reader why to read both papers); see `prompts/grader.md`.
+6. **Stop conditions:** generic after one rewrite → drop; grade < 7/9 → redo once with the fix → continue with a warning. Abstaining is a valid result.
+7. **Run log:** selected pairs and why, critic verdicts, rewrites; progress events `start`, `partial_result` (accepted edges) and `done`.
+8. **Guardrails:** caps on pairs (4 within, 4 between, 2 per paper); bounded repair; a quote from one paper never supports a claim about the other; time limit and token budget checked before every call.
+
 1. Reuse the Clusterer's original similarity matrix and original source fields.
 2. Exclude title-only/insufficient-text records and detected duplicate studies (DOI/title).
 3. Select bounded within-cluster and between-cluster paper pairs (code), main-cluster pairs first, then

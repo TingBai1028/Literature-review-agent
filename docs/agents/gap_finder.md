@@ -5,6 +5,17 @@ Prompts: `prompts/gap_finder.md` (gap writer), `prompts/gap_coverage.md` (covera
 `prompts/gap_grader.md` (grading agent), `prompts/gap_explicit.md` (optional explicit gaps).
 Settings: `gap_*` fields in `litagent/config.py`.
 
+**Agent Loop Spec**
+
+1. **Goal:** Find pairs of related papers in one cluster that nothing has combined yet, each with a quote from both papers, checked against a literature search and labelled.
+2. **Plan (≤5 steps):** `[code]` candidate generator (similarity band, citation checks, cap) → `[LLM]` gap writer (claim, grounds, warrant; `[code]` checks the quotes) → `[code]` coverage search + `[LLM]` coverage judge → `[LLM]` grading agent labels (`[code]` keeps novel and known_open, ranks, caps) → `[code]` write gaps to the world model.
+3. **Tools:** `search_openalex` / `search_semantic_scholar` → query → papers → one attempt with a deadline; failure marks the gap `unavailable`. `complete_json` → payload → validated JSON → one repair.
+4. **Memory kept:** gaps and dependencies → world model and map version; every kept or dropped item → trace; completed tasks → task cache (coverage expires after a day).
+5. **Rubric (0–3 × 3):** accuracy (claim matches both quotes), appropriateness (a real, non-trivial gap not already filled), actionability (a researcher could start from it); see `prompts/grader.md`.
+6. **Stop conditions:** a gap the grading agent flags is rewritten once, then dropped; stage grade < 7/9 → redo once with the fix → continue with a warning.
+7. **Run log:** one line per item per stage (stage, gap id, decision, reason); progress events `start`, `partial_result` (gaps per cluster) and `done`.
+8. **Guardrails:** at most `gap_max_per_cluster × 3` candidates per cluster reach the LLM; time limit and token budget checked before every call; failed searches are never treated as evidence of a gap.
+
 ## 1. Definition of a gap
 
 A gap is a pair of papers in the same cluster that are close enough to plausibly combine, but

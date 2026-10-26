@@ -57,6 +57,7 @@ def retrieve(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> l
         raise ValueError(f"retrieval_sources must be a non-empty subset of {sorted(SOURCES)}; got {sorted(unknown)}")
     results: list[list[Paper]] = []
     failures: list[str] = []
+    fetched = 0
     for query in plan.queries:
         for source in settings.retrieval_sources:
             search = globals()[SOURCES[source]]  # looked up per call so tests can replace a source
@@ -67,7 +68,10 @@ def retrieve(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> l
                 _log(f"search {source}", "failed", query, "next search", str(e))
                 continue
             results.append(found)
-            _log(f"search {source}", f"{len(found)} papers", query, "next search")
+            fetched += len(found)
+            _log(f"search {source}", f"{len(found)} papers", query, "next search", phase="partial_result",
+                 message=f"Retriever: {fetched} papers fetched so far ({source})",
+                 payload={"papers_fetched": fetched, "target": plan.max_papers, "paper_ids": [p.id for p in found]})
     if not results:
         raise RetrievalError("Every search failed: " + " | ".join(dict.fromkeys(failures)))
 
@@ -309,9 +313,9 @@ def _plain_summary(facts: dict) -> str:
             f"{facts['reviews']} reviews and {facts['original_studies']} original studies.")
 
 
-def _log(action: str, decision: str, result=None, next_step: str = "", why: str = "") -> None:
+def _log(action: str, decision: str, result=None, next_step: str = "", why: str = "", **event) -> None:
     if trace := current_trace():
-        trace.log("retriever", action, decision, result, next_step, why)
+        trace.log("retriever", action, decision, result, next_step, why, **event)
 
 
 def _sample_papers(plan: SearchPlan) -> list[Paper]:

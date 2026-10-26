@@ -57,8 +57,13 @@ def run_pipeline(
         def finish(r: RunResult) -> RunResult:
             r.usage = meter.usage
             trace.log("orchestrator", "finish", r.status, meter.usage, "return result",
-                      why=f"{meter.usage.total:,} of {budget:,} tokens in {meter.usage.llm_calls} LLM calls")
+                      why=f"{meter.usage.total:,} of {budget:,} tokens in {meter.usage.llm_calls} LLM calls",
+                      phase="done", terminal=True, message=f"Run finished: {r.status}")
             return r
+
+        def mark(agent: str, phase: str, message: str, payload=None) -> None:
+            """Progress event at an agent's start or end (spec A1)."""
+            trace.log(agent, "start" if phase == "start" else "finished", phase, phase=phase, message=message, payload=payload)
 
         deadline = time.monotonic() + settings.run_timeout_s
         stage = "orchestrator"
@@ -79,18 +84,22 @@ def run_pipeline(
                 # ----- 1. Planner -----
                 stage = "planner"
                 check_time(stage)
+                mark("planner", "start", "Planner: turning the question into searches")
                 planned = planner.plan(question, effort, settings, feedback, previous_plan)
                 if planned.status == "need_topic" or planned.plan is None:
-                    trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic")
+                    trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic",
+                              phase="done", message="Planner: no clear topic, asking you for one")
                     return finish(RunResult(run_id=trace.run_id, status="need_topic", message_to_user=planned.message_to_user))
                 plan = previous_plan = planned.plan
                 world.start_attempt(attempt, question, plan.queries)
                 trace.log("planner", f"plan (attempt {attempt})", "plan created", plan, "retriever",
                           why=f"{plan.rationale or 'no rationale given'}; defaults used: {plan.used_defaults}")
+                mark("planner", "done", f"Planner: {len(plan.queries)} search queries, up to {plan.max_papers} papers")
 
                 # ----- 2. Retriever -> Zetaris -----
                 stage = "retriever"
                 check_time(stage)
+                mark("retriever", "start", f"Retriever: searching for up to {plan.max_papers} papers")
                 papers = retriever.retrieve(plan, settings, signed_in=signed_in)
                 if not papers:
                     message = retriever.no_results_message(plan)
@@ -98,6 +107,7 @@ def run_pipeline(
                     return finish(RunResult(run_id=trace.run_id, status="no_results", plan=plan, message_to_user=message))
                 store.save_papers(papers)
                 world.add_papers(papers)
+                mark("retriever", "done", f"Retriever: kept {len(papers)} papers", {"paper_ids": [p.id for p in papers]})
                 trace.log("retriever", "retrieve", f"{len(papers)} papers", next_step="human review 1",
                           why="sample papers from data/sample/" if settings.sample_mode else f"queries: {plan.queries}")
 
@@ -120,6 +130,7 @@ def run_pipeline(
                 # ----- 3. Clusterer + grading -----
                 stage = "clusterer"
                 check_time(stage)
+                mark("clusterer", "start", f"Clusterer: grouping {len(papers)} papers")
                 artifacts = ClusteringArtifacts()
                 result.clusters = _graded_stage(
                     "clusters", lambda fix: clusterer.cluster(papers, effort, settings, fix,
@@ -127,28 +138,35 @@ def run_pipeline(
                     papers, settings, trace, result, world
                 )
                 world.write_clusters(result.clusters)
+                mark("clusterer", "done", f"Clusterer: {len(result.clusters)} clusters",
+                     {"clusters": [{"id": c.id, "kind": getattr(c, "kind", None), "label": c.label, "paper_ids": c.paper_ids}
+                                   for c in result.clusters]})
                 finding_context = FindingContext(question=plan.question, similarity=artifacts.similarity,
                     use_full_text=EFFORT_PROFILES[effort].use_full_text, deadline=deadline)
 
                 # ----- 4. Connection finder + grading -----
                 stage = "connection_finder"
                 check_time(stage)
+                mark("connection_finder", "start", "Connection finder: linking papers (Graph 1)")
                 result.connections = _graded_stage(
                     "connections",
                     lambda fix: connection_finder.find_connections(papers, result.clusters, settings, fix, context=finding_context),
                     papers, settings, trace, result, world, finding_context=finding_context,
                 )
                 world.write_connections(result.connections)
+                mark("connection_finder", "done", f"Connection finder: {len(result.connections)} edges (Graph 1)")
 
                 # ----- 5. Gap finder + grading -----
                 stage = "gap_finder"
                 check_time(stage)
+                mark("gap_finder", "start", "Gap finder: looking for research gaps (Graph 2)")
                 result.gaps = _graded_stage(
                     "gaps",
                     lambda fix: gap_finder.find_gaps(papers, result.clusters, result.connections, settings, fix, context=finding_context),
                     papers, settings, trace, result, world, finding_context=finding_context,
                 )
                 world.write_gaps(result.gaps)
+                mark("gap_finder", "done", f"Gap finder: {len(result.gaps)} gaps (Graph 2)")
                 result.paper_map = world.to_graph_json()
 
                 # ----- Human review 2 -----
@@ -176,7 +194,7 @@ def run_pipeline(
             return finish(partial)
         except (LLMError, OpenAIError) as e:
             if result is None:  # nothing finished worth returning yet
-                trace.error(stage, "run stage", e, next_step="return error to caller")
+                trace.error(stage, "run stage", e, next_step="return error to caller", terminal=True)
                 raise
             reason = f"Model provider failed during {stage} ({type(e).__name__})"
             trace.error(stage, "run stage", e, next_step="return partial result")
@@ -185,7 +203,7 @@ def run_pipeline(
             result.warnings.append(f"{reason}; returning what was finished. Run again for the remaining stages.")
             return finish(result)
         except Exception as e:
-            trace.error(stage, "run stage", e, next_step="return error to caller")
+            trace.error(stage, "run stage", e, next_step="return error to caller", terminal=True)
             raise
 
 

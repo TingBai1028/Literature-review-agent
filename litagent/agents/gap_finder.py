@@ -167,7 +167,13 @@ class _Run:
             if fixes:  # One rewrite per flagged gap, as the orchestrator does for a failed stage.
                 retried = self.write(cluster, [c for c in mine if c["gap_id"] in fixes], fixes)
                 kept += self.grade(cluster, self.coverage(retried), final=True)[0]
-            gaps += self.rank(kept)
+            ranked = self.rank(kept)
+            gaps += ranked
+            if (trace := current_trace()) and ranked:
+                trace.log("gap_finder", "gaps", f"{len(ranked)} in {cluster.id}", phase="partial_result",
+                          message=f"Gap finder: {len(gaps)} gaps so far",
+                          payload={"gaps": [{"id": g.id, "cluster_id": g.cluster_id, "paper_ids": g.between_paper_ids,
+                                             "description": g.description, "label": g.label} for g in ranked]})
         audit = FindingAudit(stage="gaps", candidate_pairs=len(candidates))
         for gid, outcome in self.outcomes.items():
             accepted = outcome.get("decision") == "accepted"

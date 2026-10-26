@@ -316,10 +316,12 @@ def _generate_child(source, state, arrays, output, plan, keys, cfg) -> ClusterMa
             trace.log("clusterer", "save regenerated version", child.status,
                       result={"parent": source.run_id, "relabelled": plan.relabel_cluster_ids,
                               "reused_labels": plan.reused_label_cluster_ids, "pending_stages": pending},
-                      why="Original snapshot retained; alternatives recomputed for every paper; no embedding call")
+                      why="Original snapshot retained; alternatives recomputed for every paper; no embedding call",
+                      phase="done", terminal=True, message=f"Regenerated version saved ({child.status})")
             return child
         except Exception as error:
-            trace.error("clusterer", "regenerate selected papers", error, next_step="keep source version active")
+            trace.error("clusterer", "regenerate selected papers", error, next_step="keep source version active",
+                        terminal=True)
             raise
 
 

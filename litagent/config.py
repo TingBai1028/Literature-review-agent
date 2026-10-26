@@ -113,6 +113,10 @@ class Settings:
 
     # Whole run: stop between stages and return a partial result after this many seconds
     run_timeout_s: float = field(default_factory=lambda: float(os.getenv("RUN_TIMEOUT_S", "600")))
+    # Live progress events (GET /runs/{run_id}/events): how long to wait for a subscribed run to start,
+    # and how long past run_timeout_s to keep streaming before giving up
+    event_stream_wait_s: float = 60.0
+    event_stream_grace_s: float = 300.0
 
     # Retriever ranking: share of relevance vs citations per year (team decision, 24 Oct). It only orders the
     # papers already chosen by relevance; citations never bring an off-topic paper into the list (26 Oct).
