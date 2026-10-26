@@ -31,7 +31,7 @@ labels its synthetic similarities, groupings and findings.
 
 ## Use the map
 
-1. Choose a saved version, or **New map**. Two sources are available:
+1. Choose a saved version, or **New map** (top bar) for another research question. Two sources are available:
    - **Search online** (default): type a research question (years, citation counts or paper type
      can be stated in it) and a mode: **Fast** (retrieve ~300, show the best 50) or **Pro**
      (~1,000, show 50, read full text). `POST /search` runs the Planner and retrieval, ranks
@@ -51,11 +51,13 @@ labels its synthetic similarities, groupings and findings.
    remembered per map lineage, so Graph 1, Graph 2 and refreshed versions keep papers in place. On a phone,
    topic navigation and the inspector show full labels; the overview omits dense labels.
    Drag the map with a finger and use the zoom controls to inspect individual nodes.
-3. **Run analysis** shows Graph 1 (paper-to-paper edges) as soon as it is ready, then adds Graph 2
-   (research gaps) on the same positions. Hover an edge for its one-line reason; click it for the
-   longer reason, evidence and similarity. Edges always join two papers. Empty gap output is valid
-   and does not prove no gap exists. **Swap papers** swaps the side papers for the next-best papers
-   of the backup pool; main and foundation stay.
+3. A new map continues on its own: Graph 1 (paper-to-paper edges) appears as soon as it is ready,
+   then Graph 2 (research gaps) is added on the same positions. **Run analysis** continues an
+   unfinished analysis or analyses an older version. Hover an edge for its one-line reason; click it
+   for the longer reason, evidence and similarity. Edges always join two papers. Empty gap output is
+   valid and does not prove no gap exists. **Swap papers** (map toolbar, with the backup pool's size)
+   swaps the side papers for the next-best papers of the backup pool; main and foundation stay.
+   The icon beside the zoom buttons shows the whole map again (default zoom and position, all elements).
 4. Select an eligible side-cluster target, **Preview move**, then explicitly apply the preview.
    Main and foundation papers stay fixed. The server validates the final simultaneous membership.
 5. **Versions** lets you inspect old versions or explicitly set a completed version as current.

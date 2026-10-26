@@ -1,4 +1,4 @@
-import { Search, Info, Plus, MoreHorizontal } from "lucide-react";
+import { Search, Info, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import type { Cluster, Paper, Selection } from "../types";
 export const colors = [
@@ -24,7 +24,6 @@ export function TopicSidebar({
   onSelect,
   search,
   onSearch,
-  onNew,
   mobileOpen,
 }: {
   clusters: Cluster[];
@@ -33,7 +32,6 @@ export function TopicSidebar({
   onSelect: (s: Selection) => void;
   search: string;
   onSearch: (s: string) => void;
-  onNew: () => void;
   mobileOpen: boolean;
 }) {
   const [all, setAll] = useState(false);
@@ -57,14 +55,6 @@ export function TopicSidebar({
     >
       <div className="sidebar-heading">
         <h2>Topics</h2>
-        <button
-          className="icon-button"
-          aria-label="New map"
-          title="New map from paper records"
-          onClick={onNew}
-        >
-          <Plus size={18} />
-        </button>
       </div>
       <label className="search-field">
         <Search size={17} />

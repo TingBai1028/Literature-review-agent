@@ -397,6 +397,39 @@ h3 {
 .paper-node:focus-visible {
   outline: none;
 }
+/* Map elements show their own selected and focus states instead of the browser's box around their bounds */
+.map-svg [data-interactive]:focus {
+  outline: none;
+}
+.map-svg path[data-interactive]:focus-visible {
+  stroke-opacity: 0.9;
+  stroke-width: 2.5;
+}
+.gap-marker {
+  cursor: pointer;
+}
+.gap-marker:hover circle,
+.gap-marker:focus-visible circle {
+  stroke-width: 2.5;
+}
+.gap-marker.selected circle {
+  fill: #a86e3c;
+  stroke-width: 2.5;
+}
+.gap-marker.selected text {
+  fill: #fff;
+  font-weight: 700;
+}
+.gap-marker.selected line {
+  stroke-width: 3.5;
+  stroke-dasharray: 5 4;
+}
+.graph-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 .paper-node:focus-visible circle:last-child,
 .paper-node:hover circle:last-child {
   stroke: #244c3e;
@@ -1687,6 +1720,7 @@ blockquote {
   /* The caption above the map shows the selected (or main) cluster's full name */
   .topic-graph-label,
   .main-graph-label,
+  .label-leader,
   .hint-label {
     display: none;
   }
