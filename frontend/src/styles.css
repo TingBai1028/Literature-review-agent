@@ -1747,3 +1747,16 @@ blockquote {
   flex: 1 1 260px;
   margin: 0;
 }
+.edge-tooltip {
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: rgba(32, 52, 46, 0.92);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.evidence-notes {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+}

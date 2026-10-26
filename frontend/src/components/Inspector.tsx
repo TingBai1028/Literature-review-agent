@@ -10,6 +10,13 @@ import type {
   Paper,
   Selection,
 } from "../types";
+const relationNames: Record<string, string> = {
+  builds_on: "延续 / 扩展",
+  same_method_different_domain: "同方法 · 不同领域",
+  same_problem_different_method: "同问题 · 不同方法",
+  benchmarks_against: "对比 / 基准",
+  directly_cites: "直接引用",
+};
 function SourceQuotes({
   evidence,
   papers,
@@ -269,14 +276,33 @@ export function Inspector({
         </>
       ) : connection ? (
         <>
-          <h3 className="finding-title">{connection.description}</h3>
+          <h3 className="finding-title">
+            {connection.reason_short ?? connection.description}
+          </h3>
           <p className="muted small">
+            {relationNames[connection.relation ?? ""] ?? "关联"} ·{" "}
             {connection.kind === "within_cluster" ? "簇内关联" : "跨簇关联"} ·{" "}
             {map.sample_mode
               ? "样例占位结果"
               : "通过独立原文核验，仍需人工审阅"}
           </p>
+          {connection.reason_long && <p>{connection.reason_long}</p>}
+          {!!connection.evidence_notes?.length && (
+            <section className="inspector-section">
+              <h3>依据</h3>
+              <ul className="evidence-notes">
+                {connection.evidence_notes.map((note) => (
+                  <li key={note}>{note}</li>
+                ))}
+              </ul>
+            </section>
+          )}
           <SourceQuotes evidence={connection.evidence} papers={papers} />
+          {connection.similarity != null && (
+            <p className="muted small">
+              相似度 {connection.similarity.toFixed(2)}
+            </p>
+          )}
           <button className="secondary-button" onClick={onReview}>
             进入人工验收
           </button>

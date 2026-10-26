@@ -111,12 +111,9 @@ export function LiteratureGraph({
       ? selection.id === c.id
       : selection?.type === "paper" && c.paper_ids.includes(selection.id),
   );
-  const hints =
-    selection?.type === "paper"
-      ? (map.clusters
-          .flatMap((c) => c.paper_details ?? [])
-          .find((d) => d.paper_id === selection.id)?.also_related ?? [])
-      : [];
+  // Edges link papers only (spec D1): paper-to-cluster similarity hints stay in the inspector, not on the map.
+  const [hovered, setHovered] = useState<string | null>(null);
+  const hoveredEdge = map.connections.find((c) => c.id === hovered);
   const edgeEnter = (event: React.KeyboardEvent, s: Selection) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -282,34 +279,6 @@ export function LiteratureGraph({
                   </g>
                 );
               })}
-              {(filter === "all" || filter === "main_side") &&
-                selection?.type === "paper" &&
-                hints.map((h) => {
-                  const start = point(selection.id);
-                  const end = layout.groups.find(
-                    (g) => g.c.id === h.cluster_id,
-                  );
-                  return start && end ? (
-                    <g key={h.cluster_id}>
-                      <line
-                        x1={start.x}
-                        y1={start.y}
-                        x2={end.x}
-                        y2={end.y}
-                        stroke="#a8b7b2"
-                        strokeDasharray="5 6"
-                        strokeWidth={1.2}
-                      />
-                      <text
-                        x={(start.x + end.x) / 2}
-                        y={(start.y + end.y) / 2 - 7}
-                        className="hint-label"
-                      >
-                        {h.similarity.toFixed(2)}
-                      </text>
-                    </g>
-                  ) : null;
-                })}
               {filter !== "gaps" &&
                 map.connections.map((c) => {
                   const a = point(c.paper_ids[0]),
@@ -334,13 +303,17 @@ export function LiteratureGraph({
                         data-interactive="true"
                         role="button"
                         tabIndex={0}
-                        aria-label={`查看关联：${c.description}`}
+                        aria-label={`查看关联：${c.reason_short ?? c.description}`}
                         x1={a.x}
                         y1={a.y}
                         x2={b.x}
                         y2={b.y}
                         stroke="transparent"
                         strokeWidth={14}
+                        onMouseEnter={() => setHovered(c.id)}
+                        onMouseLeave={() => setHovered(null)}
+                        onFocus={() => setHovered(c.id)}
+                        onBlur={() => setHovered(null)}
                         onClick={() =>
                           onSelect({ type: "connection", id: c.id })
                         }
@@ -448,6 +421,24 @@ export function LiteratureGraph({
                   );
                 }),
               )}
+              {hoveredEdge &&
+                (() => {
+                  const a = point(hoveredEdge.paper_ids[0]),
+                    b = point(hoveredEdge.paper_ids[1]);
+                  return a && b ? (
+                    <foreignObject
+                      x={(a.x + b.x) / 2 - 130}
+                      y={(a.y + b.y) / 2 + 10}
+                      width={260}
+                      height={90}
+                      pointerEvents="none"
+                    >
+                      <div className="edge-tooltip">
+                        {hoveredEdge.reason_short ?? hoveredEdge.description}
+                      </div>
+                    </foreignObject>
+                  ) : null;
+                })()}
             </g>
           </svg>
         )}
@@ -455,7 +446,7 @@ export function LiteratureGraph({
       <div className="graph-bottom">
         <div
           className="graph-legend"
-          title="节点位置用于分组浏览，不代表语义距离；数值提示才是相似度。簇内浅色细线表示归属。"
+          title="节点位置用于分组浏览，不代表语义距离。连线只连接论文：悬停看关联原因，点击看完整说明、依据和相似度。簇内浅色细线表示归属。"
         >
           <span>
             <i style={{ background: "#28584b" }} />
