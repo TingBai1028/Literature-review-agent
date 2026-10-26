@@ -264,7 +264,7 @@ export function LiteratureGraph({
                       }
                     >
                       {(main
-                        ? ["主簇 · 直接回答问题"]
+                        ? ["主簇 · 与主题最相关"]
                         : map.clusters.length > 19 &&
                             !selected &&
                             !(
