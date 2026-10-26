@@ -119,6 +119,9 @@ class Settings:
     # Per model request (rules: 30-90 s). 60 s cut off two of three real evaluation topics: Nightshift
     # latency spikes made a ~2k-token request take 62-68 s where it usually takes ~10 s (26 Oct).
     llm_timeout_s: float = 90.0
+    # Independent model calls sent at once (litagent/parallel.py). Nightshift served 8 concurrent requests without
+    # errors (26 Oct); 4 leaves headroom for latency spikes. 1 = one after another.
+    llm_concurrency: int = field(default_factory=lambda: int(os.getenv("LLM_CONCURRENCY", "4")))
 
     # Zetaris SQL requests (rules: 30-60 s)
     zetaris_timeout_s: float = 45.0

@@ -19,6 +19,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import threading
 import time
 import uuid
 from contextvars import ContextVar
@@ -59,6 +60,7 @@ class TokenMeter:
     def __init__(self, budget: int | None = None):
         self.usage = TokenUsage(budget=budget)
         self._token = None
+        self._lock = threading.Lock()  # parallel model calls add usage from several threads
 
     def __enter__(self) -> TokenMeter:
         self._token = _current_meter.set(self)
@@ -69,10 +71,11 @@ class TokenMeter:
             _current_meter.reset(self._token)
 
     def add(self, prompt_tokens: int, completion_tokens: int, estimated: bool = False) -> None:
-        self.usage.prompt_tokens += prompt_tokens
-        self.usage.completion_tokens += completion_tokens
-        self.usage.llm_calls += 1
-        self.usage.estimated_calls += int(estimated)
+        with self._lock:
+            self.usage.prompt_tokens += prompt_tokens
+            self.usage.completion_tokens += completion_tokens
+            self.usage.llm_calls += 1
+            self.usage.estimated_calls += int(estimated)
 
     def check(self) -> None:
         """Raise before a call once the budget is used up."""
