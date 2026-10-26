@@ -505,15 +505,21 @@ class _Run:
         return kept, fixes
 
     def rank(self, gaps: list[Gap]) -> list[Gap]:
-        """novel before known_open, inferred before explicit, then by similarity; capped per cluster."""
+        """Verified gaps first, then novel before known_open, inferred before explicit, then by similarity; capped
+        per cluster. A gap is verified when its coverage search ran and found nothing addressing it. Novelty without
+        that search is unverified (27 Oct recovery run: 23 of 31 gaps labelled novel, 15 with no completed search),
+        so such a gap keeps its label but ranks after every verified gap and is marked unverified."""
         cap = self.settings.gap_max_per_cluster
-        ordered = sorted(gaps, key=lambda g: (KEPT_LABELS.index(g.label), g.gap_type != "inferred", -(g.similarity or 0), g.id))
+        ordered = sorted(gaps, key=lambda g: (not novelty_verified(g), KEPT_LABELS.index(g.label),
+                                              g.gap_type != "inferred", -(g.similarity or 0), g.id))
         for g in ordered[cap:]:
             self.drop("grading", g.id, f"over the cap of {cap} gaps per cluster", label=g.label)
         for g in ordered[:cap]:
             self.outcomes[g.id]["decision"] = "accepted"
             self.outcomes[g.id]["reason"] = g.label_reason
-            self.keep("grading", g.id, f"labelled {g.label}: {g.label_reason}", label=g.label)
+            note = "" if novelty_verified(g) else f" (novelty unverified: coverage {g.coverage_status})"
+            self.keep("grading", g.id, f"labelled {g.label}{note}: {g.label_reason}", label=g.label,
+                      novelty_verified=novelty_verified(g))
         return ordered[:cap]
 
     # ----- trace -----
@@ -580,6 +586,11 @@ def _chunks(items: list, size: int) -> list[list]:
     """Small batches keep each model request well inside the 90 s limit (real run 26 Oct: a 15-candidate writer
     call took 82 s and the next timed out)."""
     return [items[i:i + size] for i in range(0, len(items), size)]
+
+
+def novelty_verified(gap: Gap) -> bool:
+    """The coverage search ran and found no paper addressing the gap; anything else leaves novelty unverified."""
+    return gap.coverage_status == "not_filled"
 
 
 def _failure(error: Exception) -> str:

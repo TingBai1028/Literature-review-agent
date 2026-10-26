@@ -365,6 +365,16 @@ export function Inspector({
                     known_open: "Known, still open",
                   } as Record<string, string>
                 )[gap.label] ?? gap.label}
+                {!map.sample_mode &&
+                  gap.label === "novel" &&
+                  gap.coverage_status !== "not_filled" && (
+                  <span
+                    className="gap-badge unverified"
+                    title="The coverage search did not run, so no search has checked whether this is already studied. Unverified gaps are listed after verified ones."
+                  >
+                    novelty unverified
+                  </span>
+                )}
               </>
             )}
           </p>
