@@ -12,6 +12,13 @@ def sequential_model_calls(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def private_search_cache(monkeypatch, tmp_path):
+    """Each test gets its own scholarly search cache. The real data/cache/scholarly-search.sqlite3 holds live
+    OpenAlex pages and daily-limit pauses (a real 429 on 27 Oct made a coverage test fail) and must not leak in."""
+    monkeypatch.setenv("SCHOLARLY_SEARCH_DB", str(tmp_path / "scholarly-search.sqlite3"))
+
+
+@pytest.fixture(autouse=True)
 def no_real_model_calls(monkeypatch):
     """Tests never reach Nightshift: .env may hold real credentials, and a call without a mock would spend tokens.
     Tests that need a model pass a fake client or mock complete_json in the module under test."""
