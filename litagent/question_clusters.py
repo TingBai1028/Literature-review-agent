@@ -20,7 +20,7 @@ from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_js
 from litagent.schemas import (ClusterAlternative, ClusterLabel, Evidence, Paper, PaperClusterDetail,
                              QuestionCluster, QuestionRelevanceBatch)
 from litagent.sample_data import sample_relevance, sample_similarity
-from litagent.similarity import SimilarityMatrices, cosine_matrix
+from litagent.similarity import SimilarityMatrices, cosine_matrix, nearest_pairs
 from litagent.trace import current_trace
 
 
@@ -265,7 +265,10 @@ def role_clusters(papers: list[Paper], texts: list[str], similarity: np.ndarray,
         trace.log("clusterer", "group papers", f"{len(groups)} clusters", phase="partial_result",
                   message=f"Clusterer: grouped {len(papers)} papers into {len(groups)} clusters; naming them next",
                   payload={"clusters": [{"id": cid, "kind": kind, "paper_ids": [papers[i].id for i in g]}
-                                        for cid, kind, g in groups]})
+                                        for cid, kind, g in groups],
+                           # Same pairs as GET /cluster/{id}/neighbors, so the live map lays papers out exactly as
+                           # the saved map will and nothing jumps when the run finishes.
+                           "neighbors": nearest_pairs([p.id for p in papers], similarity, 6)})
     side_reason = (f"Side: papers outside main and foundation, grouped by content similarity "
                    f"({settings.side_linkage} linkage at {settings.side_similarity_threshold}).")
     roles = [("main", "MAIN", plan.main, plan.main_reason)]

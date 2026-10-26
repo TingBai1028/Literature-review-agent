@@ -29,7 +29,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from litagent.config import EFFORT_PROFILES, Effort, Settings
 from litagent.cluster_preview import run_cluster_map
 from litagent import cluster_regeneration
-from litagent.events import stream_events
+from litagent.events import read_events, stream_events
 from litagent.finding_analysis import analyze_cluster_map
 from litagent.refresh import refresh_map
 from litagent.cluster_state import VersionError, path_for, version_lock
@@ -185,6 +185,15 @@ async def run_events(run_id: str, after: int = -1, settings: Settings = Depends(
     return StreamingResponse(stream_events(path, run_id, after, wait_s=settings.event_stream_wait_s,
                                            max_s=settings.run_timeout_s + settings.event_stream_grace_s),
                              media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@app.get("/runs/{run_id}/log")
+def run_log(run_id: str, after: int = -1, settings: Settings = Depends(get_settings)) -> Any:
+    """A run's events so far as JSON, for finished runs and the reasoning panel (spec B4)."""
+    if not re.fullmatch(RUN_ID_PATTERN, run_id):
+        return _error(None, 422, "InvalidInput", "Invalid run ID")
+    return {"run_id": run_id, "status": "success",
+            "output": {"events": read_events(Path(settings.logs_dir) / f"trace-{run_id}.jsonl", after)}}
 
 
 @app.get("/world/{run_id}")
