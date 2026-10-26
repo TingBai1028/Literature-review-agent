@@ -42,7 +42,7 @@ that both abstracts explicitly establish "full-parameter versus LoRA" therefore 
 one abstract only says SFT. Similarly a COMET proposal cannot justify a reported COMET score.
 
 issues must contain actionable source-attribution errors
-in concise Chinese, naming the paper and the incorrect statement and explaining the source
+in concise English, naming the paper and the incorrect statement and explaining the source
 correction. Return an empty issues list only when all factual attributions are consistent
 with the provided sources and properly bounded by their scope. Do not rewrite the review,
 choose a verdict, or invent scores. An error will trigger a bounded repair of the draft.

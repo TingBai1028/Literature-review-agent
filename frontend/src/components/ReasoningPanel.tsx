@@ -3,7 +3,7 @@ import { messageOf } from "../api";
 import { agentNames, fetchLog, isSetback, type RunEvent } from "../events";
 import type { MapResult, Versions } from "../types";
 
-const kindNames = { code: "代码", llm: "LLM", human: "人工" } as const;
+const kindNames = { code: "Code", llm: "LLM", human: "Human" } as const;
 const QUIET = new Set(["zetaris", "meterless_world_model"]);
 
 /** Spec B4/B5: each agent's run log as plain sentences, setbacks highlighted, raw data behind a details toggle.
@@ -47,15 +47,15 @@ export function ReasoningPanel({
   return (
     <main className="reasoning-panel">
       <header>
-        <h2>推理过程</h2>
+        <h2>Reasoning</h2>
         <p className="muted small">
-          每个代理的每一步：做了什么决定、为什么，以及这一步是代码还是
-          LLM。纠正、重试和回退以橙色标出。
+          Every step of every agent: what it decided, why, and whether the step was code or an
+          LLM. Corrections, retries and fallbacks are marked in orange.
         </p>
       </header>
       {error && <p className="inline-error">{error}</p>}
       {events === null && !live.length && (
-        <p className="muted">正在读取运行记录…</p>
+        <p className="muted">Loading the run log…</p>
       )}
       {agents.map((agent) => {
         const steps = all.filter((e) => e.agent === agent);
@@ -66,8 +66,8 @@ export function ReasoningPanel({
             <summary>
               <strong>{agentNames[agent] ?? agent}</strong>
               <span className="muted small">
-                {steps.length} 步 · {llm} 次 LLM 调用
-                {setbacks ? ` · ${setbacks} 处纠正、重试或回退` : ""}
+                {steps.length} steps · {llm} LLM calls
+                {setbacks ? ` · ${setbacks} corrections, retries or fallbacks` : ""}
               </span>
             </summary>
             <AgentSteps steps={steps} />
@@ -97,7 +97,7 @@ function AgentSteps({ steps }: { steps: RunEvent[] }) {
               : e.message}
           </span>
           <details className="raw">
-            <summary>详情</summary>
+            <summary>Details</summary>
             <pre>
               {JSON.stringify(
                 {
@@ -121,7 +121,7 @@ function AgentSteps({ steps }: { steps: RunEvent[] }) {
             className="text-button small"
             onClick={() => setLimit((n) => n + 100)}
           >
-            显示更多（还有 {steps.length - limit} 步）
+            Show more ({steps.length - limit} more steps)
           </button>
         </li>
       )}

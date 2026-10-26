@@ -53,17 +53,17 @@ export const fetchLog = (runId: string, signal?: AbortSignal) =>
   );
 
 export const agentNames: Record<string, string> = {
-  orchestrator: "协调",
-  planner: "规划代理",
-  retriever: "检索代理",
-  clusterer: "聚类代理",
-  connection_finder: "关联代理",
-  gap_finder: "研究空白代理",
-  grader: "评分代理",
-  review_agent: "审核代理",
-  human: "人工审核",
-  zetaris: "论文存储",
-  meterless_world_model: "世界模型",
+  orchestrator: "Orchestrator",
+  planner: "Planner",
+  retriever: "Retriever",
+  clusterer: "Clusterer",
+  connection_finder: "Connection finder",
+  gap_finder: "Gap finder",
+  grader: "Grader",
+  review_agent: "Review agent",
+  human: "Human review",
+  zetaris: "Paper store",
+  meterless_world_model: "World model",
 };
 
 /** Critiques, retries, fallbacks and errors are shown, not hidden (spec B5). */
@@ -100,7 +100,7 @@ export function buildingMap(
     ? source.map((c) => ({
         id: c.id,
         kind: c.kind,
-        label: c.label ?? "正在命名…",
+        label: c.label ?? "Naming…",
         paper_ids: c.paper_ids,
         rationale: "",
         role_reason: c.role_reason ?? null,
@@ -109,7 +109,7 @@ export function buildingMap(
         {
           id: "PENDING",
           kind: "side",
-          label: "正在分组…",
+          label: "Grouping…",
           paper_ids: papers.map((p) => p.id),
           rationale: "",
         },

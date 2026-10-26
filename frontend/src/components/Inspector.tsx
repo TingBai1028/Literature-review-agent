@@ -11,11 +11,11 @@ import type {
   Selection,
 } from "../types";
 const relationNames: Record<string, string> = {
-  builds_on: "延续 / 扩展",
-  same_method_different_domain: "同方法 · 不同领域",
-  same_problem_different_method: "同问题 · 不同方法",
-  benchmarks_against: "对比 / 基准",
-  directly_cites: "直接引用",
+  builds_on: "Builds on",
+  same_method_different_domain: "Same method · different domain",
+  same_problem_different_method: "Same problem · different method",
+  benchmarks_against: "Benchmarks against",
+  directly_cites: "Directly cites",
 };
 function SourceQuotes({
   evidence,
@@ -106,23 +106,23 @@ export function Inspector({
       : null;
   const card = map.cluster_cards?.find((c) => c.cluster_id === topic?.id);
   return (
-    <aside className="inspector" aria-label="详情与证据">
+    <aside className="inspector" aria-label="Details and evidence">
       <h2 className="inspector-heading">
         {paper
-          ? "论文详情"
+          ? "Paper details"
           : connection
-            ? "关联证据"
+            ? "Connection evidence"
             : gap
-              ? "研究假设"
+              ? "Hypothesis"
               : topic
-                ? "主题详情"
-                : "原文与研究证据"}
+                ? "Topic details"
+                : "Sources and evidence"}
       </h2>
       {paper ? (
         <>
           <h3 className="paper-title">{paper.title}</h3>
           <p className="paper-meta">
-            {paper.year ?? "年份未知"}
+            {paper.year ?? "Year unknown"}
             <span>·</span>
             {paper.source === "openalex" ? "OpenAlex" : paper.source}
           </p>
@@ -134,7 +134,7 @@ export function Inspector({
             </div>
           )}
           <section className="inspector-section">
-            <h3>原文证据</h3>
+            <h3>Source evidence</h3>
             {detail?.evidence.length ? (
               <div className="paper-evidence">
                 <SourceQuotes
@@ -146,11 +146,11 @@ export function Inspector({
             ) : paper.abstract ? (
               <blockquote>{paper.abstract}</blockquote>
             ) : (
-              <p className="muted">当前记录没有可供核验的摘要。</p>
+              <p className="muted">This record has no abstract to check.</p>
             )}
             {paper.abstract && (
               <details>
-                <summary>展开完整摘要</summary>
+                <summary>Show full abstract</summary>
                 <p className="original-text">{paper.abstract}</p>
               </details>
             )}
@@ -168,26 +168,26 @@ export function Inspector({
                 }
               }}
             >
-              查看全文提供状态
+              Full-text status
             </button>
             {full && (
               <p className="muted small">
                 {full.full_text
-                  ? `已提供全文，${full.full_text.length.toLocaleString()} 个字符。`
-                  : "未提供全文；本次核验使用可用摘要。"}
+                  ? `Full text provided, ${full.full_text.length.toLocaleString()} characters.`
+                  : "No full text provided; checks used the available abstract."}
               </p>
             )}
             {full?.full_text && (
               <details>
-                <summary>展开已提供全文</summary>
+                <summary>Show full text</summary>
                 <p className="original-text">{full.full_text}</p>
               </details>
             )}
           </section>
           <section className="inspector-section">
-            <h3>归属与备选</h3>
+            <h3>Cluster and alternatives</h3>
             <div className="membership">
-              <span className="muted">当前归属</span>
+              <span className="muted">Current cluster</span>
               <strong>
                 {cluster?.kind === "side" || !cluster?.kind
                   ? cluster?.label
@@ -196,7 +196,7 @@ export function Inspector({
             </div>
             {cluster?.kind === "main" || cluster?.kind === "foundation" ? (
               <p className="muted small">
-                主簇和基础簇由相关性与引用规则决定，成员保持固定
+                Main and foundation clusters are set by relevance and citation rules; their members are fixed
               </p>
             ) : (
               <>
@@ -210,12 +210,12 @@ export function Inspector({
                   </div>
                 ))}
                 <p className="muted small">
-                  相似度是相关性提示，不代表额外归属或已核验的科学关联。
+                  Similarity is a hint of relatedness, not another cluster membership or a verified scientific connection.
                 </p>
                 <label className="form-field small">
-                  选择移动目标
+                  Move to
                   <select
-                    aria-label="选择移动目标"
+                    aria-label="Choose where to move"
                     disabled={!canEdit}
                     value={
                       moves.find((m) => m.paper_id === paper.id)
@@ -223,7 +223,7 @@ export function Inspector({
                     }
                     onChange={(e) => onMove(paper.id, e.target.value)}
                   >
-                    <option value="">保持当前归属</option>
+                    <option value="">Keep current cluster</option>
                     {candidates.map((c) => (
                       <option
                         key={c.target_cluster_id}
@@ -235,14 +235,14 @@ export function Inspector({
                             ?.label
                         }{" "}
                         · {c.target_similarity.toFixed(2)}
-                        {c.eligible ? "" : " · 不满足数值约束"}
+                        {c.eligible ? "" : " · fails numeric constraints"}
                       </option>
                     ))}
                   </select>
                 </label>
                 {!canEdit && (
                   <p className="muted small">
-                    打开当前版本并匹配服务模式后可预览移动。
+                    Open the active version, in the server's mode, to preview moves.
                   </p>
                 )}
               </>
@@ -255,7 +255,7 @@ export function Inspector({
               target="_blank"
               rel="noreferrer"
             >
-              <ArrowUpRight size={17} />在 OpenAlex 查看
+              <ArrowUpRight size={17} />View on OpenAlex
             </a>
           )}
         </>
@@ -263,27 +263,27 @@ export function Inspector({
         <>
           <h3 className="paper-title">{topic.label}</h3>
           <p className="paper-meta">
-            {roleName(topic)} · {topic.paper_ids.length} 篇论文
+            {roleName(topic)} · {topic.paper_ids.length} papers
           </p>
           {topic.role_reason && <p className="small">{topic.role_reason}</p>}
           {card && (
             <section className="inspector-section cluster-card">
               <h3>
-                簇卡片 ·{" "}
+                Cluster card ·{" "}
                 {card.analysis_depth === "full_pdf"
-                  ? `全文分析（${card.papers_with_full_text ?? 0} 篇有全文）`
-                  : "元数据分析"}
+                  ? `Full-text analysis (${card.papers_with_full_text ?? 0} with full text)`
+                  : "Metadata analysis"}
               </h3>
               <p>{card.summary}</p>
               <p className="muted small">
                 {card.year_range
-                  ? `${card.year_range[0]}–${card.year_range[1]} 年`
-                  : "年份未知"}
+                  ? `${card.year_range[0]}–${card.year_range[1]}`
+                  : "Year unknown"}
                 {card.citations?.max != null &&
-                  ` · 引用中位数 ${card.citations.median} · 最高 ${card.citations.max}`}
+                  ` · median citations ${card.citations.median} · max ${card.citations.max}`}
               </p>
               {card.keywords.length > 0 && (
-                <p className="small">关键词：{card.keywords.join("、")}</p>
+                <p className="small">Keywords: {card.keywords.join(", ")}</p>
               )}
             </section>
           )}
@@ -304,16 +304,16 @@ export function Inspector({
             {connection.reason_short ?? connection.description}
           </h3>
           <p className="muted small">
-            {relationNames[connection.relation ?? ""] ?? "关联"} ·{" "}
-            {connection.kind === "within_cluster" ? "簇内关联" : "跨簇关联"} ·{" "}
+            {relationNames[connection.relation ?? ""] ?? "Connection"} ·{" "}
+            {connection.kind === "within_cluster" ? "Within cluster" : "Across clusters"} ·{" "}
             {map.sample_mode
-              ? "样例占位结果"
-              : "通过独立原文核验，仍需人工审阅"}
+              ? "Sample placeholder"
+              : "Passed an independent source check; still needs human review"}
           </p>
           {connection.reason_long && <p>{connection.reason_long}</p>}
           {!!connection.evidence_notes?.length && (
             <section className="inspector-section">
-              <h3>依据</h3>
+              <h3>Basis</h3>
               <ul className="evidence-notes">
                 {connection.evidence_notes.map((note) => (
                   <li key={note}>{note}</li>
@@ -324,18 +324,18 @@ export function Inspector({
           <SourceQuotes evidence={connection.evidence} papers={papers} />
           {connection.similarity != null && (
             <p className="muted small">
-              相似度 {connection.similarity.toFixed(2)}
+              Similarity {connection.similarity.toFixed(2)}
             </p>
           )}
           <button className="secondary-button" onClick={onReview}>
-            进入人工验收
+            Open in human review
           </button>
         </>
       ) : gap ? (
         <>
           <h3 className="finding-title">{gap.description}</h3>
           <p className="small">
-            位于：
+            Between:
             {gap.between_paper_ids
               .map((id) => papers.find((p) => p.id === id)?.title ?? id)
               .join(" ↔ ")}{" "}
@@ -344,14 +344,14 @@ export function Inspector({
               gap.cluster_id}
           </p>
           <p className="hypothesis-label">
-            {map.sample_mode ? "样例占位" : "待验证研究假设"} ·{" "}
-            {gap.scope === "main_side" ? "主簇与侧簇" : "簇内比较"}
+            {map.sample_mode ? "Sample placeholder" : "Hypothesis to verify"} ·{" "}
+            {gap.scope === "main_side" ? "Main and side cluster" : "Within cluster"}
             {gap.gap_type && (
               <>
                 {" "}
                 ·{" "}
                 <span className="gap-badge">
-                  {gap.gap_type === "explicit" ? "作者陈述" : "推断"}
+                  {gap.gap_type === "explicit" ? "Stated by authors" : "Inferred"}
                 </span>
               </>
             )}
@@ -361,8 +361,8 @@ export function Inspector({
                 ·{" "}
                 {(
                   {
-                    novel: "新颖",
-                    known_open: "已知未解决",
+                    novel: "Novel",
+                    known_open: "Known, still open",
                   } as Record<string, string>
                 )[gap.label] ?? gap.label}
               </>
@@ -374,43 +374,43 @@ export function Inspector({
           )}
           {gap.proposed_test && (
             <section className="inspector-section">
-              <h3>建议实验</h3>
+              <h3>Proposed experiment</h3>
               <p>{gap.proposed_test}</p>
             </section>
           )}
           <SourceQuotes evidence={gap.evidence} papers={papers} />
           {gap.coverage && (
             <section className="inspector-section">
-              <h3>已有研究覆盖检查</h3>
+              <h3>Prior-work coverage check</h3>
               <p>
                 {(
                   {
-                    unavailable: "检索不可用",
-                    inconclusive: "覆盖情况尚不确定",
+                    unavailable: "Search unavailable",
+                    inconclusive: "Coverage inconclusive",
                     no_address_found_in_checked_sources:
-                      "在所查来源中未找到明确答案",
-                    addressed: "已有来源回答此问题",
+                      "No answer found in the checked sources",
+                    addressed: "Already addressed by a source",
                   } as Record<string, string>
                 )[gap.coverage.status] ?? gap.coverage.status}
               </p>
               <p className="muted small">{gap.coverage.scope}</p>
               {gap.coverage.searches.map((s, i) => (
                 <p className="muted small" key={i}>
-                  {s.query} · {s.papers.length} 条结果
+                  {s.query} · {s.papers.length} results
                 </p>
               ))}
             </section>
           )}
           <button className="secondary-button" onClick={onReview}>
-            进入人工验收
+            Open in human review
           </button>
         </>
       ) : (
         <div className="inspector-placeholder">
           <BookOpen size={28} />
-          <p>点击论文、主题或关联，查看原文与核验结果。</p>
+          <p>Click a paper, topic or connection to see its sources and checks.</p>
           <button className="text-button" onClick={onReview}>
-            查看候选验收
+            Review candidates
           </button>
         </div>
       )}

@@ -68,19 +68,19 @@ export function useSearchReview(
 const describe = (plan: NonNullable<SearchResult["plan"]>) => {
   const c = plan.criteria;
   const defaulted = new Set(plan.used_defaults.map((d) => d.split("=")[0]));
-  const mark = (name: string) => (defaulted.has(name) ? "（默认）" : "");
-  const years = `${c.year_from ?? "…"}–${c.year_to ?? "至今"}${mark("year_from")}`;
+  const mark = (name: string) => (defaulted.has(name) ? " (default)" : "");
+  const years = `${c.year_from ?? "…"}–${c.year_to ?? "now"}${mark("year_from")}`;
   const types =
     c.paper_types.length === 1
       ? c.paper_types[0] === "review"
-        ? "仅综述"
-        : "仅原始研究"
-      : "综述 + 原始研究";
+        ? "Reviews only"
+        : "Primary research only"
+      : "Reviews + primary research";
   return [
-    `主题：${c.topic}`,
-    `年份：${years}`,
-    `类型：${types}${mark("paper_types")}`,
-    ...(c.min_citations ? [`引用 ≥ ${c.min_citations}`] : []),
+    `Topic: ${c.topic}`,
+    `Years: ${years}`,
+    `Types: ${types}${mark("paper_types")}`,
+    ...(c.min_citations ? [`Citations ≥ ${c.min_citations}`] : []),
   ];
 };
 export function SearchReview({
@@ -99,7 +99,7 @@ export function SearchReview({
     );
   const all = kept.size === result.papers.length;
   return (
-    <section className="search-review" aria-label="检索结果审核">
+    <section className="search-review" aria-label="Search result review">
       <p className="search-summary">{result.summary}</p>
       {result.plan && (
         <div className="search-plan">
@@ -109,7 +109,7 @@ export function SearchReview({
             ))}
           </div>
           <p className="muted small">
-            检索词：{result.plan.queries.join(" · ")}
+            Queries: {result.plan.queries.join(" · ")}
           </p>
         </div>
       )}
@@ -120,7 +120,7 @@ export function SearchReview({
       ))}
       <div className="search-list-heading">
         <strong>
-          保留 {kept.size} / {result.papers.length} 篇
+          Keeping {kept.size} / {result.papers.length} papers
         </strong>
         <button
           type="button"
@@ -131,7 +131,7 @@ export function SearchReview({
             )
           }
         >
-          {all ? "全部取消" : "全部保留"}
+          {all ? "Deselect all" : "Keep all"}
         </button>
       </div>
       <ul className="search-papers">
@@ -148,11 +148,11 @@ export function SearchReview({
                 <small>
                   {[
                     p.year,
-                    p.is_review ? "综述" : null,
+                    p.is_review ? "Review" : null,
                     p.citation_count != null
-                      ? `${p.citation_count} 次引用`
+                      ? `${p.citation_count} citations`
                       : null,
-                    p.abstract ? null : "无摘要",
+                    p.abstract ? null : "No abstract",
                   ]
                     .filter(Boolean)
                     .join(" · ")}
@@ -169,7 +169,7 @@ export function SearchReview({
             rows={2}
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            placeholder="例如：只要 2023 年以后的原始研究"
+            placeholder="For example: only primary research from 2023 onwards"
           />
         </label>
         <button
@@ -181,7 +181,7 @@ export function SearchReview({
           }
         >
           <RefreshCw size={14} />
-          按反馈重新检索
+          Search again with feedback
         </button>
       </div>
     </section>

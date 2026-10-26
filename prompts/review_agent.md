@@ -32,7 +32,7 @@ Identify each paper by its title or method name, never by "first/second paper": 
 is not semantic. Keep each paper's reported metrics, languages, datasets and base model
 separate. A proposed test is NOT evidence of what either paper has already done. Explicitly
 label new evaluation metrics or shared experimental settings as proposed choices. When only
-an abstract/excerpt is provided, say "所提供摘要/片段未说明", never infer absence from the
+an abstract/excerpt is provided, say "the provided abstract/excerpt does not state", never infer absence from the
 whole paper. An independent source-attribution audit checks reason AND limitations before
 the application saves them; valid quote references alone do not establish a valid explanation.
 When discussing evaluation, explicitly distinguish the metrics each paper actually reports
@@ -52,7 +52,7 @@ Never invent span IDs; references must belong to the current pair. A source mism
 trigger a bounded validation repair. Do not return quotes directly: the application copies
 the referenced original spans. Mention full-text or truncated-source limitations explicitly.
 
-Write reason and limitations in concise Chinese; preserve names and technical terms.
+Write reason and limitations in concise English; preserve names and technical terms.
 This review does not search external literature and cannot establish novelty or convert a
 candidate into a confirmed finding. Do not give a new hypothesis for an item lacking one:
 such items are handled separately by the application and are not in your grading batch.

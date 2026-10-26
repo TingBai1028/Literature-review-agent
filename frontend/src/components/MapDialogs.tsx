@@ -20,10 +20,10 @@ export function MovePreview({
   onClose: () => void;
 }) {
   return (
-    <Dialog title="预览分组变更" onClose={onClose} busy={busy}>
+    <Dialog title="Preview cluster changes" onClose={onClose} busy={busy}>
       <div className="dialog-body">
         <p className="muted">
-          检查整批移动后的论文归属。原版本将保留，可从版本记录中恢复。
+          Check where the papers land after all the moves. The current version is kept and can be restored from Versions.
         </p>
         {plan.changes.map((c) => (
           <div className="change-row" key={c.cluster_id}>
@@ -32,15 +32,15 @@ export function MovePreview({
                 c.cluster_id}
             </strong>
             <span>
-              {c.before.length} 篇 → {c.after.length} 篇
-              {!c.after.length ? " · 将移除空簇" : ""}
+              {c.before.length} → {c.after.length} papers
+              {!c.after.length ? " · the empty cluster will be removed" : ""}
             </span>
           </div>
         ))}
         <p className="muted small">
-          将更新 {plan.relabel_cluster_ids.length} 个侧簇标签，复用{" "}
+          Relabels {plan.relabel_cluster_ids.length} side clusters and reuses{" "}
           {plan.reused_label_cluster_ids.length}{" "}
-          个标签。已启用的关联与假设将按最终归属重新核验。
+          labels. Active connections and hypotheses are checked again against the final clusters.
         </p>
         {!plan.applicable && (
           <div className="inline-error" role="alert">
@@ -52,14 +52,14 @@ export function MovePreview({
       </div>
       <footer className="dialog-actions">
         <button className="secondary-button" disabled={busy} onClick={onClose}>
-          取消
+          Cancel
         </button>
         <button
           className="primary-button"
           disabled={!plan.applicable || busy || !canApply}
           onClick={onApply}
         >
-          {busy ? "正在生成新版本…" : "应用并生成新版本"}
+          {busy ? "Creating a new version…" : "Apply as a new version"}
         </button>
       </footer>
     </Dialog>
@@ -85,15 +85,15 @@ export function VersionDialog({
   onClose: () => void;
 }) {
   return (
-    <Dialog title="版本记录" onClose={onClose} wide busy={busy}>
+    <Dialog title="Versions" onClose={onClose} wide busy={busy}>
       <div className="dialog-body">
         <div className="version-intro">
           <p className="muted">
-            查看历史不会改变当前版本。只有主动设为当前版本才会切换。
+            Viewing history does not change the active version. It changes only when you make a version active.
           </p>
           <button className="quiet-button" onClick={onRefresh} disabled={busy}>
             <RefreshCw size={15} />
-            刷新
+            Refresh
           </button>
         </div>
         {[...versions.versions].reverse().map((v) => (
@@ -102,15 +102,15 @@ export function VersionDialog({
               <strong>
                 v{v.revision} ·{" "}
                 {v.status === "partial"
-                  ? "待完成"
+                  ? "Unfinished"
                   : catalog.find((m) => m.run_id === v.run_id)?.stage ===
                       "findings"
-                    ? "已分析"
-                    : "分组地图"}
+                    ? "Analysed"
+                    : "Cluster map"}
                 {versions.active_head.run_id === v.run_id && (
                   <span className="active-version">
                     <Check size={13} />
-                    当前
+                    Active
                   </span>
                 )}
               </strong>
@@ -122,7 +122,7 @@ export function VersionDialog({
                 disabled={busy || map.run_id === v.run_id}
                 onClick={() => onView(v.run_id)}
               >
-                查看
+                View
               </button>
               <button
                 className="secondary-button"
@@ -133,7 +133,7 @@ export function VersionDialog({
                 }
                 onClick={() => onActivate(v.run_id)}
               >
-                设为当前版本
+                Make active
               </button>
             </div>
           </div>
@@ -167,7 +167,7 @@ export function NewMapDialog({
   const search = useSearchReview(query, effort, timeout);
   const locked = busy || search.loading;
   const [name, setName] = useState(
-    papers.length ? `使用当前 ${papers.length} 篇论文` : "尚未选择论文记录",
+    papers.length ? `Use the current ${papers.length} papers` : "No paper records chosen yet",
   );
   const upload = async (file: File | undefined) => {
     if (!file) return;
@@ -187,9 +187,9 @@ export function NewMapDialog({
             typeof p.source === "string",
         )
       )
-        throw Error("需要包含 id、title、source 的论文记录 JSON。");
+        throw Error("Expected paper-record JSON with id, title and source.");
       setSource(ps);
-      setName(`${file.name} · ${ps.length} 篇`);
+      setName(`${file.name} · ${ps.length} papers`);
       const importedQuery =
         raw.input?.query ??
         raw.query ??
@@ -205,14 +205,14 @@ export function NewMapDialog({
       )
         setEffort(importedEffort);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "无法读取文件");
+      setError(e instanceof Error ? e.message : "Could not read the file");
     }
   };
   const reviewed = mode === "search" && search.result?.status === "ok";
   const submit = () => {
     setError("");
     if (!query.trim()) {
-      setError("请填写研究问题。");
+      setError("Enter a research question.");
       return;
     }
     if (mode === "search" && !reviewed) {
@@ -231,11 +231,11 @@ export function NewMapDialog({
       } as Record<string, number>
     )[effort];
     if (!chosen.length) {
-      setError(mode === "search" ? "请至少保留一篇论文。" : "请选择论文记录。");
+      setError(mode === "search" ? "Keep at least one paper." : "Choose paper records.");
       return;
     }
     if (chosen.length > cap) {
-      setError(`当前级别最多支持 ${cap} 篇，请更换级别或论文记录。`);
+      setError(`This level supports at most ${cap} papers; choose another level or other records.`);
       return;
     }
     onCreate(
@@ -247,7 +247,7 @@ export function NewMapDialog({
   };
   return (
     <Dialog
-      title="新建研究地图"
+      title="New research map"
       onClose={onClose}
       busy={locked}
       wide={reviewed}
@@ -262,12 +262,12 @@ export function NewMapDialog({
           <div
             className="segmented mode-switch"
             role="group"
-            aria-label="论文来源"
+            aria-label="Paper source"
           >
             {(
               [
-                ["search", "在线检索"],
-                ["import", "导入记录"],
+                ["search", "Search online"],
+                ["import", "Import records"],
               ] as const
             ).map(([value, label]) => (
               <button
@@ -286,7 +286,7 @@ export function NewMapDialog({
             ))}
           </div>
           <label className="form-field">
-            研究问题
+            Research question
             <textarea
               value={query}
               onChange={(e) => {
@@ -294,13 +294,13 @@ export function NewMapDialog({
                 search.reset();
               }}
               rows={3}
-              placeholder="例如：LoRA 如何改善低资源语言机器翻译？可写明年份、引用数或论文类型。"
+              placeholder="For example: How does LoRA improve machine translation for low-resource languages? You can add years, citation counts or paper types."
               required
               disabled={locked}
             />
           </label>
           <label className="form-field">
-            研究投入
+            Effort
             <select
               value={effort}
               disabled={locked}
@@ -310,18 +310,18 @@ export function NewMapDialog({
               }}
             >
               <option value="fast">
-                Fast · 检索约 300 篇，展示最相关的 50 篇
+                Fast · retrieves ~300 papers, shows the 50 most relevant
               </option>
               <option value="pro">
-                Pro · 检索约 1000 篇，展示 50 篇并读取全文
+                Pro · retrieves ~1,000 papers, shows 50 and reads full text
               </option>
               {!["fast", "pro"].includes(effort) && (
-                <option value={effort}>{effort}（旧级别）</option>
+                <option value={effort}>{effort} (legacy level)</option>
               )}
             </select>
           </label>
           {mode === "search" && search.loading && (
-            <ActivityFeed inline events={search.events} title="正在检索论文" />
+            <ActivityFeed inline events={search.events} title="Searching for papers" />
           )}
           {mode === "search" ? (
             <SearchReview search={search} />
@@ -329,7 +329,7 @@ export function NewMapDialog({
             <label className="upload-field">
               <Upload size={22} />
               <span>{name}</span>
-              <small>选择已有检索结果或论文记录 JSON</small>
+              <small>Choose saved search results or paper-record JSON</small>
               <input
                 type="file"
                 accept=".json,application/json"
@@ -339,10 +339,10 @@ export function NewMapDialog({
           )}
           <p className="muted small">
             {sample
-              ? "当前为样例模式：检索使用保存的样例论文，分组与评分为占位结果。"
+              ? "Sample mode: search uses the saved sample papers; clusters and grades are placeholders."
               : mode === "search"
-                ? "检索会调用 Planner 与 OpenAlex，论文经 Zetaris 保存；审核通过前不会建立地图。"
-                : "新建地图会调用已配置的模型。High / Ultra 使用记录中已提供的全文，缺失时使用摘要。"}
+                ? "Search calls the Planner and OpenAlex and stores papers through Zetaris; no map is built until you approve the papers."
+                : "A new map calls the configured model. High / Ultra use full text from the records when provided, otherwise abstracts."}
           </p>
           {(error || search.error) && (
             <p className="inline-error" role="alert">
@@ -357,18 +357,18 @@ export function NewMapDialog({
             onClick={onClose}
             disabled={locked}
           >
-            取消
+            Cancel
           </button>
           <button className="primary-button" disabled={locked} type="submit">
             {search.loading
-              ? "正在检索…"
+              ? "Searching…"
               : busy
-                ? "正在建立地图…"
+                ? "Building the map…"
                 : mode === "search" && !reviewed
-                  ? "检索论文"
+                  ? "Search papers"
                   : mode === "search"
-                    ? `用保留的 ${search.selected.length} 篇建立地图`
-                    : "建立地图"}
+                    ? `Build the map from ${search.selected.length} kept papers`
+                    : "Build map"}
           </button>
         </footer>
       </form>

@@ -65,7 +65,7 @@ export default function App() {
     papers: Paper[],
     backup: Paper[] = [],
   ) =>
-    void operate("正在建立地图", async () => {
+    void operate("Building the map", async () => {
       let selected = papers;
       if (
         (effort === "high" || effort === "ultra" || effort === "pro") &&
@@ -85,7 +85,7 @@ export default function App() {
         base: null,
         papers: selected,
         question: q,
-        title: "正在建立地图",
+        title: "Building the map",
       });
       try {
         const map = await request<MapResult>("/cluster", {
@@ -109,14 +109,14 @@ export default function App() {
   // Spec F5: swap the side papers for the next-best backup papers; main and foundation stay.
   const refresh = () =>
     data &&
-    void operate("正在换一批论文", async () => {
+    void operate("Swapping in new papers", async () => {
       const runId = newRunId();
       setLive({
         runId,
         base: data.map,
         papers: data.papers,
         question: data.map.question,
-        title: "换一批论文",
+        title: "Swap papers",
       });
       const map = await request<MapResult>(
         `/cluster/${data.map.run_id}/refresh`,
@@ -131,8 +131,8 @@ export default function App() {
       ).finally(() => setLive(null));
       await ws.open(map.run_id);
       setNotice(
-        `已换入 ${map.refresh?.swapped_in.length ?? 0} 篇备选论文，主簇和基础簇保持不变。` +
-          (map.analysis ? "关联和研究空白需要重新运行分析。" : ""),
+        `Swapped in ${map.refresh?.swapped_in.length ?? 0} backup papers; the main and foundation clusters are unchanged.` +
+          (map.analysis ? " Run the analysis again to update connections and research gaps." : ""),
       );
     });
   // Spec E: Graph 1 (paper edges) is opened as soon as it is ready; Graph 2 (gaps) follows on that version.
@@ -144,7 +144,7 @@ export default function App() {
       papers: data?.papers ?? [],
       question: map.question,
       title:
-        stage === "connections" ? "图 1：寻找论文关联" : "图 2：寻找研究空白",
+        stage === "connections" ? "Graph 1: finding paper connections" : "Graph 2: finding research gaps",
     });
     return request<MapResult>(`/cluster/${map.run_id}/analyze`, {
       method: "POST",
@@ -159,25 +159,25 @@ export default function App() {
   };
   const analyze = () =>
     data &&
-    void operate("正在寻找论文关联（图 1）", async () => {
+    void operate("Finding paper connections (Graph 1)", async () => {
       let map = data.map;
       if (!map.analysis?.completed_stages?.includes("connections")) {
         map = await runStage(map, "connections");
         await ws.open(map.run_id);
         if (map.status === "partial") {
           setNotice(
-            "已保留完成结果。原版本保持为当前版本，可打开这个待完成版本继续分析。",
+            "Finished results were kept. The previous version stays active; open this unfinished version to continue the analysis.",
           );
           return;
         }
       }
-      setBusy("图 1 已可浏览，正在寻找研究空白（图 2）");
+      setBusy("Graph 1 is ready to browse; finding research gaps (Graph 2)");
       map = await runStage(map, "gaps");
       await ws.open(map.run_id);
       setNotice(
         map.status === "partial"
-          ? "图 1 已保留；图 2 未完成，可再次运行分析继续。"
-          : "图 2（研究空白）已生成，切换到“图 2 · 研究空白”查看。",
+          ? "Graph 1 was kept; Graph 2 did not finish. Run the analysis again to continue."
+          : "Graph 2 (research gaps) is ready. Switch to \"Graph 2 · Gaps\" to view it.",
       );
     });
   return (
@@ -187,21 +187,25 @@ export default function App() {
           <a className="wordmark" href="/">
             Literature Map
           </a>
-          <nav className="top-nav" aria-label="主导航">
+          <nav className="top-nav" aria-label="Main navigation">
             <button
               className={tab === "map" ? "active" : ""}
               aria-pressed={tab === "map"}
               onClick={() => setTab("map")}
+              aria-label="Paper map"
             >
-              论文地图
+              <span className="nav-qualifier">Paper </span>
+              map
             </button>
             <button
               className={tab === "review" ? "active" : ""}
               aria-pressed={tab === "review"}
               onClick={() => setTab("review")}
+              aria-label="Human review"
               disabled={!data}
             >
-              人工验收
+              <span className="nav-qualifier">Human </span>
+              review
             </button>
             <button
               className={tab === "reasoning" ? "active" : ""}
@@ -209,7 +213,7 @@ export default function App() {
               onClick={() => setTab("reasoning")}
               disabled={!data}
             >
-              推理过程
+              Reasoning
             </button>
           </nav>
           <div className="header-actions">
@@ -218,7 +222,7 @@ export default function App() {
               onClick={() => setDialog("versions")}
               disabled={!data || !!busy}
             >
-              版本记录
+              Versions
             </button>
             <button
               className="text-button"
@@ -226,11 +230,11 @@ export default function App() {
               disabled={
                 !data || !!busy || !editable || !data.map.backup_pool_size
               }
-              title="把侧簇论文换成备选池中排名靠前的论文；主簇和基础簇不变"
+              title="Replace side-cluster papers with the top-ranked papers from the backup pool; the main and foundation clusters stay the same"
             >
-              换一批论文
+              Swap papers
               {data?.map.backup_pool_size
-                ? ` · 备选 ${data.map.backup_pool_size}`
+                ? ` · ${data.map.backup_pool_size} in backup`
                 : ""}
             </button>
             <button
@@ -245,10 +249,10 @@ export default function App() {
             >
               {busy ? <LoaderCircle size={16} className="spin" /> : null}
               {busy
-                ? "处理中…"
+                ? "Working…"
                 : data?.map.status === "partial"
-                  ? "继续分析"
-                  : "运行分析"}
+                  ? "Continue analysis"
+                  : "Run analysis"}
             </button>
           </div>
         </header>
@@ -256,17 +260,17 @@ export default function App() {
           <section className="question-bar">
             <h1 title={data.map.question}>{data.map.question}</h1>
             <span className="map-counts">
-              {data.papers.length} 篇论文 ·{" "}
-              {data.map.clusters.filter((c) => c.kind === "main").length} 个主簇
+              {data.papers.length} papers ·{" "}
+              {data.map.clusters.filter((c) => c.kind === "main").length} main
               ·{" "}
               {data.map.clusters.filter((c) => c.kind === "foundation").length}{" "}
-              个基础簇 ·{" "}
+              foundation ·{" "}
               {
                 data.map.clusters.filter(
                   (c) => c.kind !== "main" && c.kind !== "foundation",
                 ).length
               }{" "}
-              个侧簇
+              side clusters
             </span>
           </section>
         )}
@@ -283,12 +287,12 @@ export default function App() {
               ws.error ||
               busy ||
               (data?.map.sample_mode
-                ? "样例模式：分组、相似度和评分为占位结果。"
-                : "当前服务为样例模式；真实地图可阅读，切换真实模式后可执行分析或移动。")}
+                ? "Sample mode: clusters, similarities and grades are placeholders."
+                : "The server is in sample mode. Real maps can be read; switch to real mode to run analysis or move papers.")}
             {notice && (
               <button
                 className="icon-button"
-                aria-label="关闭提示"
+                aria-label="Dismiss notice"
                 onClick={() => setNotice("")}
               >
                 <X size={16} />
@@ -305,14 +309,14 @@ export default function App() {
         ) : ws.loading ? (
           <main className="center-message">
             <LoaderCircle className="spin" size={24} />
-            <p>正在读取地图与原文…</p>
+            <p>Loading the map and sources…</p>
           </main>
         ) : !data ? (
           <main className="empty-workspace">
-            <h1>从论文出发，连接研究问题。</h1>
-            <p>输入研究问题检索论文，审核后建立可查看原文证据的研究地图。</p>
+            <h1>Start from papers, connect research questions.</h1>
+            <p>Enter a research question to search for papers, review them, then build a research map with source evidence you can inspect.</p>
             <button className="primary-button" onClick={() => setDialog("new")}>
-              新建地图
+              New map
             </button>
             {ws.error && <p className="inline-error">{ws.error}</p>}
           </main>
@@ -334,9 +338,9 @@ export default function App() {
         {data && (
           <footer className="workspace-footer">
             <div className="version-selector">
-              <strong>当前视图</strong>
+              <strong>Current view</strong>
               <label>
-                <span className="sr-only">选择地图版本</span>
+                <span className="sr-only">Choose a map version</span>
                 <select
                   value={ws.runId}
                   disabled={!!busy}
@@ -344,8 +348,8 @@ export default function App() {
                 >
                   {ws.catalog.map((m) => (
                     <option value={m.run_id} key={m.run_id}>
-                      {m.sample_mode ? "样例 · " : ""}v{m.revision}{" "}
-                      {m.active ? "· 当前 " : ""}· {m.run_id}
+                      {m.sample_mode ? "Sample · " : ""}v{m.revision}{" "}
+                      {m.active ? "· active " : ""}· {m.run_id}
                     </option>
                   ))}
                 </select>
@@ -354,7 +358,7 @@ export default function App() {
             </div>
             {data.map.warnings.length > 0 && (
               <details className="quality-notes">
-                <summary>质量提示 {data.map.warnings.length}</summary>
+                <summary>Quality warnings {data.map.warnings.length}</summary>
                 <div>
                   {data.map.warnings.map((w, i) => (
                     <p key={i}>{w}</p>
@@ -383,7 +387,7 @@ export default function App() {
             busy={!!busy}
             onClose={() => setDialog(null)}
             onRefresh={() =>
-              void operate("正在刷新版本", async () => {
+              void operate("Refreshing versions", async () => {
                 await ws.open(data.map.run_id);
               })
             }
@@ -392,7 +396,7 @@ export default function App() {
               void ws.open(id);
             }}
             onActivate={(id) =>
-              void operate("正在切换当前版本", async () => {
+              void operate("Switching the active version", async () => {
                 await request(`/cluster/${data.map.root_run_id}/activate`, {
                   method: "POST",
                   body: {
@@ -482,10 +486,10 @@ function WorkspaceView({
           <button
             className="mobile-topic-toggle"
             onClick={() => setMobile((v) => !v)}
-            aria-label="切换主题导航"
+            aria-label="Toggle topic navigation"
           >
             <Menu size={17} />
-            研究主题
+            Topics
           </button>
           <TopicSidebar
             clusters={map.clusters}
@@ -548,13 +552,13 @@ function WorkspaceView({
         <div className="move-bar">
           {moves.length > 0 && (
             <>
-              <span>{moves.length} 篇论文待移动</span>
+              <span>{moves.length} papers to move</span>
               <button
                 className="text-button small"
                 disabled={busy}
                 onClick={() => setMoves([])}
               >
-                清空
+                Clear
               </button>
             </>
           )}
@@ -562,7 +566,7 @@ function WorkspaceView({
             className="secondary-button"
             disabled={!moves.length || busy || !editable}
             onClick={() =>
-              void onOperation("正在检查移动约束", async () =>
+              void onOperation("Checking move constraints", async () =>
                 setPlan(
                   await request<Plan>(
                     `/cluster/${map.run_id}/regenerate/preview`,
@@ -573,7 +577,7 @@ function WorkspaceView({
             }
           >
             <Play size={13} fill="currentColor" />
-            预览移动
+            Preview move
           </button>
         </div>
       )}
@@ -585,7 +589,7 @@ function WorkspaceView({
           busy={busy}
           onClose={() => setPlan(null)}
           onApply={() =>
-            void onOperation("正在生成新版本", async () => {
+            void onOperation("Creating a new version", async () => {
               const child = await request<MapResult>(
                 `/cluster/${map.run_id}/regenerate`,
                 {
@@ -642,7 +646,7 @@ function LiveBuild({
       <aside className="topic-sidebar">
         <h2>{live.title}</h2>
         <p className="muted small">{live.question}</p>
-        <p className="small">{live.papers.length} 篇论文正在分组和命名。</p>
+        <p className="small">{live.papers.length} papers are being grouped and named.</p>
       </aside>
       <LiteratureGraph
         map={map}
@@ -660,12 +664,12 @@ function LiveBuild({
           <>
             <h3 className="paper-title">{paper.title}</h3>
             <p className="paper-meta">
-              {paper.year ?? "年份未知"} · {paper.source}
+              {paper.year ?? "Year unknown"} · {paper.source}
             </p>
             <p className="small">{paper.abstract}</p>
           </>
         ) : (
-          <p className="muted">地图生成中，可以先点击论文查看摘要。</p>
+          <p className="muted">The map is being built; click a paper to read its abstract meanwhile.</p>
         )}
       </aside>
       <ActivityFeed events={events} title={live.title} />
