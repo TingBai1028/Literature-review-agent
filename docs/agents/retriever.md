@@ -8,7 +8,8 @@ Code: `litagent/agents/retriever.py` · Tools: `litagent/tools/`
    2. `[code]` Merge and remove duplicates across sources and versions (same DOI, same arXiv ID, including arXiv DOIs `10.48550/arXiv.*`, or same normalised title). The first-seen record keeps its ID; missing abstract/DOI/PDF link are filled from its duplicates and the highest citation count is kept. Then drop papers without an abstract: later agents quote abstracts as evidence. A stated citation minimum also drops records with no citation count (arXiv).
    3. `[code]` Relevance floor: embed the question and each paper's title + first 600 abstract characters with the clustering model and drop papers below cosine 0.5 (`retrieval_similarity_min`, same scale as the Clusterer's main gate). Without a local embedding model the floor is skipped (logged) and search-rank fusion is used instead.
    4. `[code]` Keep the most relevant papers up to the effort level's limit, then order them 70% relevance / 30% citations per year (`rank_relevance_weight`). Citations only reorder the chosen papers; they never bring in an off-topic one. Fewer papers than the limit is normal when few are relevant.
-   5. `[code]` High / Ultra: download open-access full-text PDFs; papers without one keep their abstract. `[LLM]` Summarise the set for Human review 1 (plain summary if the call fails).
+   5. `[LLM]` Summarise the set for Human review 1 (plain summary if the call fails). No PDFs are downloaded at
+      retrieval (spec H1): full text is read after clustering, for main and foundation papers only.
 3. **Tools:**
    - `search_openalex` → query, criteria → `list[Paper]` → retries network errors, 5xx and short 429s 3×, then raises `OpenAlexError`; fails at once when the daily limit is used up (a free `OPENALEX_API_KEY` raises it 10×)
    - `search_semantic_scholar` → query, criteria → `list[Paper]` (`S2:<id>`) → retries 5xx and short 429s, then raises `SemanticScholarError`; year, citation-minimum and OA filters server-side, paper type filtered from `publicationTypes`
@@ -26,7 +27,7 @@ The UI offers two modes; the older levels stay accepted for saved maps and scrip
 | Mode | Retrieval target (soft) | Shown on the map | Full text |
 | --- | --- | --- | --- |
 | Fast | 300 papers | 50 | no |
-| Pro | 1,000 papers | 50 | yes |
+| Pro | 1,000 papers | 50 | main and foundation papers, after clustering (spec H) |
 
 - `[code]` The target is spread over the queries (`ceil(target / queries)` per search; each tool caps its page size).
   Falling short is normal: the trace and a progress event state the retrieved count, the target and why.

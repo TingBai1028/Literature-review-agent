@@ -19,6 +19,7 @@
       "estimated_calls": 0,
       "budget": 250000
     },
-    "backup_pool_size": 0
+    "backup_pool_size": 0,
+    "cluster_cards": []
   }
 }

@@ -15414,6 +15414,329 @@
       "estimated_calls": 0,
       "budget": 450000
     },
-    "backup_pool_size": 0
+    "backup_pool_size": 0,
+    "cluster_cards": [
+      {
+        "cluster_id": "MAIN",
+        "role": "main",
+        "label": "Sample main: Molecular generative Graph Neural Networks for Drug Discovery",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W3110933132",
+          "W7164175736",
+          "W4416068517",
+          "W4315767347",
+          "W4417073891"
+        ],
+        "year_range": [
+          2021,
+          2026
+        ],
+        "citations": {
+          "median": 0.0,
+          "max": 181.0
+        },
+        "keywords": [
+          "generation",
+          "generative Graph",
+          "Molecular generative",
+          "generative",
+          "Molecular",
+          "Networks",
+          "Neural Networks",
+          "Virtual Screening"
+        ],
+        "summary": "Sample mode: placeholder summary of 5 papers, from full text; no model read them.",
+        "analysis_depth": "full_pdf",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "FOUNDATION",
+        "role": "foundation",
+        "label": "Sample foundation: Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W3116202926",
+          "W4214868967",
+          "W3188579603"
+        ],
+        "year_range": [
+          2021,
+          2022
+        ],
+        "citations": {
+          "median": 660.0,
+          "max": 856.0
+        },
+        "keywords": [
+          "descriptor-based models",
+          "descriptor-based",
+          "RF",
+          "graph-based models",
+          "XGBoost",
+          "graph-based",
+          "contrastive learning",
+          "Molecular contrastive"
+        ],
+        "summary": "Sample mode: placeholder summary of 3 papers, from full text; no model read them.",
+        "analysis_depth": "full_pdf",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-a3137cac3858f7e5",
+        "role": "side",
+        "label": "Sample side: Advanced graph and sequence neural networks for molecular property prediction and drug discovery",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W3120618935",
+          "W4391782448",
+          "W4392157869",
+          "W4395111046",
+          "W4396806998",
+          "W4399954566",
+          "W4408957790",
+          "W4415320025",
+          "W4416931215",
+          "W4417123819",
+          "W7150938383",
+          "W7162690543",
+          "W7222853523"
+        ],
+        "year_range": [
+          2022,
+          2026
+        ],
+        "citations": {
+          "median": 29.0,
+          "max": 136.0
+        },
+        "keywords": [
+          "architectures",
+          "functions",
+          "Advanced graph",
+          "curves",
+          "loss functions",
+          "methods achieve",
+          "MoleculeX",
+          "synergistic"
+        ],
+        "summary": "Sample mode: placeholder summary of 13 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-b72319658ad3fd2b",
+        "role": "side",
+        "label": "Sample side: Reliable Graph Neural Networks for Drug Discovery Under Distributional Shift",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W3216638646",
+          "W4205167309",
+          "W4213235856",
+          "W4318150241",
+          "W4389131658",
+          "W4393154949",
+          "W4402401635",
+          "W4406017182",
+          "W4415615042",
+          "W4416716785",
+          "W7163006540",
+          "W7167703255",
+          "W7208828033"
+        ],
+        "year_range": [
+          2021,
+          2026
+        ],
+        "citations": {
+          "median": 14.0,
+          "max": 347.0
+        },
+        "keywords": [
+          "repositioning",
+          "GNN-SNGP",
+          "mis-predictions",
+          "overconfident",
+          "overconfident mis-predictions",
+          "CardioTox",
+          "Distributional",
+          "MGraphDTA"
+        ],
+        "summary": "Sample mode: placeholder summary of 13 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-ee770297abeea332",
+        "role": "side",
+        "label": "Sample side: Predicting Protein\u2013Ligand Docking Structure with Graph Neural Network",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4282835253",
+          "W4308610392",
+          "W4412202180",
+          "W7110847151"
+        ],
+        "year_range": [
+          2022,
+          2025
+        ],
+        "citations": {
+          "median": 5.5,
+          "max": 73.0
+        },
+        "keywords": [
+          "Docking",
+          "docking poses",
+          "MedusaGraph",
+          "poses",
+          "software",
+          "evaluate",
+          "Surrogate",
+          "DSD"
+        ],
+        "summary": "Sample mode: placeholder summary of 4 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-d8d0bd473dbafdd8",
+        "role": "side",
+        "label": "Sample side: GraphscoreDTA: optimized graph neural network for protein\u2013ligand binding affinity prediction",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4377968189",
+          "W4391335127",
+          "W7125808017"
+        ],
+        "year_range": [
+          2023,
+          2026
+        ],
+        "citations": {
+          "median": 4.0,
+          "max": 92.0
+        },
+        "keywords": [
+          "GraphscoreDTA",
+          "protein-ligand binding",
+          "protein-ligand",
+          "ligands",
+          "binding affinity",
+          "affinity",
+          "peptide",
+          "PepGB"
+        ],
+        "summary": "Sample mode: placeholder summary of 3 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-b545a7f1be03ca89",
+        "role": "side",
+        "label": "Sample side: Everything is connected: Graph neural networks",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4319762935",
+          "W4382317956",
+          "W4388042006",
+          "W4394092224",
+          "W4394516146",
+          "W4402808474",
+          "W4413224864"
+        ],
+        "year_range": [
+          2021,
+          2025
+        ],
+        "citations": {
+          "median": 35.0,
+          "max": 304.0
+        },
+        "keywords": [
+          "Additional file",
+          "file",
+          "Additional",
+          "connected",
+          "networks",
+          "neural networks",
+          "Graph neural",
+          "MolKGNN"
+        ],
+        "summary": "Sample mode: placeholder summary of 7 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-f12620d9ee72e9bf",
+        "role": "side",
+        "label": "Sample side: BridgeDPI: a novel Graph Neural Network for predicting drug\u2013protein interactions",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4220788456",
+          "W4376142487",
+          "W4380136659",
+          "W4386158307",
+          "W4390884937",
+          "W4392186151",
+          "W4401855817",
+          "W7116366360",
+          "W7153548746"
+        ],
+        "year_range": [
+          2022,
+          2026
+        ],
+        "citations": {
+          "median": 5.0,
+          "max": 114.0
+        },
+        "keywords": [
+          "Covid-19 genome",
+          "genome",
+          "genome sequencing",
+          "factors",
+          "BridgeDPI",
+          "drug-protein",
+          "association network",
+          "DPIs"
+        ],
+        "summary": "Sample mode: placeholder summary of 9 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-e1abf1cf21505143",
+        "role": "side",
+        "label": "Sample side: Performance and robustness of small molecule retention time prediction with molecular graph neural networks in industrial drug discovery campaigns",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4394850168",
+          "W4404803126",
+          "W7115904589"
+        ],
+        "year_range": [
+          2024,
+          2025
+        ],
+        "citations": {
+          "median": 12.0,
+          "max": 30.0
+        },
+        "keywords": [
+          "ChemProp",
+          "performed",
+          "RT",
+          "small",
+          "machine-learning",
+          "chromatographic",
+          "PK",
+          "ensemble"
+        ],
+        "summary": "Sample mode: placeholder summary of 3 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      }
+    ]
   }
 }
