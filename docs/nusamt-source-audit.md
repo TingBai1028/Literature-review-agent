@@ -74,7 +74,8 @@ NusaMT-7B's SFT (and its full text uses LoRA), so the premise was unsupported.
 
 - `gap_finder.py` now rejects, before verification, any proposal that asserts full-parameter /
   full fine-tuning when no supplied span of that pair states it, and asks the model to describe
-  each method as its source does. The prompts (`gap_finder.md`, `gaps_verify.md`) say the same.
+  each method as its source does. The prompts (`gap_finder.md`, then `gaps_verify.md`) said the same;
+  since the stage-based Gap finder, the gap writer prompt and the grading agent's `fix` carry this rule.
 - Re-analysis of the active map `20261025-234750-77367e` produced child `20261026-012433-603019`
   (5 calls, 28,885 tokens). All six Connection tasks were reused from cache. In the live run the
   guard caught `full fine-tuning` / `full-parameter`; after the bounded repair the question reads

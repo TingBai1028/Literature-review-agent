@@ -183,13 +183,16 @@ class Settings:
     connection_max_within_pairs: int = 4
     connection_max_between_pairs: int = 4
     connection_max_pairs_per_paper: int = 2
+    # Gap finder (docs/agents/gap_finder.md). Pairs within one cluster whose cosine is in this band: below it the
+    # papers are unrelated, above it near-duplicates. 0.5-0.8 is a draft range, not yet tuned for our encoder.
     gap_similarity_min: float = 0.5
-    gap_similarity_max: float = 0.9
-    gap_max_candidates: int = 3
-    gap_main_side_max_candidates: int = 3
-    gap_main_side_question_weight: float = 0.3  # ranking hint only; evidence still decides support
-    gap_coverage_queries_per_gap: int = 2
-    gap_coverage_hits_per_query: int = 4
+    gap_similarity_max: float = 0.8
+    gap_max_per_cluster: int = 5  # gaps kept per cluster after grading
+    gap_candidate_multiplier: int = 3  # candidates per cluster sent to the LLM = gap_max_per_cluster x this
+    gap_coverage_check: bool = field(default_factory=lambda: _env_bool("GAP_COVERAGE_CHECK", "true"))
+    gap_explicit_enabled: bool = field(default_factory=lambda: _env_bool("GAP_EXPLICIT_ENABLED"))
+    gap_coverage_results: int = 5  # top search results, excluding the gap's own papers, the LLM checks
+    gap_coverage_hits_per_query: int = 7  # fetched per source, so 5 remain after removing papers A and B
     gap_coverage_source_chars: int = 1000
     gap_coverage_timeout_s: float = 20.0
     gap_coverage_ttl_s: float = 86400

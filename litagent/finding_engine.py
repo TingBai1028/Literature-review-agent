@@ -51,14 +51,13 @@ def prepare(papers, clusters, settings: Settings, context: FindingContext | None
     partition_indices(papers, clusters)
     if (min(settings.finding_source_chars, settings.finding_span_chars, settings.finding_min_quote_chars,
             settings.connection_within_pairs_per_cluster, settings.connection_max_pairs_per_paper,
-            settings.gap_max_candidates, settings.gap_coverage_queries_per_gap,
+            settings.gap_max_per_cluster, settings.gap_candidate_multiplier, settings.gap_coverage_results,
             settings.gap_coverage_hits_per_query, settings.gap_coverage_source_chars) < 1
             or min(settings.connection_max_within_pairs, settings.connection_max_between_pairs,
                    settings.finding_validation_retries) < 0
             or settings.finding_span_chars < settings.finding_min_quote_chars
             or not 0 <= settings.connection_similarity_min <= 1
             or not 0 <= settings.gap_similarity_min <= settings.gap_similarity_max <= 1
-            or settings.gap_main_side_max_candidates < 0 or not 0 <= settings.gap_main_side_question_weight <= 1
             or not np.isfinite(settings.gap_coverage_ttl_s) or settings.gap_coverage_ttl_s < 0):
         raise ValueError("Invalid finding limits, thresholds or coverage cache lifetime")
     context = context or FindingContext()
@@ -93,19 +92,10 @@ def sources(papers: list[Paper], settings: Settings, context: FindingContext, *,
 
 
 def choose_pairs(stage: str, papers, clusters, settings: Settings, context: FindingContext, body_ids: set[str]):
+    """Connection finder pairs. The Gap finder selects its own candidates (gap_finder.candidate_pairs)."""
     owner = {pid: c for c in clusters for pid in c.paper_ids}
     dup = {pid: n for n, group in enumerate(duplicate_components(papers)) for pid in group}
     indices = {p.id: i for i, p in enumerate(papers)}
-    question_scores = {}
-    if stage == "gaps" and context.question and settings.gap_main_side_max_candidates:
-        from sklearn.feature_extraction.text import TfidfVectorizer
-        try:
-            matrix = TfidfVectorizer(stop_words="english", ngram_range=(1, 2)).fit_transform(
-                [context.question] + [f"{p.title} {p.abstract or ''}" for p in papers])
-            relevance = (matrix[1:] @ matrix[0].T).toarray().ravel()
-            question_scores = {p.id: float(relevance[i]) for i, p in enumerate(papers)}
-        except ValueError:
-            pass  # Empty vocabulary: retain the original content ranking.
     skipped, within, between = 0, [], []
     for a, b in itertools.combinations(sorted(body_ids), 2):
         if dup[a] == dup[b]:
@@ -113,45 +103,28 @@ def choose_pairs(stage: str, papers, clusters, settings: Settings, context: Find
             continue
         same = owner[a].id == owner[b].id
         score = float(context.similarity[indices[a], indices[b]])
-        main_side = not same and sum(getattr(owner[pid], "kind", "side") == "main" for pid in (a, b)) == 1
-        if stage == "gaps" and (not (same or main_side) or not settings.gap_similarity_min <= score <= settings.gap_similarity_max):
-            continue
-        if stage == "connections" and score < settings.connection_similarity_min:
+        if score < settings.connection_similarity_min:
             continue
         cids = sorted({owner[a].id, owner[b].id})
         pair = {"pair_id": "PAIR-" + digest([a, b])[:16], "paper_ids": [a, b], "cluster_ids": cids,
                 "kind": "within_cluster" if same else "between_clusters", "similarity": score,
                 "main": any(getattr(owner[pid], "kind", "side") == "main" for pid in (a, b))}
-        if stage == "gaps":
-            anchor = next((owner[pid].id for pid in (a, b) if getattr(owner[pid], "kind", "side") == "main"), cids[0])
-            partner = next((pid for pid in (a, b) if getattr(owner[pid], "kind", "side") != "main"), a)
-            pair.update(scope="main_side" if main_side else "within_cluster", anchor_cluster_id=anchor,
-                        question_relevance=question_scores.get(partner, 0.0))
         (within if same else between).append(pair)
     order = lambda p: (not p["main"], -p["similarity"], p["paper_ids"])
     within.sort(key=order)
     between.sort(key=order)
-    if stage == "gaps":
-        weight = settings.gap_main_side_question_weight
-        between.sort(key=lambda p: (-(1-weight)*p["similarity"]-weight*p["question_relevance"], p["paper_ids"]))
     selected, counts, cluster_counts, seen_cross = [], Counter(), Counter(), set()
-    for pool, maximum in ((within, settings.gap_max_candidates if stage == "gaps" else settings.connection_max_within_pairs),
-                          (between, settings.gap_main_side_max_candidates if stage == "gaps" else settings.connection_max_between_pairs)):
+    for pool, maximum in ((within, settings.connection_max_within_pairs), (between, settings.connection_max_between_pairs)):
         used = 0
         for pair in pool:
             if used >= maximum:
                 break
             cid = pair["cluster_ids"][0]
-            if stage == "gaps":
-                if pair["scope"] == "within_cluster" and cluster_counts[cid]:
-                    continue
-                if pair["scope"] == "main_side" and tuple(pair["cluster_ids"]) in seen_cross:
-                    continue
-            elif any(counts[p] >= settings.connection_max_pairs_per_paper for p in pair["paper_ids"]):
+            if any(counts[p] >= settings.connection_max_pairs_per_paper for p in pair["paper_ids"]):
                 continue
-            elif pair["kind"] == "within_cluster" and cluster_counts[cid] >= settings.connection_within_pairs_per_cluster:
+            if pair["kind"] == "within_cluster" and cluster_counts[cid] >= settings.connection_within_pairs_per_cluster:
                 continue
-            elif pair["kind"] == "between_clusters" and tuple(pair["cluster_ids"]) in seen_cross:
+            if pair["kind"] == "between_clusters" and tuple(pair["cluster_ids"]) in seen_cross:
                 continue
             selected.append(pair)
             counts.update(pair["paper_ids"])
@@ -227,13 +200,12 @@ def verify(proposals: list[dict], settings: Settings, context: FindingContext, s
 
 
 def cache_key(stage: str, payload: dict, schema, settings: Settings) -> str:
-    names = [stage[:-1] + "_finder", stage + "_verify"]  # connections -> connection_finder
-    if stage == "gaps":
-        names.append("gap_coverage")
+    names = (["gap_finder", "gap_coverage", "gap_grader", "gap_explicit"] if stage == "gaps"
+             else ["connection_finder", "connections_verify"])
     params = {k: v for k, v in vars(settings).items() if k.startswith(("finding_", "connection_", "gap_"))}
     files = [Path(__file__), Path(__file__).parent / "agents" / (stage[:-1] + "_finder.py")]
     if stage == "gaps":
-        files.append(Path(__file__).parent / "tools" / "openalex.py")
+        files += [Path(__file__).parent / "tools" / name for name in ("openalex.py", "semantic_scholar.py")]
     return digest({"payload": payload, "settings": params, "model": settings.llm_model,
                    "prompts": {name: load_prompt(name) for name in names}, "schema": schema.model_json_schema(),
                    "verification_schema": FindingVerifications.model_json_schema(),
@@ -243,7 +215,7 @@ def cache_key(stage: str, payload: dict, schema, settings: Settings) -> str:
 def cached(key: str, context: FindingContext, settings: Settings) -> FindingCacheRecord | None:
     record = context.cache.get(key)
     if record and record.stage == "gaps":
-        if any(g.coverage.status == "unavailable" for g in record.gaps):
+        if any(g.coverage_status == "unavailable" for g in record.gaps):
             return None
         age = (datetime.now(timezone.utc) - datetime.fromisoformat(record.created_at)).total_seconds()
         if age < 0 or age >= settings.gap_coverage_ttl_s:

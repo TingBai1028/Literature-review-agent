@@ -648,6 +648,11 @@ blockquote {
   font-size: 12px;
   color: #9a6b32;
 }
+.gap-badge {
+  padding: 1px 6px;
+  border: 1px solid #d9b98f;
+  border-radius: 8px;
+}
 .inspector-placeholder {
   padding-top: 55px;
   text-align: center;

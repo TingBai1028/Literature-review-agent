@@ -1,70 +1,20 @@
-"""Cross-pool recall, correct graph scope, and genuine user-submitted review records."""
+"""Read-only map catalog and genuine user-submitted review records."""
 
 import json
-from dataclasses import replace
-from types import SimpleNamespace
 
-import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
 from litagent import api
-from litagent.agents.gap_finder import find_gaps
-from litagent.cluster_regeneration import invalidated_findings
 from litagent.cluster_state import load_version, path_for, save_version, set_head
-from litagent.finding_engine import FindingContext, choose_pairs, sources
 from litagent.finding_review import prepare_review
-from litagent.integrations.meterless import ResearchWorld
-from litagent.schemas import GroundedGap
-from tests.test_findings import model  # shared offline model fixture
+from tests.test_findings import gap_settings, model  # shared offline model fixture
 from tests.test_cluster_regeneration import snapshot
-
-
-def cross_snapshot(tmp_path):
-    vectors = [[1,0,0],[.7,.71414,0],[.7,.364,.6144],[.75,.6614,0],[0,0,1],[0,.1,.995]]
-    return snapshot(tmp_path, vectors=vectors)
-
-
-def test_singleton_main_has_cross_pool_gap_candidates_without_side_side_leakage(model, tmp_path):
-    root,cfg,papers,arrays=cross_snapshot(tmp_path)
-    ctx=FindingContext(question=root.question,similarity=arrays.similarity)
-    pairs,_=choose_pairs('gaps',papers,root.clusters,cfg,ctx,set(sources(papers,cfg,ctx)))
-    cross=[p for p in pairs if p['scope']=='main_side']
-    assert cross and all('M' in p['paper_ids'] and len(p['cluster_ids'])==2 for p in cross)
-    assert all(len(p['cluster_ids'])==1 or p['scope']=='main_side' for p in pairs)
-    assert len(cross)<=cfg.gap_main_side_max_candidates
-    legacy,_=choose_pairs('gaps',papers,root.clusters,replace(cfg,gap_main_side_max_candidates=0),ctx,set(sources(papers,cfg,ctx)))
-    assert all(p['scope']=='within_cluster' for p in legacy)
-    assert {p['pair_id'] for p in legacy}<={p['pair_id'] for p in pairs}
-
-
-def test_main_side_gap_anchors_main_and_is_attached_to_both_clusters(model,tmp_path):
-    root,cfg,papers,arrays=cross_snapshot(tmp_path)
-    ctx=FindingContext(question=root.question,similarity=arrays.similarity)
-    gaps=find_gaps(papers,root.clusters,[],cfg,context=ctx)
-    gap=next(g for g in gaps if g.scope=='main_side')
-    assert gap.cluster_id=='MAIN' and len(gap.cluster_ids)==2 and gap.hypothesis_status=='provisional'
-    world=ResearchWorld('cross-gap-world',str(tmp_path));world.start_attempt(1,root.question);world.add_papers(papers);world.write_clusters(root.clusters);world.write_gaps(gaps)
-    graph=world.to_graph_json()
-    assert {e['target'] for e in graph['edges'] if e['source']==gap.id and e['type']=='in-cluster'}==set(gap.cluster_ids)
-    side=next(cid for cid in gap.cluster_ids if cid!='MAIN')
-    result=root.model_copy(deep=True,update={'gaps':gaps})
-    _,invalid=invalidated_findings(result,SimpleNamespace(finding_dependencies=ctx.dependencies,papers=papers),{side},set())
-    assert gap.id in invalid
-    assert len([e for e in graph['edges'] if e['type']=='member-of'])==len(papers)
-
-
-def test_gap_scope_validator_rejects_inconsistent_multi_cluster_metadata(model,tmp_path):
-    root,cfg,papers,arrays=cross_snapshot(tmp_path)
-    gaps=find_gaps(papers,root.clusters,[],cfg,context=FindingContext(similarity=arrays.similarity))
-    gap=next(g for g in gaps if g.scope=='main_side')
-    with pytest.raises(ValueError,match='Gap scope'):
-        GroundedGap.model_validate({**gap.model_dump(),'cluster_ids':['MAIN']})
 
 
 @pytest.fixture
 def client(model,tmp_path):
-    root,cfg,papers,arrays=snapshot(tmp_path)
+    root,cfg,papers,arrays=snapshot(tmp_path,settings=gap_settings(tmp_path))
     api.app.dependency_overrides[api.get_settings]=lambda:cfg
     try:
         with TestClient(api.app) as browser:

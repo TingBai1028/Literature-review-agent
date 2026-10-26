@@ -109,7 +109,9 @@ def run_pipeline(
                     trace.log("human", "review 1", "not satisfied", fb.comment, "planner", why="User feedback")
                     continue
                 trace.log("human", "review 1", "approved", next_step="clusterer")
-                papers = store.get_papers()
+                # Zetaris stores no reference lists; carry them over by id for the Gap finder's citation check.
+                references = {p.id: p.references for p in papers}
+                papers = [p.model_copy(update={"references": references.get(p.id)}) for p in store.get_papers()]
 
                 result = RunResult(run_id=trace.run_id, status="done", plan=plan, papers=papers)
                 if store.fallback_reason:
