@@ -208,7 +208,6 @@ export function LiteratureGraph({
           {(
             [
               ["all", "All"],
-              ["main_side", "Main & side"],
               ["connections", "Graph 1 · Connections"],
               ["gaps", "Graph 2 · Gaps"],
             ] as [Filter, string][]
@@ -352,12 +351,7 @@ export function LiteratureGraph({
                 map.connections.map((c) => {
                   const a = point(c.paper_ids[0]),
                     b = point(c.paper_ids[1]);
-                  if (
-                    !a ||
-                    !b ||
-                    (filter === "main_side" && c.kind !== "between_clusters")
-                  )
-                    return null;
+                  if (!a || !b) return null;
                   const active =
                     hovered === c.id ||
                     (selection?.type === "connection" && selection.id === c.id);
@@ -398,9 +392,7 @@ export function LiteratureGraph({
                     </g>
                   );
                 })}
-              {(filter === "all" ||
-                filter === "gaps" ||
-                filter === "main_side") &&
+              {(filter === "all" || filter === "gaps") &&
                 map.gaps.map((g) => {
                   const a = point(g.between_paper_ids[0]),
                     b = g.between_paper_ids[1]

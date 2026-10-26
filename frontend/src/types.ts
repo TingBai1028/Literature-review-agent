@@ -264,4 +264,4 @@ export type Selection = {
   type: "paper" | "cluster" | "connection" | "gap";
   id: string;
 };
-export type Filter = "all" | "main_side" | "connections" | "gaps";
+export type Filter = "all" | "connections" | "gaps";
