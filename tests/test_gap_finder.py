@@ -340,3 +340,26 @@ def test_the_stage_grader_gets_coverage_hits_as_titles_not_full_records(monkeypa
     grader.grade("gaps", [gap], [a, b], Settings(sample_mode=False), reviewed_pairs=[], retry_timeout=False)
     [search] = sent["output"][0]["coverage"]["searches"]
     assert search["papers"] == [{"id": "EXT", "title": "Study EXT", "year": None}] and sent["retry_timeout"] is False
+
+
+def test_unverified_novelty_ranks_after_every_verified_gap(tmp_path):
+    from litagent.schemas import Evidence, Gap
+    papers = [paper(pid) for pid in IDS]
+    run = gap_finder._Run(papers, {}, None, Settings(sample_mode=False, logs_dir=str(tmp_path), gap_max_per_cluster=2), None)
+    def gap(gid, label, coverage, similarity):
+        run.outcomes[gid] = {}
+        return Gap(id=gid, cluster_id="C1", description="d", between_paper_ids=["A", "B"], why_it_matters="w",
+                   evidence=[Evidence(paper_id="A", quote="q")], label=label, label_reason="r",
+                   coverage_status=coverage, similarity=similarity)
+    gaps = [gap("unverified-novel", "novel", "unavailable", .79), gap("verified-open", "known_open", "not_filled", .6),
+            gap("verified-novel", "novel", "not_filled", .55)]
+    with Trace(str(tmp_path)) as trace:
+        kept = run.rank(gaps)
+    # 27 Oct recovery run: 15 of 23 "novel" gaps had no completed coverage search.
+    assert [g.id for g in kept] == ["verified-novel", "verified-open"]
+    assert "over the cap" in lines(trace.events, "grading", "dropped")[0]["why"]
+    with Trace(str(tmp_path)) as trace:
+        run.rank([gaps[0]])
+    [kept_line] = lines(trace.events, "grading", "kept")
+    assert "novelty unverified: coverage unavailable" in kept_line["why"]
+    assert kept_line["result"]["novelty_verified"] is False

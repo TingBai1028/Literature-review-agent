@@ -674,6 +674,11 @@ blockquote {
   border: 1px solid #d9b98f;
   border-radius: 8px;
 }
+.gap-badge.unverified {
+  margin-left: 6px;
+  background: #fbf1e4;
+  color: #8a5a17;
+}
 .inspector-placeholder {
   padding-top: 55px;
   text-align: center;

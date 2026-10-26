@@ -155,7 +155,8 @@ treated as evidence that the gap is open. Turned off with `gap_coverage_check=Fa
 
 **4. Grading agent.** Input: surviving gaps with their quotes and coverage results. Using SGHA's
 classifier labels, it labels each gap `trivial`, `known_open`, `known_solved` or `novel` with a
-one-sentence reason. It keeps `novel` and `known_open`, ranks `novel` first and then by similarity,
+one-sentence reason. It keeps `novel` and `known_open` and ranks verified gaps first (the coverage search ran
+and found nothing; otherwise novelty is unverified, shown as "novelty unverified"), then `novel` first and then by similarity,
 and caps the result at `gap_max_per_cluster` per cluster. When the claim misstates its grounds, the
 grading agent returns a fix, and that gap is rewritten once with the fix and checked again. Output:
 the final gaps for the paper map. Drops: `trivial`, `known_solved`, no label returned, over the cap,

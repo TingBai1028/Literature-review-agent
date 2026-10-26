@@ -99,7 +99,7 @@ function provenance(
         [
           "Grader",
           g.label
-            ? `Labelled ${g.label}${g.label_reason ? `: ${g.label_reason}` : ""}`
+            ? `Labelled ${g.label}${g.label === "novel" && !map.sample_mode && g.coverage_status !== "not_filled" ? " (novelty unverified: no completed coverage search, so it is listed after verified gaps)" : ""}${g.label_reason ? `: ${g.label_reason}` : ""}`
             : "Not graded yet.",
         ],
         [
