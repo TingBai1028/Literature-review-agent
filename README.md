@@ -26,7 +26,6 @@ A research student starting a literature review searches a few databases, skims 
 ## Architecture
 
 The full diagram and design decisions are in [ARCHITECTURE.md](ARCHITECTURE.md).
-The file inventory, implemented flow and remaining work are in [docs/project-flow.md](docs/project-flow.md).
 
 Five agents run in sequence, each followed by a check:
 
@@ -78,8 +77,8 @@ python scripts/setup_embeddings.py  # real clustering: download the pinned CPU e
 Real clustering defaults to the scientific-content model `SemCSE_cosine` with complete linkage
 and a 0.7 cosine cutoff. To use the faster MiniLM baseline, prepare it with
 `python scripts/setup_embeddings.py --profile minilm` and set `EMBEDDING_PROFILE=minilm` in `.env`.
-The research, optional hybrid/adaptive strategies and ablation results are in
-[docs/similarity-optimization.md](docs/similarity-optimization.md).
+The optional hybrid/adaptive strategies and validation are in
+[docs/agents/clusterer.md](docs/agents/clusterer.md).
 
 Set up the Zetaris paper store once (Zetaris must already be running in Docker):
 

@@ -2979,6 +2979,7 @@
           "by": "gap_finder"
         }
       ],
+      "unclustered": [],
       "world": {
         "run_id": "example-02",
         "attempt": 2,

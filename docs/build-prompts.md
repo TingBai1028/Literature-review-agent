@@ -83,7 +83,6 @@ complete-linkage grouping, retained single-paper outliers, MMR label examples, N
 bounded grading redo, offline model loading and Docker build-time provisioning. Verify with
 `scripts/check_threshold.py` and `scripts/check_clusters.py`. Full-text retrieval and the
 Meterless Markovian reasoning engine are still separate TODOs.
-The latest research/ablation decisions are in `docs/similarity-optimization.md`.
 
 ```
 Implement the real Clusterer in litagent/agents/clusterer.py, following docs/agents/clusterer.md and prompts/cluster_labeler.md.

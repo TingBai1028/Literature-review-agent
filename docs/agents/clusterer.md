@@ -23,7 +23,7 @@ Code: `litagent/agents/clusterer.py`, `litagent/cluster_labels.py` · Default pr
 
 **Similarity strategies:** the default is semantic cosine and a fixed 0.7 cutoff. Complete linkage removes the previous chaining bug. Optional TF-IDF fusion uses sublinear TF, IDF, and separately weighted title/abstract features; unavailable sparse features fall back to dense similarity. Optional adaptive cuts maximize silhouette × non-singleton coverage over a bounded grid, without topic labels or LLM decisions. Experiments showed adaptive cuts can overmerge subtopics within a narrow field, so they are not the default. TF-IDF did not consistently improve clustering and is also opt-in. On a size-related redo the cutoff moves by one configured step and the fix also goes to the labeller; every result still satisfies its actual logged pairwise cutoff.
 
-**Validation:** `scripts/benchmark_similarity.py` compares two encoders and four scoring/grouping strategies. Saved-file topic labels only evaluate coarse field separation, not expert subtopic quality. See [research, decisions and results](../similarity-optimization.md). `group_by_threshold` remains only as the legacy experimental baseline. Outliers and grading failures remain visible instead of forcing a desired number of clusters.
+**Validation:** `scripts/benchmark_similarity.py` compares two encoders and four scoring/grouping strategies. Saved-file topic labels only evaluate coarse field separation, not expert subtopic quality. `group_by_threshold` remains only as the legacy experimental baseline. Outliers and grading failures remain visible instead of forcing a desired number of clusters.
 
 **Label quality:** `cluster_label_strategy="contrastive"` is the default; `independent` retains the earlier naming baseline.
 Labels see all member titles, up to eight MMR source examples, and the two nearest groups (selected by closest cross-group pair).
@@ -36,7 +36,7 @@ the public `Cluster` shape and sample snapshots remain unchanged. The grader doe
 
 **Human evaluation:** `scripts/review_clusters.py` generates blind, unlabelled diagnostic paper pairs and scores attributed
 human judgments. No human labels are fabricated and LLM proposals are excluded from human metrics. Duplicate-record
-components stay in one review fold. See [evaluation instructions](../../evals/README.md).
+components stay in one review fold. Record judgments with `scripts/annotate_cluster_pairs.py`, then score them with `scripts/review_clusters.py`.
 
 **Experimental semantic grouping:** `cluster_grouping_strategy="semantic"` uses `litagent/semantic_groups.py` and
 `prompts/cluster_subtopics.md` to propose task/method/domain groups from bounded source spans and candidate neighbors.

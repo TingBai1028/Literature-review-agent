@@ -214,8 +214,9 @@ sidecar with overwrite history; the original map is immutable. Reviewer identity
 authenticated, and quote matching cannot establish that a judgment was made by a human.
 
 The frozen [review pack](../evals/finding-review-main-side.json) has **seven pending items**
-(one retained connection and six gap candidate pairs), all annotations blank. See
-[review instructions](../evals/README.md). Its queue includes abstentions so recall can be
+(one retained connection and six gap candidate pairs), all annotations blank. Export a pack with
+`python scripts/review_findings.py --run-id <map_id> --output evals/<name>.json`; save judgments on the map's
+review page or with `POST /cluster/{id}/review/{item_id}`. Its queue includes abstentions so recall can be
 inspected, although it is still a bounded selected sample. Support rate is null until there
 are decisive valid submissions; semantic accuracy is deliberately null.
 
