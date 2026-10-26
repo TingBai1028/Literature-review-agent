@@ -14902,6 +14902,300 @@
       "estimated_calls": 0,
       "budget": 700000
     },
-    "backup_pool_size": 0
+    "backup_pool_size": 0,
+    "cluster_cards": [
+      {
+        "cluster_id": "MAIN",
+        "role": "main",
+        "label": "Sample main: Protein Structure Prediction Using AlphaFold: A Deep Learning Approach.",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W7214551647",
+          "W7116299005",
+          "W4409170867",
+          "W3132448805",
+          "W3111382885"
+        ],
+        "year_range": [
+          2021,
+          2026
+        ],
+        "citations": {
+          "median": 0.0,
+          "max": 127.0
+        },
+        "keywords": [
+          "Drug",
+          "Using AlphaFold",
+          "AlphaFold",
+          "experimental",
+          "biology",
+          "Prediction Using",
+          "AlphaFold-based",
+          "Drug Design"
+        ],
+        "summary": "Sample mode: placeholder summary of 5 papers, from full text; no model read them.",
+        "analysis_depth": "full_pdf",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "FOUNDATION",
+        "role": "foundation",
+        "label": "Sample foundation: Single-sequence protein structure prediction using a language model and deep learning",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4300861364",
+          "W4229031603",
+          "W3163965514"
+        ],
+        "year_range": [
+          2021,
+          2022
+        ],
+        "citations": {
+          "median": 274.0,
+          "max": 454.0
+        },
+        "keywords": [
+          "language model",
+          "Single-sequence protein",
+          "Single-sequence",
+          "language",
+          "prediction using",
+          "model",
+          "geometric deep",
+          "interpretable geometric"
+        ],
+        "summary": "Sample mode: placeholder summary of 3 papers, from full text; no model read them.",
+        "analysis_depth": "full_pdf",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-913a93f043c79243",
+        "role": "side",
+        "label": "Sample side: Deep Learning-Based Advances in Protein Structure Prediction",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W3165545667",
+          "W3167623110",
+          "W4200213155",
+          "W4205835872",
+          "W4308930019",
+          "W4318716433",
+          "W4367156817",
+          "W4367301305",
+          "W4375863182",
+          "W4389480950",
+          "W4390501271",
+          "W4391338754",
+          "W4400315590",
+          "W4401209403",
+          "W4402753025",
+          "W4405153727",
+          "W4409112594",
+          "W4409190911",
+          "W4411723436",
+          "W4417148774",
+          "W4417496152",
+          "W7142067576",
+          "W7165660686",
+          "W7170043904",
+          "W7202087238",
+          "W7213516358",
+          "W7220302866"
+        ],
+        "year_range": [
+          2021,
+          2026
+        ],
+        "citations": {
+          "median": 6.0,
+          "max": 139.0
+        },
+        "keywords": [
+          "neural networks",
+          "Design",
+          "PSP",
+          "networks",
+          "secondary",
+          "Structural Bioinformatics",
+          "Bioinformatics",
+          "protein modeling"
+        ],
+        "summary": "Sample mode: placeholder summary of 27 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-30705aec3552bd3f",
+        "role": "side",
+        "label": "Sample side: Protein Secondary Structure Prediction With a Reductive Deep Learning Method",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W3169629772",
+          "W4225919313",
+          "W4311253683",
+          "W4311293038"
+        ],
+        "year_range": [
+          2021,
+          2022
+        ],
+        "citations": {
+          "median": 14.5,
+          "max": 39.0
+        },
+        "keywords": [
+          "Protein Secondary",
+          "Secondary",
+          "MLPRNN",
+          "Reductive",
+          "Reductive Deep",
+          "secondary structures",
+          "proposed models",
+          "Secondary Structure"
+        ],
+        "summary": "Sample mode: placeholder summary of 4 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-014f3604415e7034",
+        "role": "side",
+        "label": "Sample side: Study of real-valued distance prediction for protein structure prediction with deep learning",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W3159267658",
+          "W3183921815",
+          "W3186340132",
+          "W4246182489",
+          "W4321613637"
+        ],
+        "year_range": [
+          2021,
+          2022
+        ],
+        "citations": {
+          "median": 18.0,
+          "max": 60.0
+        },
+        "keywords": [
+          "template-free",
+          "real-valued",
+          "real-valued distance",
+          "deep ResNet",
+          "distance",
+          "CASP13",
+          "ResNet",
+          "QUARK"
+        ],
+        "summary": "Sample mode: placeholder summary of 5 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-bf8e021563550f90",
+        "role": "side",
+        "label": "Sample side: Protein\u2013RNA interaction prediction with deep learning: structure matters",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W3184615727",
+          "W4283013935",
+          "W4382401741",
+          "W4390536911",
+          "W4407173261"
+        ],
+        "year_range": [
+          2021,
+          2025
+        ],
+        "citations": {
+          "median": 49.0,
+          "max": 155.0
+        },
+        "keywords": [
+          "Protein-RNA",
+          "Protein-RNA interaction",
+          "interaction",
+          "interaction prediction",
+          "field",
+          "binding",
+          "Scoring",
+          "Scoring Functions"
+        ],
+        "summary": "Sample mode: placeholder summary of 5 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-08a616ce761b260c",
+        "role": "side",
+        "label": "Sample side: AI3SD Video: Deep Learning enhanced prediction of protein structure and dynamics",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W3185577893",
+          "W4224939843",
+          "W4296164039",
+          "W4312518579",
+          "W4328048207",
+          "W4399595373",
+          "W4410621619",
+          "W4413579388"
+        ],
+        "year_range": [
+          2021,
+          2025
+        ],
+        "citations": {
+          "median": 23.5,
+          "max": 163.0
+        },
+        "keywords": [
+          "dynamics",
+          "changes",
+          "residue",
+          "pairs",
+          "conformational",
+          "conformational changes",
+          "property prediction",
+          "learning framework"
+        ],
+        "summary": "Sample mode: placeholder summary of 8 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-38ce5ca0a44e7a8f",
+        "role": "side",
+        "label": "Sample side: Structure-Aware Multimodal Deep Learning for Drug\u2013Protein Interaction Prediction",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4214530112",
+          "W4399982595",
+          "W4406537183"
+        ],
+        "year_range": [
+          2022,
+          2025
+        ],
+        "citations": {
+          "median": 27.0,
+          "max": 75.0
+        },
+        "keywords": [
+          "DPI",
+          "DPI prediction",
+          "data set",
+          "Structure-Aware",
+          "representation",
+          "set",
+          "RSPPI",
+          "PPIs"
+        ],
+        "summary": "Sample mode: placeholder summary of 3 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      }
+    ]
   }
 }

@@ -33,6 +33,19 @@ Main and foundation membership is frozen in regeneration; only side papers can b
 incoming paper's score against its target's final members. Sample mode runs the same rules with TF-IDF relevance and
 the stored similarity matrices (`data/sample/similarity/`), and placeholder labels.
 
+## Analysis depth and cluster cards (spec H)
+
+- `[code]` After roles are assigned, open-access full text is downloaded **only for main and foundation papers**
+  (Pro, High, Ultra). Side clusters stay metadata only: title, abstract, year, citations, references, keywords.
+  Every later stage reads full text only for main and foundation papers (`FindingContext.full_text_ids`), even
+  when an imported record carries full text for a side paper.
+- `[code]` + `[LLM]` Each cluster is summarised once into a **card**: role, label, rationale, papers, year range,
+  median and maximum citations, keywords and `analysis_depth` (`full_pdf` or `metadata`) by code, and a 3-5
+  sentence summary from one batched LLM call (`prompts/cluster_cards.md`): full-text passages for main and
+  foundation, abstracts for side clusters. If that call fails, a card falls back to the label and rationale.
+- Cards are saved with the map version (`cluster_cards`), rebuilt after a refresh or a move, and read by the gap
+  finder; the inspector shows them for each cluster.
+
 **Implementation choices:** title + abstract for Normal/Medium; supplied full text for High/Ultra, with a logged metadata fallback when missing. SemCSE encodes each token window using its documented CLS representation; MiniLM uses its original mean pooling. Window vectors are mean-pooled and normalized, with a logged per-paper cap. This is document embedding, not the pending Meterless Markovian reasoning engine. MMR selects at most `cluster_label_max_papers` central, non-redundant examples for the label prompt without changing group membership. All numeric controls live in `litagent/config.py`.
 
 **Similarity strategies:** the default is semantic cosine and a fixed 0.7 cutoff. Complete linkage removes the previous chaining bug. Optional TF-IDF fusion uses sublinear TF, IDF, and separately weighted title/abstract features; unavailable sparse features fall back to dense similarity. Optional adaptive cuts maximize silhouette × non-singleton coverage over a bounded grid, without topic labels or LLM decisions. Experiments showed adaptive cuts can overmerge subtopics within a narrow field, so they are not the default. TF-IDF did not consistently improve clustering and is also opt-in. On a size-related redo the cutoff moves by one configured step and the fix also goes to the labeller; every result still satisfies its actual logged pairwise cutoff.

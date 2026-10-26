@@ -99,10 +99,7 @@ def retrieve_pool(plan: SearchPlan, settings: Settings, signed_in: bool = False)
             and (not plan.criteria.min_citations or (p.citation_count or 0) >= plan.criteria.min_citations)]
     relevant, floor_note = apply_relevance_floor(kept, plan.question, settings)
     if plan.retrieval_target:
-        shown, backup = split_pool(relevant, plan, settings, found_total, len(merged), floor_note)
-        if EFFORT_PROFILES[plan.effort].use_full_text:
-            shown = attach_full_text(shown, settings)
-        return shown, backup
+        return split_pool(relevant, plan, settings, found_total, len(merged), floor_note)
     # Choose by relevance first, then order the chosen papers; citations only reorder, never admit
     chosen = sorted(relevant, key=lambda ps: ps[1], reverse=True)[: plan.max_papers]
     papers = rank(chosen, settings.rank_relevance_weight)
@@ -115,8 +112,7 @@ def retrieve_pool(plan: SearchPlan, settings: Settings, signed_in: bool = False)
         f"relevant, ordered {w:.0%} relevance / {1 - w:.0%} citations per year",
     )
 
-    if EFFORT_PROFILES[plan.effort].use_full_text:
-        papers = attach_full_text(papers, settings)
+    # Spec H1: no PDFs at retrieval; full text is read after clustering, for main and foundation papers only.
     return papers, []
 
 
@@ -157,7 +153,8 @@ def split_pool(relevant: list[tuple[Paper, float]], plan: SearchPlan, settings: 
 
 
 def attach_full_text(papers: list[Paper], settings: Settings) -> list[Paper]:
-    """High / Ultra: fill full_text from open-access PDFs; papers without one keep their abstract."""
+    """Fill full_text from open-access PDFs; papers without one keep their abstract. Called after clustering for
+    the main and foundation papers only (spec H1, litagent/cluster_cards.py), never at retrieval."""
     wanted = [p for p in papers if p.is_open_access and p.pdf_url and not p.full_text]
     texts: dict[str, str] = {}
     failures: dict[str, str] = {}

@@ -8,6 +8,7 @@ from pathlib import Path
 
 from litagent.agents import clusterer, grader
 from litagent.cluster_audit import partition_indices
+from litagent.cluster_cards import build_cards, read_role_full_text
 from litagent.cluster_state import ClusteringArtifacts, VersionError, path_for, save_version, set_head, version_lock
 from litagent.config import EFFORT_PROFILES, Effort, Settings
 from litagent.integrations.llm import TokenBudgetExceeded, TokenMeter
@@ -65,6 +66,10 @@ def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, setting
                 raise ValueError("A question map must have exactly one main cluster")
             result.main_cluster_id = mains[0].id if mains else None
             world.write_clusters(result.clusters)
+            if profile.use_full_text:
+                papers = read_role_full_text(papers, result.clusters, settings)
+            if settings.cluster_map_mode == "question":
+                result.cluster_cards = build_cards(papers, result.clusters, question, settings)
             trace.log("clusterer", "clusters", f"{len(result.clusters)} clusters", phase="done",
                       message=f"Clusterer: {len(result.clusters)} clusters ready",
                       payload={"clusters": [{"id": c.id, "kind": getattr(c, "kind", None), "label": c.label,

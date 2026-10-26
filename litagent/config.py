@@ -217,6 +217,13 @@ class Settings:
     connection_max_within_pairs: int = 4
     connection_max_between_pairs: int = 4
     connection_max_pairs_per_paper: int = 2
+    # Cluster cards (spec H3): papers per card summary and characters read from each
+    cluster_card_papers: int = 5
+    cluster_card_text_chars: int = 600
+    # Gap finder escalation (spec H5): when a side cluster holds kept gaps, read full text for its top papers
+    gap_escalation_enabled: bool = True
+    gap_escalation_max_clusters: int = 1
+    gap_escalation_papers: int = 3
     # Gap finder (docs/agents/gap_finder.md). Pairs within one cluster whose cosine is in this band: below it the
     # papers are unrelated, above it near-duplicates. 0.5-0.8 is a draft range, not yet tuned for our encoder.
     gap_similarity_min: float = 0.5

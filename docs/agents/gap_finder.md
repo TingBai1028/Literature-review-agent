@@ -167,6 +167,15 @@ abstract. The LLM selects sentences that state missing knowledge ("remains unkno
 straight to the coverage search and grading agent. Output: gaps with `gap_type: "explicit"`. Drops:
 the same as stages 3 and 4.
 
+**Inputs (spec H4).** The gap writer and the grading agent also receive every cluster's card (see the
+[Clusterer](clusterer.md#analysis-depth-and-cluster-cards-spec-h)) as context. Quotes come only from the
+candidate's own two papers: full-text passages for main and foundation papers, abstracts for side papers.
+
+**Escalation (spec H5).** In full-text modes, when a side cluster ends up holding kept gaps, the gap finder reads
+full text for its top papers by citations (`gap_escalation_papers`, 3; at most `gap_escalation_max_clusters`, 1,
+per run), logs it, and redoes that cluster's gaps on the full text. The fetched text is kept with the version so
+the quotes stay checkable. Metadata modes never escalate.
+
 In sample mode (`SAMPLE_MODE=true`, no network or LLM), stage 1 runs for real on the OpenAlex
 reference lists stored in `data/sample/*.json` and the similarity matrices in
 `data/sample/similarity/`, both made by `scripts/build_sample_gap_inputs.py`. Stages 2–4 return

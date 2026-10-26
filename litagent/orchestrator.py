@@ -25,6 +25,7 @@ from openai import OpenAIError
 
 from litagent.agents import clusterer, connection_finder, gap_finder, grader, planner, retriever
 from litagent.config import EFFORT_PROFILES, Effort, Settings
+from litagent.cluster_cards import build_cards, full_text_ids, read_role_full_text
 from litagent.cluster_state import ClusteringArtifacts
 from litagent.finding_engine import FindingContext
 from litagent.human_review import Reviewer
@@ -142,11 +143,15 @@ def run_pipeline(
                     papers, settings, trace, result, world
                 )
                 world.write_clusters(result.clusters)
+                if EFFORT_PROFILES[effort].use_full_text:  # spec H1: main and foundation only
+                    papers[:] = read_role_full_text(papers, result.clusters, settings)
+                result.cluster_cards = build_cards(papers, result.clusters, plan.question, settings)
                 mark("clusterer", "done", f"Clusterer: {len(result.clusters)} clusters",
                      {"clusters": [{"id": c.id, "kind": getattr(c, "kind", None), "label": c.label, "paper_ids": c.paper_ids}
                                    for c in result.clusters]})
                 finding_context = FindingContext(question=plan.question, similarity=artifacts.similarity,
-                    use_full_text=EFFORT_PROFILES[effort].use_full_text, deadline=deadline)
+                    use_full_text=EFFORT_PROFILES[effort].use_full_text, deadline=deadline,
+                    full_text_ids=full_text_ids(result.clusters), cards=result.cluster_cards)
 
                 # ----- 4. Connection finder + grading -----
                 stage = "connection_finder"

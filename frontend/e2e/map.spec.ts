@@ -472,3 +472,25 @@ test("live map while a map is built, provenance on elements, and the reasoning p
   await expect(clusterer).toContainText("assign cluster roles");
   expect(errors).toEqual([]);
 });
+
+test("each cluster shows its card: summary, years, citations and analysis depth", async ({
+  page,
+  appUrl,
+}) => {
+  await page.goto(appUrl);
+  await expect(page.locator(".paper-node")).toHaveCount(6);
+  await page
+    .locator(".topic-list button")
+    .filter({ hasText: "主簇" })
+    .first()
+    .click();
+  const card = page.locator(".cluster-card");
+  await expect(card).toContainText("全文分析");
+  await expect(card).toContainText("Sample mode: placeholder summary");
+  await page
+    .locator(".topic-list button")
+    .filter({ hasText: "Sample side" })
+    .first()
+    .click();
+  await expect(card).toContainText("元数据分析");
+});

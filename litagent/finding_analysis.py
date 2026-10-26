@@ -12,6 +12,7 @@ from litagent.agents import connection_finder, gap_finder, grader
 from litagent.cluster_state import (VersionError, atomic_json, effective_settings, head, load_version, path_for,
                                     save_version, set_head, version_lock)
 from litagent.config import EFFORT_PROFILES, Settings
+from litagent.cluster_cards import full_text_ids
 from litagent.finding_engine import FindingContext, check_deadline
 from litagent.integrations.llm import LLMError, TokenMeter
 from litagent.integrations.meterless import ResearchWorld
@@ -153,6 +154,7 @@ def _analyze(source, state, arrays, cfg, child_id, request_id, stages=STAGES):
                 grades={k: v for k, v in source.analysis.grades.items() if k == "connections"} if keep else {}),
             "warnings": [w for w in source.warnings if w.startswith(("Sample mode:", "No paper passed", "Cluster map did not pass"))]})
         context = FindingContext(question=child.question, similarity=arrays.similarity, use_full_text=child.use_full_text,
+            full_text_ids=full_text_ids(child.clusters), cards=child.cluster_cards,
             deadline=time.monotonic() + cfg.run_timeout_s, cache={k: v.model_copy(deep=True) for k, v in state.finding_cache.items()})
         world = ResearchWorld(child_id, cfg.logs_dir)
         world.start_attempt(1, child.question)

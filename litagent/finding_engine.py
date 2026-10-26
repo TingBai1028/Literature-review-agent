@@ -34,6 +34,9 @@ class FindingContext:
     question: str | None = None
     similarity: np.ndarray | None = None
     use_full_text: bool = False
+    # Spec H2: when set, only these papers (main and foundation) are read in full; all others use metadata.
+    full_text_ids: set[str] | None = None
+    cards: list = field(default_factory=list)  # cluster cards (spec H3) the gap finder reads as context
     deadline: float | None = None
     cache: dict[str, FindingCacheRecord] = field(default_factory=dict)
     dependencies: dict[str, FindingDependency] = field(default_factory=dict)
@@ -79,7 +82,9 @@ def prepare(papers, clusters, settings: Settings, context: FindingContext | None
 def sources(papers: list[Paper], settings: Settings, context: FindingContext, *, limit: int | None = None) -> dict:
     out = {}
     for paper in papers:
-        selected = paper.full_text if context.use_full_text and paper.full_text else f"{paper.title}. {paper.abstract or ''}"
+        deep = context.full_text_ids is None or paper.id in context.full_text_ids
+        selected = (paper.full_text if context.use_full_text and paper.full_text and deep
+                    else f"{paper.title}. {paper.abstract or ''}")
         field_name, text = evidence_source(paper, selected)
         if field_name == "title" or len(text.strip()) < settings.finding_min_quote_chars:
             continue

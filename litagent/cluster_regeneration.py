@@ -14,6 +14,7 @@ from litagent.cluster_state import (VersionError, atomic_json, digest, effective
 from litagent.config import EFFORT_PROFILES, Settings
 from litagent.integrations.llm import TokenBudgetExceeded, TokenMeter, load_prompt
 from litagent.integrations.meterless import ResearchWorld
+from litagent.cluster_cards import build_cards, full_text_ids
 from litagent.finding_analysis import run_finding_stages
 from litagent.finding_engine import FindingContext
 from litagent.question_clusters import attach_alternatives, label_side_groups
@@ -300,7 +301,7 @@ def _generate_child(source, state, arrays, output, plan, keys, cfg) -> ClusterMa
                 pending.append("clusters_grade")
                 child.warnings.append(str(error))
             context = FindingContext(question=child.question, similarity=arrays.similarity, use_full_text=child.use_full_text,
-                deadline=started + cfg.run_timeout_s, cache={k: v.model_copy(deep=True) for k, v in state.finding_cache.items()})
+                full_text_ids=full_text_ids(child.clusters), cards=child.cluster_cards, deadline=started + cfg.run_timeout_s, cache={k: v.model_copy(deep=True) for k, v in state.finding_cache.items()})
             if analyze:
                 run_finding_stages(child, state.papers, cfg, world, context)
                 pending.extend(child.analysis.pending_stages)
@@ -308,6 +309,8 @@ def _generate_child(source, state, arrays, output, plan, keys, cfg) -> ClusterMa
                 child.status = "partial"
                 child.warnings.append("Pending stages were not recomputed. The source remains active; inspect this child version separately.")
             child.regeneration.pending_stages = pending
+            if source.cluster_cards:  # moved papers change the side clusters' cards (H3)
+                child.cluster_cards = build_cards(state.papers, child.clusters, child.question, cfg)
             child.paper_map, child.usage = world.to_graph_json(), meter.usage
             dependencies = {fid: dep for fid, dep in (context.dependencies if analyze else state.finding_dependencies).items()
                             if fid in {x.id for x in [*child.connections, *child.gaps]}}

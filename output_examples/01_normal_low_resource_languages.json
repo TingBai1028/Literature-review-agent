@@ -5912,6 +5912,154 @@
       "estimated_calls": 0,
       "budget": 250000
     },
-    "backup_pool_size": 0
+    "backup_pool_size": 0,
+    "cluster_cards": [
+      {
+        "cluster_id": "MAIN",
+        "role": "main",
+        "label": "Sample main: Interactive Machine Translation with Large Language Models for Low-resource Languages",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W7134895265",
+          "W7115677253",
+          "W4410184664",
+          "W4408280927",
+          "W7168097912"
+        ],
+        "year_range": [
+          2025,
+          2026
+        ],
+        "citations": {
+          "median": 0.0,
+          "max": 33.0
+        },
+        "keywords": [
+          "Interactive",
+          "Interactive Machine",
+          "Machine",
+          "Machine Translation",
+          "Translation",
+          "Low-resource Languages",
+          "African",
+          "Adaptive"
+        ],
+        "summary": "Sample mode: placeholder summary of 5 papers, from full text; no model read them.",
+        "analysis_depth": "full_pdf",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "FOUNDATION",
+        "role": "foundation",
+        "label": "Sample foundation: Performance of Recent Large Language Models for a Low-Resourced Language",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4402389783",
+          "W4402671168",
+          "W4405173107"
+        ],
+        "year_range": [
+          2024,
+          2024
+        ],
+        "citations": {
+          "median": 14.0,
+          "max": 19.0
+        },
+        "keywords": [
+          "GPT",
+          "Sinhala",
+          "Low-Resourced",
+          "Recent",
+          "versions",
+          "Perform",
+          "Reranking",
+          "effectiveness"
+        ],
+        "summary": "Sample mode: placeholder summary of 3 papers, from full text; no model read them.",
+        "analysis_depth": "full_pdf",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-81d2f7cb6b0ea8a1",
+        "role": "side",
+        "label": "Sample side: Large Language Models and Low-Resource Languages: An Examination of Armenian NLP",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4392637283",
+          "W4403364915",
+          "W4407393353",
+          "W4412862878",
+          "W4412889388",
+          "W4416034203",
+          "W4417133178",
+          "W7155356580",
+          "W7165392193",
+          "W7165482954",
+          "W7197036362"
+        ],
+        "year_range": [
+          2023,
+          2026
+        ],
+        "citations": {
+          "median": 1.0,
+          "max": 27.0
+        },
+        "keywords": [
+          "Armenian",
+          "Armenian NLP",
+          "NLP",
+          "NLP research",
+          "field",
+          "review",
+          "NusaMT-7B",
+          "spBLEU"
+        ],
+        "summary": "Sample mode: placeholder summary of 11 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      },
+      {
+        "cluster_id": "SIDE-4685f4928b323a6c",
+        "role": "side",
+        "label": "Sample side: Large Language Models As Annotators: A Preliminary Evaluation For Annotating Low-Resource Language Content",
+        "rationale": "Sample mode: placeholder; no scientific topic assessment was performed.",
+        "paper_ids": [
+          "W4392669965",
+          "W4404389841",
+          "W4407385098",
+          "W4409178241",
+          "W4416223637",
+          "W4416249530",
+          "W7123296616",
+          "W7123371404",
+          "W7154856337",
+          "W7155373379",
+          "W7162479607"
+        ],
+        "year_range": [
+          2023,
+          2026
+        ],
+        "citations": {
+          "median": 0.0,
+          "max": 11.0
+        },
+        "keywords": [
+          "Modelling",
+          "catastrophic",
+          "catastrophic forgetting",
+          "forgetting",
+          "challenge",
+          "SLM",
+          "LR",
+          "annotations"
+        ],
+        "summary": "Sample mode: placeholder summary of 11 papers, from metadata; no model read them.",
+        "analysis_depth": "metadata",
+        "papers_with_full_text": 0
+      }
+    ]
   }
 }

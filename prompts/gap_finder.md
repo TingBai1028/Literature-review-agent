@@ -19,7 +19,9 @@ A gap has three parts (the Claim / Grounds / Warrant shape used by GAPMAP):
 
 Abstain when the papers apply the same method to the same task (no new combination), when
 the combination would be trivial or meaningless, or when either paper's spans do not state
-the contribution the claim needs. A shared keyword is not a reason to write a gap. Abstaining
+the contribution the claim needs. A shared keyword is not a reason to write a gap. `cluster_cards` summarise every cluster of
+the map (main and foundation from full text, side clusters from metadata): use them to judge
+whether a combination is new to this map, but quote only the candidate's own two papers. Abstaining
 is a valid answer; a fix never obliges you to invent a gap.
 
 Never claim "no one has studied", "first" or literature-wide absence beyond "no work combines

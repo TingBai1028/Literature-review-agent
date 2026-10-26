@@ -11,6 +11,7 @@ from typing import Literal
 from litagent.cluster_audit import corpus_fingerprint
 from litagent.cluster_state import VersionError, atomic_json, digest, load_version, path_for, version_lock
 from litagent.agents.gap_finder import candidate_pairs
+from litagent.cluster_cards import full_text_ids
 from litagent.finding_engine import FindingContext, sources
 from litagent.schemas import Evidence
 
@@ -27,7 +28,8 @@ class ReviewSubmission(BaseModel):
 
 def prepare_review(run_id, settings, *, reveal=False):
     result, state, arrays = load_version(run_id, settings)
-    context = FindingContext(question=result.question, similarity=arrays.similarity, use_full_text=result.use_full_text)
+    context = FindingContext(question=result.question, similarity=arrays.similarity, use_full_text=result.use_full_text,
+                             full_text_ids=full_text_ids(result.clusters))
     src = sources(state.papers, settings, context)
     gap_pairs = candidate_pairs(state.papers, result.clusters, context.similarity, settings, set(src))
     by_id = {p.id: p for p in state.papers}
