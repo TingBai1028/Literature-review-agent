@@ -146,3 +146,25 @@ def test_nightshift_cache_status_is_logged(tmp_path):
     with Trace(str(tmp_path)) as trace:
         complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client)
     assert trace.events[-1]["nightshift_cache"] == "exact"
+
+
+@pytest.mark.parametrize("reply", [
+    '{"gap_id": "G1", "label": "novel", "reason": "Nothing combines them."}',
+    '[{"gap_id": "G1", "label": "novel", "reason": "Nothing combines them."}]',
+])
+def test_bare_item_of_a_one_list_schema_is_wrapped_without_a_retry(reply, tmp_path):
+    from litagent.schemas import GapLabelDecisions  # real run 27 Oct: a one-gap batch came back without {"labels": [...]}
+    client = FakeClient([reply])
+    with Trace(str(tmp_path)) as trace:
+        out = complete_json("sys", "user", GapLabelDecisions, settings=real_settings(), client=client)
+    assert [(d.gap_id, d.label) for d in out.labels] == [("G1", "novel")] and len(client.calls) == 1
+    assert trace.events[-1]["decision"] == "valid JSON after wrapping"
+
+
+def test_echoed_request_is_not_wrapped():
+    from litagent.schemas import GapLabelDecisions
+    echo = json.dumps({"task_version": "gap-grader-v1", "gaps": [{"gap_id": "G1", "claim": "x"}]})
+    client = FakeClient([echo, echo])
+    with pytest.raises(LLMError):
+        complete_json("sys", "user", GapLabelDecisions, settings=real_settings(), client=client)
+    assert len(client.calls) == 2

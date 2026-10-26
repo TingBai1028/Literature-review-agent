@@ -26,7 +26,7 @@ import time
 import uuid
 from contextvars import ContextVar
 from pathlib import Path
-from typing import TypeVar
+from typing import TypeVar, get_args, get_origin
 
 from openai import OpenAI
 from pydantic import BaseModel, ValidationError
@@ -169,6 +169,11 @@ def complete_json(
         try:
             parsed = output_model.model_validate_json(_clean_json_text(text))
         except ValidationError as e:
+            if (parsed := _wrap_bare_items(output_model, _clean_json_text(text))) is not None:
+                _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "valid JSON after wrapping",
+                     "return", "The answer was the list's items without the one-field wrapper; wrapped in code",
+                     response.model or model, tokens, start, cache, memory)
+                return parsed
             _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "invalid JSON",
                  "retry with error" if attempt == 1 else "raise", str(e), response.model or model, tokens, start, cache, memory)
             if attempt == 2:
@@ -182,6 +187,34 @@ def complete_json(
         _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "valid JSON",
              "return", "", response.model or model, tokens, start, cache, memory)
         return parsed
+
+
+def _wrap_bare_items(output_model: type[T], text: str) -> T | None:
+    """Wrap a bare item or bare list for a schema whose only field is a list of objects.
+
+    Real run 27 Oct: for a one-gap batch Nemotron answered GapLabelDecisions with the label object alone, without
+    {"labels": [...]}, twice, and Graph 2 ended partial. The item must still validate in full, so an echoed
+    request or any other shape still fails.
+    """
+    if len(output_model.model_fields) != 1:
+        return None
+    name, field = next(iter(output_model.model_fields.items()))
+    item = get_args(field.annotation)[0] if get_origin(field.annotation) is list else None
+    if not (isinstance(item, type) and issubclass(item, BaseModel)
+            and any(f.is_required() for f in item.model_fields.values())):
+        return None  # an item with no required field would accept any object
+    try:
+        data = json.loads(text)
+    except ValueError:
+        return None
+    if isinstance(data, dict):
+        data = [data]
+    if not isinstance(data, list):
+        return None
+    try:
+        return output_model.model_validate({name: data})
+    except ValidationError:
+        return None
 
 
 def _app_name() -> str:

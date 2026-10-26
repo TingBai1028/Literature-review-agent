@@ -25,6 +25,7 @@ from litagent.cluster_state import digest
 from litagent.config import Settings
 from litagent.finding_engine import (FindingContext, cache_key, cached, check_deadline, merge_record, now, prepare,
     request, resolve_evidence, sources)
+from litagent.integrations.llm import LLMError, TokenBudgetExceeded
 from litagent.schemas import (Cluster, Connection, CoverageJudgements, CoverageSearch, Evidence, ExplicitGapDrafts,
     FindingAudit, FindingCacheRecord, FindingDependency, Gap, GapCoverage, GapDrafts, GapLabelDecisions, Paper,
     SearchCriteria)
@@ -442,7 +443,7 @@ class _Run:
     def grade(self, cluster: Cluster, gaps: list[Gap], final: bool) -> tuple[list[Gap], dict[str, str]]:
         if not gaps:
             return [], {}
-        labels = {}
+        labels, failed = {}, {}
         for chunk in _chunks(gaps, self.settings.gap_llm_batch_size):
             payload = {"task_version": "gap-grader-v1", "research_area": self.context.question or cluster.label,
                        "cluster": cluster.label, "cluster_cards": compact(self.context.cards),
@@ -451,12 +452,25 @@ class _Run:
                                               "quote": e.quote} for e in g.evidence],
                                  "coverage": {"status": g.coverage_status, "checked_titles": self.checked.get(g.id, [])}}
                                 for g in chunk]}
-            for d in request("gap_grader", payload, GapLabelDecisions, _no_check, self.settings, self.context, "gaps").labels:
+            try:
+                decisions = request("gap_grader", payload, GapLabelDecisions, _no_check, self.settings, self.context,
+                                    "gaps").labels
+            except TokenBudgetExceeded:
+                raise
+            except LLMError as error:
+                # Like an unlabelled cluster: one failed call drops only its own gaps, not the run (real run 27 Oct
+                # ended partial on one malformed answer). Marked retry, so a later analysis does them again.
+                failed.update((g.id, f"{type(error).__name__}: {error}") for g in chunk)
+                continue
+            for d in decisions:
                 labels.setdefault(d.gap_id, d)
         kept, fixes = [], {}
         for g in gaps:
             d = labels.get(g.id)
-            if d is None:
+            if g.id in failed:
+                self.drop("grading", g.id, f"the grading call failed ({failed[g.id]}); a later analysis retries it",
+                          retry=True, level=logging.WARNING)
+            elif d is None:
                 self.drop("grading", g.id, "the grading agent returned no label")
             elif (d.fix or "").strip():
                 if final or g.gap_type == "explicit":
@@ -485,10 +499,11 @@ class _Run:
 
     # ----- trace -----
 
-    def drop(self, stage: str, gap_id: str, reason: str, abstained: bool = False, **result) -> None:
+    def drop(self, stage: str, gap_id: str, reason: str, abstained: bool = False, retry: bool = False,
+             level: int = logging.INFO, **result) -> None:
         self.outcomes.setdefault(gap_id, {}).update(decision="abstain" if abstained else "dropped", stage=stage,
-                                                    reason=reason, abstained=abstained)
-        _log(stage, gap_id, "dropped", reason, **result)
+                                                    reason=reason, abstained=abstained, **({"retry": True} if retry else {}))
+        _log(stage, gap_id, "dropped", reason, level, **result)
 
     def keep(self, stage: str, gap_id: str, reason: str, **result) -> None:
         _log(stage, gap_id, "kept", reason, **result)

@@ -74,6 +74,7 @@ def test_signed_in_drops_open_access_filter_and_page_size_is_capped():
 
 
 def test_api_key_preferred_over_email(monkeypatch):
+    monkeypatch.delenv("OPENALEX_API_KEY", raising=False)  # a developer's .env may set one
     monkeypatch.setenv("OPENALEX_EMAIL", "me@example.com")
     assert build_params("q", SearchCriteria(topic="t"), 30, True)["mailto"] == "me@example.com"
     monkeypatch.setenv("OPENALEX_API_KEY", "key123")
