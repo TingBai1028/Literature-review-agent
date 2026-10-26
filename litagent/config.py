@@ -119,6 +119,12 @@ class Settings:
     # Per model request (rules: 30-90 s). 60 s cut off two of three real evaluation topics: Nightshift
     # latency spikes made a ~2k-token request take 62-68 s where it usually takes ~10 s (26 Oct).
     llm_timeout_s: float = 90.0
+    # Independent model calls sent at once (litagent/parallel.py). Nightshift served 8 concurrent requests without
+    # errors (26 Oct); 4 leaves headroom for latency spikes. 1 = one after another.
+    llm_concurrency: int = field(default_factory=lambda: int(os.getenv("LLM_CONCURRENCY", "4")))
+    # An answer Nightshift built with injected prior-answer memory is discarded and asked again in a new scope
+    # this many times before the call fails. It happened once in 155 runs (26 Oct, 4 calls at once).
+    llm_memory_retries: int = 1
 
     # Zetaris SQL requests (rules: 30-60 s)
     zetaris_timeout_s: float = 45.0
@@ -190,7 +196,9 @@ class Settings:
     cluster_label_text_chars: int = 2000
     cluster_label_max_papers: int = 8
     cluster_label_strategy: str = "contrastive"  # independent retained for controlled comparisons
-    cluster_label_batch_size: int = 4
+    # Groups named per call. 4 made answers long: one batch took 82 of the 90 s limit and two runs timed out
+    # (26 Oct); batches run at the same time, so smaller ones cost no wall time.
+    cluster_label_batch_size: int = 2
     cluster_label_neighbors: int = 2
     cluster_neighbor_text_chars: int = 600
     cluster_label_validation_retries: int = 1

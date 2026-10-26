@@ -180,6 +180,8 @@ Every run also saves its Meterless World Model to `logs/world-<run_id>.json` (se
 
 Every external call has a timeout (model requests 90 s, Zetaris SQL 45 s, OpenAlex 30 s, PDFs 20 s), redos and replans are capped in `litagent/config.py`, and the run stops between stages after `RUN_TIMEOUT_S` (default 600 s). The target is 5–10 minutes; Ultra (~150 papers, full text) may hit the cap and return a partial result.
 
+Model calls that do not depend on each other run at the same time (`LLM_CONCURRENCY`, default 4; `litagent/parallel.py`): relevance and label batches while clustering, the pairs of each cluster in the connection finder, and each cluster's gaps. A real Nightshift call takes 25–65 s, so one after another a 50-paper map spent 599 of its 618 s waiting for the model. Results, their order and the trace are the same as with `LLM_CONCURRENCY=1`, which `pytest` uses.
+
 Each effort level also has a token budget (`EFFORT_PROFILES` in `litagent/config.py`: 250k / 450k / 700k / 1M). Every LLM call's tokens are counted, retries included, and once the budget is used up the run stops before the next call and returns a partial result. The budgets come from measured real runs: a complete 30-paper Normal run with one cluster and one finding redo needs about 210k tokens; the earlier 50k budget stopped every real run during clustering (see [docs/evaluation.md](docs/evaluation.md)).
 
 ### Tests

@@ -20,6 +20,7 @@ import logging
 import os
 import re
 import sys
+import threading
 import uuid
 from contextvars import ContextVar
 from datetime import datetime, timezone
@@ -71,6 +72,7 @@ class Trace:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.events: list[dict[str, Any]] = []
         self._token = None
+        self._lock = threading.Lock()  # parallel model calls (litagent/parallel.py) log from several threads
 
     def __enter__(self) -> Trace:
         self._token = _current.set(self)
@@ -117,9 +119,10 @@ class Trace:
             **{k: _short(v) for k, v in extra.items() if v is not None},
         }
         line = mask(json.dumps(event, ensure_ascii=False))
-        self.events.append(json.loads(line))
-        with self.path.open("a", encoding="utf-8") as f:
-            f.write(line + "\n")
+        with self._lock:  # one whole line at a time, so the event stream never reads a torn line
+            self.events.append(json.loads(line))
+            with self.path.open("a", encoding="utf-8") as f:
+                f.write(line + "\n")
 
         model = f" model={extra['model']}" if extra.get("model") else ""
         text = f"run={self.run_id} agent={agent_name} action={action}{model} -> {decision}"

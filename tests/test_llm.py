@@ -112,12 +112,25 @@ def test_every_call_and_json_repair_has_isolated_answer_memory():
 
 
 def test_unexpected_memory_injection_is_rejected_and_logged(tmp_path):
-    client = FakeClient(['{"approved": true}'])
+    client = FakeClient(['{"approved": true}', '{"approved": true}'])
     client.receipt = {"scope": "ignored-scope", "receipt": {"hmem": {"injected": 2}}}
     with Trace(str(tmp_path)) as trace:
         with pytest.raises(LLMError, match="prior-answer memory"):
             complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client)
     assert trace.events[-1]["nightshift_memory"]["injected"] == 2
+    assert [e["next"] for e in trace.events] == ["discard and ask again in a new scope", "raise"]
+
+
+def test_answer_built_from_injected_memory_is_discarded_and_asked_again(tmp_path):
+    client = FakeClient(['{"approved": false}', '{"approved": true}'])
+    client.receipt = [{"receipt": {"hmem": {"injected": 1}}}, {"receipt": {"hmem": {"injected": 0}}}]
+    with Trace(str(tmp_path)) as trace, TokenMeter() as meter:
+        out = complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client)
+    assert out == HumanFeedback(approved=True)
+    scopes = [call["extra_headers"]["meterless-scope"] for call in client.calls]
+    assert len(set(scopes)) == 2 and meter.usage.llm_calls == 2
+    assert client.calls[1]["messages"] == client.calls[0]["messages"]  # the discarded answer is never shown again
+    assert [e["decision"] for e in trace.events] == ["unexpected answer memory", "valid JSON"]
 
 
 def test_gateway_scope_mismatch_is_rejected_even_with_no_retrieval():

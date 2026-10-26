@@ -11,7 +11,9 @@ and replays semantically similar messages. A stale or near-duplicate replay woul
 names its app per run (`x-title: litagent-<run_id>`): each run gets its own cache partition.
 The cache status Nightshift reports is logged with every call. Nightshift also retrieves
 prior answers through H-MEM across app IDs within one scope: every request/repair gets a
-fresh meterless-scope so producers, graders, and previous runs cannot share those answers.
+fresh meterless-scope so producers, graders, and previous runs cannot share those answers. If the
+receipt still reports injected memory, the answer is never used: the request is sent again in a
+new scope (settings.llm_memory_retries times), then the call fails.
 """
 
 from __future__ import annotations
@@ -19,6 +21,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import threading
 import time
 import uuid
 from contextvars import ContextVar
@@ -59,6 +62,7 @@ class TokenMeter:
     def __init__(self, budget: int | None = None):
         self.usage = TokenUsage(budget=budget)
         self._token = None
+        self._lock = threading.Lock()  # parallel model calls add usage from several threads
 
     def __enter__(self) -> TokenMeter:
         self._token = _current_meter.set(self)
@@ -69,10 +73,11 @@ class TokenMeter:
             _current_meter.reset(self._token)
 
     def add(self, prompt_tokens: int, completion_tokens: int, estimated: bool = False) -> None:
-        self.usage.prompt_tokens += prompt_tokens
-        self.usage.completion_tokens += completion_tokens
-        self.usage.llm_calls += 1
-        self.usage.estimated_calls += int(estimated)
+        with self._lock:
+            self.usage.prompt_tokens += prompt_tokens
+            self.usage.completion_tokens += completion_tokens
+            self.usage.llm_calls += 1
+            self.usage.estimated_calls += int(estimated)
 
     def check(self) -> None:
         """Raise before a call once the budget is used up."""
@@ -131,7 +136,8 @@ def complete_json(
     ]
 
     meter = current_meter()
-    for attempt in (1, 2):
+    attempt, discarded = 1, 0
+    while True:
         if meter:
             meter.check()
         start = time.monotonic()
@@ -149,9 +155,14 @@ def complete_json(
         if meter:
             meter.add(tokens["prompt"], tokens["completion"], estimated=tokens.get("estimated", False))
         if memory.get("injected", 0):
+            again = discarded < settings.llm_memory_retries
             _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "unexpected answer memory",
-                 "raise", "Prior answers would contaminate independent agents/evaluations", response.model or model,
+                 "discard and ask again in a new scope" if again else "raise",
+                 "Prior answers would contaminate independent agents/evaluations", response.model or model,
                  tokens, start, cache, memory)
+            if again:
+                discarded += 1
+                continue
             raise LLMError("Nightshift injected prior-answer memory despite a fresh request scope")
         if memory.get("scope") is not None and memory["scope"] != request_scope:
             raise LLMError("Nightshift did not honor the requested answer-memory scope")
@@ -162,6 +173,7 @@ def complete_json(
                  "retry with error" if attempt == 1 else "raise", str(e), response.model or model, tokens, start, cache, memory)
             if attempt == 2:
                 raise LLMError(f"{output_model.__name__}: model output failed validation twice") from e
+            attempt = 2
             messages += [
                 {"role": "assistant", "content": text},
                 {"role": "user", "content": f"Your JSON did not validate:\n{e}\nReply again with corrected JSON only."},
@@ -170,7 +182,6 @@ def complete_json(
         _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "valid JSON",
              "return", "", response.model or model, tokens, start, cache, memory)
         return parsed
-    raise AssertionError("unreachable")
 
 
 def _app_name() -> str:
