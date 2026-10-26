@@ -1,5 +1,7 @@
-import { useMemo, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { Minus, Plus, RotateCcw } from "lucide-react";
+import { request } from "../api";
+import { blobPath, forceLayout, yearShade, type Neighbor } from "../layout";
 import type { Filter, MapResult, Paper, Selection } from "../types";
 import { topicColor } from "./TopicSidebar";
 function wrap(text: string) {
@@ -37,62 +39,67 @@ export function LiteratureGraph({
     null,
   );
   const svg = useRef<SVGSVGElement>(null);
+  // Spec G: positions come only from a seeded force simulation over paper similarity (no grid slots).
+  const [neighbors, setNeighbors] = useState<Neighbor[] | null>(null);
+  useEffect(() => {
+    const abort = new AbortController();
+    setNeighbors(null);
+    request<{ pairs: Neighbor[] }>(`/cluster/${map.run_id}/neighbors`, {
+      signal: abort.signal,
+    })
+      .then((r) => !abort.signal.aborted && setNeighbors(r.pairs))
+      .catch(() => !abort.signal.aborted && setNeighbors([]));
+    return () => abort.abort();
+  }, [map.run_id]);
   const layout = useMemo(() => {
-    const positions = new Map<
-      string,
-      { x: number; y: number; cluster: string }
-    >();
-    let side = 0;
-    const sideCount = map.clusters.filter((c) => c.kind !== "main").length;
-    const hasMain = map.clusters.some((c) => c.kind === "main");
-    const dense = sideCount > 18;
-    let cols = Math.ceil(Math.sqrt((sideCount + 1) * 1.3));
-    if (cols % 2 === 0) cols++;
-    let rows = Math.ceil((sideCount + 1) / cols);
-    if (rows % 2 === 0) rows++;
+    if (neighbors === null) return null;
+    const positions = forceLayout(
+      map.root_run_id || map.run_id,
+      map.clusters,
+      papers,
+      neighbors,
+      map.connections,
+    );
+    const years = papers.map((p) => p.year).filter((y): y is number => !!y);
+    const [minYear, maxYear] = [Math.min(...years), Math.max(...years)];
     const groups = map.clusters.map((c, i) => {
-      let x = 500,
-        y = 380;
-      const halo = dense
-        ? Math.min(
-            45,
-            Math.min(840 / (cols - 1), 600 / Math.max(rows - 1, 1)) / 2 - 7,
-          )
-        : 66;
-      if (c.kind !== "main") {
-        const n = side++;
-        if (dense) {
-          const middle = Math.floor(rows / 2) * cols + Math.floor(cols / 2);
-          const slot = hasMain && n >= middle ? n + 1 : n;
-          x = 80 + ((slot % cols) * 840) / (cols - 1);
-          y = 90 + (Math.floor(slot / cols) * 600) / Math.max(rows - 1, 1);
-        } else if (!hasMain && sideCount <= 8) {
-          const angle = -Math.PI / 2 + (n * 2 * Math.PI) / sideCount;
-          x += sideCount > 1 ? Math.cos(angle) * 250 : 0;
-          y += sideCount > 1 ? Math.sin(angle) * 190 : 0;
-        } else {
-          const ring = n < 12 ? 0 : 1;
-          const angle =
-            -Math.PI / 2 +
-            (ring ? ((n - 12) * Math.PI) / 3 + Math.PI / 6 : (n * Math.PI) / 6);
-          x += Math.cos(angle) * (ring ? 202 : 385);
-          y += Math.sin(angle) * (ring ? 155 : 283);
-        }
-      }
-      c.paper_ids.forEach((id, j) => {
-        const angle =
-          (j * Math.PI * 2) / Math.max(c.paper_ids.length, 1) - Math.PI / 2;
-        const r = c.paper_ids.length === 1 ? 0 : Math.min(25, halo * 0.55);
-        positions.set(id, {
-          x: x + Math.cos(angle) * r,
-          y: y + Math.sin(angle) * r * 0.7,
-          cluster: c.id,
-        });
-      });
-      return { c, x, y, halo, color: topicColor(c, i) };
+      const points = c.paper_ids.map((id) => positions.get(id)!);
+      const main = c.kind === "main";
+      return {
+        c,
+        main,
+        color: topicColor(c, i),
+        x: points.reduce((s, p) => s + p.x, 0) / points.length,
+        top: Math.min(...points.map((p) => p.y - p.r)),
+        path: blobPath(points, main ? 26 : 18),
+        labelled: true,
+      };
     });
-    return { groups, positions };
-  }, [map.clusters]);
+    // Greedy label placement, main first: a label that would overlap one already placed is hidden until its
+    // cluster (or one of its papers) is selected, so names never pile up on top of each other.
+    const placed: { x0: number; x1: number; y0: number; y1: number }[] = [];
+    for (const g of [...groups].sort(
+      (a, b) => Number(b.main) - Number(a.main),
+    )) {
+      const half = Math.min(g.c.label.length, 22) * 3.6 + 8;
+      const y = g.top - (g.main ? 34 : 26);
+      const box = { x0: g.x - half, x1: g.x + half, y0: y - 14, y1: y + 18 };
+      g.labelled = !placed.some(
+        (b) => box.x0 < b.x1 && b.x0 < box.x1 && box.y0 < b.y1 && b.y0 < box.y1,
+      );
+      if (g.labelled) placed.push(box);
+    }
+    const shade = (id: string, color: string) =>
+      yearShade(color, papers.find((p) => p.id === id)?.year, minYear, maxYear);
+    return { groups, positions, shade };
+  }, [
+    map.run_id,
+    map.root_run_id,
+    map.clusters,
+    map.connections,
+    papers,
+    neighbors,
+  ]);
   const paperMap = useMemo(
     () => new Map(papers.map((p) => [p.id, p])),
     [papers],
@@ -105,7 +112,7 @@ export function LiteratureGraph({
       .find((c) => c.paper_ids.includes(id))
       ?.label.toLowerCase()
       .includes(search.toLowerCase());
-  const point = (id: string) => layout.positions.get(id);
+  const point = (id: string) => layout?.positions.get(id);
   const selectedGroup = map.clusters.find((c) =>
     selection?.type === "cluster"
       ? selection.id === c.id
@@ -195,6 +202,10 @@ export function LiteratureGraph({
               查看候选验收
             </button>
           </div>
+        ) : !layout ? (
+          <div className="graph-empty">
+            <p>正在按相似度排布论文…</p>
+          </div>
         ) : (
           <svg
             ref={svg}
@@ -213,74 +224,68 @@ export function LiteratureGraph({
             <g
               transform={`translate(${500 + view.x},${380 + view.y}) scale(${view.scale}) translate(-500,-380)`}
             >
-              {layout.groups.map(({ c, x, y, halo, color }) => {
-                const main = c.kind === "main";
-                const dim =
-                  activeIds && !c.paper_ids.some((id) => activeIds.has(id));
-                const selected =
-                  selection?.type === "cluster" && selection.id === c.id;
-                return (
-                  <g key={c.id} opacity={dim ? 0.14 : 1}>
-                    <ellipse
-                      data-interactive="true"
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`主题：${c.label}`}
-                      cx={x}
-                      cy={y}
-                      rx={main ? 43 : halo}
-                      ry={main ? 38 : halo * 0.59}
-                      fill={color}
-                      fillOpacity={main ? 0.1 : 0.11}
-                      stroke={selected ? color : "none"}
-                      strokeWidth={1.5}
-                      onClick={() => onSelect({ type: "cluster", id: c.id })}
-                      onKeyDown={(e) =>
-                        edgeEnter(e, { type: "cluster", id: c.id })
-                      }
-                    />
-                    {c.paper_ids.length > 1 &&
-                      c.paper_ids.map((id) => {
-                        const p = point(id)!;
-                        return (
-                          <line
-                            key={id}
-                            x1={x}
-                            y1={y}
-                            x2={p.x}
-                            y2={p.y}
-                            stroke={color}
-                            strokeOpacity={0.28}
-                          />
-                        );
-                      })}
-                    <text
-                      x={x}
-                      y={y + (main ? 55 : 57)}
-                      textAnchor="middle"
-                      className={
-                        main ? "main-graph-label" : "topic-graph-label"
-                      }
-                    >
-                      {(main
-                        ? ["主簇 · 与主题最相关"]
-                        : map.clusters.length > 19 &&
-                            !selected &&
-                            !(
-                              selection?.type === "paper" &&
-                              c.paper_ids.includes(selection.id)
-                            )
-                          ? [`${c.paper_ids.length} 篇`]
-                          : wrap(c.label)
-                      ).map((line, j) => (
-                        <tspan key={j} x={x} dy={j ? 16 : 0}>
-                          {line}
-                        </tspan>
-                      ))}
-                    </text>
-                  </g>
-                );
-              })}
+              {layout.groups.map(
+                ({ c, main, x, top, path, color, labelled }) => {
+                  const dim =
+                    activeIds && !c.paper_ids.some((id) => activeIds.has(id));
+                  const selected =
+                    selection?.type === "cluster" && selection.id === c.id;
+                  return (
+                    <g key={c.id} opacity={dim ? 0.14 : 1}>
+                      <path
+                        data-interactive="true"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`主题：${c.label}`}
+                        d={path}
+                        fill={color}
+                        fillOpacity={main ? 0.2 : 0.1}
+                        stroke={color}
+                        strokeOpacity={main ? 0.9 : selected ? 0.7 : 0.25}
+                        strokeWidth={main ? 2.2 : 1.2}
+                        onClick={() => onSelect({ type: "cluster", id: c.id })}
+                        onKeyDown={(e) =>
+                          edgeEnter(e, { type: "cluster", id: c.id })
+                        }
+                      />
+                      {(labelled ||
+                        selected ||
+                        (selection?.type === "paper" &&
+                          c.paper_ids.includes(selection.id))) && (
+                        <text
+                          x={x}
+                          y={top - (main ? 34 : 26)}
+                          textAnchor="middle"
+                          className={
+                            main ? "main-graph-label" : "topic-graph-label"
+                          }
+                        >
+                          {(main
+                            ? [
+                                "主簇 · " +
+                                  wrap(
+                                    c.label.replace(/^Sample main:\s*/, ""),
+                                  )[0],
+                              ]
+                            : map.clusters.length > 19 &&
+                                !selected &&
+                                !(
+                                  selection?.type === "paper" &&
+                                  c.paper_ids.includes(selection.id)
+                                )
+                              ? [`${c.paper_ids.length} 篇`]
+                              : wrap(c.label)
+                          ).map((line, j) => (
+                            <tspan key={j} x={x} dy={j ? 16 : 0}>
+                              {line}
+                            </tspan>
+                          ))}
+                        </text>
+                      )}
+                    </g>
+                  );
+                },
+              )}
               {filter !== "gaps" &&
                 map.connections.map((c) => {
                   const a = point(c.paper_ids[0]),
@@ -404,19 +409,19 @@ export function LiteratureGraph({
                         <circle
                           cx={p.x}
                           cy={p.y}
-                          r={c.kind === "main" ? 27 : 15}
+                          r={p.r + 6}
                           fill="none"
                           stroke={color}
-                          strokeWidth={1}
-                          opacity={0.4}
+                          strokeWidth={1.5}
+                          opacity={0.6}
                         />
                       )}
                       <circle
                         cx={p.x}
                         cy={p.y}
-                        r={c.kind === "main" ? 20 : 8}
-                        fill={color}
-                        stroke="white"
+                        r={p.r}
+                        fill={layout.shade(id, color)}
+                        stroke={c.kind === "main" ? color : "white"}
                         strokeWidth={1.5}
                       />
                     </g>
@@ -448,11 +453,15 @@ export function LiteratureGraph({
       <div className="graph-bottom">
         <div
           className="graph-legend"
-          title="节点位置用于分组浏览，不代表语义距离。连线只连接论文：悬停看关联原因，点击看完整说明、依据和相似度。簇内浅色细线表示归属。"
+          title="位置由论文相似度决定：越相似越靠近。节点越大引用越多，颜色越深越新；色块表示簇，主簇在中央并加粗描边。连线只连接论文：悬停看关联原因，点击看完整说明、依据和相似度。"
         >
           <span>
             <i style={{ background: "#28584b" }} />
             主簇
+          </span>
+          <span>
+            <i style={{ background: "#9a7438" }} />
+            基础簇
           </span>
           <span>
             <i style={{ background: "#d9e8e0" }} />
@@ -464,7 +473,7 @@ export function LiteratureGraph({
           </span>
           <span>
             <b className="legend-line dashed" />
-            相似度提示
+            研究空白
           </span>
         </div>
         <div className="zoom-controls">

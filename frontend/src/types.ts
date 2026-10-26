@@ -11,6 +11,7 @@ export interface Paper {
   full_text?: string | null;
   authors?: string[];
   doi?: string | null;
+  citation_count?: number | null;
 }
 export interface Alternative {
   cluster_id: string;
