@@ -18,7 +18,9 @@ Question maps include the research question, cluster roles and selected source e
 The producer's per-paper reasons and alternate scores are excluded from the grader input.
 Main is judged as the most topic-related cluster, foundation as classic background work, and sides by topic coherence.
 `POST /cluster` is a single-pass checkpoint and retains a failed grade with warnings;
-full pipeline runs keep their bounded grading retry. Each model call uses an isolated
+full pipeline runs keep their bounded grading retry. A finding grade requested by `/analyze` is not sent again
+after a timeout: the grade stays pending and a later analysis request retries it (`retry_timeout=False`).
+Each model call uses an isolated
 Nightshift H-MEM scope. See [main/side behavior](../main-side-clusters.md).
 
 **Input:** stage, output, papers · **Output:** `Grade`

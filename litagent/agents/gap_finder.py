@@ -25,7 +25,7 @@ from litagent.cluster_state import digest
 from litagent.config import Settings
 from litagent.finding_engine import (FindingContext, cache_key, cached, check_deadline, merge_record, now, prepare,
     request, resolve_evidence, sources)
-from litagent.integrations.llm import LLMError, TokenBudgetExceeded
+from litagent.integrations.llm import halve_on_timeout
 from litagent.schemas import (Cluster, Connection, CoverageJudgements, CoverageSearch, Evidence, ExplicitGapDrafts,
     FindingAudit, FindingCacheRecord, FindingDependency, Gap, GapCoverage, GapDrafts, GapLabelDecisions, Paper,
     SearchCriteria)
@@ -261,8 +261,9 @@ class _Run:
     def write(self, cluster: Cluster, candidates: list[dict], fixes: dict[str, str]) -> list[Gap]:
         if not candidates:
             return []
-        drafts = {}
-        for chunk in _chunks(candidates, self.settings.gap_llm_batch_size):
+        drafts, failed = {}, {}
+
+        def ask(chunk: list[dict]) -> list:
             ids = sorted({pid for c in chunk for pid in c["paper_ids"]})
             payload = {"task_version": "gap-writer-v1", "question": self.context.question, "fix": self.fix,
                        "cluster": {"id": cluster.id, "label": cluster.label},
@@ -272,11 +273,21 @@ class _Run:
                        "candidates": [{"gap_id": c["gap_id"], "paper_ids": c["paper_ids"],
                                        **({"fix": fixes[c["gap_id"]], "previous_claim": self.outcomes[c["gap_id"]]["claim"]}
                                           if c["gap_id"] in fixes else {})} for c in chunk]}
-            for d in request("gap_finder", payload, GapDrafts, _no_check, self.settings, self.context, "gaps").drafts:
+            return request("gap_finder", payload, GapDrafts, _no_check, self.settings, self.context, "gaps",
+                           retry_timeout=False).drafts
+
+        for chunk in _chunks(candidates, self.settings.gap_llm_batch_size):
+            got, lost, error = halve_on_timeout(ask, chunk, "gap writer batch")
+            for d in got:
                 drafts.setdefault(d.gap_id, d)
+            failed.update((c["gap_id"], _failure(error)) for c in lost)
         out = []
         for c in candidates:
             gid, d = c["gap_id"], drafts.get(c["gap_id"])
+            if gid in failed:
+                self.drop("writer", gid, f"the writer call failed ({failed[gid]}); a later analysis retries it",
+                          retry=True, level=logging.WARNING)
+                continue
             if d is None:
                 self.drop("writer", gid, "the writer returned no draft for this candidate")
                 continue
@@ -374,16 +385,23 @@ class _Run:
             self.checked[g.id] = [p.title for p in results[g.id]]
         pool = {p.id: p for g in gaps for p in results[g.id]}
         source_map = sources(list(pool.values()), self.settings, self.context, limit=self.settings.gap_coverage_source_chars)
-        verdicts = {}
-        for chunk in _chunks([g for g in gaps if results[g.id]], self.settings.gap_llm_batch_size):
+        verdicts, failed = {}, {}
+
+        def ask(chunk: list[Gap]) -> list:
             shown = {p.id for g in chunk for p in results[g.id]}
             payload = {"task_version": "gap-coverage-v2",
                        "gaps": [{"gap_id": g.id, "claim": g.description, "result_ids": [p.id for p in results[g.id]]}
                                 for g in chunk],
                        "papers": [source_map.get(pid) or {"id": pid, "title": p.title, "spans": []}
                                   for pid, p in pool.items() if pid in shown]}
-            for j in request("gap_coverage", payload, CoverageJudgements, _no_check, self.settings, self.context, "gaps").judgements:
+            return request("gap_coverage", payload, CoverageJudgements, _no_check, self.settings, self.context, "gaps",
+                           retry_timeout=False).judgements
+
+        for chunk in _chunks([g for g in gaps if results[g.id]], self.settings.gap_llm_batch_size):
+            got, lost, error = halve_on_timeout(ask, chunk, "gap coverage batch")
+            for j in got:
                 verdicts.setdefault(j.gap_id, j)
+            failed.update((g.id, _failure(error)) for g in lost)
         out = []
         for g in gaps:
             checks, verdict, ids = searches[g.id], verdicts.get(g.id), [p.id for p in results[g.id]]
@@ -404,6 +422,8 @@ class _Run:
                 failed = all(s.status == "unavailable" for s in checks)
                 status = "unavailable" if failed else "not_filled"
                 reason = "every search failed" if failed else "the search returned no other papers"
+            elif g.id in failed:  # unavailable: the cached result is not reused, so a later analysis checks again
+                status, reason = "unavailable", f"the coverage judge call failed ({failed[g.id]})"
             elif verdict is None:
                 status, reason = "unavailable", "the coverage judge returned no verdict for this gap"
             else:
@@ -444,7 +464,8 @@ class _Run:
         if not gaps:
             return [], {}
         labels, failed = {}, {}
-        for chunk in _chunks(gaps, self.settings.gap_llm_batch_size):
+
+        def ask(chunk: list[Gap]) -> list:
             payload = {"task_version": "gap-grader-v1", "research_area": self.context.question or cluster.label,
                        "cluster": cluster.label, "cluster_cards": compact(self.context.cards),
                        "gaps": [{"gap_id": g.id, "type": g.gap_type, "claim": g.description, "warrant": g.warrant,
@@ -452,18 +473,16 @@ class _Run:
                                               "quote": e.quote} for e in g.evidence],
                                  "coverage": {"status": g.coverage_status, "checked_titles": self.checked.get(g.id, [])}}
                                 for g in chunk]}
-            try:
-                decisions = request("gap_grader", payload, GapLabelDecisions, _no_check, self.settings, self.context,
-                                    "gaps").labels
-            except TokenBudgetExceeded:
-                raise
-            except LLMError as error:
-                # Like an unlabelled cluster: one failed call drops only its own gaps, not the run (real run 27 Oct
-                # ended partial on one malformed answer). Marked retry, so a later analysis does them again.
-                failed.update((g.id, f"{type(error).__name__}: {error}") for g in chunk)
-                continue
-            for d in decisions:
+            return request("gap_grader", payload, GapLabelDecisions, _no_check, self.settings, self.context, "gaps",
+                           retry_timeout=False).labels
+
+        for chunk in _chunks(gaps, self.settings.gap_llm_batch_size):
+            # Like an unlabelled cluster: a failed call drops only its own gaps, not the run (real run 27 Oct ended
+            # partial on one malformed answer). Marked retry, so a later analysis does them again.
+            got, lost, error = halve_on_timeout(ask, chunk, "gap grader batch")
+            for d in got:
                 labels.setdefault(d.gap_id, d)
+            failed.update((g.id, _failure(error)) for g in lost)
         kept, fixes = [], {}
         for g in gaps:
             d = labels.get(g.id)
@@ -561,6 +580,10 @@ def _chunks(items: list, size: int) -> list[list]:
     """Small batches keep each model request well inside the 90 s limit (real run 26 Oct: a 15-candidate writer
     call took 82 s and the next timed out)."""
     return [items[i:i + size] for i in range(0, len(items), size)]
+
+
+def _failure(error: Exception) -> str:
+    return mask(f"{type(error).__name__}: {error}")
 
 
 def _no_check(output) -> None:

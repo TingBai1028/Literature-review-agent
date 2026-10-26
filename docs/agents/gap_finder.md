@@ -175,6 +175,13 @@ candidates or gaps per request, so each stays well inside the 90 s model limit, 
 are kept as a partial result if a later request fails (a real run on 26 Oct lost 9 finished gaps to one timeout
 of a 15-candidate request).
 
+**Timeouts.** A writer, coverage or grading request that times out is not sent again unchanged: it is asked again
+as two halves at once (`halve_on_timeout` in `litagent/integrations/llm.py`). Items whose request still fails
+only affect themselves: the writer drops those candidates and the grading agent those gaps (both `retry: true`),
+and the coverage judge marks those gaps `unavailable`. Either way the cached result is not reused, so a later
+analysis request does them again. Running out of time or token budget still stops the stage. The orchestrator's
+stage grade sends each coverage hit as id, title and year only (a 31-gap request: ~190k → ~36k tokens).
+
 **Inputs (spec H4).** The gap writer and the grading agent also receive every cluster's card (see the
 [Clusterer](clusterer.md#analysis-depth-and-cluster-cards-spec-h)) as context. Quotes come only from the
 candidate's own two papers: full-text passages for main and foundation papers, abstracts for side papers.

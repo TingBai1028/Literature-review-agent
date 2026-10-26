@@ -166,6 +166,22 @@ def test_a_failed_label_call_leaves_its_groups_unnamed_and_keeps_the_map(monkeyp
     assert failed["payload"] == {"cluster_ids": ["C2"]} and failed["decision"] == "unlabelled"
 
 
+def test_a_timed_out_label_batch_is_asked_again_one_group_at_a_time(monkeypatch):
+    sizes = []
+    def llm(prompt, message, output_model, **kwargs):
+        assert kwargs.get("retry_timeout") is False
+        groups = json.loads(message)["groups"]
+        sizes.append(len(groups))
+        if len(groups) > 1:
+            raise openai.APITimeoutError(request=httpx2.Request("POST", "http://nightshift.test/v1/chat/completions"))
+        return proposals(groups)
+    monkeypatch.setattr(cluster_labels, "complete_json", llm)
+    ps = corpus(4)
+    settings = Settings(cluster_label_batch_size=2, cluster_label_neighbors=0)
+    labels = cluster_labels.contrastive_labels(ps, [p.abstract for p in ps], [[0, 1], [2, 3]], np.eye(4), settings, None)
+    assert sorted(sizes) == [1, 1, 2] and {a.coherence for a in labels.values()} == {"coherent"}
+
+
 def test_running_out_of_budget_while_labelling_still_stops_the_run(monkeypatch):
     def llm(*args, **kwargs):
         raise TokenBudgetExceeded("Token budget of 10 used up")

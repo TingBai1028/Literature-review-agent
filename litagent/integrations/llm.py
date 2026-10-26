@@ -14,11 +14,17 @@ prior answers through H-MEM across app IDs within one scope: every request/repai
 fresh meterless-scope so producers, graders, and previous runs cannot share those answers. If the
 receipt still reports injected memory, the answer is never used: the request is sent again in a
 new scope (settings.llm_memory_retries times), then the call fails.
+
+The OpenAI client never retries by itself. A timed-out request already cost llm_timeout_s, and asking the same
+thing again rarely helps (26 Oct: label batches and grades took 2 x 90 s and still failed). Connection errors,
+429 and 5xx are retried once, as the client did; a timeout only when the caller has no fallback. A caller with
+a batch can instead ask again in two halves (halve_on_timeout).
 """
 
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 import threading
@@ -26,14 +32,15 @@ import time
 import uuid
 from contextvars import ContextVar
 from pathlib import Path
-from typing import TypeVar, get_args, get_origin
+from typing import Callable, TypeVar, get_args, get_origin
 
-from openai import OpenAI
+from openai import APIConnectionError, APITimeoutError, InternalServerError, OpenAI, OpenAIError, RateLimitError
 from pydantic import BaseModel, ValidationError
 
 from litagent.config import Settings
+from litagent.parallel import run_parallel
 from litagent.schemas import TokenUsage
-from litagent.trace import current_trace
+from litagent.trace import current_trace, mask
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -99,7 +106,7 @@ def get_client(settings: Settings) -> OpenAI:
     api_key = os.getenv("METERLESS_RUNTIME_TOKEN")
     if not base_url or not api_key:
         raise LLMError("Set METERLESS_BASE_URL and METERLESS_RUNTIME_TOKEN (see .env.example), or run with SAMPLE_MODE=true.")
-    return OpenAI(base_url=base_url, api_key=api_key, timeout=settings.llm_timeout_s, max_retries=1)
+    return OpenAI(base_url=base_url, api_key=api_key, timeout=settings.llm_timeout_s, max_retries=0)
 
 
 def complete_json(
@@ -110,13 +117,15 @@ def complete_json(
     settings: Settings | None = None,
     agent_name: str = "llm",
     client: OpenAI | None = None,
+    retry_timeout: bool = True,
 ) -> T:
     """Call the LLM and parse its answer into `output_model`.
 
     Asks for JSON matching output_model's schema, validates it with Pydantic, and retries
     once with the validation error included. Logs the model name and token usage of every call,
     adds the tokens to the run's TokenMeter, and raises TokenBudgetExceeded before a call once
-    the run's budget is used up.
+    the run's budget is used up. `retry_timeout=False` raises APITimeoutError after one timed-out
+    request, for callers with a fallback (a pending grade, a smaller batch, an unlabelled cluster).
     """
     settings = settings or Settings()
     if settings.sample_mode:
@@ -142,12 +151,9 @@ def complete_json(
             meter.check()
         start = time.monotonic()
         request_scope = f"litagent-call-{uuid.uuid4().hex}"
-        response = client.chat.completions.create(
-            model=model,
-            messages=messages,
-            response_format={"type": "json_object"},
-            extra_headers={"x-title": _app_name(), "meterless-scope": request_scope},
-        )
+        response = _create(client, retry_timeout, agent_name, f"llm call {output_model.__name__} (attempt {attempt})",
+                           model=model, messages=messages, response_format={"type": "json_object"},
+                           extra_headers={"x-title": _app_name(), "meterless-scope": request_scope})
         text = response.choices[0].message.content or ""
         tokens = _tokens(response.usage, messages, text)
         cache = _cache_status(response)
@@ -187,6 +193,65 @@ def complete_json(
         _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "valid JSON",
              "return", "", response.model or model, tokens, start, cache, memory)
         return parsed
+
+
+def _create(client: OpenAI, retry_timeout: bool, agent_name: str, action: str, **request):
+    for retry in (False, True):
+        start = time.monotonic()
+        try:
+            return client.chat.completions.create(**request)
+        except (APIConnectionError, RateLimitError, InternalServerError) as error:
+            timeout = isinstance(error, APITimeoutError)
+            again = not retry and (retry_timeout or not timeout)
+            if trace := current_trace():
+                trace.log(agent_name, action, "timeout" if timeout else "provider error",
+                          next_step="send again" if again else "raise", why=f"{type(error).__name__}: {mask(str(error))}",
+                          level=logging.WARNING, model=request["model"], duration_ms=round((time.monotonic() - start) * 1000))
+            if not again:
+                raise
+
+
+def timed_out(error: BaseException) -> bool:
+    """The request (or the request an LLMError wraps) got no answer within llm_timeout_s."""
+    while error is not None:
+        if isinstance(error, APITimeoutError):
+            return True
+        error = error.__cause__
+    return False
+
+
+R = TypeVar("R")
+
+
+def halve_on_timeout(ask: Callable[[list], list[R]], items: list, why: str = "") -> tuple[list[R], list, Exception | None]:
+    """ask(items); if that times out, ask(first half) and ask(second half) at the same time, once.
+
+    A smaller batch answers sooner (26 Oct: a 4-cluster label batch took 82 of the 90 s limit), so this costs at
+    most two timeouts, like the client's old retry, but the second try is likely to finish. `ask` should pass
+    retry_timeout=False. Returns (results, items that still failed, their error) so the caller's fallback covers
+    only those items. Running out of token budget or time, or a non-model error, still raises.
+    """
+    try:
+        return ask(items), [], None
+    except TokenBudgetExceeded:
+        raise
+    except (LLMError, OpenAIError) as error:
+        if len(items) < 2 or not timed_out(error):
+            return [], list(items), error
+        if trace := current_trace():
+            trace.log("llm", "batch timed out", f"ask again as 2 halves of {len(items)} items", level=logging.WARNING,
+                      next_step="send both halves at once", why=why or "a smaller request answers sooner")
+    half = len(items) // 2
+    parts = [items[:half], items[half:]]
+    results, failed, last = [], [], None
+    for part, (out, error) in zip(parts, run_parallel(ask, parts, 2)):
+        if error is None:
+            results += out
+        elif isinstance(error, TokenBudgetExceeded) or not isinstance(error, (LLMError, OpenAIError)):
+            raise error
+        else:
+            failed, last = failed + list(part), error
+    return results, failed, last
 
 
 def _wrap_bare_items(output_model: type[T], text: str) -> T | None:

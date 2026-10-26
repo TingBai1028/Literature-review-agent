@@ -16,7 +16,7 @@ Code: `litagent/agents/clusterer.py`, `litagent/cluster_labels.py` · Default pr
 5. **Rubric (0–3 × 3):** accuracy (labels and roles match the papers), appropriateness (main is the most topic-related group, foundation is classic background, sides are coherent), actionability (a reader can navigate the field from the map); see `prompts/grader.md` → clusters.
 6. **Stop conditions:** grade < 7/9 → redo once with the grader's fix → continue with a warning. No main cluster is an error, never a result.
 7. **Run log:** role decisions (main choice, resize, fallback, foundation tiers, side merges), threshold, cluster sizes; progress events `start`, `partial_result` (groups, then labels) and `done`.
-8. **Guardrails:** runtime loads local model files only; no automatic download, remote model code or GPU. Input ids must be unique, vectors finite and non-zero. The labeller only names fixed groups; roles come from code. Singletons are retained as `Unclustered: <title>` without a labeller call.
+8. **Guardrails:** runtime loads local model files only; no automatic download, remote model code or GPU. Input ids must be unique, vectors finite and non-zero. The labeller only names fixed groups; roles come from code. Singletons are retained as `Unclustered: <title>` without a labeller call. A label batch that times out is asked again as two halves at once; groups whose call still fails stay on the map as `Unlabelled: <title>` (a refresh labels them).
 
 ## Cluster roles
 
