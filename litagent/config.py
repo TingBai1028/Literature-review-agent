@@ -122,6 +122,9 @@ class Settings:
     # Independent model calls sent at once (litagent/parallel.py). Nightshift served 8 concurrent requests without
     # errors (26 Oct); 4 leaves headroom for latency spikes. 1 = one after another.
     llm_concurrency: int = field(default_factory=lambda: int(os.getenv("LLM_CONCURRENCY", "4")))
+    # An answer Nightshift built with injected prior-answer memory is discarded and asked again in a new scope
+    # this many times before the call fails. It happened once in 155 runs (26 Oct, 4 calls at once).
+    llm_memory_retries: int = 1
 
     # Zetaris SQL requests (rules: 30-60 s)
     zetaris_timeout_s: float = 45.0

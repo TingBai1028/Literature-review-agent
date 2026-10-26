@@ -9,7 +9,7 @@ class FakeClient:
     def __init__(self, replies, report_usage=True):
         self.replies = list(replies)
         self.report_usage = report_usage
-        self.receipt = None  # Nightshift's `meterless` compute receipt, if a test wants one
+        self.receipt = None  # Nightshift's `meterless` compute receipt, if a test wants one; a list gives one per call
         self.calls = []
         self.chat = SimpleNamespace(completions=SimpleNamespace(create=self.create))
 
@@ -19,5 +19,5 @@ class FakeClient:
             model="nvidia/nemotron-test",
             choices=[SimpleNamespace(message=SimpleNamespace(content=self.replies.pop(0)))],
             usage=SimpleNamespace(prompt_tokens=10, completion_tokens=5) if self.report_usage else None,
-            meterless=self.receipt,
+            meterless=self.receipt.pop(0) if isinstance(self.receipt, list) else self.receipt,
         )
