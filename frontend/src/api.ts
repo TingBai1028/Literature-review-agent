@@ -1,4 +1,4 @@
-const prefix = import.meta.env.DEV ? "/api" : "";
+export const prefix = import.meta.env.DEV ? "/api" : "";
 export class ApiError extends Error {
   constructor(
     message: string,

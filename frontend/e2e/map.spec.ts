@@ -429,3 +429,46 @@ test("stale preview conflict is visible inside the dialog and does not move pape
   expect(versions.versions).toHaveLength(3); // root, Graph 1, Graph 2
   expect(versions.active_head.run_id).toBe("qa-root");
 });
+
+test("live map while a map is built, provenance on elements, and the reasoning panel", async ({
+  page,
+  appUrl,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto(appUrl);
+  await expect(page.locator(".paper-node")).toHaveCount(6);
+  // Hold the /cluster response back so the live view stays on screen; the run itself finishes on the server.
+  await page.route("**/cluster", async (route) => {
+    const response = await route.fetch();
+    await new Promise((r) => setTimeout(r, 2500));
+    await route.fulfill({ response });
+  });
+  await page.getByRole("button", { name: "新建地图", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "新建研究地图" });
+  await dialog.getByRole("button", { name: "导入记录", exact: true }).click();
+  await dialog
+    .locator('input[type="file"]')
+    .setInputFiles(
+      path.join(root, "input_examples/cluster-map/lora-translation.json"),
+    );
+  await dialog.getByRole("button", { name: "建立地图", exact: true }).click();
+  const feed = page.getByRole("complementary", { name: "运行动态" });
+  await expect(feed).toBeVisible();
+  await expect(feed).toContainText("聚类代理");
+  await expect(page.locator(".live-build .paper-node")).toHaveCount(3);
+  await expect(page.locator(".live-build")).toHaveCount(0, { timeout: 15000 });
+  // B6: every element says which agent made it and why.
+  await page.locator(".paper-node").first().click();
+  const provenance = page.locator(".provenance");
+  await expect(provenance).toContainText("检索代理");
+  await expect(provenance).toContainText("聚类代理");
+  // B4: the reasoning panel lists each agent's steps, labelled code or LLM, with raw details behind a toggle.
+  await provenance.getByRole("button", { name: "查看推理过程" }).click();
+  await expect(page.getByRole("heading", { name: "推理过程" })).toBeVisible();
+  const clusterer = page.locator(".agent-log").filter({ hasText: "聚类代理" });
+  await clusterer.locator("summary").first().click();
+  await expect(clusterer.locator(".kind").first()).toHaveText(/代码|LLM|人工/);
+  await expect(clusterer).toContainText("assign cluster roles");
+  expect(errors).toEqual([]);
+});
