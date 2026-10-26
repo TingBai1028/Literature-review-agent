@@ -1,12 +1,12 @@
 :root {
+  /* Source Serif 4 (bundled, works offline): the closest open serif to Anthropic Serif */
   font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    "PingFang SC",
-    "Microsoft YaHei",
-    sans-serif;
+    "Source Serif 4 Variable",
+    "Source Serif 4",
+    Georgia,
+    "Songti SC",
+    "SimSun",
+    serif;
   color: #24352f;
   background: #fff;
   font-synthesis: none;
@@ -402,10 +402,31 @@ h3 {
   stroke: #244c3e;
   stroke-width: 2.5;
 }
+.graph-notice {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--green);
+  background: var(--rail);
+  font-size: 13px;
+  color: #40544a;
+}
 .topic-graph-label {
   font-size: 12px;
   fill: #40544a;
   pointer-events: none;
+}
+.label-leader {
+  stroke-width: 1px;
+  stroke-opacity: 0.7;
+  pointer-events: none;
+}
+/* A white outline keeps a label readable where it crosses a line or another cluster */
+.topic-graph-label,
+.main-graph-label {
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
 .main-graph-label {
   font-size: 14px;
@@ -1299,7 +1320,8 @@ blockquote {
     min-height: 600px;
   }
   .graph-panel {
-    height: 510px;
+    /* grows with the analysis notice, so the map never covers the zoom buttons */
+    min-height: 510px;
     flex: none;
     border-bottom: 1px solid var(--line);
   }
@@ -1556,10 +1578,10 @@ blockquote {
   font-size: 14px;
 }
 .topic-graph-label {
-  font-size: 16px;
+  font-size: 12px;
 }
 .main-graph-label {
-  font-size: 18px;
+  font-size: 14px;
 }
 blockquote {
   font-size: 14px;
@@ -1642,19 +1664,16 @@ blockquote {
     min-width: 0;
   }
   .graph-mobile-caption span {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
   }
   .graph-mobile-caption small {
     font-size: 11px;
   }
+  /* The caption above the map shows the selected (or main) cluster's full name */
   .topic-graph-label,
+  .main-graph-label,
   .hint-label {
     display: none;
-  }
-  .main-graph-label {
-    font-size: 32px;
   }
 }
 .mode-switch {

@@ -4,17 +4,26 @@ import { request } from "../api";
 import { blobPath, forceLayout, yearShade, type Neighbor } from "../layout";
 import type { Filter, MapResult, Paper, Selection } from "../types";
 import { topicColor } from "./TopicSidebar";
+// The whole label, in lines of about 28 characters: English cluster names run to ~90 characters, and the
+// old two-line cap cut most of them off.
+const LABEL_CHARS = 28;
+const NOT_ANALYSED =
+  "Building the map only groups the papers. Click Run analysis (top right) to find paper connections (Graph 1), then research gaps (Graph 2).";
 function wrap(text: string) {
   const words = text.replace(/^Unclustered:\s*/, "").split(/\s+/);
   const lines = [""];
   for (const w of words) {
-    if (lines.at(-1)!.length + w.length > 18 && lines.length < 2) lines.push(w);
+    if (lines.at(-1) && lines.at(-1)!.length + 1 + w.length > LABEL_CHARS)
+      lines.push(w);
     else lines[lines.length - 1] += (lines.at(-1) ? " " : "") + w;
   }
-  return lines.map((line) =>
-    line.length > 20 ? line.slice(0, 18) + "…" : line,
-  );
+  return lines;
 }
+// Label font size and line height (match .topic-graph-label / .main-graph-label) and the shaded area's
+// margin around its papers, in map units.
+const fontSize = (main: boolean) => (main ? 14 : 12);
+const lineHeight = (main: boolean) => (main ? 17 : 15);
+const blobPad = (main: boolean) => (main ? 26 : 18);
 export function LiteratureGraph({
   map,
   papers,
@@ -24,6 +33,7 @@ export function LiteratureGraph({
   onFilter,
   search,
   onReview,
+  analysisHint = false,
   neighbors: supplied,
 }: {
   map: MapResult;
@@ -34,6 +44,8 @@ export function LiteratureGraph({
   onFilter: (f: Filter) => void;
   search: string;
   onReview: () => void;
+  // The saved-map view: say that connections and gaps need Run analysis (not while a map is being built)
+  analysisHint?: boolean;
   /** A live map passes the neighbours from its events instead of fetching a saved version's. */
   neighbors?: Neighbor[];
 }) {
@@ -76,23 +88,48 @@ export function LiteratureGraph({
         color: topicColor(c, i),
         x: points.reduce((s, p) => s + p.x, 0) / points.length,
         top: Math.min(...points.map((p) => p.y - p.r)),
-        path: blobPath(points, main ? 26 : 18),
-        labelled: true,
+        bottom: Math.max(...points.map((p) => p.y + p.r)),
+        path: blobPath(points, blobPad(main)),
+        lines: main
+          ? wrap("Main · " + c.label.replace(/^Sample main:\s*/, ""))
+          : wrap(c.label),
+        labelX: 0, // label centre and first baseline, set below
+        labelY: 0,
+        leader: null as number[] | null,
       };
     });
-    // Greedy label placement, main first: a label that would overlap one already placed is hidden until its
-    // cluster (or one of its papers) is selected, so names never pile up on top of each other.
-    const placed: { x0: number; x1: number; y0: number; y1: number }[] = [];
+    // Every cluster shows its whole name. Greedy placement, main first: each label goes to the first spot, of
+    // above its cluster, below it, then further out and to the sides, that covers no other label or paper.
+    const placed: { x0: number; x1: number; y0: number; y1: number }[] = [
+      ...positions.values(),
+    ].map((p) => ({ x0: p.x - p.r, x1: p.x + p.r, y0: p.y - p.r, y1: p.y + p.r }));
     for (const g of [...groups].sort(
       (a, b) => Number(b.main) - Number(a.main),
     )) {
-      const half = Math.min(g.c.label.length, 22) * 3.6 + 8;
-      const y = g.top - (g.main ? 34 : 26);
-      const box = { x0: g.x - half, x1: g.x + half, y0: y - 14, y1: y + 18 };
-      g.labelled = !placed.some(
-        (b) => box.x0 < b.x1 && b.x0 < box.x1 && box.y0 < b.y1 && b.y0 < box.y1,
-      );
-      if (g.labelled) placed.push(box);
+      const size = fontSize(g.main);
+      const height = size + (g.lines.length - 1) * lineHeight(g.main);
+      const half = Math.max(...g.lines.map((l) => l.length)) * size * 0.28 + 6;
+      const box = ([x, y]: number[]) => ({ x0: x - half, x1: x + half, y0: y - size, y1: y - size + height + 4 });
+      const above = g.top - blobPad(g.main) - 4 - height + size;
+      const below = g.bottom + blobPad(g.main) + 4 + size;
+      const step = height + 6;
+      const spots = [above, below, above - step, below + step, above - 2 * step, below + 2 * step]
+        .filter((y) => y - size >= 4) // never above the top of the map
+        .flatMap((y) => [0, -half, half].map((dx) => [g.x + dx, y]));
+      const free = spots.find((spot) => {
+        const b = box(spot);
+        return !placed.some((p) => b.x0 < p.x1 && p.x0 < b.x1 && b.y0 < p.y1 && p.y0 < b.y1);
+      });
+      [g.labelX, g.labelY] = free ?? spots[0] ?? [g.x, below];
+      const b = box([g.labelX, g.labelY]);
+      placed.push(b);
+      // A label moved off its usual spot (straight above its cluster) points back to the cluster.
+      if (free !== spots[0] || g.labelY !== above) {
+        const up = b.y1 <= g.top;
+        g.leader = up
+          ? [g.labelX, b.y1 - 2, g.x, g.top - blobPad(g.main) / 2]
+          : [g.labelX, b.y0, g.x, g.bottom + blobPad(g.main) / 2];
+      }
     }
     const shade = (id: string, color: string) =>
       yearShade(color, papers.find((p) => p.id === id)?.year, minYear, maxYear);
@@ -186,6 +223,9 @@ export function LiteratureGraph({
           Reset view
         </button>
       </div>
+      {analysisHint && !map.analysis && !noFindings && (
+        <p className="graph-notice">{NOT_ANALYSED}</p>
+      )}
       {!noFindings && (
         <div className="graph-mobile-caption">
           <span>{selectedGroup?.label ?? "Select a topic or paper to see its sources"}</span>
@@ -196,16 +236,26 @@ export function LiteratureGraph({
         {noFindings ? (
           <div className="graph-empty">
             <h2>
-              {filter === "gaps"
-                ? map.analysis?.pending_stages.includes("gaps")
+              {!map.analysis
+                ? filter === "gaps"
                   ? "Graph 2 (research gaps) has not been built yet"
-                  : "No hypotheses have passed the checks yet"
-                : "No connections have passed the checks yet"}
+                  : "Graph 1 (paper connections) has not been built yet"
+                : filter === "gaps"
+                  ? map.analysis.pending_stages.includes("gaps")
+                    ? "Graph 2 (research gaps) has not been built yet"
+                    : "No hypotheses have passed the checks yet"
+                  : "No connections have passed the checks yet"}
             </h2>
-            <p>This version keeps the check results and abstentions.</p>
-            <button className="secondary-button" onClick={onReview}>
-              Review candidates
-            </button>
+            {!map.analysis ? (
+              <p>{NOT_ANALYSED}</p>
+            ) : (
+              <>
+                <p>This version keeps the check results and abstentions.</p>
+                <button className="secondary-button" onClick={onReview}>
+                  Review candidates
+                </button>
+              </>
+            )}
           </div>
         ) : !layout ? (
           <div className="graph-empty">
@@ -230,7 +280,7 @@ export function LiteratureGraph({
               transform={`translate(${500 + view.x},${380 + view.y}) scale(${view.scale}) translate(-500,-380)`}
             >
               {layout.groups.map(
-                ({ c, main, x, top, path, color, labelled }) => {
+                ({ c, main, path, color, lines, labelX, labelY, leader }) => {
                   const dim =
                     activeIds && !c.paper_ids.some((id) => activeIds.has(id));
                   const selected =
@@ -252,41 +302,33 @@ export function LiteratureGraph({
                         onKeyDown={(e) =>
                           edgeEnter(e, { type: "cluster", id: c.id })
                         }
-                      />
-                      {(labelled ||
-                        selected ||
-                        (selection?.type === "paper" &&
-                          c.paper_ids.includes(selection.id))) && (
-                        <text
-                          x={x}
-                          y={top - (main ? 34 : 26)}
-                          textAnchor="middle"
-                          className={
-                            main ? "main-graph-label" : "topic-graph-label"
-                          }
-                        >
-                          {(main
-                            ? [
-                                "Main · " +
-                                  wrap(
-                                    c.label.replace(/^Sample main:\s*/, ""),
-                                  )[0],
-                              ]
-                            : map.clusters.length > 19 &&
-                                !selected &&
-                                !(
-                                  selection?.type === "paper" &&
-                                  c.paper_ids.includes(selection.id)
-                                )
-                              ? [`${c.paper_ids.length} papers`]
-                              : wrap(c.label)
-                          ).map((line, j) => (
-                            <tspan key={j} x={x} dy={j ? 16 : 0}>
-                              {line}
-                            </tspan>
-                          ))}
-                        </text>
+                      >
+                        <title>{c.label}</title>
+                      </path>
+                      {leader && (
+                        <line
+                          className="label-leader"
+                          x1={leader[0]}
+                          y1={leader[1]}
+                          x2={leader[2]}
+                          y2={leader[3]}
+                          stroke={color}
+                        />
                       )}
+                      <text
+                        x={labelX}
+                        y={labelY}
+                        textAnchor="middle"
+                        className={
+                          main ? "main-graph-label" : "topic-graph-label"
+                        }
+                      >
+                        {lines.map((line, j) => (
+                          <tspan key={j} x={labelX} dy={j ? lineHeight(main) : 0}>
+                            {line}
+                          </tspan>
+                        ))}
+                      </text>
                     </g>
                   );
                 },
