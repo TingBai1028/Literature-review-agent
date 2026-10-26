@@ -85,6 +85,10 @@ def test_clean_text_joins_hyphenation_and_drops_references():
     assert "Checklist" not in clean_text(appendix)  # references before long appendices still end the body
 
 
+def test_clean_text_drops_nul_bytes():
+    assert clean_text("Mean\x00 cycle\x00s") == "Mean cycles"  # PostgreSQL text fields reject NUL
+
+
 def test_long_text_keeps_question_relevant_verbatim_passages():
     front = "University of Somewhere. Department of Computing. Corresponding author email. " * 6
     middle = "We fine-tune with LoRA adapters for low-resource machine translation and report COMET. "

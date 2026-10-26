@@ -49,17 +49,29 @@ def http(monkeypatch):
 
 
 def test_arxiv_parses_feed_and_versions(http):
-    http["responses"].append(httpx.Response(200, text=FEED))
+    http["responses"] += [httpx.Response(200, text=FEED), httpx.Response(200, text=FEED)]
     papers = search_arxiv("LoRA translation", SearchCriteria(topic="t", year_from=2022), limit=500)
     params = http["calls"][0]["params"]
     assert params["search_query"] == "(all:LoRA AND all:translation) AND submittedDate:[202201010000 TO 299912312359]"
     assert params["max_results"] == arxiv.MAX_RESULTS
-    first, old = papers
+    first, old = papers  # the any-word top-up found the same two papers, so nothing was added
+    assert http["calls"][1]["params"]["search_query"].startswith("(all:LoRA OR all:translation)")
     assert first.id == "arXiv:2410.07830" and first.year == 2024 and first.source == "arxiv"
     assert first.title == "NusaMT-7B: Machine Translation for Low-Resource Indonesian Languages with Large Language Models"
     assert first.abstract.startswith("Large Language Models") and first.authors == ["William Tan", "Kevin Zhu"]
     assert first.doi == "10.48550/arXiv.2410.07830" and first.pdf_url.endswith("2410.07830v1") and first.is_open_access
     assert old.id == "arXiv:solv-int/9901001" and old.doi == "10.1000/old"
+
+
+def test_arxiv_tops_up_with_any_word_results_when_all_words_find_too_few(http):
+    empty = '<feed xmlns="http://www.w3.org/2005/Atom"></feed>'
+    http["responses"] += [httpx.Response(200, text=empty), httpx.Response(200, text=FEED)]
+    papers = search_arxiv("deterministic MDP mean cycle", SearchCriteria(topic="t"), limit=1)
+    assert [p.id for p in papers] == ["arXiv:2410.07830"]  # capped at min(limit, TOP_UP_TO)
+    assert http["calls"][1]["params"]["search_query"] == "all:deterministic OR all:MDP OR all:mean OR all:cycle"
+    http["responses"].append(httpx.Response(200, text=FEED))
+    search_arxiv("LoRA translation", SearchCriteria(topic="t"), limit=2)  # enough all-word results: no top-up
+    assert len(http["calls"]) == 3
 
 
 def test_arxiv_skips_reviews_only_plans_and_retries_server_errors(http):

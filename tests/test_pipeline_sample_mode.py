@@ -36,7 +36,7 @@ def test_no_topic_asks_user(tmp_path):
 
 def test_defaults_applied(tmp_path):
     result = run_pipeline("graph neural networks for drug discovery", Effort.HIGH, AutoApproveReviewer(), sample_settings(tmp_path))
-    assert result.plan.criteria.year_from is not None
+    assert result.plan.criteria.year_from is None  # no default start year
     assert result.plan.criteria.paper_types == ["primary", "review"]
     assert result.plan.max_papers == 100
 

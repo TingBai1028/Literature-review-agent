@@ -11,7 +11,6 @@ from litagent import cluster_labels
 from litagent.agents import clusterer, grader
 from litagent.cluster_audit import cluster_diagnostics, duplicate_components
 from litagent.config import Effort, Settings
-from litagent.integrations.llm import LLMError
 from litagent.integrations.meterless import ResearchWorld
 from litagent.orchestrator import _graded_stage
 from litagent.schemas import (Cluster, ClusterAssessment, ClusterAssessmentBatch, ClusterAssessmentProposal,
@@ -117,9 +116,30 @@ def test_evidence_repair_is_bounded(monkeypatch):
         return ClusterAssessmentProposals(assessments=[])
     monkeypatch.setattr(cluster_labels, "complete_json", invalid)
     ps = corpus(4)
-    with pytest.raises(LLMError, match="bounded repair"):
-        cluster_labels.contrastive_labels(ps, [p.abstract for p in ps], [[0, 1], [2, 3]], matrix, settings, None)
+    labels = cluster_labels.contrastive_labels(ps, [p.abstract for p in ps], [[0, 1], [2, 3]], matrix, settings, None)
     assert len(calls) == settings.cluster_label_validation_retries + 1
+    # Groups the model never assessed get code-written abstentions instead of failing the map
+    assert {a.coherence for a in labels.values()} == {"insufficient_evidence"} and len(labels) == 2
+    assert all(a.label.startswith("Unverified group:") and not a.evidence for a in labels.values())
+
+
+def test_unsupported_coherent_claim_abstains_after_repair_and_valid_groups_are_kept(monkeypatch, tmp_path):
+    contexts, settings, matrix = contexts_for()
+    def stubborn(prompt, message, output_model, **kwargs):
+        batch = proposals(json.loads(message)["groups"])
+        batch.assessments[0].evidence.pop()  # "coherent" without a quote for every example, on every attempt
+        batch.assessments[0].evidence[0].span_id = "invented"  # and an unresolvable reference
+        return batch
+    monkeypatch.setattr(cluster_labels, "complete_json", stubborn)
+    ps = corpus(4)
+    with Trace(str(tmp_path)) as trace:
+        labels = cluster_labels.contrastive_labels(ps, [p.abstract for p in ps], [[0, 1], [2, 3]], matrix, settings, None)
+    first, second = (labels[c["cluster_id"]] for c in contexts)
+    assert first.coherence == "insufficient_evidence" and "Abstained by code" in first.rationale
+    assert first.evidence == []  # the invented reference is dropped, never quoted
+    assert second.coherence == "coherent" and len(second.evidence) == 2
+    rejected = [e for e in trace.events if e["action"] == "validate cluster evidence"]
+    assert rejected[-1]["next"] == "abstain on invalid groups"
 
 
 def test_batch_limit_and_no_llm_for_singletons(monkeypatch):

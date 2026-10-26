@@ -3,6 +3,7 @@
 import json
 from datetime import date
 
+import numpy as np
 import pytest
 
 from litagent.agents import retriever
@@ -36,6 +37,20 @@ def real_settings(sources=("openalex",)) -> Settings:
     s.sample_mode = False
     s.retrieval_sources = sources  # tests replace only the sources they name; others would hit the network
     return s
+
+
+@pytest.fixture(autouse=True)
+def similarity(monkeypatch):
+    """Question similarity by paper title (default 0.9, so ties keep search order); no model is loaded."""
+    sims: dict[str, float] = {}
+    def embed(texts, settings):
+        rows = [[1.0, 0.0]]
+        for text in texts[1:]:
+            s = sims.get(text.split("\n\n")[0], 0.9)
+            rows.append([s, (1 - s * s) ** 0.5])
+        return np.array(rows)
+    monkeypatch.setattr(retriever, "embed_documents", embed)
+    return sims
 
 
 def fake_search(monkeypatch, results: dict):
@@ -104,6 +119,31 @@ def test_citations_per_year_minimum_filters(monkeypatch):
     fake_search(monkeypatch, {"q1": [paper("W1", cites=1), paper("W2", cites=20)]})
     papers = retrieve(make_plan(queries=["q1"], min_citations_per_year=5), real_settings())
     assert [p.id for p in papers] == ["W2"]
+
+
+def test_relevance_floor_drops_off_topic_papers_and_citations_only_reorder(monkeypatch, similarity, tmp_path):
+    on_topic = paper("W1", title="Policy iteration on deterministic MDPs", cites=0)
+    close = paper("W2", title="Average-reward MDP gain computation", cites=0)
+    nearer = paper("W3", title="Mean-cycle algorithms for deterministic MDPs", cites=0)
+    cited = paper("W4", title="Deep RL for edge computing offloading", cites=900)  # first in search order
+    similarity.update({on_topic.title: 0.7, close.title: 0.55, nearer.title: 0.8, cited.title: 0.3})
+    fake_search(monkeypatch, {"q1": [cited, on_topic, close, nearer]})
+    with Trace(str(tmp_path)) as trace:
+        papers = retrieve(make_plan(queries=["q1"], max_papers=2), real_settings())
+    assert [p.id for p in papers] == ["W3", "W1"]  # the 2 most similar; W4's citations can't bring it in
+    summary = [e for e in trace.events if e["action"] == "merge, filter, rank"][0]
+    assert "1 below question similarity 0.5" in summary["why"] and "chose the 2 most relevant" in summary["why"]
+
+
+def test_relevance_floor_is_skipped_without_an_embedding_model(monkeypatch, tmp_path):
+    def missing(texts, settings):
+        raise retriever.EmbeddingError("Embedding model is missing.")
+    monkeypatch.setattr(retriever, "embed_documents", missing)
+    fake_search(monkeypatch, {"q1": [paper("W1"), paper("W2")]})
+    with Trace(str(tmp_path)) as trace:
+        papers = retrieve(make_plan(queries=["q1"], max_papers=1), real_settings())
+    assert [p.id for p in papers] == ["W1"]  # chosen by search position instead
+    assert any(e["action"] == "relevance floor" and "skipped" in e["decision"] for e in trace.events)
 
 
 def test_one_failed_query_is_logged_and_skipped(monkeypatch, tmp_path):
