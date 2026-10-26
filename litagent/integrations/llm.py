@@ -139,13 +139,14 @@ def complete_json(
     messages = [
         {
             "role": "system",
-            "content": f"{system_prompt}\n\nReply with one JSON object only, matching this JSON Schema:\n{schema}",
+            "content": f"{system_prompt}\n\nReply with one JSON object only, matching this JSON Schema:\n{schema}"
+                       f"{_no_echo(output_model)}",
         },
         {"role": "user", "content": user_message},
     ]
 
     meter = current_meter()
-    attempt, discarded = 1, 0
+    attempt, discarded, echoes = 1, 0, 0
     while True:
         if meter:
             meter.check()
@@ -175,6 +176,12 @@ def complete_json(
         try:
             parsed = output_model.model_validate_json(_clean_json_text(text))
         except ValidationError as e:
+            if echoes < settings.llm_echo_retries and _repeats_input(_clean_json_text(text), user_message):
+                echoes += 1
+                _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "answer repeated the input",
+                     "send the same request again", "Only the request's own fields came back; a repair turn would show "
+                     "the model its echo as its own answer", response.model or model, tokens, start, cache, memory)
+                continue
             if (parsed := _wrap_bare_items(output_model, _clean_json_text(text))) is not None:
                 _log(agent_name, f"llm call {output_model.__name__} (attempt {attempt})", "valid JSON after wrapping",
                      "return", "The answer was the list's items without the one-field wrapper; wrapped in code",
@@ -252,6 +259,26 @@ def halve_on_timeout(ask: Callable[[list], list[R]], items: list, why: str = "")
         else:
             failed, last = failed + list(part), error
     return results, failed, last
+
+
+def _no_echo(output_model: type[BaseModel]) -> str:
+    first = next(iter(output_model.model_fields), None)
+    lead = f' (its first key is "{first}")' if first else ""
+    return f"\nThe user message is the input. Reply with the output object only{lead}; never repeat the input."
+
+
+def _repeats_input(text: str, user_message: str) -> bool:
+    """The answer is a JSON object whose every field is one of the request's own fields with the same value.
+
+    Nemotron 3 Ultra did this for a technical planner question (27 Oct: 6 of 11 answers were the input's
+    question, current_year and number_of_queries) and once for a gap-grader batch.
+    """
+    try:
+        answer, request = json.loads(text), json.loads(user_message)
+    except ValueError:
+        return False
+    return (isinstance(answer, dict) and isinstance(request, dict) and bool(answer)
+            and all(k in request and request[k] == v for k, v in answer.items()))
 
 
 def _wrap_bare_items(output_model: type[T], text: str) -> T | None:

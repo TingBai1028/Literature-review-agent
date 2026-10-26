@@ -252,3 +252,37 @@ def test_halves_that_still_fail_are_returned_and_other_errors_are_not_split():
         raise TokenBudgetExceeded("Finding analysis time limit reached")
     with pytest.raises(TokenBudgetExceeded):
         halve_on_timeout(broke, [1, 2])
+
+
+ECHO_REQUEST = json.dumps({"question": "When can we avoid mean-cycle calculations?", "current_year": 2026, "number_of_queries": 3})
+
+
+def test_an_answer_that_repeats_the_input_is_sent_again_unchanged(tmp_path):
+    echo = json.dumps({"question": "When can we avoid mean-cycle calculations?", "current_year": 2026, "number_of_queries": 3})
+    client = FakeClient([echo, '{"approved": true}'])
+    with Trace(str(tmp_path)) as trace:
+        assert complete_json("sys", ECHO_REQUEST, HumanFeedback, settings=real_settings(), client=client).approved
+    assert client.calls[1]["messages"] == client.calls[0]["messages"]  # no repair turn quoting the echo
+    assert trace.events[0]["decision"] == "answer repeated the input"
+
+
+def test_repeated_echoes_fall_back_to_the_repair_turn_and_then_fail():
+    echo = json.dumps({"question": "When can we avoid mean-cycle calculations?"})
+    client = FakeClient([echo] * 4)
+    with pytest.raises(LLMError):
+        complete_json("sys", ECHO_REQUEST, HumanFeedback, settings=real_settings(), client=client)
+    assert len(client.calls) == real_settings().llm_echo_retries + 2  # resends, then one repair turn
+    assert "did not validate" in client.calls[-1]["messages"][-1]["content"]
+
+
+def test_an_invalid_answer_with_its_own_fields_is_not_an_echo():
+    client = FakeClient(['{"approved": "maybe"}', '{"approved": false}'])
+    complete_json("sys", ECHO_REQUEST, HumanFeedback, settings=real_settings(), client=client)
+    assert "did not validate" in client.calls[1]["messages"][-1]["content"]
+
+
+def test_the_system_message_says_not_to_repeat_the_input():
+    client = FakeClient(['{"approved": true}'])
+    complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client)
+    system = client.calls[0]["messages"][0]["content"]
+    assert system.endswith('Reply with the output object only (its first key is "approved"); never repeat the input.')
