@@ -12,7 +12,11 @@ from litagent.cluster_preview import run_cluster_map
 from litagent.config import Effort, Settings
 from litagent.schemas import Paper
 
-settings = Settings(sample_mode=True, logs_dir=os.environ['LITAGENT_QA_LOGS'], gap_similarity_max=1.0)
+# Six papers are too few for the default role sizes (main 5-10, foundation 3+, side 3+); these keep all three roles
+# and a legal side-to-side move on the stored sample similarity.
+settings = Settings(sample_mode=True, logs_dir=os.environ['LITAGENT_QA_LOGS'], gap_similarity_max=1.0,
+                    main_cluster_min_size=2, main_cluster_max_size=3, foundation_min_size=1, side_min_size=1,
+                    side_similarity_threshold=0.6)
 papers = [Paper.model_validate(p) for p in json.loads((ROOT/'data/sample/low_resource_languages_llm.json').read_text())[:6]]
 run_cluster_map(papers, '样例测试：如何适配低资源语言？', Effort.NORMAL, settings, 'qa-root')
 api.app.dependency_overrides[api.get_settings] = lambda: settings
