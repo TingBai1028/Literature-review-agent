@@ -222,10 +222,14 @@ function fit(nodes: Node[]) {
   }
 }
 
-type Point = { x: number; y: number };
+type Point = { x: number; y: number; r?: number };
 
 function convexHull(points: Point[]): Point[] {
-  const sorted = [...points].sort((a, b) => a.x - b.x || a.y - b.y);
+  const sorted = [...points]
+    .sort((a, b) => a.x - b.x || a.y - b.y)
+    .filter(
+      (p, i, list) => !i || p.x !== list[i - 1].x || p.y !== list[i - 1].y,
+    );
   const cross = (o: Point, a: Point, b: Point) =>
     (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
   const half = (list: Point[]) => {
@@ -243,47 +247,32 @@ function convexHull(points: Point[]): Point[] {
   return [...half(sorted), ...half([...sorted].reverse())];
 }
 
-/** A soft blob around a cluster's papers (spec G3): the convex hull pushed out by `pad`, drawn as one smooth closed
- * curve through the midpoints of its edges, so it reads as an organic shape rather than a box. */
+/** Rounded offset of the settled paper hull. Account for node radii, then follow parallel edges and circular
+ * corners: smoothing through edge midpoints cuts inside acute hull vertices and can strand papers outside. */
 export function blobPath(points: Point[], pad: number) {
-  if (points.length === 1) {
-    const p = points[0];
-    return `M${p.x - pad},${p.y}a${pad},${pad} 0 1,0 ${pad * 2},0a${pad},${pad} 0 1,0 ${-pad * 2},0Z`;
-  }
+  if (!points.length) return "";
+  const margin = pad + Math.max(...points.map((p) => p.r ?? 0));
   const hull = convexHull(points);
-  let ring: Point[];
-  if (hull.length < 3) {
-    // Two papers (or a straight line of them): a capsule around the segment.
-    const [a, b] =
-      hull.length === 2 ? hull : [points[0], points[points.length - 1]];
-    const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
-    const d = { x: ((b.x - a.x) / len) * pad, y: ((b.y - a.y) / len) * pad };
-    const n = { x: -d.y, y: d.x };
-    ring = [
-      { x: a.x - d.x, y: a.y - d.y },
-      { x: a.x + n.x, y: a.y + n.y },
-      { x: b.x + n.x, y: b.y + n.y },
-      { x: b.x + d.x, y: b.y + d.y },
-      { x: b.x - n.x, y: b.y - n.y },
-      { x: a.x - n.x, y: a.y - n.y },
-    ];
-  } else {
-    const c = {
-      x: hull.reduce((s, p) => s + p.x, 0) / hull.length,
-      y: hull.reduce((s, p) => s + p.y, 0) / hull.length,
-    };
-    ring = hull.map((p) => {
-      const len = Math.hypot(p.x - c.x, p.y - c.y) || 1;
-      return {
-        x: p.x + ((p.x - c.x) / len) * pad * 1.4,
-        y: p.y + ((p.y - c.y) / len) * pad * 1.4,
-      };
-    });
+  if (hull.length < 2) {
+    const p = points[0];
+    return `M${p.x - margin},${p.y}a${margin},${margin} 0 1,0 ${margin * 2},0a${margin},${margin} 0 1,0 ${-margin * 2},0Z`;
   }
-  const mid = (a: Point, b: Point) => `${(a.x + b.x) / 2},${(a.y + b.y) / 2}`;
-  let path = `M${mid(ring[ring.length - 1], ring[0])}`;
-  ring.forEach((p, i) => {
-    path += `Q${p.x},${p.y} ${mid(p, ring[(i + 1) % ring.length])}`;
+  // The hull is counterclockwise; (dy, -dx) points outwards. Two opposite edges produce an exact capsule
+  // for collinear papers, and circular arcs at polygon vertices never cut into the original hull.
+  const normals = hull.map((a, i) => {
+    const b = hull[(i + 1) % hull.length];
+    const length = Math.hypot(b.x - a.x, b.y - a.y);
+    return {
+      x: ((b.y - a.y) / length) * margin,
+      y: ((a.x - b.x) / length) * margin,
+    };
+  });
+  const offset = (p: Point, n: Point) => `${p.x + n.x},${p.y + n.y}`;
+  let path = `M${offset(hull[0], normals[normals.length - 1])}`;
+  hull.forEach((p, i) => {
+    const normal = normals[i];
+    path += `A${margin},${margin} 0 0 1 ${offset(p, normal)}`;
+    path += `L${offset(hull[(i + 1) % hull.length], normal)}`;
   });
   return path + "Z";
 }
