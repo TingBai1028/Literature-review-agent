@@ -1,6 +1,7 @@
 import { Search, Info, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Cluster, Paper, Selection } from "../types";
+import { searchMap } from "../search";
 export const colors = [
   "#86bda9",
   "#92bce4",
@@ -35,19 +36,12 @@ export function TopicSidebar({
   mobileOpen: boolean;
 }) {
   const [all, setAll] = useState(false);
-  const searchText = search.trim().toLocaleLowerCase();
-  const matches = clusters.filter(
-    (c) =>
-      !searchText ||
-      c.label.toLocaleLowerCase().includes(searchText) ||
-      c.paper_ids.some((id) =>
-        papers.some(
-          (p) =>
-            p.id === id && p.title.toLocaleLowerCase().includes(searchText),
-        ),
-      ),
+  const { clusterIds, hasQuery } = useMemo(
+    () => searchMap(clusters, papers, search),
+    [clusters, papers, search],
   );
-  const shown = all || searchText ? matches : matches.slice(0, 7);
+  const matches = clusters.filter((c) => clusterIds.has(c.id));
+  const shown = all || hasQuery ? matches : matches.slice(0, 7);
   return (
     <aside
       className={`topic-sidebar ${mobileOpen ? "mobile-open" : ""}`}
@@ -97,7 +91,7 @@ export function TopicSidebar({
         })}
         {!shown.length && <p className="muted small">No matching topics.</p>}
       </nav>
-      {matches.length > 7 && (
+      {!hasQuery && matches.length > 7 && (
         <button className="show-topics" onClick={() => setAll((v) => !v)}>
           <MoreHorizontal size={20} />
           {all ? "Show fewer topics" : `Show all ${matches.length} topics`}
