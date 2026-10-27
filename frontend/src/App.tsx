@@ -108,7 +108,7 @@ export default function App() {
         setLive(null);
       }
       // One click builds the whole map: Graph 1 (connections) and then Graph 2 (gaps) follow straight away, each
-      // shown as soon as it is ready. Run analysis remains for continuing an unfinished analysis.
+      // shown as soon as it is ready. Incomplete maps can continue from the map's recovery action.
       if (built.status !== "partial") {
         await analyzeMap(await request<MapResult>(`/cluster/${built.run_id}`), selected);
       }
@@ -139,7 +139,7 @@ export default function App() {
       await ws.open(map.run_id);
       setNotice(
         `Swapped in ${map.refresh?.swapped_in.length ?? 0} backup papers; the main and foundation clusters are unchanged.` +
-          (map.analysis ? " Run the analysis again to update connections and research gaps." : ""),
+          " Choose Continue analysis on the map to update connections and research gaps.",
       );
     });
   // Spec E: Graph 1 (paper edges) is opened as soon as it is ready; Graph 2 (gaps) follows on that version.
@@ -186,7 +186,7 @@ export default function App() {
     await ws.open(map.run_id);
     setNotice(
       map.status === "partial"
-        ? "Graph 1 was kept; Graph 2 did not finish. Run the analysis again to continue."
+        ? "Paper connections were kept; research gaps did not finish. Choose Continue analysis on the map to finish."
         : "Graph 2 (research gaps) is ready. Switch to \"Graph 2 · Gaps\" to view it.",
     );
   };
@@ -246,23 +246,6 @@ export default function App() {
               disabled={!data || !!busy}
             >
               Versions
-            </button>
-            <button
-              className="primary-button analyze-button"
-              disabled={
-                !data ||
-                !!busy ||
-                data.map.sample_mode !== ws.config.sample_mode ||
-                (!editable && data.map.status !== "partial")
-              }
-              onClick={analyze}
-            >
-              {busy ? <LoaderCircle size={16} className="spin" /> : null}
-              {busy
-                ? "Working…"
-                : data?.map.status === "partial"
-                  ? "Continue analysis"
-                  : "Run analysis"}
             </button>
           </div>
         </header>
@@ -344,6 +327,11 @@ export default function App() {
             timeout={(ws.config.run_timeout_s + 120) * 1000}
             live={live?.base ? { ...live, events } : null}
             onSwap={refresh}
+            onContinueAnalysis={analyze}
+            analysisDisabled={
+              data.map.sample_mode !== ws.config.sample_mode ||
+              (!editable && data.map.status !== "partial")
+            }
           />
         )}
         {data && (
@@ -439,6 +427,8 @@ function WorkspaceView({
   timeout,
   live,
   onSwap,
+  onContinueAnalysis,
+  analysisDisabled,
 }: {
   data: NonNullable<ReturnType<typeof useWorkspace>["data"]>;
   tab: Tab;
@@ -451,6 +441,8 @@ function WorkspaceView({
   timeout: number;
   live: (Live & { events: RunEvent[] }) | null;
   onSwap: () => void;
+  onContinueAnalysis: () => void;
+  analysisDisabled: boolean;
 }) {
   // During an analysis or refresh the map shows the base version plus everything accepted so far (A2, A4).
   const map = live ? overlay(data.map, live.events) : data.map;
@@ -526,7 +518,8 @@ function WorkspaceView({
             onFilter={changeFilter}
             search={search}
             onReview={() => setTab("review")}
-            analysisHint
+            onContinueAnalysis={busy ? undefined : onContinueAnalysis}
+            analysisDisabled={analysisDisabled}
             onSwap={onSwap}
             swapDisabled={busy || !editable}
           />

@@ -10,7 +10,7 @@ import { searchMap } from "../search";
 // old two-line cap cut most of them off.
 const LABEL_CHARS = 28;
 const NOT_ANALYSED =
-  "This version has no paper connections (Graph 1) or research gaps (Graph 2) yet. Click Run analysis (top right) to generate them.";
+  "Paper connections and research gaps have not been generated for this map.";
 function wrap(text: string) {
   const words = text.replace(/^Unclustered:\s*/, "").split(/\s+/);
   const lines = [""];
@@ -35,7 +35,8 @@ export function LiteratureGraph({
   onFilter,
   search,
   onReview,
-  analysisHint = false,
+  onContinueAnalysis,
+  analysisDisabled = false,
   neighbors: supplied,
   onSwap,
   swapDisabled = true,
@@ -48,8 +49,9 @@ export function LiteratureGraph({
   onFilter: (f: Filter) => void;
   search: string;
   onReview: () => void;
-  // The saved-map view: say that connections and gaps need Run analysis (not while a map is being built)
-  analysisHint?: boolean;
+  /** Saved maps can continue unfinished analysis; live builds run automatically. */
+  onContinueAnalysis?: () => void;
+  analysisDisabled?: boolean;
   /** A live map passes the neighbours from its events instead of fetching a saved version's. */
   neighbors?: Neighbor[];
   /** Spec F5: swap side papers for the next-best backup papers (shown with the backup pool's size). */
@@ -199,6 +201,13 @@ export function LiteratureGraph({
   const noFindings =
     (filter === "gaps" && !map.gaps.length) ||
     (filter === "connections" && !map.connections.length);
+  const completedStages =
+    map.analysis?.completed_stages ?? Object.keys(map.analysis?.grades ?? {});
+  const needsAnalysis =
+    map.status === "partial" ||
+    !map.analysis ||
+    map.analysis.pending_stages.length > 0 ||
+    !["connections", "gaps"].every((stage) => completedStages.includes(stage));
   return (
     <section className="graph-panel" aria-label="Interactive paper map">
       <div className="graph-toolbar">
@@ -235,8 +244,21 @@ export function LiteratureGraph({
           )}
         </div>
       </div>
-      {analysisHint && !map.analysis && !noFindings && (
-        <p className="graph-notice">{NOT_ANALYSED}</p>
+      {onContinueAnalysis && needsAnalysis && (
+        <div className="graph-notice analysis-recovery" role="status">
+          <span>
+            {map.analysis
+              ? "Some analysis is unfinished. Continue to complete the remaining steps."
+              : NOT_ANALYSED}
+          </span>
+          <button
+            className="secondary-button"
+            onClick={onContinueAnalysis}
+            disabled={analysisDisabled}
+          >
+            Continue analysis
+          </button>
+        </div>
       )}
       {!noFindings && (
         <div className="graph-mobile-caption">
