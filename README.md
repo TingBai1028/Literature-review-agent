@@ -6,8 +6,8 @@
 
 | | |
 | --- | --- |
-| Demo video (1–4 min) | Added at submission |
-| Slide deck | Added at submission |
+| Demo video (1–4 min) | https://docs.google.com/presentation/d/1wr8P2x30y1zl8GBFVFt-onIHQl7OJOrDFqfiHxkir0E/edit?usp=sharing |
+| Slide deck | https://docs.google.com/presentation/d/1Y2rJS4OAAlqHpdCI4WA3lBMMNk28bcJq3oCIkmWOtxA/edit?usp=sharing |
 | Repository | <https://github.com/TingBai1028/Literature-review-agent> |
 
 ## The problem
