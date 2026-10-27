@@ -13,9 +13,15 @@ import { PaperText } from "../paperNames";
 export function ReviewPanel({
   map,
   timeout,
+  onOperation,
+  onOpen,
+  onNotice,
 }: {
   map: MapResult;
   timeout: number;
+  onOperation: (label: string, action: () => Promise<void>) => Promise<void>;
+  onOpen: (id: string) => Promise<void>;
+  onNotice: (text: string) => void;
 }) {
   const [pack, setPack] = useState<ReviewPack | null>(null);
   const [selected, setSelected] = useState("");
@@ -100,6 +106,20 @@ export function ReviewPanel({
             wasSeen={seenItems.has(item.id)}
             recordSeen={recordSeen}
             timeout={timeout}
+            onRewrite={(kind) =>
+              onOperation("Rewriting this finding with your feedback", async () => {
+                const out = await request<{ map: MapResult; changed: string }>(
+                  `/cluster/${map.run_id}/review/${encodeURIComponent(item.id)}/regenerate`,
+                  { method: "POST", body: { expected_version_token: pack.version_token }, timeout },
+                );
+                await onOpen(out.map.run_id);
+                onNotice(
+                  out.changed === "rewritten"
+                    ? `Rewrote this ${kind} with your feedback. The new version is open; the previous one is in Versions.`
+                    : `With your feedback the agent could not support this ${kind}, so it was removed. The previous version is in Versions.`,
+                );
+              })
+            }
             onSaved={(annotation, summary) =>
               setPack((old) =>
                 old
@@ -133,6 +153,7 @@ function ReviewForm({
   wasSeen,
   recordSeen,
   timeout,
+  onRewrite,
 }: {
   item: ReviewItem;
   map: MapResult;
@@ -142,13 +163,14 @@ function ReviewForm({
   wasSeen: boolean;
   recordSeen: (id: string) => void;
   timeout: number;
+  // Submit's second step: the agent that wrote the finding rewrites it with this judgement (a new map version)
+  onRewrite: (kind: string) => Promise<void>;
   onSaved: (
     annotation: NonNullable<ReviewItem["annotation"]>,
     summary: ReviewPack["summary"],
   ) => void;
 }) {
   const [verdict, setVerdict] = useState(item.annotation?.verdict ?? "");
-  const [reviewer, setReviewer] = useState(item.annotation?.reviewer ?? "");
   const [rationale, setRationale] = useState(item.annotation?.rationale ?? "");
   const [evidence, setEvidence] = useState<Evidence[]>(
     item.annotation?.evidence ?? [],
@@ -182,26 +204,6 @@ function ReviewForm({
       setError("Choose a judgement: supported, not supported or insufficient evidence.");
       return;
     }
-    if (!reviewer.trim()) {
-      setError("Enter a reviewer name or ID; initials are fine.");
-      return;
-    }
-    if (rationale.trim().length < 10) {
-      setError("The reason needs at least 10 characters; add the specific basis.");
-      return;
-    }
-    if (
-      verdict !== "uncertain" &&
-      item.paper_ids.some(
-        (id) =>
-          !evidence.some(
-            (e) => e.paper_id === id && e.quote.trim().length >= 20,
-          ),
-      )
-    ) {
-      setError("A definite judgement needs a quote from each paper, at least 20 characters each.");
-      return;
-    }
     setBusy(true);
     try {
       const out = await request<{
@@ -212,7 +214,6 @@ function ReviewForm({
         body: {
           expected_version_token: token,
           verdict,
-          reviewer,
           rationale,
           evidence,
           saw_model_assessment: revealed || wasSeen,
@@ -220,6 +221,12 @@ function ReviewForm({
       });
       onSaved(out.annotation, out.summary);
       setSaved(true);
+      // A plain "Supported" keeps the finding; anything else is feedback the writer acts on (not in sample mode,
+      // which makes no model calls).
+      if (!map.sample_mode && (verdict !== "supported" || rationale.trim())) {
+        setBusy(false);
+        await onRewrite(item.kind === "gap" ? "hypothesis" : "connection");
+      }
     } catch (e) {
       setError(messageOf(e));
     } finally {
@@ -360,20 +367,7 @@ function ReviewForm({
           </div>
         </fieldset>
         <label className="form-field">
-          Reviewer
-          <input
-            value={reviewer}
-            onChange={(e) => {
-              setReviewer(e.target.value);
-              setSaved(false);
-              setError("");
-            }}
-            placeholder="Your name or reviewer ID"
-            maxLength={80}
-          />
-        </label>
-        <label className="form-field">
-          Reason
+          Reason (optional)
           <textarea
             value={rationale}
             onChange={(e) => {
@@ -382,7 +376,7 @@ function ReviewForm({
               setError("");
             }}
             rows={3}
-            placeholder="Explain the basis in tasks, methods, data or evaluation setup"
+            placeholder="What's wrong or missing? The agent rewrites the finding with this."
           />
         </label>
         {error && (
@@ -392,10 +386,16 @@ function ReviewForm({
         )}
         <div className="review-submit">
           <span className="muted small">
-            {saved ? "Judgement saved to the active version." : "Nothing is saved until you submit."}
+            {saved
+              ? map.sample_mode
+                ? "Submitted. Sample mode: the finding is not rewritten."
+                : "Submitted."
+              : verdict && verdict !== "supported"
+                ? "Submit sends your judgement to the agent, which rewrites this finding as a new version."
+                : "A plain Supported keeps the finding; add a reason to have it rewritten."}
           </span>
           <button className="primary-button" disabled={busy} type="submit">
-            {busy ? "Saving…" : "Save judgement"}
+            {busy ? "Submitting…" : "Submit"}
           </button>
         </div>
       </form>

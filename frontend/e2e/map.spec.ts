@@ -169,33 +169,19 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   ).output.summary.total;
   expect(queue).toBeGreaterThan(0);
   await expect(page.getByText(`0 / ${queue} done`)).toBeVisible();
-  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
+  // Only the verdict is required; a plain Supported keeps the finding (no rewrite).
+  await page.getByRole("button", { name: "Submit", exact: true }).click();
   await expect(page.getByRole("alert")).toHaveText(
     "Choose a judgement: supported, not supported or insufficient evidence.",
   );
   await page.getByLabel("Supported", { exact: true }).check();
-  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
-  await expect(page.getByRole("alert")).toHaveText(
-    "Enter a reviewer name or ID; initials are fine.",
-  );
-  await page.getByLabel("Reviewer", { exact: true }).fill("X");
-  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
-  await expect(page.getByRole("alert")).toHaveText(
-    "The reason needs at least 10 characters; add the specific basis.",
-  );
-  await page
-    .getByLabel("Reason", { exact: true })
-    .fill(
-      "Sample-only UI regression: the displayed original source excerpts are selected for this temporary test.",
-    );
   const quotes = page.getByRole("button", {
     name: "Quote the selection or the first passage",
     exact: true,
   });
   await quotes.nth(0).click();
-  await quotes.nth(1).click();
-  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
-  await expect(page.getByText("Judgement saved to the active version.")).toBeVisible();
+  await page.getByRole("button", { name: "Submit", exact: true }).click();
+  await expect(page.getByText("Submitted.")).toBeVisible();
   const review = (
     await (await request.get(appUrl + `/cluster/${analyzed}/review`)).json()
   ).output;
@@ -222,8 +208,8 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   await expect(
     page.getByText("Loaded this version's existing review; the model was not called again."),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Save judgement", exact: true }).click();
-  await expect(page.getByText("Judgement saved to the active version.")).toBeVisible();
+  await page.getByRole("button", { name: "Submit", exact: true }).click();
+  await expect(page.getByText("Submitted.")).toBeVisible();
   const seen = (
     await (await request.get(appUrl + `/cluster/${analyzed}/review`)).json()
   ).output;

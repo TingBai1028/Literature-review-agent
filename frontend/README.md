@@ -65,12 +65,15 @@ labels its synthetic similarities, groupings and findings.
 6. While a run is in progress the map builds itself and an activity feed names the agent at work.
    Selecting any paper, cluster, edge or gap shows which agent created it and why; **Reasoning** lists
    every agent's steps (code or LLM, with setbacks highlighted). See [progress events](../docs/events.md).
-7. **Human review** hides model decisions by default. Fill in the reviewer, reason, judgment
-   and exact quotes from both original sources, then save. Reviewer identity is self-declared.
-   Reading a review queue never creates human labels. Each version has its own annotations.
+7. **Human review** hides model decisions by default. Pick a verdict (a reason and quotes are optional) and
+   **Submit**. Anything other than a plain "Supported" goes back to the agent that wrote the finding: it rewrites
+   that connection or hypothesis with your feedback, checks it as usual, and the new map version opens (or the
+   finding is removed if the agent can't support it). Your other judgements carry over; the previous version stays
+   in Versions. Reading a review queue never creates human labels. Not available in sample mode.
 8. **AI grading** asks the independent Review Agent to grade the version's explicit claims
    on source support, question relevance and testability (0–3 each). **Show existing grades** only
-   reads a cached report. Missing hypotheses receive no score. Suggestions and their original
+   reads a cached report. Any number of findings is graded, in small batches at once. Missing hypotheses
+   receive no score. Suggestions and their original
    quotes appear separately from the human form; judgments are saved only by explicit submission.
    Identical Agent requests reuse the report. See [rubric and API](../docs/agents/review_agent.md).
 

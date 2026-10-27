@@ -17,6 +17,7 @@ from litagent.cluster_state import VersionError, atomic_json, digest, file_hash,
 from litagent.finding_engine import FindingContext, exact_ids, resolve_evidence, sources
 from litagent.finding_review import prepare_review
 from litagent.integrations.llm import LLMError, TokenMeter, complete_json, load_prompt
+from litagent.parallel import parallel_map
 from litagent.schemas import Evidence, ReviewAgentAssessment, ReviewAgentDecisions, ReviewExplanationChecks
 from litagent.trace import Trace, current_trace, new_run_id
 
@@ -42,7 +43,7 @@ def _unqualified_metric_omission(text):
 
 
 def _inputs(run_id, settings):
-    if (min(settings.review_agent_source_chars, settings.review_agent_max_items,
+    if (min(settings.review_agent_source_chars, settings.review_agent_batch_size,
             settings.review_agent_token_budget, settings.finding_min_quote_chars) < 1
             or settings.finding_span_chars < settings.finding_min_quote_chars
             or settings.finding_validation_retries < 0
@@ -50,8 +51,6 @@ def _inputs(run_id, settings):
         raise VersionError("Invalid review Agent limits", 422)
     pack = prepare_review(run_id, settings)
     result, state, _ = load_version(run_id, settings)
-    if len(pack["items"]) > settings.review_agent_max_items:
-        raise VersionError("Review queue exceeds the configured Agent item limit", 422)
     context = FindingContext(question=result.question, use_full_text=result.use_full_text,
                              full_text_ids=full_text_ids(result.clusters))
     source_map = sources(state.papers, settings, context, limit=settings.review_agent_source_chars)
@@ -68,7 +67,7 @@ def _inputs(run_id, settings):
         src["metric_mentions"] = _metric_mentions(src, settings)
     payload = {"question": result.question, "items": items, "papers": list(selected.values())}
     key = digest({"run_id": result.run_id, "version_token": result.version_token, "corpus_fingerprint": pack["corpus_fingerprint"],
-        "payload": payload, "sample_mode": result.sample_mode, "model": settings.llm_model,
+        "payload": payload, "sample_mode": result.sample_mode, "model": settings.grader_model,
         "prompt": load_prompt("review_agent"), "schema": ReviewAgentDecisions.model_json_schema(),
         "audit_prompt": load_prompt("review_explanation_check"), "audit_schema": ReviewExplanationChecks.model_json_schema(),
         "output_schema": ReviewAgentAssessment.model_json_schema(),
@@ -104,7 +103,7 @@ def _complete_before_deadline(prompt, payload, schema, settings, deadline, agent
     cfg = replace(settings, llm_timeout_s=min(settings.llm_timeout_s, max(.1, remaining / 4)))
     try:
         result = complete_json(load_prompt(prompt), json.dumps(payload, ensure_ascii=False),
-                               schema, settings=cfg, agent_name=agent_name)
+                               schema, settings=cfg, agent_name=agent_name, model=cfg.grader_model)
     except OpenAIError as error:
         raise LLMError(f"AI review provider failed ({type(error).__name__}); retry explicitly") from error
     if time.monotonic() >= deadline:
@@ -214,7 +213,9 @@ def run_review(run_id, expected_version_token, settings):
         if report := _cached(key, settings):
             return {"report": report, "reused": True}
         report_id = new_run_id()
-        with Trace(settings.logs_dir, report_id) as trace, TokenMeter(settings.review_agent_token_budget) as meter:
+        gradable_count = sum(1 for item in payload["items"] if item["claim"])
+        batches = max(1, -(-gradable_count // settings.review_agent_batch_size))
+        with Trace(settings.logs_dir, report_id) as trace, TokenMeter(settings.review_agent_token_budget * batches) as meter:
             trace.log("review_agent", "independent source assessment", "exclude human annotations and earlier model verdicts",
                       result={"source_run_id": run_id, "item_count": len(payload["items"])},
                       why="Model-only suggestions; source map and human review sidecar stay immutable")
@@ -232,14 +233,22 @@ def run_review(run_id, expected_version_token, settings):
                 else:
                     gradable.append(item)
             if gradable:
-                ids = {pid for item in gradable for pid in item["paper_ids"]}
-                clean = {**payload, "items": gradable, "papers": [source_map[pid] for pid in sorted(ids)]}
-                assessed += _grade(clean, source_map, settings,
-                                   time.monotonic() + min(settings.review_agent_timeout_s, settings.run_timeout_s))
+                deadline = time.monotonic() + min(settings.review_agent_timeout_s, settings.run_timeout_s)
+                size = settings.review_agent_batch_size
+
+                def grade_batch(batch):
+                    ids = {pid for item in batch for pid in item["paper_ids"]}
+                    clean = {**payload, "items": batch, "papers": [source_map[pid] for pid in sorted(ids)]}
+                    return _grade(clean, source_map, settings, deadline)
+
+                # Small batches at the same time: any number of findings, each request well inside the time limit.
+                for found in parallel_map(grade_batch, [gradable[i:i + size] for i in range(0, len(gradable), size)],
+                                          settings.llm_concurrency):
+                    assessed += found
             by_id = {item.item_id: item for item in assessed}
             report = {"report_id": report_id, "run_id": run_id, "version_token": pack["version_token"],
                 "input_fingerprint": key, "provenance": "model", "sample_mode": settings.sample_mode,
-                "model": settings.llm_model if not settings.sample_mode else None,
+                "model": settings.grader_model if not settings.sample_mode else None,
                 "created_at": datetime.now(timezone.utc).isoformat(), "usage": meter.usage.model_dump(mode="json"),
                 "items": [by_id[item["id"]].model_dump(mode="json") for item in payload["items"]],
                 "explanation_check": {"method": "separate_context_source_attribution",

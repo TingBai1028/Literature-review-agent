@@ -10,8 +10,9 @@ from fastapi.staticfiles import StaticFiles
 
 from litagent.cluster_state import ClusterState, VersionError, digest, head, load_result, load_version, path_for
 from litagent.finding_review import ReviewSubmission, prepare_review, save_review
+from litagent.review_feedback import regenerate
 from litagent.agents import review_agent
-from litagent.schemas import ReviewAgentRequest
+from litagent.schemas import ReviewAgentRequest, ReviewRegenerateRequest
 from litagent.similarity import nearest_pairs
 from litagent.trace import mask
 
@@ -85,6 +86,14 @@ def install_map_routes(app, get_settings, respond):
     @app.post("/cluster/{run_id}/review/{item_id}")
     def submit_review(run_id: str, item_id: str, body: ReviewSubmission, settings=Depends(get_settings)):
         return respond(run_id, lambda: save_review(run_id, item_id, body, settings))
+
+    @app.post("/cluster/{run_id}/review/{item_id}/regenerate")
+    def regenerate_from_review(run_id: str, item_id: str, body: ReviewRegenerateRequest, settings=Depends(get_settings)):
+        """The agent that wrote the finding rewrites it with the submitted judgement, as a new map version."""
+        def run():
+            out = regenerate(run_id, item_id, body.expected_version_token, settings, body.run_id)
+            return {"map": out["map"].model_dump(mode="json"), "changed": out["changed"], "item_id": item_id}
+        return respond(run_id, run)
 
     @app.get("/cluster/{run_id}/review-agent")
     def cached_agent_review(run_id: str, settings=Depends(get_settings)):

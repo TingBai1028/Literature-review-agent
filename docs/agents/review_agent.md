@@ -14,7 +14,7 @@ Opening the review page does not call the model or reveal its judgments automati
 5. **Rubric (0–3 × 3):** original-source support, research-question relevance, testability (table below).
 6. **Stop conditions:** budget or time limit → keep the finished items and report the rest as not assessed.
 7. **Run log:** each item's decision and reason in its own trace.
-8. **Guardrails:** never sees human labels, earlier model verdicts or producer reasoning; at most `review_agent_max_items` items.
+8. **Guardrails:** never sees human labels, earlier model verdicts or producer reasoning; findings are graded in batches of `review_agent_batch_size` (6), several at once, each batch with its own `review_agent_token_budget`.
 
 The existing pipeline grader scores an entire stage. This Agent separately reviews each
 explicit Connection claim or Gap hypothesis with three 0–3 dimensions:

@@ -91,7 +91,8 @@ def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: 
                 if e.paper_id == p.id for field in ("abstract", "full_text") if getattr(p, field) and e.quote in getattr(p, field)]}
             for p in papers if (not referenced and reviewed_pairs is None) or p.id in referenced]
     draft = complete_json(load_prompt("grader"), json.dumps(payload, ensure_ascii=False), _explained_grade(settings.grade_pass_mark),
-                          settings=settings, agent_name="grader", retry_timeout=retry_timeout)
+                          settings=settings, agent_name="grader", retry_timeout=retry_timeout,
+                          model=settings.grader_model)
     return Grade.model_validate(draft.model_dump())
 
 

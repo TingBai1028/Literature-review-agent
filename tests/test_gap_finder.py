@@ -333,13 +333,14 @@ def test_the_stage_grader_gets_coverage_hits_as_titles_not_full_records(monkeypa
               coverage=GapCoverage(status="no_address_found_in_checked_sources", checked_at="t", local_papers_checked=0,
                                    reason="r", searches=[CoverageSearch(query="q", checked_at="t", status="ok", papers=[hit])]))
     sent = {}
-    def capture(prompt, message, model, **kwargs):
-        sent.update(json.loads(message), retry_timeout=kwargs.get("retry_timeout"))
-        return model(stage="gaps", reasoning="ok", accuracy=3, appropriateness=3, actionability=3)
+    def capture(prompt, message, schema, **kwargs):
+        sent.update(json.loads(message), retry_timeout=kwargs.get("retry_timeout"), model=kwargs.get("model"))
+        return schema(stage="gaps", reasoning="ok", accuracy=3, appropriateness=3, actionability=3)
     monkeypatch.setattr(grader, "complete_json", capture)
     grader.grade("gaps", [gap], [a, b], Settings(sample_mode=False), reviewed_pairs=[], retry_timeout=False)
     [search] = sent["output"][0]["coverage"]["searches"]
     assert search["papers"] == [{"id": "EXT", "title": "Study EXT", "year": None}] and sent["retry_timeout"] is False
+    assert sent["model"] == Settings().grader_model  # checks run on the second model family
 
 
 def test_unverified_novelty_ranks_after_every_verified_gap(tmp_path):
@@ -363,3 +364,22 @@ def test_unverified_novelty_ranks_after_every_verified_gap(tmp_path):
     [kept_line] = lines(trace.events, "grading", "kept")
     assert "novelty unverified: coverage unavailable" in kept_line["why"]
     assert kept_line["result"]["novelty_verified"] is False
+
+
+def test_checks_run_on_the_grader_model_and_writing_on_the_producer_model(llm, search, tmp_path, monkeypatch):
+    original, used = llm.__call__, {}
+    def record(prompt, message, schema, **kwargs):
+        used[schema.__name__] = kwargs.get("model")
+        return original(prompt, message, schema, **kwargs)
+    monkeypatch.setattr(engine, "complete_json", record)
+    search["hits"] = [paper("EXT")]
+    settings = Settings(sample_mode=False, logs_dir=str(tmp_path), grader_model="grader/second-family")
+    run([paper(pid) for pid in IDS], matrix({("A", "B"): .7}), tmp_path, settings)
+    assert used == {"GapDrafts": None, "CoverageJudgements": "grader/second-family",
+                    "GapLabelDecisions": "grader/second-family"}  # None: the producer's llm_model
+
+
+def test_a_different_grader_model_never_reuses_cached_findings():
+    s = Settings(sample_mode=False)
+    other = Settings(sample_mode=False, grader_model="nvidia/nemotron-3-ultra-550b-a55b")
+    assert engine.cache_key("gaps", {"x": 1}, GapDrafts, s) != engine.cache_key("gaps", {"x": 1}, GapDrafts, other)
