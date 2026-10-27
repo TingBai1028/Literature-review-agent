@@ -72,7 +72,7 @@ The first real runs of the evaluation exposed problems that are now fixed and co
 
 ## Current automated checks and request sizing, 27 October 2026
 
-`python -m pytest -q`: **485 passed in 11.45 s**, with real model calls blocked by the test suite. This includes 9 new regression tests for bounded finding grades, source fidelity, abstention scope, failed-batch recovery and deadlines. The 442-test count in the original recovery notes belongs to an earlier revision.
+`python -m pytest -q`: **489 passed in 11.18 s**, with real model calls blocked by the test suite. This includes 9 new regression tests for bounded finding grades, source fidelity, abstention scope, failed-batch recovery and deadlines, plus 4 cases covering mixed empty/nonempty coverage results and judge failures. The 442-test count in the original recovery notes belongs to an earlier revision.
 
 Stage grading now partitions findings and reviewed abstentions into batches of at most 5 units and 48,000 serialized JSON payload characters. It includes only each batch's source papers, deduplicates repeated original quotes and strips external coverage hits to metadata while retaining coverage status and counterevidence. It never shortens an evidence quote to fit: an oversized single item leaves the grade pending without sending a request. All batches must succeed; the lowest batch total supplies the stage's scores and fix. Deadlines are checked between batches and all calls still count against the existing run token budget.
 
