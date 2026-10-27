@@ -108,6 +108,6 @@ stale-version conflicts and mobile navigation. They never label the real
 review pack or call a paid model. Screenshots/logs go to the OS temporary directory
 (`LITAGENT_QA_OUTPUT` can override it), outside the repository.
 
-The interface uses Chinese navigation with original paper titles and quotes preserved.
+The interface uses English navigation with original paper titles and quotes preserved.
 White surfaces, a cool pale sidebar, forest-green controls and native SVG nodes keep the
 scientific records readable without decorative imagery or fabricated graph edges.

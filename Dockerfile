@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/wh
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Isolate model provisioning from application changes so rebuilding an agent does not redownload weights.
-COPY litagent/config.py litagent/trace.py litagent/__init__.py ./litagent/
+COPY litagent/config.py litagent/trace.py litagent/cancellation.py litagent/__init__.py ./litagent/
 COPY litagent/integrations/embeddings.py litagent/integrations/__init__.py ./litagent/integrations/
 COPY scripts/setup_embeddings.py ./scripts/setup_embeddings.py
 RUN python scripts/setup_embeddings.py
