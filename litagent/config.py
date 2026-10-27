@@ -108,9 +108,12 @@ NIGHTSHIFT_MODEL = "nvidia/nemotron-3-ultra-550b-a55b"
 # Nightshift model for every call that checks another agent's work: stage grades, the independent relevance
 # check, the connection verifier, the gap coverage judge and gap grader, and the AI review. A second model
 # family makes these checks independent of the producer's own blind spots (v1.0.0 used Nemotron for both).
-# DeepSeek V4.1 Flash through Nightshift's OpenRouter route. Override with GRADER_MODEL in .env, e.g.
+# DeepSeek V4 Pro 0813 through Nightshift's OpenRouter route, served by DeepSeek itself so OpenRouter can use our own
+# DeepSeek key (BYOK). Nightshift's "openrouter/deepseek/deepseek-v4.1-flash" (used until 27 Oct) is served only by
+# other hosts on OpenRouter, and the DeepSeek-hosted Flash build (deepseek-v4.1-flash-1017) isn't in Nightshift's
+# model list. Override with GRADER_MODEL in .env, e.g.
 # GRADER_MODEL=nvidia/nemotron-3-ultra-550b-a55b to go back to one model family.
-GRADER_MODEL = "openrouter/deepseek/deepseek-v4.1-flash"
+GRADER_MODEL = "openrouter/deepseek/deepseek-v4-pro-0813"
 
 
 def _env_bool(name: str, default: str = "false") -> bool:
@@ -125,7 +128,8 @@ class Settings:
     # LLM (Meterless Nightshift, OpenAI-compatible)
     llm_model: str = NIGHTSHIFT_MODEL
     grader_model: str = field(default_factory=lambda: os.getenv("GRADER_MODEL", GRADER_MODEL))
-    # Output limit for calls on the grader model. DeepSeek V4.1 Flash reasons before answering; without an explicit
+    # Output limit for calls on the grader model (V4 Pro 0813 allows up to 16,384 in Nightshift's model list).
+    # DeepSeek V4.1 Flash reasons before answering; without an explicit
     # limit the route's default ran out during reasoning and returned an empty answer (HTTP 502 empty_response) for
     # every cluster grade from ~4k input tokens up (27 Oct). With 8000 the same grades answered (2.5k output tokens).
     grader_max_output_tokens: int = 8000

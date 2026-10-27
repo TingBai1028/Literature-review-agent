@@ -60,7 +60,7 @@ The full write-up, with evidence from real runs, is in [docs/sponsor-tech.md](do
 | Sponsor | How we use it |
 | --- | --- |
 | **Meterless Nightshift** | Primary AI provider: every model call goes through it (`litagent/integrations/llm.py`, OpenAI-compatible client). Each run gets its own answer-cache partition, and each call its own answer-memory scope. |
-| **NVIDIA** | Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`, `NIGHTSHIFT_MODEL` in `litagent/config.py`) through Nightshift's NVIDIA provider, for every agent that builds the map. The checks (grades, verifiers, AI review) run on DeepSeek V4.1 Flash through Nightshift (`GRADER_MODEL`). The trace logs the model that answered each call. |
+| **NVIDIA** | Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`, `NIGHTSHIFT_MODEL` in `litagent/config.py`) through Nightshift's NVIDIA provider, for every agent that builds the map. The checks (grades, verifiers, AI review) run on DeepSeek V4 Pro 0813 through Nightshift's OpenRouter provider (`GRADER_MODEL`). The trace logs the model that answered each call. |
 | **Zetaris** | Shared paper data layer, running locally in Docker. The Retriever writes papers to our paper store, which Zetaris serves as `litagent_db`; every later agent reads them back with Zetaris SQL (`litagent/integrations/zetaris.py`). |
 | **Meterless World Model** | Implemented in Python from Meterless's spec and reference (`litagent/integrations/world_model/`), passing all 8 Meterless conformance checks. It holds each run's papers, authors, clusters, connections (with evidence) and gaps; `/run` returns it as `paper_map` and `GET /world/{run_id}` serves it. |
 | **Cursor** | Development environment, with the project's architecture and conventions in `.cursor/rules/project.mdc`. |

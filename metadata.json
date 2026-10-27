@@ -26,12 +26,12 @@
     "meterless_nightshift": "Primary AI provider for every LLM call (OpenAI-compatible client)",
     "meterless_engine": "World Model (Python port of the Meterless spec, all 8 conformance checks pass): shared findings graph returned as paper_map and served by GET /world/{run_id}",
     "zetaris": "Data layer running locally in Docker: papers written to our Postgres store and read back by every later agent through Zetaris SQL (litagent_db.papers)",
-    "nvidia": "Nemotron 3 Ultra via Nightshift's NVIDIA provider for every agent that builds the map; the checks of their work run on DeepSeek V4.1 Flash through Nightshift (a second model family)",
+    "nvidia": "Nemotron 3 Ultra via Nightshift's NVIDIA provider for every agent that builds the map; the checks of their work run on DeepSeek V4 Pro 0813 through Nightshift (a second model family)",
     "cursor": "Development environment; project rules in .cursor/rules/project.mdc give every Cursor agent request the architecture and conventions"
   },
   "models": [
     "nvidia/nemotron-3-ultra-550b-a55b",
-    "openrouter/deepseek/deepseek-v4.1-flash"
+    "openrouter/deepseek/deepseek-v4-pro-0813"
   ],
   "license": "Apache-2.0"
 }
