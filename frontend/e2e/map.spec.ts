@@ -85,6 +85,76 @@ const test = base.extend<{ appUrl: string }>({
   },
 });
 
+for (const mobile of [false, true]) {
+  test(`sidebar keyword search stays in sync with the map (${mobile ? "mobile" : "desktop"})`, async ({
+    page,
+    appUrl,
+  }, info) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+    });
+    if (mobile) await page.setViewportSize({ width: 390, height: 844 });
+    // Keep the real sample map and API, with distinct titles/labels for search assertions.
+    const paperTitle = "Efficient Adaptation for Low-Resource Languages";
+    const topicTitle = "Cross-lingual Transfer Strategies";
+    await page.route("**/cluster/qa-root/papers", async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      body.output.papers.forEach((paper: any, i: number) => {
+        paper.title = i === 0 ? paperTitle : `Reference Study ${i}`;
+      });
+      await route.fulfill({ response, json: body });
+    });
+    await page.route("**/cluster/qa-root", async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      body.output.clusters.forEach((cluster: any, i: number) => {
+        cluster.label = i === 0 ? topicTitle : `Other Topic ${i}`;
+      });
+      await route.fulfill({ response, json: body });
+    });
+    await page.goto(appUrl);
+    await expect(page).toHaveURL(new RegExp(appUrl));
+    await expect(page).toHaveTitle(/Literature Map/i);
+    await expect(page.locator(".paper-node")).toHaveCount(6);
+    await expect(page.locator("vite-error-overlay")).toHaveCount(0);
+    if (mobile) await page.getByRole("button", { name: "Toggle topic navigation" }).click();
+    const search = page.getByRole("textbox", { name: "Search papers or topics" });
+    const rows = page.locator(".topic-row");
+    const highlighted = page.locator('.paper-node[opacity="1"]');
+    const target = page.getByRole("button", { name: `Paper: ${paperTitle}`, exact: true });
+    for (const query of ["adapt", "LANGUAGES   adapt", "  low resource  ", paperTitle]) {
+      await search.fill(query);
+      await expect(rows).toHaveCount(1);
+      await expect(highlighted).toHaveCount(1);
+      await expect(target).toHaveAttribute("opacity", "1");
+    }
+    // Every keyword must occur in the same title or topic, not in unrelated papers.
+    for (const query of ["adapt reference", "no-such-keyword"]) {
+      await search.fill(query);
+      await expect(page.getByText("No matching topics.")).toBeVisible();
+      await expect(highlighted).toHaveCount(0);
+    }
+    await search.fill("STRATEG transfer cross lingual");
+    await expect(rows).toHaveCount(1);
+    await expect(rows.first()).toContainText(topicTitle);
+    const map = (await (await page.request.get(appUrl + "/cluster/qa-root")).json()).output;
+    await expect(highlighted).toHaveCount(map.clusters[0].paper_ids.length);
+    await search.fill("  \t ");
+    await expect(rows).toHaveCount(map.clusters.length);
+    await expect(highlighted).toHaveCount(6);
+    await search.fill("LANGUAGES adapt");
+    await expect(target).toHaveAttribute("opacity", "1");
+    await page.screenshot({ path: info.outputPath(`keyword-search-${mobile ? "mobile" : "desktop"}.png`) });
+    await rows.first().click();
+    await expect(page.locator(".inspector")).toContainText(paperTitle);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(errors).toEqual([]);
+  });
+}
+
 test("sample API: analyze, inspect, move, rollback and explicitly save review", async ({
   page,
   request,

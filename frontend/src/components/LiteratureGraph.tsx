@@ -5,6 +5,7 @@ import { blobPath, forceLayout, yearShade, type Neighbor } from "../layout";
 import type { Filter, MapResult, Paper, Selection } from "../types";
 import { topicColor } from "./TopicSidebar";
 import { namePapers } from "../paperNames";
+import { searchMap } from "../search";
 // The whole label, in lines of about 28 characters: English cluster names run to ~90 characters, and the
 // old two-line cap cut most of them off.
 const LABEL_CHARS = 28;
@@ -154,14 +155,11 @@ export function LiteratureGraph({
     () => new Map(papers.map((p) => [p.id, p])),
     [papers],
   );
-  const matches = (id: string) =>
-    !search ||
-    (paperMap.get(id)?.title.toLowerCase().includes(search.toLowerCase()) ??
-      false) ||
-    map.clusters
-      .find((c) => c.paper_ids.includes(id))
-      ?.label.toLowerCase()
-      .includes(search.toLowerCase());
+  const { paperIds: matchingPaperIds } = useMemo(
+    () => searchMap(map.clusters, papers, search),
+    [map.clusters, papers, search],
+  );
+  const matches = (id: string) => matchingPaperIds.has(id);
   const point = (id: string) => layout?.positions.get(id);
   const selectedGroup = map.clusters.find((c) =>
     selection?.type === "cluster"
