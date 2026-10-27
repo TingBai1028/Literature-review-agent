@@ -48,7 +48,7 @@ export function LiteratureGraph({
   filter: Filter;
   onFilter: (f: Filter) => void;
   search: string;
-  onReview: () => void;
+  onReview?: () => void;
   /** Saved maps can continue unfinished analysis; live builds run automatically. */
   onContinueAnalysis?: () => void;
   analysisDisabled?: boolean;
@@ -285,7 +285,7 @@ export function LiteratureGraph({
             ) : (
               <>
                 <p>This version keeps the check results and abstentions.</p>
-                <button className="secondary-button" onClick={onReview}>
+                <button className="secondary-button" onClick={onReview} disabled={!onReview}>
                   Review candidates
                 </button>
               </>

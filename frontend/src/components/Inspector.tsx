@@ -51,7 +51,6 @@ export function Inspector({
   onMove,
   canEdit,
   onReview,
-  top,
   children,
 }: {
   map: MapResult;
@@ -61,8 +60,7 @@ export function Inspector({
   moves: Move[];
   onMove: (paper: string, target: string) => void;
   canEdit: boolean;
-  onReview: () => void;
-  top?: ReactNode; // shown above the selection, e.g. the activity feed of a run in progress
+  onReview?: () => void;
   children?: ReactNode; // shown under the selection, e.g. its provenance
 }) {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -110,7 +108,6 @@ export function Inspector({
   const card = map.cluster_cards?.find((c) => c.cluster_id === topic?.id);
   return (
     <aside className="inspector" aria-label="Details and evidence">
-      {top}
       <h2 className="inspector-heading">
         {paper
           ? "Paper details"
@@ -331,7 +328,7 @@ export function Inspector({
               Similarity {connection.similarity.toFixed(2)}
             </p>
           )}
-          <button className="secondary-button" onClick={onReview}>
+          <button className="secondary-button" onClick={onReview} disabled={!onReview}>
             Open in human review
           </button>
         </>
@@ -415,7 +412,7 @@ export function Inspector({
               ))}
             </section>
           )}
-          <button className="secondary-button" onClick={onReview}>
+          <button className="secondary-button" onClick={onReview} disabled={!onReview}>
             Open in human review
           </button>
         </>
@@ -423,7 +420,7 @@ export function Inspector({
         <div className="inspector-placeholder">
           <BookOpen size={28} />
           <p>Click a paper, topic or connection to see its sources and checks.</p>
-          <button className="text-button" onClick={onReview}>
+          <button className="text-button" onClick={onReview} disabled={!onReview}>
             Review candidates
           </button>
         </div>

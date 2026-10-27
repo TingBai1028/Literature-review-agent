@@ -63,7 +63,9 @@ labels its synthetic similarities, groupings and findings.
    Main and foundation papers stay fixed. The server validates the final simultaneous membership.
 5. **Versions** lets you inspect old versions or explicitly set a completed version as current.
    A stale preview shows a conflict inside the dialog; it cannot overwrite a changed head.
-6. While a run is in progress the map builds itself and an activity feed names the agent at work.
+6. While a run is in progress the map builds itself. A compact progress strip above the workspace names the
+   agent at work; expand **Steps** to read recent events without covering paper details. **Human review** and
+   **Reasoning** stay disabled until processing finishes, with a visible explanation, while papers remain readable.
    Selecting any paper, cluster, edge or gap shows which agent created it and why; **Reasoning** lists
    every agent's steps (code or LLM, with setbacks highlighted). See [progress events](../docs/events.md).
 7. **Human review** hides model decisions by default. Pick a verdict (a reason and quotes are optional) and

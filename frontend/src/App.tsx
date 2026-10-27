@@ -56,6 +56,18 @@ export default function App() {
     }
   };
   const data = ws.data;
+  const navigationUnavailable = !data || ws.loading || !!busy;
+  const navigationMessage = busy
+    ? "Review and Reasoning will be available when processing finishes. You can keep exploring the paper map."
+    : ws.loading
+      ? "Loading the map. Review and Reasoning will be available shortly."
+      : !data
+        ? "Build a map to open Review and Reasoning."
+        : "";
+  const changeTab = (next: Tab) => {
+    if (next !== "map" && navigationUnavailable) return;
+    setTab(next);
+  };
   const editable =
     !!data &&
     data.map.run_id === data.versions.active_head.run_id &&
@@ -206,7 +218,7 @@ export default function App() {
             <button
               className={tab === "map" ? "active" : ""}
               aria-pressed={tab === "map"}
-              onClick={() => setTab("map")}
+              onClick={() => changeTab("map")}
               aria-label="Paper map"
             >
               <span className="nav-qualifier">Paper </span>
@@ -215,9 +227,11 @@ export default function App() {
             <button
               className={tab === "review" ? "active" : ""}
               aria-pressed={tab === "review"}
-              onClick={() => setTab("review")}
+              onClick={() => changeTab("review")}
               aria-label="Human review"
-              disabled={!data}
+              disabled={navigationUnavailable}
+              aria-describedby={navigationMessage ? "workspace-navigation-status" : undefined}
+              title={navigationMessage || "Review the completed map's findings"}
             >
               <span className="nav-qualifier">Human </span>
               review
@@ -225,8 +239,10 @@ export default function App() {
             <button
               className={tab === "reasoning" ? "active" : ""}
               aria-pressed={tab === "reasoning"}
-              onClick={() => setTab("reasoning")}
-              disabled={!data}
+              onClick={() => changeTab("reasoning")}
+              disabled={navigationUnavailable}
+              aria-describedby={navigationMessage ? "workspace-navigation-status" : undefined}
+              title={navigationMessage || "Read the completed run's reasoning"}
             >
               Reasoning
             </button>
@@ -249,29 +265,37 @@ export default function App() {
             </button>
           </div>
         </header>
-        {data && (
+        {(data || live) && (
           <section className="question-bar">
-            <h1 title={data.map.question}>{data.map.question}</h1>
-            <span className="map-counts">
-              {data.papers.length} papers ·{" "}
-              {data.map.clusters.filter((c) => c.kind === "main").length} main
-              ·{" "}
-              {data.map.clusters.filter((c) => c.kind === "foundation").length}{" "}
-              foundation ·{" "}
-              {
-                data.map.clusters.filter(
-                  (c) => c.kind !== "main" && c.kind !== "foundation",
-                ).length
-              }{" "}
-              side clusters
-            </span>
+            <h1 title={live?.question ?? data?.map.question}>{live?.question ?? data?.map.question}</h1>
+            {live ? (
+              <span className="map-counts">
+                {live.papers.length} papers · {live.base ? "Updating findings" : "Building map"}
+              </span>
+            ) : data && (
+              <span className="map-counts">
+                {data.papers.length} papers ·{" "}
+                {data.map.clusters.filter((c) => c.kind === "main").length} main
+                ·{" "}
+                {data.map.clusters.filter((c) => c.kind === "foundation").length}{" "}
+                foundation ·{" "}
+                {
+                  data.map.clusters.filter(
+                    (c) => c.kind !== "main" && c.kind !== "foundation",
+                  ).length
+                }{" "}
+                side clusters
+              </span>
+            )}
           </section>
         )}
         {(notice ||
           ws.error ||
-          data?.map.sample_mode ||
-          (data && data.map.sample_mode !== ws.config.sample_mode) ||
-          busy) && (
+          (!live && (
+            data?.map.sample_mode ||
+            (data && data.map.sample_mode !== ws.config.sample_mode) ||
+            busy
+          ))) && (
           <div
             className={`notice-bar ${notice || ws.error ? "error" : ""}`}
             role={notice || ws.error ? "alert" : "status"}
@@ -293,6 +317,12 @@ export default function App() {
             )}
           </div>
         )}
+        {navigationMessage && (
+          <p id="workspace-navigation-status" className="navigation-status" role="status">
+            {navigationMessage}
+          </p>
+        )}
+        {live && <ActivityFeed dock events={events} title={live.title} />}
         {live && !live.base ? (
           <LiveBuild
             live={live}
@@ -318,7 +348,7 @@ export default function App() {
             key={data.map.run_id}
             data={data}
             tab={tab}
-            setTab={setTab}
+            setTab={changeTab}
             editable={editable}
             busy={!!busy}
             onOperation={operate}
@@ -517,7 +547,7 @@ function WorkspaceView({
             filter={filter}
             onFilter={changeFilter}
             search={search}
-            onReview={() => setTab("review")}
+            onReview={busy ? undefined : () => setTab("review")}
             onContinueAnalysis={busy ? undefined : onContinueAnalysis}
             analysisDisabled={analysisDisabled}
             onSwap={onSwap}
@@ -540,23 +570,13 @@ function WorkspaceView({
               ]);
               setPlan(null);
             }}
-            onReview={() => setTab("review")}
-            top={
-              live && (
-                <ActivityFeed
-                  side
-                  events={live.events}
-                  title={live.title}
-                  onShowAll={() => setTab("reasoning")}
-                />
-              )
-            }
+            onReview={busy ? undefined : () => setTab("review")}
           >
             <Provenance
               map={map}
               papers={papers}
               selection={selection}
-              onShowReasoning={() => setTab("reasoning")}
+              onShowReasoning={busy ? undefined : () => setTab("reasoning")}
             />
           </Inspector>
         </main>
@@ -672,11 +692,9 @@ function LiveBuild({
         filter={filter}
         onFilter={setFilter}
         search=""
-        onReview={() => undefined}
       />
       <PanelHandle side="right" panels={panels.panels} set={panels.set} />
       <aside className="inspector">
-        <ActivityFeed side events={events} title={live.title} />
         {paper ? (
           <>
             <h3 className="paper-title">{paper.title}</h3>
