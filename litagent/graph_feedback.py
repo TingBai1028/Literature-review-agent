@@ -234,7 +234,10 @@ def _regenerate(source, state, arrays, feedback, cfg, child_id, request_id):
             world.record_grade("clusters", child.grade)
             if not grader.passed(child.grade, cfg):
                 child.warnings.append("Revised clusters did not pass independent grading; inspect their source evidence.")
-            run_finding_stages(child, state.papers, cfg, world, context)
+            # Connection graph only, as a new map's first analysis request; the client asks for Gap graph next
+            # (POST /cluster/{id}/analyze, stages ["gaps"]) with its own time limit. Topics, both graphs and every
+            # grade in one request ran past run_timeout_s with the slower checking model (27 Oct).
+            run_finding_stages(child, state.papers, cfg, world, context, stages=("connections",))
         except (LLMError, OpenAIError) as error:
             if not clusters_revised:
                 trace.error("clusterer", "revise graph", error, next_step="keep previous version", terminal=True)

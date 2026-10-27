@@ -217,6 +217,21 @@ class _Run:
         return FindingCacheRecord(stage="gaps", created_at=now(), gaps=gaps, dependencies=deps, audit=audit,
                                   full_text=self.fetched)
 
+    def _batched(self, ask, items: list, why: str, item_id, failed: dict) -> list:
+        """ask() over small batches of items, all batches at the same time (each halved once on a timeout). Returns
+        the answers in batch order and records each failed item's reason in `failed`. Sequential batches made one
+        cluster wait on up to 3 writer, 3 coverage and 3 grader calls in a row (~60 s each on DeepSeek V4 Pro)."""
+        answers = []
+        chunks = _chunks(items, self.settings.gap_llm_batch_size)
+        for outcome, error in run_parallel(lambda chunk: halve_on_timeout(ask, chunk, why), chunks,
+                                           self.settings.llm_batch_concurrency):
+            if error is not None:  # budget, time limit or a non-model error: stop as before
+                raise error
+            got, lost, lost_error = outcome
+            answers += got
+            failed.update((item_id(item), _failure(lost_error)) for item in lost)
+        return answers
+
     # ----- Spec H5: escalate a side cluster to full text -----
 
     def escalate(self, cluster: Cluster, gaps: list[Gap], candidates: list[dict]) -> list[Gap]:
@@ -276,11 +291,8 @@ class _Run:
             return request("gap_finder", payload, GapDrafts, _no_check, self.settings, self.context, "gaps",
                            retry_timeout=False).drafts
 
-        for chunk in _chunks(candidates, self.settings.gap_llm_batch_size):
-            got, lost, error = halve_on_timeout(ask, chunk, "gap writer batch")
-            for d in got:
-                drafts.setdefault(d.gap_id, d)
-            failed.update((c["gap_id"], _failure(error)) for c in lost)
+        for d in self._batched(ask, candidates, "gap writer batch", lambda c: c["gap_id"], failed):
+            drafts.setdefault(d.gap_id, d)
         out = []
         for c in candidates:
             gid, d = c["gap_id"], drafts.get(c["gap_id"])
@@ -397,11 +409,8 @@ class _Run:
             return request("gap_coverage", payload, CoverageJudgements, _no_check, self.settings, self.context, "gaps",
                            retry_timeout=False, model=self.settings.grader_model).judgements
 
-        for chunk in _chunks([g for g in gaps if results[g.id]], self.settings.gap_llm_batch_size):
-            got, lost, error = halve_on_timeout(ask, chunk, "gap coverage batch")
-            for j in got:
-                verdicts.setdefault(j.gap_id, j)
-            judge_failures.update((g.id, _failure(error)) for g in lost)
+        for j in self._batched(ask, [g for g in gaps if results[g.id]], "gap coverage batch", lambda g: g.id, judge_failures):
+            verdicts.setdefault(j.gap_id, j)
         out = []
         for g in gaps:
             checks, verdict, ids = searches[g.id], verdicts.get(g.id), [p.id for p in results[g.id]]
@@ -476,13 +485,10 @@ class _Run:
             return request("gap_grader", payload, GapLabelDecisions, _no_check, self.settings, self.context, "gaps",
                            retry_timeout=False, model=self.settings.grader_model).labels
 
-        for chunk in _chunks(gaps, self.settings.gap_llm_batch_size):
-            # Like an unlabelled cluster: a failed call drops only its own gaps, not the run (real run 27 Oct ended
-            # partial on one malformed answer). Marked retry, so a later analysis does them again.
-            got, lost, error = halve_on_timeout(ask, chunk, "gap grader batch")
-            for d in got:
-                labels.setdefault(d.gap_id, d)
-            failed.update((g.id, _failure(error)) for g in lost)
+        # Like an unlabelled cluster: a failed call drops only its own gaps, not the run (real run 27 Oct ended
+        # partial on one malformed answer). Marked retry, so a later analysis does them again.
+        for d in self._batched(ask, gaps, "gap grader batch", lambda g: g.id, failed):
+            labels.setdefault(d.gap_id, d)
         kept, fixes = [], {}
         for g in gaps:
             d = labels.get(g.id)

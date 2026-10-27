@@ -143,7 +143,12 @@ def record_resume(source, child, settings):
         while current.status == "partial" and current.parent_run_id:
             current, _, _ = load_version(current.parent_run_id, settings)
         previous_id = current.run_id
-    record = publish(child, read(source.run_id, settings), settings)
+    before = read(source.run_id, settings)
+    if source.status == "done":
+        # A finished version's "checks still pending" note (a feedback revision before its Gap graph) is
+        # superseded by this result rather than kept as a second assistant reply.
+        before["messages"] = [m for m in before["messages"] if m["id"] != source.run_id]
+    record = publish(child, before, settings)
     if child.status == "done":
         # Open tabs on the source graph should see the completion rather than an obsolete resume prompt.
         for run_id in {source.run_id, previous_id} - {child.run_id}:

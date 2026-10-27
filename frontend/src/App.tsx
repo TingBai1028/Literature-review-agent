@@ -213,6 +213,7 @@ export default function App() {
     map: MapResult,
     stage: "connections" | "gaps",
     papers: Paper[],
+    keepCurrentGraph = false,
   ) => {
     const runId = newRunId();
     setLive({
@@ -224,6 +225,7 @@ export default function App() {
         stage === "connections"
           ? "Connection graph: finding connections"
           : "Gap graph: finding research gaps",
+      keepCurrentGraph,
     });
     return request<MapResult>(`/cluster/${map.run_id}/analyze`, {
       method: "POST",
@@ -257,6 +259,33 @@ export default function App() {
         ? "Paper connections were kept; research gaps did not finish. Choose Continue analysis on the map to finish."
         : 'Gap graph is ready. Switch to "Gap graph" to view it.',
     );
+  };
+  // A feedback update's unfinished finding stages, one request each like a new map, so each gets the full
+  // time limit. Stops at the first unfinished result; a completed stage's missing grade is retried by the
+  // next request. Returns the last version and the ID of the graph to show.
+  const finishFeedbackStages = async (
+    start: MapResult,
+    papers: Paper[],
+    currentGraphId: string,
+  ) => {
+    let map = start;
+    const remaining: ("connections" | "gaps")[] =
+      map.analysis?.completed_stages?.includes("connections")
+        ? ["gaps"]
+        : ["connections", "gaps"];
+    for (const stage of remaining) {
+      map = await runStage(map, stage, papers, map.status !== "done");
+      if (map.status !== "done") break;
+      await ws.open(map.run_id);
+    }
+    const record = await request<FeedbackState>(
+      `/cluster/${map.run_id}/feedback`,
+    );
+    setFeedback(record);
+    if (map.status === "done") setSelection(null);
+    return map.status === "done"
+      ? map.run_id
+      : (record.update?.active_run_id ?? currentGraphId);
   };
   const analyze = () => {
     if (
@@ -329,12 +358,16 @@ export default function App() {
           },
         );
         setFeedback(out.feedback);
-        if (out.map.status === "done") setSelection(null);
-        await ws.open(
-          out.map.status === "done"
-            ? out.map.run_id
-            : (out.feedback.update?.active_run_id ?? data.map.run_id),
-        );
+        if (out.map.status === "done") {
+          // The revision returns topics and the connection graph; the gap graph follows as its own request.
+          setSelection(null);
+          await ws.open(out.map.run_id);
+          await ws.open(
+            await finishFeedbackStages(out.map, data.papers, out.map.run_id),
+          );
+        } else {
+          await ws.open(out.feedback.update?.active_run_id ?? data.map.run_id);
+        }
         success = true;
       } catch (error) {
         failure = feedbackError(error);
@@ -358,38 +391,9 @@ export default function App() {
     await operate("Finishing your saved feedback update", async () => {
       try {
         const draft = await request<MapResult>(`/cluster/${update.run_id}`);
-        const runId = newRunId();
         setTab("map");
-        setLive({
-          runId,
-          base: data.map,
-          papers: data.papers,
-          question: data.map.question,
-          title: "Finishing feedback update",
-          keepCurrentGraph: true,
-        });
-        const map = await request<MapResult>(
-          `/cluster/${draft.run_id}/analyze`,
-          {
-            method: "POST",
-            body: {
-              expected_version_token: draft.version_token,
-              request_id: crypto.randomUUID().replaceAll("-", ""),
-              run_id: runId,
-              stages: ["connections", "gaps"],
-            },
-            timeout: (ws.config.run_timeout_s + 120) * 1000,
-          },
-        );
-        const record = await request<FeedbackState>(
-          `/cluster/${map.run_id}/feedback`,
-        );
-        setFeedback(record);
-        if (map.status === "done") setSelection(null);
         await ws.open(
-          map.status === "done"
-            ? map.run_id
-            : (record.update?.active_run_id ?? update.active_run_id),
+          await finishFeedbackStages(draft, data.papers, update.active_run_id),
         );
         success = true;
       } catch (error) {

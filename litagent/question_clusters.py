@@ -8,10 +8,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import re
 import time
 
 import numpy as np
+from openai import OpenAIError
 
 from litagent.cluster_labels import contrastive_labels, evidence_source, relevant_spans, source_spans
 from litagent.cluster_roles import assign_roles
@@ -22,7 +24,7 @@ from litagent.schemas import (ClusterAlternative, ClusterLabel, Evidence, Paper,
 from litagent.parallel import parallel_map
 from litagent.sample_data import sample_relevance, sample_similarity
 from litagent.similarity import SimilarityMatrices, cosine_matrix, nearest_pairs
-from litagent.trace import current_trace
+from litagent.trace import current_trace, mask
 
 
 def validate_settings(settings: Settings) -> None:
@@ -67,7 +69,20 @@ def assess_relevance(papers: list[Paper], texts: list[str], similarities: np.nda
         direct = [p for p in batch if found[p["id"]].relevance == "direct"]
         if direct:
             before = {p["id"] for p in direct}
-            checked = _assess_batch(direct, {**details, **found}, question, settings, "question_relevance_verify", None)
+            try:
+                checked = _assess_batch(direct, {**details, **found}, question, settings, "question_relevance_verify", None)
+            except TokenBudgetExceeded:
+                raise
+            except (LLMError, OpenAIError) as error:
+                # An unavailable check admits nothing: the papers stay supporting with the first check's evidence,
+                # as a rejected paper does, and the map is still built. Real run 27 Oct: one failed check on the
+                # checking model ended the whole cluster preview with an error.
+                reason = f"Independent relevance check unavailable ({type(error).__name__}); not admitted as direct."
+                checked = {pid: details[pid].model_copy(update={"relevance": "uncertain", "reason": reason}) for pid in before}
+                if trace := current_trace():
+                    trace.log("clusterer", "verify main evidence", "unavailable", level=logging.WARNING,
+                              result={"paper_ids": sorted(before)}, next_step="keep as supporting",
+                              why=mask(f"{type(error).__name__}: {error}"))
             # The check decides admission as direct. It does not erase the source-quoted relevance the first check
             # found: a rejected paper stays supporting, with the first check's evidence and the check's reason.
             for pid, d in checked.items():

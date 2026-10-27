@@ -168,7 +168,12 @@ for (const mobile of [false, true]) {
     expect(next).not.toBe(source);
     const get = async (suffix: string) =>
       (await (await request.get(appUrl + suffix)).json()).output;
-    expect((await get(`/cluster/${next}`)).parent_run_id).toBe(source);
+    // The revision request returns topics and the connection graph; the gap graph is a request of its own.
+    const finished = await get(`/cluster/${next}`);
+    expect(finished.analysis.completed_stages).toEqual(["connections", "gaps"]);
+    const revision = await get(`/cluster/${finished.parent_run_id}`);
+    expect(revision.parent_run_id).toBe(source);
+    expect(revision.analysis.completed_stages).toEqual(["connections"]);
     expect((await get(`/cluster/${next}/versions`)).active_head.run_id).toBe(
       next,
     );
@@ -523,6 +528,11 @@ test.describe("saved feedback recovery", () => {
       await expect(bot).toContainText(
         "Make translation and evaluation separate topics.",
       );
+      const stages: string[][] = [];
+      page.on("request", (r) => {
+        if (r.method() === "POST" && r.url().endsWith("/analyze"))
+          stages.push(r.postDataJSON().stages);
+      });
       const continued = page.waitForRequest(
         (r) =>
           r.method() === "POST" &&
@@ -531,10 +541,8 @@ test.describe("saved feedback recovery", () => {
       await status
         .getByRole("button", { name: "Resume update", exact: true })
         .click();
-      expect((await continued).postDataJSON().stages).toEqual([
-        "connections",
-        "gaps",
-      ]);
+      // One request per unfinished stage, each with its own time limit
+      expect((await continued).postDataJSON().stages).toEqual(["connections"]);
       await expect(
         bot.getByRole("textbox", { name: "Feedback for the graph" }),
       ).toBeEnabled();
@@ -543,10 +551,17 @@ test.describe("saved feedback recovery", () => {
         .poll(() => new URL(page.url()).searchParams.get("run"))
         .not.toBe(source);
       const next = new URL(page.url()).searchParams.get("run")!;
-      const revised = (
-        await (await request.get(appUrl + `/cluster/${next}`)).json()
-      ).output;
-      expect(revised.parent_run_id).toBe(draft);
+      const get = async (suffix: string) =>
+        (await (await request.get(appUrl + suffix)).json()).output;
+      const revised = await get(`/cluster/${next}`);
+      expect(revised.analysis.completed_stages).toEqual([
+        "connections",
+        "gaps",
+      ]);
+      expect(
+        (await get(`/cluster/${revised.parent_run_id}`)).parent_run_id,
+      ).toBe(draft);
+      expect(stages).toEqual([["connections"], ["gaps"]]);
       expect(rebuilds).toBe(1);
       await expect(bot).toContainText("a demo revision is ready");
       expect(

@@ -15,9 +15,16 @@ from every member. Code resolves those references to verbatim quotes and rejects
 hints and cluster cards are rebuilt, then connections, gaps, independent verification and grading run again with
 the human's instructions. Feedback requests are not treated as scientific evidence.
 
-Each completed update creates an immutable version and moves the active head. A failure before valid clusters
-leaves the existing map active; a later interruption saves an unfinished version for recovery without replacing
-the active version. Feedback instructions persist when finding analysis resumes. Votes belong to the version
+An update is two requests, like a new map's analysis, so each gets the full `RUN_TIMEOUT_S`: the revision request
+revises the topics, checks them and builds the connection graph; the client then asks for the gap graph on that
+version (`POST /cluster/{run_id}/analyze`, `stages: ["gaps"]`). With the slower checking model, topics, both graphs
+and every grade in one request ran past the time limit (27 Oct). While the gap graph runs, the assistant shows the
+connection graph as ready with checks pending; the finished gap graph replaces that note.
+
+Each completed request creates an immutable version and moves the active head. A failure before valid clusters
+leaves the existing map active; an interruption before the connection graph is ready saves an unfinished version
+for recovery without replacing the active version. An interrupted gap graph leaves the revised connection graph
+active, with the gap graph pending, as for a new map. Feedback instructions persist when finding analysis resumes. Votes belong to the version
 reviewed; new findings start without approval. The conversation carries forward. The assistant retains an
 unsent draft when an HTTP request fails. **Versions** provides access to earlier maps and rollback.
 
@@ -44,8 +51,8 @@ All routes use the existing `{status, output}` response envelope.
 Regeneration requires the active version and returns `{map, feedback}`. `feedback.update` records its outcome,
 saved draft ID, current graph ID, completed/pending steps and a readable reason. A paused result returns the
 current graph's feedback state, preserving its approvals. Resume posts to the existing
-`POST /cluster/{draft_run_id}/analyze` with the draft's version token, a fresh request ID and both finding stages;
-its result includes the preserved human instructions and its feedback record reflects the resumed outcome. Request receipts prevent a completed
+`POST /cluster/{draft_run_id}/analyze` with the draft's version token and a fresh request ID, one request per
+unfinished stage (`["connections"]`, then `["gaps"]` on the new version); its result includes the preserved human instructions and its feedback record reflects the resumed outcome. Request receipts prevent a completed
 request from calling agents twice; the same request ID with changed instructions is rejected. A root lock and
 version-token checks prevent stale concurrent edits. A failed receipt requires a new request ID to retry.
 Messages are limited to 4,000 characters; conversation display retains the most recent 50 messages. The source

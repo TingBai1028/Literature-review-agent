@@ -2,19 +2,22 @@
 
 from __future__ import annotations
 
+import logging
 import time
 import uuid
 from pathlib import Path
+
+from openai import OpenAIError
 
 from litagent.agents import clusterer, grader
 from litagent.cluster_audit import partition_indices
 from litagent.cluster_cards import build_cards, read_role_full_text
 from litagent.cluster_state import ClusteringArtifacts, VersionError, path_for, save_version, set_head, version_lock
 from litagent.config import EFFORT_PROFILES, Effort, Settings
-from litagent.integrations.llm import TokenBudgetExceeded, TokenMeter
+from litagent.integrations.llm import LLMError, TokenBudgetExceeded, TokenMeter
 from litagent.integrations.meterless import ResearchWorld
 from litagent.schemas import ClusterMapResult, Paper, QuestionCluster
-from litagent.trace import Trace, new_run_id
+from litagent.trace import Trace, mask, new_run_id
 
 
 class _PreviewTimeLimit(Exception):
@@ -79,13 +82,23 @@ def _run_cluster_map(papers: list[Paper], question: str, effort: Effort, setting
                 result.warnings.append("Sample mode: TF-IDF relevance, stored similarity and placeholder labels; no model calls.")
             if time.monotonic() - started > settings.run_timeout_s:
                 raise _PreviewTimeLimit
-            result.grade = grader.grade("clusters", result.clusters, papers, settings)
-            world.record_grade("clusters", result.grade)
-            ok = grader.passed(result.grade, settings)
-            trace.log("grader", "grade question map", f"{result.grade.total}/9 {'pass' if ok else 'fail'}",
-                      result=result.grade, why=result.grade.fix or result.grade.reasoning)
-            if not ok:
-                result.warnings.append("Cluster map did not pass grading; retained for review without automatic regeneration.")
+            try:
+                result.grade = grader.grade("clusters", result.clusters, papers, settings)
+            except TokenBudgetExceeded:
+                raise
+            except (LLMError, OpenAIError) as error:
+                # The grade scores a finished map; it doesn't gate it. The map is saved ungraded and the first
+                # analysis request grades it (finding_analysis._analyze), instead of discarding every clustering call.
+                result.warnings.append(f"Cluster map grade unavailable ({mask(str(error))}); the next analysis grades it.")
+                trace.log("grader", "grade question map", "unavailable", why=mask(f"{type(error).__name__}: {error}"),
+                          next_step="save the map ungraded", level=logging.WARNING)
+            if result.grade is not None:
+                world.record_grade("clusters", result.grade)
+                ok = grader.passed(result.grade, settings)
+                trace.log("grader", "grade question map", f"{result.grade.total}/9 {'pass' if ok else 'fail'}",
+                          result=result.grade, why=result.grade.fix or result.grade.reasoning)
+                if not ok:
+                    result.warnings.append("Cluster map did not pass grading; retained for review without automatic regeneration.")
         except (TokenBudgetExceeded, _PreviewTimeLimit) as error:
             result.status = "partial"
             reason = str(error) if isinstance(error, TokenBudgetExceeded) else "Cluster-preview time limit reached"
