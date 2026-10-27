@@ -1,24 +1,23 @@
 import { useEffect, useRef } from "react";
-import { LoaderCircle } from "lucide-react";
+import { ChevronDown, LoaderCircle } from "lucide-react";
 import { agentNames, isSetback, type RunEvent } from "../events";
 
 /** Spec A3: each event's message in plain text, newest at the bottom, with the agent at work named. */
 export function ActivityFeed({
   events,
   title,
-  onShowAll,
   inline = false,
-  side = false,
+  dock = false,
 }: {
   events: RunEvent[];
   title: string;
-  onShowAll?: () => void;
   inline?: boolean; // inside a dialog
-  side?: boolean; // at the top of the side column, beside the map (it used to float over the map)
+  dock?: boolean; // reserved space above the workspace, outside the paper inspector
 }) {
-  const end = useRef<HTMLLIElement>(null);
+  const list = useRef<HTMLOListElement>(null);
   useEffect(() => {
-    end.current?.scrollIntoView({ block: "nearest" });
+    // Scroll only the event list, without moving the reader's paper or the whole page.
+    if (list.current) list.current.scrollTop = list.current.scrollHeight;
   }, [events.length]);
   const open = new Set<string>();
   for (const e of events) {
@@ -32,34 +31,51 @@ export function ActivityFeed({
       (e) => e.agent === "retriever" && e.payload?.papers_fetched != null,
     )?.payload;
   const shown = events.filter((e) => e.phase !== "step" || isSetback(e));
-  return (
-    <aside
-      className={`activity-feed${inline ? " inline" : ""}${side ? " side" : ""}`}
-      aria-live="polite"
-      aria-label="Run activity"
-    >
-      <header>
-        <LoaderCircle size={14} className="spin" />
-        <strong>{title}</strong>
-        {working && <span>· {agentNames[working] ?? working} is working</span>}
-      </header>
+  const heading = (
+    <>
+      <LoaderCircle size={14} className="spin" />
+      <strong>{title}</strong>
+      {working && <span>· {agentNames[working] ?? working} is working</span>}
+    </>
+  );
+  const entries = (
+    <>
       {fetched && (
         <p className="feed-counter">
           Fetched {fetched.papers_fetched} / {fetched.target} papers
         </p>
       )}
-      <ol>
+      <ol ref={list}>
         {shown.slice(-8).map((e) => (
           <li key={e.seq} className={isSetback(e) ? "setback" : e.phase}>
             <b>{agentNames[e.agent] ?? e.agent}</b> {e.message}
           </li>
         ))}
-        <li ref={end} className="feed-end" aria-hidden />
       </ol>
-      {onShowAll && (
-        <button className="text-button small" onClick={onShowAll}>
-          Show full reasoning ({events.length} steps)
-        </button>
+    </>
+  );
+  return (
+    <aside
+      className={`activity-feed${inline ? " inline" : ""}${dock ? " dock" : ""}`}
+      aria-live="polite"
+      aria-label="Run activity"
+    >
+      {dock ? (
+        <details onToggle={(event) => {
+          if (event.currentTarget.open && list.current) list.current.scrollTop = list.current.scrollHeight;
+        }}>
+          <summary aria-label="Build progress details">
+            {heading}
+            <span className="activity-latest">{shown.at(-1)?.message}</span>
+            <span className="activity-toggle">Steps <ChevronDown size={14} /></span>
+          </summary>
+          {entries}
+        </details>
+      ) : (
+        <>
+          <header>{heading}</header>
+          {entries}
+        </>
       )}
     </aside>
   );

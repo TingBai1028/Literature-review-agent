@@ -19,7 +19,7 @@ export function Provenance({
   map: MapResult;
   papers: Paper[];
   selection: Selection | null;
-  onShowReasoning: () => void;
+  onShowReasoning?: () => void;
 }) {
   const rows = provenance(map, papers, selection);
   if (!rows.length) return null;
@@ -36,7 +36,7 @@ export function Provenance({
           </div>
         ))}
       </dl>
-      <button className="text-button small" onClick={onShowReasoning}>
+      <button className="text-button small" onClick={onShowReasoning} disabled={!onShowReasoning}>
         Show reasoning
       </button>
     </section>

@@ -176,7 +176,7 @@ Every run writes `logs/trace-<run_id>.jsonl`, one JSON event per line with `time
 ## Tests
 
 ```bash
-python -m pytest -q                                              # 485 passed (27 Oct); no real model calls
+python -m pytest -q                                              # 489 passed (27 Oct); no real model calls
 cd frontend && PLAYWRIGHT_CHANNEL=chrome npx playwright test     # browser tests on a sample map
 ```
 

@@ -50,7 +50,7 @@ Full details: [search-budget.md](search-budget.md).
 
 | Check | Result | Scope |
 | --- | --- | --- |
-| Current full automated suite | **485 passed in 11.45 s**, `python -m pytest -q` | Rerun on 27 October after the grading-size fix; no real model calls; supersedes the earlier 442-test recovery-note count |
+| Current full automated suite | **489 passed in 11.18 s**, `python -m pytest -q` | Rerun on 27 October after the grading-size fix; no real model calls; supersedes the earlier 442-test recovery-note count |
 | Real 50-paper recovery | **7 connections, 31 candidate research gaps**, final status `done`, no pending grades | Resumed a failed checkpoint without rerunning retrieval or clustering |
 | Real recovery integrity | 17/17 passed | Preserved original quotes, snapshots, vectors, audits and dependencies; replaying a request added no model call |
 | Offline simulation of 31 actual coverage queries | 6/6 passed | 10 fresh requests, 21 deferred; cache-only replay made zero new requests; daily-quota simulation stopped after the first rejected attempt |
@@ -70,7 +70,19 @@ Previously, the stage grader could still put every gap and repeated source quote
 
 Nine new tests cover request sizes, complete item coverage, source fidelity, abstention scope, conservative grading, failed-batch recovery and deadlines. Models, concurrency and model timeouts are unchanged. This fixes the unbounded-input path; it is not a claim that provider latency or all timeouts are solved.
 
-## 5. Remaining limits and submission evidence
+## 5. Fix a crash with mixed coverage-search results
+
+A coverage batch containing an empty search result followed by a nonempty result could raise
+`TypeError: argument of type 'bool' is not iterable`. The empty-result branch overwrote the dictionary
+of failed judge calls with a boolean indicating whether all searches were unavailable. The next gap
+then attempted dictionary membership on that boolean.
+
+The judge-failure dictionary and the per-gap search-availability flag now have separate names.
+Four offline regression cases cover successful empty searches and unavailable searches, each followed
+by a successful or failed judge call. Coverage statuses and failure reasons are retained correctly;
+no real model or scholarly-search calls were made for validation.
+
+## 6. Remaining limits and submission evidence
 
 - Fifteen historical gap coverage checks remain unavailable. The other sixteen only mean no addressing paper was found in the checked sources.
 - No scheduled coverage backfill or coverage-only endpoint was added. Saved versions are not rewritten automatically.

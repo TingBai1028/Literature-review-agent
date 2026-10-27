@@ -385,7 +385,7 @@ class _Run:
             self.checked[g.id] = [p.title for p in results[g.id]]
         pool = {p.id: p for g in gaps for p in results[g.id]}
         source_map = sources(list(pool.values()), self.settings, self.context, limit=self.settings.gap_coverage_source_chars)
-        verdicts, failed = {}, {}
+        verdicts, judge_failures = {}, {}
 
         def ask(chunk: list[Gap]) -> list:
             shown = {p.id for g in chunk for p in results[g.id]}
@@ -401,7 +401,7 @@ class _Run:
             got, lost, error = halve_on_timeout(ask, chunk, "gap coverage batch")
             for j in got:
                 verdicts.setdefault(j.gap_id, j)
-            failed.update((g.id, _failure(error)) for g in lost)
+            judge_failures.update((g.id, _failure(error)) for g in lost)
         out = []
         for g in gaps:
             checks, verdict, ids = searches[g.id], verdicts.get(g.id), [p.id for p in results[g.id]]
@@ -419,11 +419,11 @@ class _Run:
                     continue
                 status = "not_filled"
             elif not ids:
-                failed = all(s.status == "unavailable" for s in checks)
-                status = "unavailable" if failed else "not_filled"
-                reason = "every search failed" if failed else "the search returned no other papers"
-            elif g.id in failed:  # unavailable: the cached result is not reused, so a later analysis checks again
-                status, reason = "unavailable", f"the coverage judge call failed ({failed[g.id]})"
+                all_searches_unavailable = all(s.status == "unavailable" for s in checks)
+                status = "unavailable" if all_searches_unavailable else "not_filled"
+                reason = "every search failed" if all_searches_unavailable else "the search returned no other papers"
+            elif g.id in judge_failures:  # a later analysis retries unavailable coverage
+                status, reason = "unavailable", f"the coverage judge call failed ({judge_failures[g.id]})"
             elif verdict is None:
                 status, reason = "unavailable", "the coverage judge returned no verdict for this gap"
             else:

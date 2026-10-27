@@ -324,6 +324,40 @@ def test_a_failed_writer_or_coverage_call_drops_or_defers_only_its_gaps(llm, sea
     assert gaps[0].coverage_status == "unavailable" and "coverage judge call failed" in gaps[0].coverage.reason
 
 
+@pytest.mark.parametrize("search_unavailable", [False, True])
+@pytest.mark.parametrize("judge_failed", [False, True])
+def test_empty_search_does_not_overwrite_later_coverage_failures(llm, monkeypatch, search_unavailable, judge_failed):
+    from litagent.integrations.llm import LLMError
+    from litagent.schemas import CoverageSearch, Evidence, Gap
+
+    papers = [paper(pid) for pid in IDS]
+    gaps = [Gap(id=gid, cluster_id="C1", description="Compare the two controlled experiments.",
+                between_paper_ids=[a.id, b.id], why_it_matters="A shared evaluation can test their limits.",
+                evidence=[Evidence(paper_id=p.id, quote=p.abstract) for p in [a, b]], coverage_query=gid)
+            for gid, a, b in [("empty", papers[0], papers[1]), ("with-results", papers[2], papers[3])]]
+    run = gap_finder._Run(papers, {}, None, Settings(sample_mode=False), FindingContext())
+
+    def search(query):
+        unavailable = query == "empty" and search_unavailable
+        return [CoverageSearch(query=query, checked_at="test", status="unavailable" if unavailable else "ok",
+                               papers=[] if query == "empty" else [paper("EXT")],
+                               error="Search quota exhausted" if unavailable else None)]
+
+    monkeypatch.setattr(run, "_search", search)
+    if judge_failed:
+        def fail_judge(*args, **kwargs):
+            raise LLMError("Coverage judge unavailable")
+        monkeypatch.setattr(engine, "complete_json", fail_judge)
+
+    checked = run.coverage(gaps)
+    assert checked == gaps
+    assert checked[0].coverage_status == ("unavailable" if search_unavailable else "not_filled")
+    assert checked[0].coverage.reason == ("every search failed" if search_unavailable else "the search returned no other papers")
+    assert checked[1].coverage_status == ("unavailable" if judge_failed else "not_filled")
+    assert ("coverage judge call failed" in checked[1].coverage.reason) is judge_failed
+    assert checked[1].coverage.searches[0].papers[0].id == "EXT"
+
+
 def test_the_stage_grader_gets_coverage_hits_as_titles_not_full_records(monkeypatch):
     from litagent.agents import grader
     from litagent.schemas import CoverageSearch, Evidence, Gap, GapCoverage
