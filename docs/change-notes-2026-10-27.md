@@ -1,41 +1,40 @@
-# 2026-10-27 变更说明：评分恢复与论文检索配额
+# 27 October 2026 change notes: grading recovery and paper-search budgets
 
-分支：`grader-fixes`。本次改动按两个提交组织，分别处理分析中断与论文 API 额度耗尽。
+The original `grader-fixes` work addressed interrupted analysis and exhausted scholarly-search quotas. Later updates on the same date added bounded stage-grading requests and refreshed the evaluation and test counts.
 
-## 1. 评分失败后保留结果，支持以后补评分
+## 1. Preserve findings when grading fails, and retry missing grades later
 
-**原问题：** Connection finder 已生成关联，但独立评分超时或返回无效答案时，整个阶段被标为未完成。
-因此即使已有可用的 Graph 1，Graph 2 仍会报 `Connections come first`；重试也可能重复生成已有结果。
+**Original problem:** the Connection finder had generated findings, but a timeout or invalid answer from the independent grader marked the whole stage incomplete. Graph 2 then reported `Connections come first` despite a usable Graph 1, and retrying could regenerate existing findings.
 
-**现在的行为：**
+**Current behavior:**
 
-- finder 完成即记录该阶段完成。评分服务不可用时，保留发现和证据，将 `<stage>_grade` 标为待办，并允许后续分析。
-- 新分析优先执行，之后再补之前缺失的评分；同一次请求不会无限重试。
-- 有待办的版本只执行未完成的工作。仅补评分时，复用关联、缺口、原文引用、审计记录、依赖和已有有效评分。
-- 兼容旧版“只有待评分标记，没有阶段完成标记”的失败检查点。
-- 时间或 token 预算耗尽仍会停止；刚完成的发现、刚返回的有效评分会保存到 `partial` 子版本。
-- 原始快照保持不可变；重复请求 ID 返回同一版本，不再调用模型。只有评分不可用时，完整结果仍可成为活动版本。
-- 聚类调整后的分析采用相同的评分容错规则。
+- Record a finding stage as complete as soon as its finder finishes. If grading is unavailable, preserve the findings and evidence, mark `<stage>_grade` pending, and allow later finding stages to proceed.
+- Produce new findings before retrying older missing grades; one request does not retry indefinitely.
+- Versions with pending work run only unfinished steps. Grade-only recovery reuses connections, gaps, original quotes, audits, dependencies and valid grades.
+- Support older failed checkpoints that contain pending-grade markers without completed-stage markers.
+- Time and token exhaustion still stop execution. Newly completed findings and valid grades are saved in a `partial` child version.
+- Source snapshots remain immutable. Replaying a request ID returns the same version without another model call. Complete findings may become active even when only a grade is unavailable.
+- Analysis after moving papers follows the same grading-failure rules.
 
-实现与操作说明：[grounded-findings.md](grounded-findings.md)。
+Implementation and operating details: [grounded-findings.md](grounded-findings.md).
 
-## 2. 适配每天约 100 次普通搜索的使用场景
+## 2. Support a daily budget of approximately 100 ordinary paper searches
 
-**原问题：** 每条候选缺口分别调用论文搜索，改写后可能重复查询；收到每日额度耗尽的响应后，其他候选仍继续请求该服务。
+**Original problem:** each candidate gap issued a separate scholarly search; rewritten gaps could repeat queries. Other candidates continued contacting the provider after a daily-quota response.
 
-**现在的行为：**
+**Current behavior:**
 
-- 成功的 OpenAlex 查询结果缓存到本地 SQLite，默认保留 24 小时，检索阶段与缺口核验可跨运行复用。
-- 查询文本、过滤条件和返回字段必须匹配；足够大的结果页可以服务更小的请求。失败响应不会被缓存成“没有论文”。
-- 每次新的 OpenAlex HTTP 尝试都先占用每日额度，重试也计数；并发线程和共享数据库的进程共同受限。
-- 相同查询的并发线程共享一次请求结果；不同查询仍可并行。
-- 每个 Gap finder 调用另有 10 次新覆盖检索的默认预算，所有 cluster、改写和备用来源共享；缓存命中不扣预算。
-- 日限额响应触发持久暂停，直到服务给出的重置时间；期间仍可读取有效缓存。
-- 配置 Semantic Scholar key 时，仅在 OpenAlex 失败后使用备用来源。
-- 超出预算的候选保留为 `unavailable`，附带待核验原因；不会据此认定该研究方向具有新颖性。
-- OpenAlex 单页上限调整为当前官方文档规定的 100。
+- Cache successful OpenAlex queries in local SQLite for 24 hours by default. Retrieval and gap coverage can reuse the results across runs.
+- Query text, filters and requested fields must match. A sufficiently large cached result page can serve a smaller request. Failed responses are never cached as an empty literature result.
+- Reserve daily quota before every new OpenAlex HTTP attempt, including retries. Threads and processes sharing the database use the same cap.
+- Concurrent identical queries share one result; different queries can still run in parallel.
+- Each Gap finder invocation has a separate default budget of 10 new coverage requests, shared across clusters, rewrites and fallback providers. Cache hits do not consume that budget.
+- A daily-limit response creates a persistent pause until the provider's reset time; valid cached results remain readable.
+- When a Semantic Scholar key is configured, use it only after OpenAlex fails.
+- Candidates exceeding the budget remain explicitly `unavailable`, with a reason. An unavailable search does not establish novelty.
+- OpenAlex's page size is capped at 100.
 
-默认配置无需修改 `.env` 即生效：
+These defaults apply without editing `.env`:
 
 ```dotenv
 OPENALEX_DAILY_SEARCH_LIMIT=100
@@ -43,29 +42,40 @@ OPENALEX_SEARCH_CACHE_TTL_S=86400
 GAP_COVERAGE_MAX_REQUESTS=10
 ```
 
-每日额度在 UTC 零点重置。该本地计数不包含其他程序或网站的调用；服务端可能更早拒绝请求。
-这些数值可配置，10 次核验预算属于工程默认值，并非经过实验验证的最优检索策略。
+The local daily counter resets at midnight UTC. It does not include other programs' or websites' requests, so the provider may reject requests earlier. These values are configurable. The 10-request coverage budget is an engineering default, not an experimentally optimized search strategy.
 
-完整说明：[search-budget.md](search-budget.md)。
+Full details: [search-budget.md](search-budget.md).
 
-## 3. 验证结果
+## 3. Validation
 
-| 验证 | 结果 | 范围 |
+| Check | Result | Scope |
 | --- | --- | --- |
-| 全量自动测试 | 442 passed，12.07 秒 | 覆盖评分恢复、预算、缓存、并发、UTC 重置及既有功能；不调用真实模型 |
-| 真实 50 篇论文恢复 | 7 条关联、31 条候选缺口，最后为 `done`，待评分清空 | 从旧失败检查点恢复，没有重做论文检索和聚类 |
-| 真实完整性检查 | 17/17 通过 | 原文引用、快照、向量、审计和依赖保留，重复请求不新增模型调用 |
-| 31 条实际查询的离线模拟 | 6/6 通过 | 10 次新请求、21 条延后；只读缓存时新增请求为 0；日限额模拟只发出首次请求 |
-| 差异格式检查 | `git diff --check` 通过 | 提交前检查 |
+| Current full automated suite | **485 passed in 11.45 s**, `python -m pytest -q` | Rerun on 27 October after the grading-size fix; no real model calls; supersedes the earlier 442-test recovery-note count |
+| Real 50-paper recovery | **7 connections, 31 candidate research gaps**, final status `done`, no pending grades | Resumed a failed checkpoint without rerunning retrieval or clustering |
+| Real recovery integrity | 17/17 passed | Preserved original quotes, snapshots, vectors, audits and dependencies; replaying a request added no model call |
+| Offline simulation of 31 actual coverage queries | 6/6 passed | 10 fresh requests, 21 deferred; cache-only replay made zero new requests; daily-quota simulation stopped after the first rejected attempt |
+| Offline grading-payload replay on another real 50-paper map | All 29 gaps and 87 reviewed pairs preserved once | Compact gap input reduced from 182,169 characters in one payload to at most 34,057 characters per request; no live model or latency measurement |
 
-详细报告：[评分恢复](benchmarks/grade-recovery.json)、[检索预算](benchmarks/search-budget.json)。
+Reports: [grading recovery](benchmarks/grade-recovery.json), [search budget](benchmarks/search-budget.json), [grading request sizes](benchmarks/grading-payload-size.json). The 31-gap recovery and the 29-gap sizing replay are different saved runs; their counts are not combined.
 
-## 4. 当前边界与后续工作
+## 4. Bound oversized stage-grading requests
 
-- 历史结果中 15 条覆盖检索失败记录尚未补查；另 16 条仅代表在已检查来源中没有找到解决该问题的论文。
-- 本次没有加入定时后台补查或独立的“只补覆盖核验”接口；已有版本不会自动改写。
-- 独立评分是模型判断。31 条缺口仍是候选研究假设，分数不能替代学术核验。
-- 真实恢复中的首个请求在响应返回后累计使用 412,398 tokens，超过 350,000 的预算；系统保存结果并暂停。
-  随后的补评分请求只使用 13,784 tokens，未重跑 finder。
-- 缺口评分请求仍有输入过大的问题；本次没有调整模型、并行度、LLM 超时或研究候选数量。
-- API 密钥、`.env`、原始日志和模型缓存继续留在本地；仓库包含代码、配置示例和精简验证报告。
+Previously, the stage grader could still put every gap and repeated source quote into one large request. It now:
+
+- Partitions all accepted findings and reviewed abstentions into batches of at most 5 units and 48,000 serialized user-payload characters.
+- Includes only the sources relevant to each batch, deduplicates original quotes, and sends coverage-hit metadata instead of full external paper records. Coverage status and quoted counterevidence remain visible.
+- Preserves exact evidence rather than shortening it to fit. A single item exceeding the limit leaves the grade pending before any request is sent.
+- Records a complete stage grade only after every batch succeeds. The lowest-scoring batch supplies the stage scores and fix; failing batches cannot be averaged into a pass.
+- Checks the existing deadline between batches; all calls still use the run's token meter. A failed batch leaves findings intact and the grade pending for explicit recovery.
+
+Nine new tests cover request sizes, complete item coverage, source fidelity, abstention scope, conservative grading, failed-batch recovery and deadlines. Models, concurrency and model timeouts are unchanged. This fixes the unbounded-input path; it is not a claim that provider latency or all timeouts are solved.
+
+## 5. Remaining limits and submission evidence
+
+- Fifteen historical gap coverage checks remain unavailable. The other sixteen only mean no addressing paper was found in the checked sources.
+- No scheduled coverage backfill or coverage-only endpoint was added. Saved versions are not rewritten automatically.
+- Independent grades are model judgments. The 31 gaps remain candidate hypotheses requiring scholarly review.
+- The first real recovery response used 412,398 tokens against a 350,000-token request budget; usage was known after the response. The agent saved the findings and stopped. The later grade-only request used 13,784 tokens without rerunning a finder.
+- More small grading requests can increase overhead. Payload sizes were verified offline; live latency after this change has not been benchmarked.
+- The submission video should show a real Graph 2 gap, both source quotes and its bounded coverage status. The final hosted video link remains a submission item.
+- API keys, `.env`, raw logs and model caches remain local. The repository contains code, example configuration and compact validation reports.

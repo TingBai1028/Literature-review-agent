@@ -159,13 +159,14 @@ python scripts/try_search.py "your question" --effort fast --feedback "only revi
 ## Reliability
 
 - **Time.** Every external call has a timeout: model requests 90 s, Zetaris SQL 45 s, OpenAlex 30 s, PDFs 20 s. Each request (a search, a map, an analysis stage) stops between steps after `RUN_TIMEOUT_S` (600 s) and returns what it finished.
-- **Tokens.** Each mode has a token budget, retries included: Fast 350k and Pro 800k (`EFFORT_PROFILES` in `litagent/config.py`, set from measured runs). The run stops before the call that would exceed it.
+- **Tokens.** Each mode has a token budget, retries included: Fast 350k and Pro 800k (`EFFORT_PROFILES` in `litagent/config.py`, set from measured runs). The run stops between calls once the budget is exhausted; a response can overshoot because its usage is reported afterward.
 - **Slow or failed model calls cost as little as possible.**
   - **Timeouts:** a timed-out request isn't sent again unchanged. A batch is asked again in two smaller halves; a single item falls back.
   - **Unnamed clusters:** a cluster whose name couldn't be generated is named again once at the end, if time allows.
   - **Missing grades:** a missing grade stays pending and is retried by the next analysis.
   - **Invalid or echoed answers:** an answer that fails validation is repaired once; an answer that only repeats the request is sent again.
 - **Parallel calls.** Independent model calls run at the same time (`LLM_CONCURRENCY`, default 4): relevance and naming batches, connection groups and each cluster's gaps. Results and their order are the same as one after another.
+- **Bounded finding grades.** Stage grading sends at most 5 findings or abstained pairs and 48,000 JSON payload characters per request, with only the relevant sources and deduplicated original quotes. Every item is checked; the lowest-scoring batch sets the stage grade. A failed batch leaves the grade pending. [Sizing evidence](docs/benchmarks/grading-payload-size.json) is an offline check, not a live latency benchmark.
 - **Search budget.** OpenAlex results are cached for 24 hours. A shared daily request cap stops requests once the day's limit is used, and gap coverage searches have their own per-run budget ([docs/search-budget.md](docs/search-budget.md)).
 
 ## Logs
@@ -175,7 +176,7 @@ Every run writes `logs/trace-<run_id>.jsonl`, one JSON event per line with `time
 ## Tests
 
 ```bash
-pytest                                                           # 476 tests; the pipeline runs in sample mode, no model is called
+python -m pytest -q                                              # 485 passed (27 Oct); no real model calls
 cd frontend && PLAYWRIGHT_CHANNEL=chrome npx playwright test     # browser tests on a sample map
 ```
 
@@ -183,10 +184,14 @@ Scripts in `scripts/` check single stages on real data: `check_clusters.py`, `ch
 
 ## Evaluation
 
-Three real runs at the older Normal level (30 papers each: LLMs for low-resource languages, GNNs in drug discovery, transformers for protein structure) on 26 October 2026, with metrics computed in code ([details](docs/evaluation.md), raw data in [`evals/results.json`](evals/results.json)):
+**Latest recorded recovery, 27 October: a real 50-paper map produced 7 connections and 31 candidate research gaps.** Both finding stages completed and the missing grade was recovered without rerunning retrieval, clustering or the finders. The saved result passed 17/17 recovery checks, including exact source quotes and unchanged snapshots ([recovery report](docs/benchmarks/grade-recovery.json)).
+
+These are **candidate hypotheses**, not established novel discoveries: 16 coverage checks found no addressing study in the checked sources; 15 searches were unavailable. The two recovery requests took 312.3 s and 159.9 s and used 412,398 and 13,784 tokens respectively. These are recovery costs, not a fresh end-to-end runtime. The first response exceeded its 350k-token budget and was preserved as a partial result; the follow-up only restored the missing grade. See the [evaluation details](docs/evaluation.md) for the evidence and limitations.
+
+The earlier fixed-topic evaluation used three real runs at the older Normal level (30 papers each: LLMs for low-resource languages, GNNs in drug discovery, transformers for protein structure) on 26 October 2026 ([raw data](evals/results.json)):
 
 - **218 / 218 evidence quotes are verbatim** from the paper they are attributed to.
-- 22 connections were kept, each with quotes from both papers. No gap was reported: in the completed run, 4 of 6 candidates abstained, and the 2 hypotheses that passed verification were removed because a paper in the corpus already answers them.
+- 22 connections were kept, each with quotes from both papers. This older evaluation kept zero gaps: in its completed run, 4 of 6 candidates abstained and 2 verified hypotheses were removed because a paper in the corpus already answers them. The later 31-gap recovery above is a separate run.
 - 1 run completed (538 s, 231k tokens); 2 ended `partial` after Nightshift latency spikes timed out the connection stage. Those runs kept their finished stages, and timeouts are handled as described under Reliability.
 
 Cluster agreement and gap recall against published surveys, and blind human judgements, need answer keys and reviewers; no model output is counted as either ([docs/evaluation.md](docs/evaluation.md)).
