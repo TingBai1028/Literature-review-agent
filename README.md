@@ -72,40 +72,81 @@ Each sponsor integration sits behind its own adapter class, so an outage in one 
 ### Requirements
 
 - Python 3.11+, and Node 22.12+ to build the web interface.
-- For real runs: Meterless Nightshift with a Nemotron model, and Zetaris running locally in Docker ([docs/setup-zetaris.md](docs/setup-zetaris.md)). Sample mode needs neither.
+- For real runs: Meterless Nightshift with NVIDIA and OpenRouter provider credentials, and Zetaris running locally in Docker ([docs/setup-zetaris.md](docs/setup-zetaris.md)). Sample mode needs none of these services or credentials.
 - Recommended: a free OpenAlex API key (`OPENALEX_API_KEY`), which raises OpenAlex's limit from about 100 to about 1,000 searches a day. Set `OPENALEX_DAILY_SEARCH_LIMIT` to match.
 - No GPU.
 
-### Setup
+### Judge quick start: sample mode
+
+Use this path first to check the interface and API. After installing Python and Node dependencies, sample mode needs no API keys, Docker, embedding-model download or running sponsor services. Installation itself requires internet access. Run these commands from a terminal using Bash or Zsh:
 
 ```bash
 git clone https://github.com/TingBai1028/Literature-review-agent.git
 cd Literature-review-agent
-python -m venv .venv
-source .venv/bin/activate              # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env                   # then fill in your values
-python scripts/setup_embeddings.py     # once: downloads the pinned CPU encoder for clustering
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+cd frontend
+npm ci
+npm run build
+cd ..
+SAMPLE_MODE=true python run.py
 ```
 
-The embedding model is needed for real clustering and for the Retriever's relevance filter; without it a real map can't be built. The default is the scientific-content encoder `SemCSE_cosine`. For the smaller MiniLM model, run `python scripts/setup_embeddings.py --profile minilm` and set `EMBEDDING_PROFILE=minilm`.
+On Windows PowerShell, use `py -3 -m venv .venv` and `.\.venv\Scripts\Activate.ps1`, then the same dependency/build commands; start with `$env:SAMPLE_MODE="true"; python run.py`. If `python3` is unavailable on another platform, use the command for your Python 3.11+ installation.
 
-For real runs, set up the Zetaris paper store once (Zetaris must already be running in Docker) and check the Nightshift connection:
+Open <http://127.0.0.1:8000/>. A fresh checkout has **no saved maps** because `logs/` is not distributed. Choose **Create new map**, enter **How do large language models handle low-resource languages?**, leave **Fast** selected and choose **Search papers**. Review the saved sample papers, then choose **Build the map from N kept papers**. Connections and gaps follow automatically. Select a connection or gap to inspect its source quotes and explanation. Sample findings and grades are explicitly placeholders; use the [recorded real evaluation](docs/evaluation.md) to assess real-run evidence.
+
+Keep that terminal running. In a second terminal, check `curl http://127.0.0.1:8000/health`; expect `{"status":"ok"}`. If the root page returns 404, build the frontend and restart `run.py`. If port 8000 is occupied, use `PORT=8001 SAMPLE_MODE=true python run.py` and open port 8001. See [frontend/README.md](frontend/README.md) for the interface.
+
+### Real runs: configure the integrations
+
+After the quick start, stop the sample server with Ctrl+C. Activate the same virtual environment and work from the repo root:
 
 ```bash
-docker compose up -d                   # our paper store (Postgres, localhost:5433)
+cp .env.example .env                   # once; preserve your existing .env if you have one
+```
+
+Fill in `.env` and configure both Nightshift model routes:
+
+| Setting / service | Required value |
+| --- | --- |
+| `SAMPLE_MODE` | `false`; also run `unset SAMPLE_MODE` if sample mode was exported in your shell (PowerShell: `Remove-Item Env:SAMPLE_MODE -ErrorAction SilentlyContinue`) |
+| `METERLESS_BASE_URL` | Nightshift's running OpenAI-compatible runtime, normally `http://localhost:8088/v1` |
+| `METERLESS_RUNTIME_TOKEN` | The runtime token copied from Nightshift, not an NVIDIA, OpenAI or DeepSeek key |
+| Nightshift **NVIDIA** provider | Your NVIDIA API key; producer model `nvidia/nemotron-3-ultra-550b-a55b` |
+| Nightshift **OpenRouter** provider | Your OpenRouter key with access/credit for checker model `openrouter/deepseek/deepseek-v4-pro-0813` |
+| `ZETARIS_REST_URL`, `ZETARIS_ORG_ID`, `ZETARIS_API_KEY` | Your local Zetaris connection values from [the setup guide](docs/setup-zetaris.md) |
+| `PAPERS_DB_*` | Paper-store values from `.env.example`; keep its password and both connection URLs consistent |
+
+Provider keys stay in Nightshift. A DeepSeek key entered in Nightshift's **OpenAI** field does not configure this OpenRouter route. To use your own DeepSeek key for its billing, configure it in [OpenRouter's BYOK settings](https://openrouter.ai/settings/integrations); Nightshift still needs the OpenRouter key. The independent checker is required by the default setup. An optional `GRADER_MODEL=nvidia/nemotron-3-ultra-550b-a55b` uses the NVIDIA route for checks too, but then producer and checker use the same model family.
+
+Provision the local CPU embedding model. It is needed by real retrieval and clustering; runtime does not download it:
+
+```bash
+python scripts/setup_embeddings.py     # downloads the pinned SemCSE encoder and runs a CPU smoke check
+```
+
+For the smaller MiniLM encoder, set `EMBEDDING_PROFILE=minilm` in `.env` and run `python scripts/setup_embeddings.py --profile minilm`. Provision and runtime must use the same profile. No GPU is required.
+
+Install and start Zetaris using [docs/setup-zetaris.md](docs/setup-zetaris.md) first. That is a **separate Docker bundle**; this repo's Compose file only starts our Postgres paper store. Then run from this repo's root:
+
+```bash
+docker compose up -d --wait            # our paper store (Postgres, localhost:5433); waits for readiness
 python scripts/setup_zetaris.py        # creates the table, registers it in Zetaris, checks a round trip
-python scripts/check_nightshift.py     # one tiny call: prints the model that answered and the tokens used
+python scripts/check_nightshift.py     # real producer call: prints the responding model and token use
+python scripts/check_nightshift.py --grader  # real checker call: verifies the separate provider route
 ```
 
-### Run the web app
+The two Nightshift checks make real model requests and may consume provider credit. Both must succeed for the default real-run setup; a working producer does not prove the checker is configured. `openrouter_key_missing` means the OpenRouter key is missing in Nightshift. Authentication, credit or unavailable-model errors must be resolved in the corresponding provider before continuing.
+
+### Run the real web app
 
 ```bash
-cd frontend && npm ci && npm run build && cd ..
-python run.py                          # serves the app and the API on http://127.0.0.1:8000
+python run.py                          # serves the already-built app and API on http://127.0.0.1:8000
 ```
 
-Open <http://127.0.0.1:8000/> and click **New map**. Opening saved maps makes no model calls. For an offline demonstration, run `SAMPLE_MODE=true python run.py`. The interface is described in [frontend/README.md](frontend/README.md).
+Confirm the interface indicates real mode, then choose **Create new map**. Opening saved maps makes no model calls. Retrieval, map generation and graph updates use your configured services and model credits. Build the frontend before starting `run.py` if you skipped the quick start or changed frontend code.
 
 ### Run the API (`POST /run`)
 
@@ -113,6 +154,11 @@ Open <http://127.0.0.1:8000/> and click **New map**. Opening saved maps makes no
 
 ```bash
 SAMPLE_MODE=true python run.py
+```
+
+Keep the server running and send the request from a second terminal:
+
+```bash
 curl -X POST localhost:8000/run -H 'Content-Type: application/json' \
   -d '{"input": {"query": "How do large language models handle low-resource languages?", "effort": "fast"}}'
 ```
@@ -144,10 +190,12 @@ python scripts/regenerate_examples.py  # in-process and in sample mode; never ca
 ```bash
 docker build -t litagent .
 docker run --rm -p 8000:8000 -e SAMPLE_MODE=true litagent
-docker run --rm -p 8000:8000 --env-file .env litagent   # real run; Zetaris and Nightshift run on the host
+docker run --rm -p 8000:8000 --env-file .env.docker litagent  # real run; configure host URLs below first
 ```
 
-Inside the container, `localhost` is the container itself: point `ZETARIS_REST_URL`, `METERLESS_BASE_URL` and `PAPERS_DB_URL` at `host.docker.internal` (on Linux, add `--add-host=host.docker.internal:host-gateway`). Dependencies, the built interface and the embedding model are included at build time; nothing is downloaded at runtime.
+The build requires internet access and downloads Python/Node dependencies and the embedding model, even for a sample-mode image. Dependencies, the built interface and the model are included at build time; nothing is downloaded at runtime. Start sample mode first and use the same **Create new map** steps above; no saved maps are bundled.
+
+For a real container run, complete host-side integration setup first. Inside the container, `localhost` is the container itself: set `ZETARIS_REST_URL=http://host.docker.internal:8888/api/v1.0`, `METERLESS_BASE_URL=http://host.docker.internal:8088/v1` and `PAPERS_DB_URL=postgresql://litagent:litagent-local@host.docker.internal:5433/litagent` in a separate `.env.docker` (adjust the database password to yours). Copy the other values from your configured `.env`, keep `SAMPLE_MODE=false`, and run with `--env-file .env.docker`. On Linux also add `--add-host=host.docker.internal:host-gateway` and ensure the host services accept connections from the Docker network. Zetaris's own container must separately be able to reach `PAPERS_DB_JDBC_URL`.
 
 ### Command line
 

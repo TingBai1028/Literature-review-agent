@@ -1,14 +1,16 @@
-"""Make one tiny LLM call through Nightshift to check the connection and the model ID.
+"""Make one tiny LLM call through Nightshift to check a configured model route.
 
     python scripts/check_nightshift.py
+    python scripts/check_nightshift.py --grader
 
-Needs METERLESS_BASE_URL and METERLESS_RUNTIME_TOKEN in .env, and NIGHTSHIFT_MODEL in
-litagent/config.py. Prints the model that answered and the tokens used, and writes a trace
-to logs/ (its `model` field is the evidence that a Nemotron model handled the request).
+Needs METERLESS_BASE_URL and METERLESS_RUNTIME_TOKEN in .env, and the producer/checker
+models in litagent/config.py. Prints the model that answered and the tokens used, and writes
+a trace to logs/. Both commands make a real model request and may consume provider credit.
 """
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -27,15 +29,20 @@ class Ping(BaseModel):
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--grader", action="store_true", help="Check GRADER_MODEL instead of the producer model")
+    args = parser.parse_args()
     settings = Settings()
     settings.sample_mode = False  # this script exists to call the real provider
-    print(f"Requested model: {settings.llm_model}")
+    model = settings.grader_model if args.grader else settings.llm_model
+    print(f"Requested model: {model}")
     try:
         with Trace(settings.logs_dir) as trace, TokenMeter() as meter:
             out = complete_json(
                 "You check that a connection works.",
                 'Return {"ok": true, "topic": "<one research topic in 3 words>"}.',
                 Ping,
+                model=model,
                 settings=settings,
                 agent_name="check_nightshift",
             )

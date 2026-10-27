@@ -126,7 +126,7 @@ The Retriever writes papers to our own small Postgres database, which Zetaris se
 2. Start the database and run the one-time setup:
 
    ```bash
-   docker compose up -d                          # starts litagent-db on localhost:5433
+   docker compose up -d --wait                   # starts litagent-db on localhost:5433 and waits for readiness
    .venv/bin/python scripts/setup_zetaris.py     # safe to run again
    ```
 
