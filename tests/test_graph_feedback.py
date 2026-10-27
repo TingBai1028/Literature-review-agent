@@ -75,12 +75,17 @@ def test_feedback_reaches_cluster_connection_and_gap_agents_without_retrieval(sa
     out = graph_feedback.regenerate(source.run_id, body(source), cfg)
     child, state, cached = load_version(out["map"]["run_id"], cfg)
     assert child.run_id == "feedback-child" and child.parent_run_id == source.run_id and child.revision == 1
-    assert child.analysis.completed_stages == ["connections", "gaps"] and not child.analysis.pending_stages
+    # The revision returns topics and Connection graph; Gap graph is its own request, with its own time limit.
+    assert child.analysis.completed_stages == ["connections"] and child.analysis.pending_stages == ["gaps"]
+    assert out["feedback"]["update"]["status"] == "complete" and "gaps" in out["feedback"]["update"]["pending"]
+    gaps = analyze_cluster_map(child.run_id, child.version_token, cfg, request_id="b"*32, stages=["gaps"])
+    assert gaps.analysis.completed_stages == ["connections", "gaps"] and not gaps.analysis.pending_stages
+    assert gaps.human_feedback == body(source).text and head(source.root_run_id, cfg)["run_id"] == gaps.run_id
+    assert not graph_feedback.read_feedback(gaps.run_id, cfg)["update"]["pending"]
     assert all(body(source).text in fix for _, fix in fixes)
     assert body(source).text in seen[0]["feedback"] and child.human_feedback == body(source).text
     assert all(c.label.startswith("Revised ") for c in child.clusters)
     assert np.array_equal(cached.paper_vectors, arrays.paper_vectors) and np.array_equal(cached.similarity, arrays.similarity)
-    assert head(source.root_run_id, cfg)["run_id"] == child.run_id
     assert all(path_for(cfg, p, source.run_id).read_bytes() == data for p, data in originals.items())
     assert out["feedback"]["messages"][0]["text"] == body(source).text
     assert len(graph_feedback.regenerate(source.run_id, body(source), cfg)["feedback"]["messages"]) == 2

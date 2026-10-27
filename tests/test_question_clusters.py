@@ -189,6 +189,25 @@ def test_the_verifier_sees_every_span_and_a_rejected_direct_paper_stays_supporti
     assert result["P0"].evidence
 
 
+@pytest.mark.parametrize("failure", [LLMError("checking model unavailable"), TokenBudgetExceeded("Token budget used")])
+def test_an_unavailable_independent_check_admits_nothing_but_keeps_the_map(monkeypatch, failure):
+    ps = corpus()[:1]
+    def assess(prompt, message, *args, **kwargs):
+        if json.loads(message)["task_version"].startswith("question_relevance_verify"):
+            raise failure
+        return QuestionRelevanceBatch(assessments=[QuestionRelevanceProposal(paper_id="P0", relevance="direct",
+            reason="On the subject.", evidence=[EvidenceReference(paper_id="P0", span_id="S1")])])
+    monkeypatch.setattr(question_clusters, "complete_json", assess)
+    if isinstance(failure, TokenBudgetExceeded):  # running out of budget still stops the run
+        with pytest.raises(TokenBudgetExceeded):
+            question_clusters.assess_relevance(ps, [ps[0].abstract], np.array([.9]), "A question", Settings(), None)
+        return
+    # Real run 27 Oct: one failed check on the checking model ended the whole cluster preview with an error.
+    result = question_clusters.assess_relevance(ps, [ps[0].abstract], np.array([.9]), "A question", Settings(), None)
+    assert result["P0"].relevance == "supporting" and result["P0"].evidence
+    assert "check unavailable" in result["P0"].reason
+
+
 def side(cid, ids):
     return QuestionCluster(id=cid, label="A topic", rationale="A topic", kind="side", question="A question",
         paper_ids=ids, paper_details=[PaperClusterDetail(paper_id=pid, question_similarity=.2, relevance="uncertain", reason="Not assessed") for pid in ids])
@@ -277,6 +296,16 @@ def test_grading_budget_failure_preserves_finished_map(models, monkeypatch, tmp_
     result = run_cluster_map(ps, "First question", Effort.NORMAL, Settings(sample_mode=False, logs_dir=str(tmp_path)), "budget")
     assert result.status == "partial" and result.clusters and result.paper_map
     assert result.grade is None and "Budget reached" in result.warnings
+
+
+def test_unavailable_grade_saves_the_finished_map_ungraded(models, monkeypatch, tmp_path):
+    ps, _ = models
+    monkeypatch.setattr(grader, "grade", lambda *a, **kw: (_ for _ in ()).throw(LLMError("checking model timed out")))
+    result = run_cluster_map(ps, "First question", Effort.NORMAL, Settings(sample_mode=False, logs_dir=str(tmp_path)), "ungraded")
+    # A grade scores a finished map; a failed grade call no longer discards every clustering call.
+    assert result.status == "done" and result.clusters and result.paper_map and result.grade is None
+    assert any(w.startswith("Cluster map grade unavailable") for w in result.warnings)
+    assert (tmp_path / "cluster-state-ungraded.json").exists()
 
 
 def test_new_api_supports_real_contract_with_offline_mocks(models, tmp_path):

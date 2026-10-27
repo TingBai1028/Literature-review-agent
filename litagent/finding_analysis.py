@@ -259,7 +259,8 @@ def _analyze(source, state, arrays, cfg, child_id, request_id, stages=STAGES):
                     child.warnings.append("Cluster map did not pass grading; findings remain subject to map quality review.")
             except (LLMError, OpenAIError) as error:
                 child.status = "partial"
-                child.analysis.pending_stages = ["clusters_grade", "connections", "gaps"]
+                # Stages kept from the source stay complete; only what is really missing is pending.
+                child.analysis.pending_stages = ["clusters_grade"] + _pending_stages(child.analysis)
                 child.warnings.append(mask(str(error)))
         if child.grade is not None:
             run_finding_stages(child, state.papers, cfg, world, context, stages)

@@ -139,6 +139,9 @@ class Settings:
     # Independent model calls sent at once (litagent/parallel.py). Nightshift served 8 concurrent requests without
     # errors (26 Oct); 4 leaves headroom for latency spikes. 1 = one after another.
     llm_concurrency: int = field(default_factory=lambda: int(os.getenv("LLM_CONCURRENCY", "4")))
+    # Batches sent at once within one parallel task: the Gap finder's writer, coverage and grader batches of one
+    # cluster. Clusters already run llm_concurrency at a time, so 4 x 2 = 8 requests at most.
+    llm_batch_concurrency: int = 2
     # An answer Nightshift built with injected prior-answer memory is discarded and asked again in a new scope
     # this many times before the call fails. It happened once in 155 runs (26 Oct, 4 calls at once).
     llm_memory_retries: int = 1

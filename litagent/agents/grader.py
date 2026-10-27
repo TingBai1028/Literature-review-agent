@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field, model_validator
 
 from litagent.config import CLUSTER_MAX_PAPER_FRACTION, CLUSTER_MAX_SINGLETON_FRACTION, Settings
 from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
+from litagent.parallel import parallel_map
 from litagent.schemas import Cluster, Grade, Paper, QuestionCluster
 from litagent.trace import current_trace
 
@@ -164,8 +165,9 @@ def _finding_batches(payload: dict, settings: Settings) -> list[str]:
 def _grade_findings(payload: dict, settings: Settings, retry_timeout: bool, deadline: float | None) -> Grade:
     batches = _finding_batches(payload, settings)
     deadline = deadline if deadline is not None else time.monotonic() + settings.run_timeout_s
-    grades = []
-    for index, message in enumerate(batches, 1):
+
+    def grade_batch(numbered: tuple[int, str]) -> Grade:
+        index, message = numbered
         if time.monotonic() >= deadline:
             raise TokenBudgetExceeded("Finding grading time limit reached; finished findings are retained")
         if trace := current_trace():
@@ -177,7 +179,11 @@ def _grade_findings(payload: dict, settings: Settings, retry_timeout: bool, dead
         grade = Grade.model_validate(draft.model_dump())
         if grade.stage != payload["stage"]:
             raise LLMError("Independent grader returned the wrong finding stage")
-        grades.append(grade)
+        return grade
+
+    # Batches grade different findings, so they run at the same time (litagent/parallel.py). One after another,
+    # 11 gap batches on DeepSeek V4 Pro (~60 s each) ran past the analysis time limit (27 Oct).
+    grades = parallel_map(grade_batch, list(enumerate(batches, 1)), settings.llm_concurrency)
     if len(grades) == 1:
         return grades[0]
     # Keep the weakest complete batch's scores, so no failing batch is averaged into a pass.

@@ -172,7 +172,8 @@ straight to the coverage search and grading agent. Output: gaps with `gap_type: 
 the same as stages 3 and 4.
 
 **Request size.** The writer, the coverage judge and the grading agent send at most `gap_llm_batch_size` (5)
-candidates or gaps per request, so each stays well inside the 90 s model limit, and each finished cluster's gaps
+candidates or gaps per request, so each stays well inside the 90 s model limit. A cluster sends its batches
+`llm_batch_concurrency` (2) at a time beside the other clusters, and each finished cluster's gaps
 are kept as a partial result if a later request fails (a real run on 26 Oct lost 9 finished gaps to one timeout
 of a 15-candidate request).
 

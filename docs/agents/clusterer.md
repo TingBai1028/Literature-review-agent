@@ -7,7 +7,7 @@ Code: `litagent/agents/clusterer.py`, `litagent/cluster_labels.py` · Default pr
    Standalone question maps also support [previewed side moves, incremental label reuse and rollback](../cluster-regeneration.md).
 2. **Plan (≤5 steps):**
    1. `[code]` Build text per paper (metadata at Normal/Medium, full text at High/Ultra) and embed the papers and the question with the local model.
-   2. `[LLM]` Check each paper above the question gate (0.5) against its source spans: direct, supporting or uncertain; an independent `[LLM]` call re-checks the direct ones.
+   2. `[LLM]` Check each paper above the question gate (0.5) against its source spans: direct, supporting or uncertain; an independent `[LLM]` call re-checks the direct ones (on `GRADER_MODEL`); if that call is unavailable, the papers stay supporting and the map is still built. A failed map grade leaves the map saved ungraded; the first analysis grades it.
    3. `[code]` Assign roles: main, foundation, side (`litagent/cluster_roles.py`).
    4. `[LLM]` Name each cluster from source quotes, contrasting it with its nearest neighbours; `[code]` checks every quote is verbatim and abstains for a group whose claim stays unsupported.
    5. `[code]` Write clusters to the world model; the `[LLM]` grading agent scores the map.

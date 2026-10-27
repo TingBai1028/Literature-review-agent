@@ -44,5 +44,6 @@ carry metadata rather than full papers, while coverage status and quoted counter
 The lowest-scoring batch supplies the stage's three scores and fix; batch explanations remain in the
 reasoning. A failing batch cannot be averaged into a pass. If any request fails, no complete stage grade
 is recorded and the normal pending-grade recovery applies. A single item that cannot fit is rejected
-before any model request, with its evidence preserved. The existing model, concurrency and timeouts
-are unchanged; deadlines are checked between requests. See [payload sizing](../benchmarks/grading-payload-size.json).
+before any model request, with its evidence preserved. Batches are sent `llm_concurrency` (4) at a time
+(27 Oct: 11 batches one after another, ~60 s each on DeepSeek V4 Pro, ran past the analysis time limit); the
+deadline is checked before each batch starts. See [payload sizing](../benchmarks/grading-payload-size.json).

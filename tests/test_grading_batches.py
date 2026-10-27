@@ -1,6 +1,7 @@
 """Bound requests without dropping findings, abstentions, counterevidence or original quotes."""
 
 import json
+import threading
 from types import SimpleNamespace
 
 import pytest
@@ -117,7 +118,8 @@ def test_empty_scope_cannot_bypass_character_cap(monkeypatch):
 def test_failed_batch_is_not_averaged_into_a_passing_stage(monkeypatch):
     papers, gaps, pairs = corpus(6)
     capture(monkeypatch, [(3, 3, 3), (1, 2, 1)])
-    result = grader.grade("gaps", gaps, papers, Settings(sample_mode=False), reviewed_pairs=pairs)
+    # One at a time, so the scores follow batch order
+    result = grader.grade("gaps", gaps, papers, Settings(sample_mode=False, llm_concurrency=1), reviewed_pairs=pairs)
     assert result.total == 4 and result.fix == "Recheck G5 against its cited source statements."
     assert "Batch 1: 9/9" in result.reasoning and "Batch 2: 4/9" in result.reasoning
 
@@ -144,7 +146,7 @@ def test_batch_failure_keeps_findings_and_leaves_the_stage_ungraded(monkeypatch)
     monkeypatch.setattr(grader, "complete_json", fail_second)
     result = SimpleNamespace(analysis=SimpleNamespace(pending_stages=[], grades={}), warnings=[])
     world = SimpleNamespace(record_grade=lambda *args: pytest.fail("Incomplete batches must not produce a grade"))
-    grade_stage(result, "gaps", gaps, papers, Settings(sample_mode=False), world, {"reviewed_pairs": pairs})
+    grade_stage(result, "gaps", gaps, papers, Settings(sample_mode=False, llm_concurrency=1), world, {"reviewed_pairs": pairs})
     assert result.analysis.pending_stages == ["gaps_grade"] and result.analysis.grades == {}
     assert len(gaps) == 6 and "grade unavailable" in result.warnings[0]
 
@@ -155,5 +157,21 @@ def test_expired_deadline_stops_before_the_next_batch(monkeypatch):
     times = iter([1, 3])
     monkeypatch.setattr(grader.time, "monotonic", lambda: next(times))
     with pytest.raises(TokenBudgetExceeded, match="grading time limit"):
-        grader.grade("gaps", gaps, papers, Settings(sample_mode=False), reviewed_pairs=pairs, deadline=2)
+        grader.grade("gaps", gaps, papers, Settings(sample_mode=False, llm_concurrency=1), reviewed_pairs=pairs, deadline=2)
     assert len(calls) == 1
+
+
+def test_batches_are_graded_at_the_same_time(monkeypatch):
+    # 27 Oct: 11 gap batches one after another (~60 s each on the checking model) ran past the time limit.
+    papers, gaps, pairs = corpus(10)
+    calls = capture(monkeypatch)
+    complete = grader.complete_json
+    both_waiting = threading.Barrier(2, timeout=5)
+
+    def concurrent(*args, **kwargs):
+        both_waiting.wait()  # raises BrokenBarrierError if the second batch only starts after the first returns
+        return complete(*args, **kwargs)
+
+    monkeypatch.setattr(grader, "complete_json", concurrent)
+    result = grader.grade("gaps", gaps, papers, Settings(sample_mode=False, llm_concurrency=2), reviewed_pairs=pairs)
+    assert len(calls) == 2 and result.total == 8

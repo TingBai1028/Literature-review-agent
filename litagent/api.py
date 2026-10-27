@@ -1,6 +1,6 @@
 """Programmatic interface: POST /run takes JSON and returns JSON.
 
-Request:  {"run_id": optional str, "input": {"query": str, "effort": "normal|medium|high|ultra",
+Request:  {"run_id": optional str, "input": {"query": str, "effort": "fast (default)|pro|normal|medium|high|ultra",
            "feedback": optional str, "signed_in": optional bool}}
 Success:  {"run_id": ..., "status": "success", "output": {...RunResult fields...}}
 Failure:  {"run_id": ..., "status": "error", "error": {"type": ..., "message": ...}}
