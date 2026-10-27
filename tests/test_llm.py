@@ -286,3 +286,13 @@ def test_the_system_message_says_not_to_repeat_the_input():
     complete_json("sys", "user", HumanFeedback, settings=real_settings(), client=client)
     system = client.calls[0]["messages"][0]["content"]
     assert system.endswith('Reply with the output object only (its first key is "approved"); never repeat the input.')
+
+
+def test_only_calls_on_the_grader_model_carry_an_output_limit():
+    s = real_settings()
+    s.grader_model = "grader/second-family"
+    client = FakeClient(['{"approved": true}', '{"approved": true}'])
+    complete_json("sys", "user", HumanFeedback, settings=s, client=client)
+    complete_json("sys", "user", HumanFeedback, settings=s, client=client, model=s.grader_model)
+    # DeepSeek V4.1 Flash returned empty answers when reasoning ran into the route's default limit (27 Oct).
+    assert "max_tokens" not in client.calls[0] and client.calls[1]["max_tokens"] == s.grader_max_output_tokens

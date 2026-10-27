@@ -395,7 +395,7 @@ class _Run:
                        "papers": [source_map.get(pid) or {"id": pid, "title": p.title, "spans": []}
                                   for pid, p in pool.items() if pid in shown]}
             return request("gap_coverage", payload, CoverageJudgements, _no_check, self.settings, self.context, "gaps",
-                           retry_timeout=False).judgements
+                           retry_timeout=False, model=self.settings.grader_model).judgements
 
         for chunk in _chunks([g for g in gaps if results[g.id]], self.settings.gap_llm_batch_size):
             got, lost, error = halve_on_timeout(ask, chunk, "gap coverage batch")
@@ -474,7 +474,7 @@ class _Run:
                                  "coverage": {"status": g.coverage_status, "checked_titles": self.checked.get(g.id, [])}}
                                 for g in chunk]}
             return request("gap_grader", payload, GapLabelDecisions, _no_check, self.settings, self.context, "gaps",
-                           retry_timeout=False).labels
+                           retry_timeout=False, model=self.settings.grader_model).labels
 
         for chunk in _chunks(gaps, self.settings.gap_llm_batch_size):
             # Like an unlabelled cluster: a failed call drops only its own gaps, not the run (real run 27 Oct ended
@@ -532,6 +532,25 @@ class _Run:
 
     def keep(self, stage: str, gap_id: str, reason: str, **result) -> None:
         _log(stage, gap_id, "kept", reason, **result)
+
+
+def rewrite_gap(paper_ids: list[str], papers: list[Paper], clusters: list[Cluster], feedback: str,
+                previous_claim: str | None, settings: Settings, context: FindingContext) -> list[Gap]:
+    """Write one candidate pair's gap again with a human reviewer's feedback, then run its coverage check and the gap
+    grader as usual. Used by Submit on the Human review page; an empty list means the gap was dropped."""
+    context = prepare(papers, clusters, settings, context)
+    source_map = sources(papers, settings, context)
+    candidates = candidate_pairs(papers, clusters, context.similarity, settings, set(source_map))
+    c = next((c for c in candidates if set(c["paper_ids"]) == set(paper_ids)), None)
+    if c is None:
+        raise ValueError("This paper pair is no longer a gap candidate on this map")
+    run = _Run(papers, source_map, None, settings, context)
+    run.outcomes[c["gap_id"]] = {**{k: c[k] for k in ("pair_id", "paper_ids", "cluster_ids", "scope")},
+                                 "gap_type": "inferred", "claim": previous_claim or ""}
+    cluster = next(cl for cl in clusters if cl.id == c["cluster_id"])
+    written = run.write(cluster, [c], {c["gap_id"]: feedback})
+    kept, _ = run.grade(cluster, run.coverage(written), final=True)
+    return run.rank(kept)
 
 
 def _sample_gaps(papers: list[Paper], clusters: list[Cluster], settings: Settings) -> list[Gap]:

@@ -168,11 +168,12 @@ def test_independent_verifier_can_downgrade_a_broad_initial_match(monkeypatch):
 def test_the_verifier_sees_every_span_and_a_rejected_direct_paper_stays_supporting(monkeypatch):
     ps = corpus()[:1]
     ps[0].abstract = " ".join(f"Sentence {n} describes task P0 with a controlled experiment and its measured outcome." for n in range(6))
-    seen = []
+    seen, models = [], []
     def assess(prompt, message, *args, **kwargs):
         payload = json.loads(message)
         verify = payload["task_version"].startswith("question_relevance_verify")
         seen.append(len(payload["papers"][0]["spans"]))
+        models.append(kwargs.get("model"))
         return QuestionRelevanceBatch(assessments=[QuestionRelevanceProposal(paper_id="P0",
             relevance="uncertain" if verify else "direct", reason="Checked: the method is not named." if verify else "On the subject.",
             evidence=[] if verify else [EvidenceReference(paper_id="P0", span_id="S1")])])
@@ -181,6 +182,8 @@ def test_the_verifier_sees_every_span_and_a_rejected_direct_paper_stays_supporti
     result = question_clusters.assess_relevance(ps, [ps[0].abstract], np.array([.9]), "A specific question", settings, None)
     # Real run 27 Oct: shown only the cited span, the verifier rejected both direct papers of an MDP question.
     assert seen[0] > 1 and seen[1] == seen[0]
+    # The first assessment runs on the producer's model, the independent check on the grader's.
+    assert models == [None, settings.grader_model]
     # The verifier decides admission as direct; it does not erase the first check's quoted relevance.
     assert result["P0"].relevance == "supporting" and result["P0"].reason == "Checked: the method is not named."
     assert result["P0"].evidence

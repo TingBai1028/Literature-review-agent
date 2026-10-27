@@ -12,7 +12,7 @@ Code: `litagent/agents/grader.py` · Prompt: `prompts/grader.md`
 5. **Rubric (0–3 × 3):** accuracy · appropriateness · actionability, with stage-specific details in the prompt.
 6. **Stop conditions:** each stage gets one redo (`max_redo_per_stage`), then continues with a warning. It never stops to ask the user: a judge's `/run` must not wait for input. The warning travels with the result, and in the web app the user acts on it (move or swap papers, run the analysis again).
 7. **Run log:** score per criterion, pass/fail, fix.
-8. **Guardrails:** sees the output and the evidence, not the producing agent's reasoning. It uses the same model family as the producers (Nemotron 3 Ultra), in a separate context with its own answer-memory scope; a grader from a different model family is listed under next steps in the README.
+8. **Guardrails:** sees the output and the evidence, not the producing agent's reasoning. It runs on a different model family from the producers (DeepSeek V4.1 Flash through Nightshift, `GRADER_MODEL`, while the producers use Nemotron 3 Ultra), in a separate context with its own answer-memory scope.
 
 Question maps include the research question, cluster roles and selected source evidence.
 The producer's per-paper reasons and alternate scores are excluded from the grader input.

@@ -10,8 +10,8 @@ from __future__ import annotations
 from collections import defaultdict
 
 from litagent.config import Settings
-from litagent.finding_engine import (FindingContext, cached, cache_key, choose_pairs, exact_ids, merge_record, now,
-    pair_payload, prepare, request, resolve_evidence, sources, verify)
+from litagent.finding_engine import (FindingContext, cached, cache_key, choose_pairs, exact_ids, make_pair, merge_record,
+    now, pair_payload, prepare, request, resolve_evidence, sources, verify)
 from litagent.schemas import (DIRECTIONAL_RELATIONS, Cluster, Connection, ConnectionDecisions, Evidence, FindingAudit,
                              FindingCacheRecord, FindingDependency, GroundedConnection, Paper)
 from litagent.parallel import run_parallel
@@ -112,7 +112,8 @@ def _assess(pairs, payload, source_map, papers, settings, context):
                       result={pid: checked[pid].reason for pid in generic}, next_step="regenerate",
                       why="A reason must name something concrete in both papers", step_kind="llm")
         retry_payload = {**payload, "pairs": [p for p in payload["pairs"] if p["pair_id"] in generic],
-                         "fix": "The critic rejected these reasons as generic: "
+                         # A reviewer's feedback (rewrite_pair) stays in force alongside the critic's.
+                         "fix": (payload["fix"] + " " if payload.get("fix") else "") + "The critic rejected these reasons as generic: "
                                 + "; ".join(f"{pid}: {checked[pid].reason}" for pid in generic)
                                 + ". Name the concrete method, dataset, claim or citation that both quotes show, or abstain."}
         retried = request("connection_finder", retry_payload, ConnectionDecisions, validate_for(set(generic)),
@@ -149,6 +150,27 @@ def _assess(pairs, payload, source_map, papers, settings, context):
         deps[cid] = FindingDependency(global_map=False, cluster_ids=pair["cluster_ids"], paper_ids=pair["paper_ids"])
         audit.accepted += 1
     return FindingCacheRecord(stage="connections", created_at=now(), connections=connections, dependencies=deps, audit=audit)
+
+
+def rewrite_pair(paper_ids: list[str], papers: list[Paper], clusters: list[Cluster], feedback: str, settings: Settings,
+                 context: FindingContext) -> FindingCacheRecord:
+    """Write one pair's connection again with a human reviewer's feedback as the fix, then verify it as usual.
+
+    Used by Submit on the Human review page. Returns the pair's record: the rewritten edge, or no edge when the
+    writer abstains or the verifier rejects it.
+    """
+    context = prepare(papers, clusters, settings, context)
+    source_map = sources(papers, settings, context)
+    a, b = sorted(paper_ids)
+    if a not in source_map or b not in source_map:
+        raise ValueError("Both papers need an abstract or full text to rewrite their connection")
+    owner = {pid: c for c in clusters for pid in c.paper_ids}
+    index = {p.id: i for i, p in enumerate(papers)}
+    references = {p.id: set(p.references or ()) for p in papers}
+    pair = make_pair(a, b, owner, references, float(context.similarity[index[a], index[b]]))
+    payload = {"task_version": "connections-v2", "question": context.question, "fix": feedback,
+               "min_quote_chars": settings.finding_min_quote_chars, "pairs": [pair_payload(pair, source_map, clusters)]}
+    return _assess([pair], payload, source_map, papers, settings, context)
 
 
 def _fake_connections(papers: list[Paper], clusters: list[Cluster]) -> list[Connection]:

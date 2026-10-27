@@ -29,12 +29,12 @@ Literature Map does the same mapping in minutes and shows its work. A claim is o
 4. **Explore and judge (Human review 2).**
    - **Look:** click any paper, cluster, connection or gap to see its quotes and who made it and why. Paper IDs in agent-written text appear as the paper's title.
    - **Change the map:** move papers between side clusters (with a preview, versions and rollback), or swap side papers for the next-best ones from the backup pool.
-   - **Judge:** record your own supported / unsupported judgement on each finding, optionally after an independent AI review.
+   - **Judge:** give your verdict on a finding (a reason is optional) and submit. The agent that wrote it rewrites it with your feedback, or removes it if the sources don't support it, as a new map version. An independent AI review can grade every finding first.
 
 ## How it explains itself
 
 - **Verbatim evidence.** Models cite numbered source spans; code copies the quoted text, so a quote can't be invented. In the recorded evaluation, 218 of 218 quotes were verbatim from the paper they are attributed to.
-- **Independent checks.** Every connection is re-checked by a separate model call that sees only the claim and the sources, not the reasoning that produced it. Grading agents score each stage from 0 to 9 against the source papers.
+- **Independent checks, by a second model family.** The agents that build the map run on Nemotron; every check of their work runs on DeepSeek, so the checker doesn't share the producer's blind spots. Every connection is re-checked by a separate call that sees only the claim and the sources, not the reasoning that produced it, and grading agents score each stage from 0 to 9 against the source papers.
 - **Abstaining is allowed.** An empty result is a valid result. A gap whose literature search did not run is marked **novelty unverified** and listed after verified gaps.
 - **Every step is visible.** The live activity feed and the **Reasoning** tab show each agent's steps, marked as code, LLM or human, with retries and fallbacks highlighted. "Who made this, and why" appears on every element of the map, and every run writes a full trace to `logs/trace-<run_id>.jsonl`.
 
@@ -59,7 +59,7 @@ The full write-up, with evidence from real runs, is in [docs/sponsor-tech.md](do
 | Sponsor | How we use it |
 | --- | --- |
 | **Meterless Nightshift** | Primary AI provider: every model call goes through it (`litagent/integrations/llm.py`, OpenAI-compatible client). Each run gets its own answer-cache partition, and each call its own answer-memory scope. |
-| **NVIDIA** | Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`, set in `litagent/config.py`) through Nightshift's NVIDIA provider. The trace logs the model that answered each call. |
+| **NVIDIA** | Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`, `NIGHTSHIFT_MODEL` in `litagent/config.py`) through Nightshift's NVIDIA provider, for every agent that builds the map. The checks (grades, verifiers, AI review) run on DeepSeek V4.1 Flash through Nightshift (`GRADER_MODEL`). The trace logs the model that answered each call. |
 | **Zetaris** | Shared paper data layer, running locally in Docker. The Retriever writes papers to our paper store, which Zetaris serves as `litagent_db`; every later agent reads them back with Zetaris SQL (`litagent/integrations/zetaris.py`). |
 | **Meterless World Model** | Implemented in Python from Meterless's spec and reference (`litagent/integrations/world_model/`), passing all 8 Meterless conformance checks. It holds each run's papers, authors, clusters, connections (with evidence) and gaps; `/run` returns it as `paper_map` and `GET /world/{run_id}` serves it. |
 | **Cursor** | Development environment, with the project's architecture and conventions in `.cursor/rules/project.mdc`. |
@@ -175,7 +175,7 @@ Every run writes `logs/trace-<run_id>.jsonl`, one JSON event per line with `time
 ## Tests
 
 ```bash
-pytest                                                           # 469 tests; the pipeline runs in sample mode, no model is called
+pytest                                                           # 476 tests; the pipeline runs in sample mode, no model is called
 cd frontend && PLAYWRIGHT_CHANNEL=chrome npx playwright test     # browser tests on a sample map
 ```
 
@@ -203,12 +203,12 @@ Declared in [docs/pre-existing-components.md](docs/pre-existing-components.md): 
 
 ## Limitations and next steps
 
-- **Quality is not expert-validated yet.** Grades and verifications are judgements by the same model family (Nemotron), made in separate contexts. The blind cluster-pair review and the per-finding human reviews are ready but still need human reviewers, and survey answer keys for cluster agreement and gap recall aren't filled in.
+- **Quality is not expert-validated yet.** Grades and verifications are model judgements: DeepSeek checks Nemotron's work, which makes them independent of the producer but not of model judgement in general. The blind cluster-pair review and the per-finding human reviews are ready but still need human reviewers, and survey answer keys for cluster agreement and gap recall aren't filled in.
 - **Findings are deliberately sparse.** A finding needs quotes from both papers and an independent check, so narrow or abstract-only corpora can yield few connections and gaps. That is intended, but a strong gap needs a richer corpus or full text.
 - **Full text means open-access PDF text, not deep reading.** Pro extracts the text of open-access PDFs and quotes the passages closest to the question. The Meterless Markovian engine for whole-paper reasoning is not connected (`meterless.read_in_chunks` is the adapter point).
 - **Searches are bounded.** Candidate pairs, coverage searches and results per query are capped for cost, so "no study found" never means a gap is new to the world. Papers behind paywalls are never downloaded, so institutional access is not supported.
 - **Cost and time.** A real 50-paper Fast map with both graphs takes several minutes and a few hundred thousand tokens, mostly source-grounded relevance checks and grading.
-- **Next:** whole-paper reasoning with the Markovian engine, citation-graph signals, a grader from a second model family, human-validated evaluation sets, and joining a user's own library through Zetaris.
+- **Next:** whole-paper reasoning with the Markovian engine, citation-graph signals, human-validated evaluation sets, and joining a user's own library through Zetaris.
 
 ## Team
 

@@ -154,7 +154,8 @@ def complete_json(
         request_scope = f"litagent-call-{uuid.uuid4().hex}"
         response = _create(client, retry_timeout, agent_name, f"llm call {output_model.__name__} (attempt {attempt})",
                            model=model, messages=messages, response_format={"type": "json_object"},
-                           extra_headers={"x-title": _app_name(), "meterless-scope": request_scope})
+                           extra_headers={"x-title": _app_name(), "meterless-scope": request_scope},
+                           **({"max_tokens": settings.grader_max_output_tokens} if model == settings.grader_model else {}))
         text = response.choices[0].message.content or ""
         tokens = _tokens(response.usage, messages, text)
         cache = _cache_status(response)

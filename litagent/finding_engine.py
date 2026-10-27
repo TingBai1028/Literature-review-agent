@@ -107,19 +107,12 @@ def choose_pairs(stage: str, papers, clusters, settings: Settings, context: Find
         if dup[a] == dup[b]:
             skipped += 1
             continue
-        same = owner[a].id == owner[b].id
-        score = float(context.similarity[indices[a], indices[b]])
+        pair = make_pair(a, b, owner, references, float(context.similarity[indices[a], indices[b]]))
         # A citation from the OpenAlex reference lists is a concrete link (relation directly_cites), so the pair
         # is a candidate even below the similarity floor.
-        cited = b if b in references[a] else a if a in references[b] else None
-        if score < settings.connection_similarity_min and cited is None:
+        if pair["similarity"] < settings.connection_similarity_min and pair["cited"] is None:
             continue
-        cids = sorted({owner[a].id, owner[b].id})
-        pair = {"pair_id": "PAIR-" + digest([a, b])[:16], "paper_ids": [a, b], "cluster_ids": cids,
-                "kind": "within_cluster" if same else "between_clusters", "similarity": score,
-                "citation": f"{a if cited == b else b} cites {cited}" if cited else None, "cited": cited,
-                "main": any(getattr(owner[pid], "kind", "side") == "main" for pid in (a, b))}
-        (within if same else between).append(pair)
+        (within if pair["kind"] == "within_cluster" else between).append(pair)
     order = lambda p: (not p["main"], p["cited"] is None, -p["similarity"], p["paper_ids"])
     within.sort(key=order)
     between.sort(key=order)
@@ -147,6 +140,16 @@ def choose_pairs(stage: str, papers, clusters, settings: Settings, context: Find
                   why="Main-cluster pairs first, then citation links, then cosine; original-source availability, "
                       "duplicate-study exclusion and per-paper/group caps")
     return selected, skipped
+
+
+def make_pair(a: str, b: str, owner: dict, references: dict, similarity: float) -> dict:
+    """The connection finder's description of one paper pair (a < b): clusters, kind, similarity and any citation."""
+    cited = b if b in references[a] else a if a in references[b] else None
+    same = owner[a].id == owner[b].id
+    return {"pair_id": "PAIR-" + digest([a, b])[:16], "paper_ids": [a, b], "cluster_ids": sorted({owner[a].id, owner[b].id}),
+            "kind": "within_cluster" if same else "between_clusters", "similarity": similarity,
+            "citation": f"{a if cited == b else b} cites {cited}" if cited else None, "cited": cited,
+            "main": any(getattr(owner[pid], "kind", "side") == "main" for pid in (a, b))}
 
 
 def pair_payload(pair, source_map, clusters) -> dict:
@@ -180,13 +183,14 @@ def resolve_evidence(refs, source_map, expected_ids: set[str], settings: Setting
 
 
 def request(prompt: str, payload: dict, schema, validate, settings: Settings, context: FindingContext, stage: str,
-            retry_timeout: bool = True):
+            retry_timeout: bool = True, model: str | None = None):
     message = dict(payload)
     for attempt in range(settings.finding_validation_retries + 1):
         check_deadline(context)
         try:
             output = complete_json(load_prompt(prompt), json.dumps(message, ensure_ascii=False), schema,
-                                   settings=settings, agent_name=stage + "_finder", retry_timeout=retry_timeout)
+                                   settings=settings, agent_name=stage + "_finder", retry_timeout=retry_timeout,
+                                   model=model)
         except OpenAIError as error:
             raise LLMError(f"{stage} provider request failed ({type(error).__name__})") from error
         try:
@@ -207,7 +211,8 @@ def verify(proposals: list[dict], settings: Settings, context: FindingContext, s
     payload = {"task_version": stage + "-verify-v1", "question": context.question, "claims": proposals}
     def validate(output):
         exact_ids([v.pair_id for v in output.verdicts], [p["pair_id"] for p in proposals], "pair_id")
-    output = request(stage + "_verify", payload, FindingVerifications, validate, settings, context, stage)
+    output = request(stage + "_verify", payload, FindingVerifications, validate, settings, context, stage,
+                     model=settings.grader_model)
     return {v.pair_id: v for v in output.verdicts}
 
 
@@ -218,7 +223,7 @@ def cache_key(stage: str, payload: dict, schema, settings: Settings) -> str:
     files = [Path(__file__), Path(__file__).parent / "agents" / (stage[:-1] + "_finder.py")]
     if stage == "gaps":
         files += [Path(__file__).parent / "tools" / name for name in ("openalex.py", "semantic_scholar.py", "search_store.py")]
-    return digest({"payload": payload, "settings": params, "model": settings.llm_model,
+    return digest({"payload": payload, "settings": params, "model": settings.llm_model, "grader_model": settings.grader_model,
                    "prompts": {name: load_prompt(name) for name in names}, "schema": schema.model_json_schema(),
                    "verification_schema": FindingVerifications.model_json_schema(),
                    "implementation": {str(p.name): file_hash(p) for p in files}})

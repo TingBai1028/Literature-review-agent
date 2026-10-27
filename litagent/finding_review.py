@@ -20,8 +20,9 @@ class ReviewSubmission(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
     expected_version_token: str = Field(pattern=r"^[a-f0-9]{32}$")
     verdict: Literal["supported", "unsupported", "uncertain"]
-    reviewer: str = Field(min_length=1, max_length=80)
-    rationale: str = Field(min_length=10, max_length=4000)
+    # Only the verdict is required: the reviewer's name, a reason and quotes are optional, so judging is quick.
+    reviewer: str = Field(default="", max_length=80)
+    rationale: str = Field(default="", max_length=4000)
     evidence: list[Evidence] = Field(default_factory=list)
     saw_model_assessment: bool = False
 
@@ -41,13 +42,18 @@ def prepare_review(run_id, settings, *, reveal=False):
         items.append({"id": item_id, "kind": "connection", "scope": conn.kind, "paper_ids": conn.paper_ids,
             "cluster_ids": conn.cluster_ids, "claim": conn.description, "proposed_test": None})
         selection[item_id] = {"decision": "accepted", "finding_id": conn.id}
+    on_map = {frozenset(g.between_paper_ids): g for g in result.gaps}
     for pair in gap_pairs:
         item_id = "gap-" + pair["pair_id"].removeprefix("PAIR-")
         old = previous.get(pair["pair_id"], {})
         proposal = old.get("proposal") or {}
+        # The claim is the map's gap for this pair, or what the writer drafted for a dropped one. (The audit's
+        # `proposal` belongs to an older gap finder; reading only it showed every gap as "no hypothesis yet".)
+        gap = on_map.get(frozenset(pair["paper_ids"]))
         items.append({"id": item_id, "kind": "gap", "scope": pair.get("scope", "within_cluster"),
             "paper_ids": pair["paper_ids"], "cluster_ids": pair["cluster_ids"],
-            "claim": proposal.get("research_question"), "proposed_test": proposal.get("proposed_test")})
+            "claim": gap.description if gap else old.get("claim") or proposal.get("research_question"),
+            "proposed_test": getattr(gap, "proposed_test", None) or proposal.get("proposed_test")})
         selection[item_id] = {"decision": old.get("decision", "not_assessed"), "reason": old.get("reason")}
     fingerprint = corpus_fingerprint(state.papers)
     path = path_for(settings, "finding-review", run_id)
@@ -68,7 +74,7 @@ def prepare_review(run_id, settings, *, reveal=False):
     decisive = [r for r in completed if r["verdict"] != "uncertain"]
     return {"run_id": run_id, "version_token": result.version_token, "question": result.question,
         "sample_mode": result.sample_mode, "corpus_fingerprint": fingerprint,
-        "instructions": "Assess source support for a relationship or testable provisional hypothesis. Supported does not establish global novelty. Select exact original quotes from BOTH papers for decisive judgments; uncertain is valid. Model judgments are hidden by default. Reviewer identity is self-declared, not authenticated.",
+        "instructions": "Judge whether the sources support the connection or testable hypothesis; supported does not establish global novelty. A reason and quotes are optional. Submitting sends the judgement to the agent that wrote the finding, which rewrites it with the feedback as a new map version. Model judgments are hidden by default.",
         "items": items, "summary": {"total": len(items), "reviewed": len(completed), "pending": len(items)-len(completed),
             "supported": sum(r["verdict"] == "supported" for r in completed),
             "unsupported": sum(r["verdict"] == "unsupported" for r in completed),
@@ -87,10 +93,9 @@ def save_review(run_id, item_id, submission: ReviewSubmission, settings):
         if item is None:
             raise VersionError("Unknown review item", 404)
         by_id = {p["id"]: p["source_text"] for p in item["papers"]}
-        if any(e.paper_id not in by_id or len(e.quote.strip()) < settings.finding_min_quote_chars or e.quote not in by_id[e.paper_id] for e in submission.evidence):
+        # Quotes are optional; one that is attached must be exact text of that paper (the quote button copies it).
+        if any(e.paper_id not in by_id or not e.quote.strip() or e.quote not in by_id[e.paper_id] for e in submission.evidence):
             raise VersionError("Review quotes must be exact text from this item's original paper fields", 422)
-        if submission.verdict != "uncertain" and {e.paper_id for e in submission.evidence} != set(item["paper_ids"]):
-            raise VersionError("Decisive review requires exact quotes from BOTH papers", 422)
         path = path_for(settings, "finding-review", run_id)
         stored = json.loads(path.read_text()) if path.exists() else {"version_token": pack["version_token"],
             "corpus_fingerprint": pack["corpus_fingerprint"], "records": {}, "history": []}

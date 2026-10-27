@@ -340,6 +340,7 @@ export default function App() {
             busy={!!busy}
             onOperation={operate}
             onOpen={ws.open}
+            onNotice={setNotice}
             timeout={(ws.config.run_timeout_s + 120) * 1000}
             live={live?.base ? { ...live, events } : null}
             onSwap={refresh}
@@ -434,6 +435,7 @@ function WorkspaceView({
   busy,
   onOperation,
   onOpen,
+  onNotice,
   timeout,
   live,
   onSwap,
@@ -445,6 +447,7 @@ function WorkspaceView({
   busy: boolean;
   onOperation: (label: string, action: () => Promise<void>) => Promise<void>;
   onOpen: (id: string) => Promise<void>;
+  onNotice: (text: string) => void;
   timeout: number;
   live: (Live & { events: RunEvent[] }) | null;
   onSwap: () => void;
@@ -478,7 +481,13 @@ function WorkspaceView({
   return (
     <>
       {tab === "review" ? (
-        <ReviewPanel map={map} timeout={timeout} />
+        <ReviewPanel
+          map={map}
+          timeout={timeout}
+          onOperation={onOperation}
+          onOpen={onOpen}
+          onNotice={onNotice}
+        />
       ) : tab === "reasoning" ? (
         <ReasoningPanel
           map={data.map}

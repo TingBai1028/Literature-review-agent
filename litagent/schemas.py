@@ -297,6 +297,13 @@ class ReviewAgentRequest(BaseModel):
     expected_version_token: str = Field(pattern=r"^[a-f0-9]{32}$")
 
 
+class ReviewRegenerateRequest(BaseModel):
+    """Submit on the Human review page: rewrite the judged finding as a new version (optional client-chosen run id)."""
+    model_config = ConfigDict(extra="forbid")
+    expected_version_token: str = Field(pattern=r"^[a-f0-9]{32}$")
+    run_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9._-]{1,64}$")
+
+
 class ReviewAgentScores(BaseModel):
     model_config = ConfigDict(extra="forbid")
     source_support: int = Field(ge=0, le=3)

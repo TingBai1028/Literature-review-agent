@@ -94,8 +94,9 @@ class DefaultCriteria:
         return None if self.years_back is None else date.today().year - self.years_back
 
 
-# Nightshift model for every agent. Must be an NVIDIA Nemotron model, set explicitly
-# (no automatic routing, which could pick a non-NVIDIA model).
+# Nightshift model for the agents that produce the map (Planner, Retriever summary, relevance, cluster names and
+# cards, connections, gaps). An NVIDIA Nemotron model, set explicitly (no automatic routing, which could pick a
+# non-NVIDIA model). The checks use GRADER_MODEL below.
 # Nemotron 3 Ultra (550B total / 55B active MoE) through Nightshift's NVIDIA provider (the route the
 # NVIDIA award needs). Tested 24 Oct through Nightshift: Ultra answers (0.8 s for a tiny call);
 # Nemotron 3 Super and Llama 3.1 Nemotron Ultra return 404 for our NVIDIA account, Llama 3.3 Nemotron
@@ -103,6 +104,13 @@ class DefaultCriteria:
 # Fallback that also works: "nvidia/nemotron-3.5-lightning-30b-a3b" (slower here, reasons at length).
 # llm.py strips <think> blocks before parsing JSON in case reasoning is returned.
 NIGHTSHIFT_MODEL = "nvidia/nemotron-3-ultra-550b-a55b"
+
+# Nightshift model for every call that checks another agent's work: stage grades, the independent relevance
+# check, the connection verifier, the gap coverage judge and gap grader, and the AI review. A second model
+# family makes these checks independent of the producer's own blind spots (v1.0.0 used Nemotron for both).
+# DeepSeek V4.1 Flash through Nightshift's OpenRouter route. Override with GRADER_MODEL in .env, e.g.
+# GRADER_MODEL=nvidia/nemotron-3-ultra-550b-a55b to go back to one model family.
+GRADER_MODEL = "openrouter/deepseek/deepseek-v4.1-flash"
 
 
 def _env_bool(name: str, default: str = "false") -> bool:
@@ -116,6 +124,11 @@ class Settings:
 
     # LLM (Meterless Nightshift, OpenAI-compatible)
     llm_model: str = NIGHTSHIFT_MODEL
+    grader_model: str = field(default_factory=lambda: os.getenv("GRADER_MODEL", GRADER_MODEL))
+    # Output limit for calls on the grader model. DeepSeek V4.1 Flash reasons before answering; without an explicit
+    # limit the route's default ran out during reasoning and returned an empty answer (HTTP 502 empty_response) for
+    # every cluster grade from ~4k input tokens up (27 Oct). With 8000 the same grades answered (2.5k output tokens).
+    grader_max_output_tokens: int = 8000
     # Per model request (rules: 30-90 s). 60 s cut off two of three real evaluation topics: Nightshift
     # latency spikes made a ~2k-token request take 62-68 s where it usually takes ~10 s (26 Oct).
     llm_timeout_s: float = 90.0
@@ -264,8 +277,10 @@ class Settings:
 
     # Independent per-claim AI review; separate from human annotations and finding production.
     review_agent_source_chars: int = 6000
-    review_agent_max_items: int = 24
-    review_agent_token_budget: int = 30000
+    # AI grading reviews any number of findings: batches of this size, several at once (LLM_CONCURRENCY), each with
+    # its own token budget. A single call with a 24-item cap refused real 50-paper maps ("exceeds the item limit").
+    review_agent_batch_size: int = 6
+    review_agent_token_budget: int = 30000  # per batch
     review_agent_timeout_s: float = 180.0
     review_agent_metric_terms: tuple[str, ...] = ("spBLEU", "BLEU", "COMET", "chrF", "ROUGE", "METEOR", "BERTScore")
 

@@ -171,7 +171,7 @@ export interface Plan {
 }
 export interface Annotation {
   verdict: string;
-  reviewer: string;
+  reviewer?: string;
   rationale: string;
   evidence: Evidence[];
   saw_model_assessment: boolean;

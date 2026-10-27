@@ -98,7 +98,9 @@ def _assess_batch(batch: list[dict], details: dict[str, PaperClusterDetail], que
                "papers": [{**p, "spans": [{"span_id": s["span_id"], "quote": s["quote"]} for s in p["spans"]]} for p in batch]}
     for attempt in range(settings.cluster_label_validation_retries + 1):
         proposal = complete_json(load_prompt(prompt), json.dumps(payload, ensure_ascii=False),
-                                 QuestionRelevanceBatch, settings=settings, agent_name="clusterer")
+                                 QuestionRelevanceBatch, settings=settings, agent_name="clusterer",
+                                 # the independent check runs on the checking model, the first assessment on the producer's
+                                 model=settings.grader_model if prompt == "question_relevance_verify" else None)
         try:
             ids = [p.paper_id for p in proposal.assessments]
             if len(ids) != len(set(ids)) or set(ids) != set(source_refs):

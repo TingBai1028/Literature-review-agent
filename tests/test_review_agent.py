@@ -126,8 +126,6 @@ def test_api_modes_tokens_cache_integrity_and_source_limits(reviewed_map):
             assert client.get(url).status_code == 409
             with pytest.raises(VersionError, match="modes differ"):
                 review_agent.run_review(result.run_id, result.version_token, replace(cfg, sample_mode=True))
-            with pytest.raises(VersionError, match="item limit"):
-                review_agent.run_review(result.run_id, result.version_token, replace(cfg, review_agent_max_items=1))
     finally:
         api.app.dependency_overrides.clear()
 
@@ -263,3 +261,12 @@ def test_literal_metric_guard_rejects_false_omission_even_when_auditor_approves(
 ])
 def test_metric_absence_guard_preserves_qualified_missing_details(text, expected):
     assert review_agent._unqualified_metric_omission(text) is expected
+
+
+def test_any_number_of_findings_is_graded_in_batches(reviewed_map):
+    """A 50-paper map has more findings than one call should grade; batches replace the old 24-item refusal."""
+    result, cfg, calls, _ = reviewed_map
+    report = review_agent.run_review(result.run_id, result.version_token, replace(cfg, review_agent_batch_size=1))["report"]
+    graded = [i for i in report["items"] if i["status"] == "assessed"]
+    grade_calls = [c for c in calls if "statements" not in json.dumps(c)]  # the explanation audit sends statements
+    assert graded and all(len(c["items"]) == 1 for c in grade_calls) and len(grade_calls) == len(graded)
