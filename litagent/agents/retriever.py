@@ -23,6 +23,7 @@ from openai import OpenAIError
 from pydantic import BaseModel, Field
 
 from litagent.config import EFFORT_PROFILES, Settings
+from litagent.cancellation import check_cancelled
 from litagent.integrations.embeddings import EmbeddingError, embed_documents
 from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
 from litagent.sample_data import sample_relevance
@@ -58,6 +59,7 @@ def retrieve(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> l
 def retrieve_pool(plan: SearchPlan, settings: Settings, signed_in: bool = False) -> tuple[list[Paper], list[Paper]]:
     """(shown, backup). Fast/Pro retrieve up to plan.retrieval_target papers, rank them all (spec F2) and show the
     best plan.max_papers; the rest is the ranked backup pool for refresh. Older levels keep no pool."""
+    check_cancelled()
     if settings.sample_mode:
         return _sample_pool(plan, settings)
 
@@ -71,10 +73,12 @@ def retrieve_pool(plan: SearchPlan, settings: Settings, signed_in: bool = False)
     per_search = -(-plan.retrieval_target // len(plan.queries)) if plan.retrieval_target else plan.max_papers
     for query in plan.queries:
         for source in settings.retrieval_sources:
+            check_cancelled()
             search = globals()[SOURCES[source]]  # looked up per call so tests can replace a source
             try:
                 options = {"settings": settings} if source == "openalex" else {}
                 found = search(query, plan.criteria, limit=per_search, open_access_only=not signed_in, **options)
+                check_cancelled()
             except SEARCH_ERRORS as e:
                 failures.append(f"{source}: {e}")
                 _log(f"search {source}", "failed", query, "next search", str(e))
@@ -91,6 +95,7 @@ def retrieve_pool(plan: SearchPlan, settings: Settings, signed_in: bool = False)
     # never downloaded: publisher licences usually forbid automated bulk downloading, so institutional access is
     # deliberately not supported.
 
+    check_cancelled()
     found_total = sum(len(r) for r in results)
     merged = merge_ranked(results)
     with_abstract = [(p, s) for p, s in merged if p.abstract]
@@ -98,6 +103,7 @@ def retrieve_pool(plan: SearchPlan, settings: Settings, signed_in: bool = False)
     kept = [(p, s) for p, s in with_abstract if _meets_citation_rate(p, plan.criteria.min_citations_per_year)
             and (not plan.criteria.min_citations or (p.citation_count or 0) >= plan.criteria.min_citations)]
     relevant, floor_note = apply_relevance_floor(kept, plan.question, settings)
+    check_cancelled()
     if plan.retrieval_target:
         return split_pool(relevant, plan, settings, found_total, len(merged), floor_note)
     # Choose by relevance first, then order the chosen papers; citations only reorder, never admit

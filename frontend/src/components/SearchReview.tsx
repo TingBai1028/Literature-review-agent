@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { request, messageOf } from "../api";
 import { newRunId, useRunEvents } from "../events";
@@ -13,8 +13,26 @@ export function useSearchReview(
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searchId, setSearchId] = useState<string | null>(null);
+  const active = useRef<AbortController | null>(null);
+  useEffect(
+    () => () => {
+      active.current?.abort();
+      active.current = null;
+    },
+    [],
+  );
+  const cancel = () => {
+    active.current?.abort();
+    active.current = null;
+    setLoading(false);
+    setSearchId(null);
+    setError("");
+  };
   const events = useRunEvents(searchId); // live retriever counter and feed (specs A2, A3)
   const run = async (feedback?: string) => {
+    if (active.current) return false;
+    const controller = new AbortController();
+    active.current = controller;
     setLoading(true);
     setError("");
     const id = newRunId();
@@ -32,15 +50,23 @@ export function useSearchReview(
           },
         },
         timeout,
+        signal: controller.signal,
       });
+      if (active.current !== controller || controller.signal.aborted)
+        return false;
       setResult(out);
       setKept(new Set(out.papers.map((p) => p.id)));
       return true;
     } catch (e) {
-      setError(messageOf(e));
+      if (active.current === controller && !controller.signal.aborted)
+        setError(messageOf(e));
       return false;
     } finally {
-      setLoading(false);
+      if (active.current === controller) {
+        active.current = null;
+        setLoading(false);
+        setSearchId(null);
+      }
     }
   };
   const toggle = (id: string) =>
@@ -60,6 +86,7 @@ export function useSearchReview(
     loading,
     error,
     run,
+    cancel,
     toggle,
     events,
     reset: () => setResult(null),

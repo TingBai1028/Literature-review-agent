@@ -38,6 +38,7 @@ from openai import APIConnectionError, APITimeoutError, InternalServerError, Ope
 from pydantic import BaseModel, ValidationError
 
 from litagent.config import Settings
+from litagent.cancellation import check_cancelled
 from litagent.parallel import run_parallel
 from litagent.schemas import TokenUsage
 from litagent.trace import current_trace, mask
@@ -127,6 +128,7 @@ def complete_json(
     the run's budget is used up. `retry_timeout=False` raises APITimeoutError after one timed-out
     request, for callers with a fallback (a pending grade, a smaller batch, an unlabelled cluster).
     """
+    check_cancelled()
     settings = settings or Settings()
     if settings.sample_mode:
         raise LLMError("complete_json was called in sample mode; agents should use their sample branch.")
@@ -148,6 +150,7 @@ def complete_json(
     meter = current_meter()
     attempt, discarded, echoes = 1, 0, 0
     while True:
+        check_cancelled()
         if meter:
             meter.check()
         start = time.monotonic()
@@ -205,6 +208,7 @@ def complete_json(
 
 def _create(client: OpenAI, retry_timeout: bool, agent_name: str, action: str, **request):
     for retry in (False, True):
+        check_cancelled()
         start = time.monotonic()
         try:
             return client.chat.completions.create(**request)

@@ -14,10 +14,10 @@ citation or extension only from explicit text in the supplied sources.
 from __future__ import annotations
 
 import os
-import time
 
 import httpx
 
+from litagent.cancellation import cancellable_sleep, check_cancelled
 from litagent.schemas import Paper, SearchCriteria
 
 BASE_URL = "https://api.semanticscholar.org/graph/v1/paper/search"
@@ -58,6 +58,7 @@ def _get_with_retry(params: dict, attempts: int, timeout_s: float) -> dict:
     headers = {"x-api-key": key} if (key := os.getenv("SEMANTIC_SCHOLAR_API_KEY")) else {}
     problem = ""
     for i in range(attempts):
+        check_cancelled()
         try:
             r = httpx.get(BASE_URL, params=params, headers=headers, timeout=timeout_s)
         except httpx.HTTPError as e:
@@ -71,7 +72,7 @@ def _get_with_retry(params: dict, attempts: int, timeout_s: float) -> dict:
                     wait = 2**i
                 if wait > MAX_WAIT_S:
                     break
-                time.sleep(wait)
+                cancellable_sleep(wait)
                 continue
             if r.status_code >= 500:
                 problem = f"HTTP {r.status_code}"
@@ -80,7 +81,7 @@ def _get_with_retry(params: dict, attempts: int, timeout_s: float) -> dict:
             else:
                 return r.json()
         if i < attempts - 1:
-            time.sleep(2**i)
+            cancellable_sleep(2**i)
     raise SemanticScholarError(f"Semantic Scholar failed after {attempts} attempts ({problem})")
 
 

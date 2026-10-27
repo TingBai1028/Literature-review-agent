@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 
 from litagent.config import EMBEDDING_PROFILES, Settings
+from litagent.cancellation import cancellation_enabled, check_cancelled
 from litagent.trace import current_trace
 
 
@@ -37,6 +38,7 @@ def _encoder(directory: str):
 
 
 def embed_documents(texts: list[str], settings: Settings) -> np.ndarray:
+    check_cancelled()
     if not texts:
         return np.empty((0, 0), dtype=np.float32)
     profile = EMBEDDING_PROFILES.get(settings.embedding_profile)
@@ -60,6 +62,7 @@ def embed_documents(texts: list[str], settings: Settings) -> np.ndarray:
     spans: list[tuple[int, int]] = []
     truncated = 0
     for text in texts:
+        check_cancelled()
         if not text.strip():
             raise EmbeddingError("Cannot embed an empty paper text.")
         tokens = tokenizer.encode(text, add_special_tokens=False, truncation=False, verbose=False)
@@ -71,9 +74,20 @@ def embed_documents(texts: list[str], settings: Settings) -> np.ndarray:
         if start == len(chunks):
             raise EmbeddingError("The tokenizer produced no tokens for a paper.")
         spans.append((start, len(chunks)))
-    encoded = np.asarray(encoder.encode(chunks, batch_size=min(settings.embedding_batch_size, profile["batch_size"]),
-                                       show_progress_bar=False, convert_to_numpy=True,
-                                       normalize_embeddings=True), dtype=np.float32)
+    batch_size = min(settings.embedding_batch_size, profile["batch_size"])
+    # Search cancellation can stop between CPU batches rather than after the entire retrieval pool.
+    call_size = batch_size if cancellation_enabled() else len(chunks)
+    parts = []
+    for offset in range(0, len(chunks), call_size):
+        check_cancelled()
+        batch = chunks[offset:offset + call_size]
+        part = np.asarray(encoder.encode(batch, batch_size=batch_size, show_progress_bar=False,
+                                        convert_to_numpy=True, normalize_embeddings=True), dtype=np.float32)
+        if part.ndim != 2 or part.shape[0] != len(batch) or not np.isfinite(part).all():
+            raise EmbeddingError("The encoder returned invalid chunk embeddings.")
+        parts.append(part)
+    check_cancelled()
+    encoded = np.concatenate(parts, axis=0)
     if encoded.ndim != 2 or encoded.shape[0] != len(chunks) or not np.isfinite(encoded).all():
         raise EmbeddingError("The encoder returned invalid chunk embeddings.")
     documents = np.stack([encoded[start:end].mean(axis=0) for start, end in spans])

@@ -34,7 +34,7 @@ export function LiteratureGraph({
   filter,
   onFilter,
   search,
-  onReview,
+  onFeedback,
   onContinueAnalysis,
   analysisDisabled = false,
   neighbors: supplied,
@@ -48,7 +48,7 @@ export function LiteratureGraph({
   filter: Filter;
   onFilter: (f: Filter) => void;
   search: string;
-  onReview?: () => void;
+  onFeedback?: () => void;
   /** Saved maps can continue unfinished analysis; live builds run automatically. */
   onContinueAnalysis?: () => void;
   analysisDisabled?: boolean;
@@ -215,8 +215,8 @@ export function LiteratureGraph({
           {(
             [
               ["all", "All"],
-              ["connections", "Graph 1 · Connections"],
-              ["gaps", "Graph 2 · Gaps"],
+              ["connections", "Connection graph"],
+              ["gaps", "Gap graph"],
             ] as [Filter, string][]
           ).map(([key, label]) => (
             <button
@@ -272,11 +272,11 @@ export function LiteratureGraph({
             <h2>
               {!map.analysis
                 ? filter === "gaps"
-                  ? "Graph 2 (research gaps) has not been built yet"
-                  : "Graph 1 (paper connections) has not been built yet"
+                  ? "Gap graph has not been built yet"
+                  : "Connection graph has not been built yet"
                 : filter === "gaps"
                   ? map.analysis.pending_stages.includes("gaps")
-                    ? "Graph 2 (research gaps) has not been built yet"
+                    ? "Gap graph has not been built yet"
                     : "No hypotheses have passed the checks yet"
                   : "No connections have passed the checks yet"}
             </h2>
@@ -285,8 +285,8 @@ export function LiteratureGraph({
             ) : (
               <>
                 <p>This version keeps the check results and abstentions.</p>
-                <button className="secondary-button" onClick={onReview} disabled={!onReview}>
-                  Review candidates
+                <button className="secondary-button" onClick={onFeedback} disabled={!onFeedback}>
+                  Give feedback
                 </button>
               </>
             )}

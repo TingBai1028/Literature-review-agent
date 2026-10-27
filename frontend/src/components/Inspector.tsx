@@ -50,7 +50,8 @@ export function Inspector({
   moves,
   onMove,
   canEdit,
-  onReview,
+  feedback,
+  onPreviewMove,
   children,
 }: {
   map: MapResult;
@@ -60,7 +61,8 @@ export function Inspector({
   moves: Move[];
   onMove: (paper: string, target: string) => void;
   canEdit: boolean;
-  onReview?: () => void;
+  feedback?: ReactNode;
+  onPreviewMove?: () => void;
   children?: ReactNode; // shown under the selection, e.g. its provenance
 }) {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -197,7 +199,8 @@ export function Inspector({
             </div>
             {cluster?.kind === "main" || cluster?.kind === "foundation" ? (
               <p className="muted small">
-                Main and foundation clusters are set by relevance and citation rules; their members are fixed
+                Main and foundation clusters are set by relevance and citation
+                rules; their members are fixed
               </p>
             ) : (
               <>
@@ -211,7 +214,8 @@ export function Inspector({
                   </div>
                 ))}
                 <p className="muted small">
-                  Similarity is a hint of relatedness, not another cluster membership or a verified scientific connection.
+                  Similarity is a hint of relatedness, not another cluster
+                  membership or a verified scientific connection.
                 </p>
                 <label className="form-field small">
                   Move to
@@ -241,9 +245,19 @@ export function Inspector({
                     ))}
                   </select>
                 </label>
+                {moves.length > 0 && onPreviewMove && (
+                  <button
+                    className="secondary-button"
+                    onClick={onPreviewMove}
+                    disabled={!canEdit}
+                  >
+                    Preview move
+                  </button>
+                )}
                 {!canEdit && (
                   <p className="muted small">
-                    Open the active version, in the server's mode, to preview moves.
+                    Open the active version, in the server's mode, to preview
+                    moves.
                   </p>
                 )}
               </>
@@ -256,7 +270,8 @@ export function Inspector({
               target="_blank"
               rel="noreferrer"
             >
-              <ArrowUpRight size={17} />View on OpenAlex
+              <ArrowUpRight size={17} />
+              View on OpenAlex
             </a>
           )}
         </>
@@ -266,7 +281,15 @@ export function Inspector({
           <p className="paper-meta">
             {roleName(topic)} · {topic.paper_ids.length} papers
           </p>
-          {topic.role_reason && <p className="small"><PaperText text={topic.role_reason} papers={papers} onSelect={onSelect} /></p>}
+          {topic.role_reason && (
+            <p className="small">
+              <PaperText
+                text={topic.role_reason}
+                papers={papers}
+                onSelect={onSelect}
+              />
+            </p>
+          )}
           {card && (
             <section className="inspector-section cluster-card">
               <h3>
@@ -275,7 +298,13 @@ export function Inspector({
                   ? `Full-text analysis (${card.papers_with_full_text ?? 0} with full text)`
                   : "Metadata analysis"}
               </h3>
-              <p><PaperText text={card.summary} papers={papers} onSelect={onSelect} /></p>
+              <p>
+                <PaperText
+                  text={card.summary}
+                  papers={papers}
+                  onSelect={onSelect}
+                />
+              </p>
               <p className="muted small">
                 {card.year_range
                   ? `${card.year_range[0]}–${card.year_range[1]}`
@@ -288,7 +317,13 @@ export function Inspector({
               )}
             </section>
           )}
-          <p className="muted small"><PaperText text={topic.rationale} papers={papers} onSelect={onSelect} /></p>
+          <p className="muted small">
+            <PaperText
+              text={topic.rationale}
+              papers={papers}
+              onSelect={onSelect}
+            />
+          </p>
           <div className="paper-list">
             {topic.paper_ids.map((id) => (
               <button key={id} onClick={() => onSelect({ type: "paper", id })}>
@@ -298,20 +333,36 @@ export function Inspector({
               </button>
             ))}
           </div>
+          {feedback}
         </>
       ) : connection ? (
         <>
           <h3 className="finding-title">
-            <PaperText text={connection.reason_short ?? connection.description} papers={papers} onSelect={onSelect} />
+            <PaperText
+              text={connection.reason_short ?? connection.description}
+              papers={papers}
+              onSelect={onSelect}
+            />
           </h3>
           <p className="muted small">
             {relationNames[connection.relation ?? ""] ?? "Connection"} ·{" "}
-            {connection.kind === "within_cluster" ? "Within cluster" : "Across clusters"} ·{" "}
+            {connection.kind === "within_cluster"
+              ? "Within cluster"
+              : "Across clusters"}{" "}
+            ·{" "}
             {map.sample_mode
               ? "Sample placeholder"
               : "Passed an independent source check; still needs human review"}
           </p>
-          {connection.reason_long && <p><PaperText text={connection.reason_long} papers={papers} onSelect={onSelect} /></p>}
+          {connection.reason_long && (
+            <p>
+              <PaperText
+                text={connection.reason_long}
+                papers={papers}
+                onSelect={onSelect}
+              />
+            </p>
+          )}
           {!!connection.evidence_notes?.length && (
             <section className="inspector-section">
               <h3>Basis</h3>
@@ -328,13 +379,17 @@ export function Inspector({
               Similarity {connection.similarity.toFixed(2)}
             </p>
           )}
-          <button className="secondary-button" onClick={onReview} disabled={!onReview}>
-            Open in human review
-          </button>
+          {feedback}
         </>
       ) : gap ? (
         <>
-          <h3 className="finding-title"><PaperText text={gap.description} papers={papers} onSelect={onSelect} /></h3>
+          <h3 className="finding-title">
+            <PaperText
+              text={gap.description}
+              papers={papers}
+              onSelect={onSelect}
+            />
+          </h3>
           <p className="small">
             Between:{" "}
             {gap.between_paper_ids
@@ -346,13 +401,17 @@ export function Inspector({
           </p>
           <p className="hypothesis-label">
             {map.sample_mode ? "Sample placeholder" : "Hypothesis to verify"} ·{" "}
-            {gap.scope === "main_side" ? "Main and side cluster" : "Within cluster"}
+            {gap.scope === "main_side"
+              ? "Main and side cluster"
+              : "Within cluster"}
             {gap.gap_type && (
               <>
                 {" "}
                 ·{" "}
                 <span className="gap-badge">
-                  {gap.gap_type === "explicit" ? "Stated by authors" : "Inferred"}
+                  {gap.gap_type === "explicit"
+                    ? "Stated by authors"
+                    : "Inferred"}
                 </span>
               </>
             )}
@@ -369,19 +428,31 @@ export function Inspector({
                 {!map.sample_mode &&
                   gap.label === "novel" &&
                   gap.coverage_status !== "not_filled" && (
-                  <span
-                    className="gap-badge unverified"
-                    title="The coverage search did not run, so no search has checked whether this is already studied. Unverified gaps are listed after verified ones."
-                  >
-                    novelty unverified
-                  </span>
-                )}
+                    <span
+                      className="gap-badge unverified"
+                      title="The coverage search did not run, so no search has checked whether this is already studied. Unverified gaps are listed after verified ones."
+                    >
+                      novelty unverified
+                    </span>
+                  )}
               </>
             )}
           </p>
-          <p><PaperText text={gap.why_it_matters} papers={papers} onSelect={onSelect} /></p>
+          <p>
+            <PaperText
+              text={gap.why_it_matters}
+              papers={papers}
+              onSelect={onSelect}
+            />
+          </p>
           {gap.label_reason && (
-            <p className="muted small"><PaperText text={gap.label_reason} papers={papers} onSelect={onSelect} /></p>
+            <p className="muted small">
+              <PaperText
+                text={gap.label_reason}
+                papers={papers}
+                onSelect={onSelect}
+              />
+            </p>
           )}
           {gap.proposed_test && (
             <section className="inspector-section">
@@ -412,17 +483,14 @@ export function Inspector({
               ))}
             </section>
           )}
-          <button className="secondary-button" onClick={onReview} disabled={!onReview}>
-            Open in human review
-          </button>
+          {feedback}
         </>
       ) : (
         <div className="inspector-placeholder">
           <BookOpen size={28} />
-          <p>Click a paper, topic or connection to see its sources and checks.</p>
-          <button className="text-button" onClick={onReview} disabled={!onReview}>
-            Review candidates
-          </button>
+          <p>
+            Click a paper, topic or connection to see its sources and checks.
+          </p>
         </div>
       )}
       {error && (

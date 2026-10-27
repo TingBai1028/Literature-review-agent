@@ -22,6 +22,7 @@ import xml.etree.ElementTree as ET
 
 import httpx
 
+from litagent.cancellation import cancellable_sleep, check_cancelled
 from litagent.schemas import Paper, SearchCriteria
 
 BASE_URL = "https://export.arxiv.org/api/query"
@@ -102,11 +103,13 @@ def _get_with_retry(params: dict, attempts: int, timeout_s: float) -> str:
     global _last_call
     problem = ""
     for i in range(attempts):
+        check_cancelled()
         with _lock:  # space requests as arXiv's terms ask, also across threads
             wait = _last_call + MIN_INTERVAL_S - time.monotonic()
             if wait > 0:
-                time.sleep(wait)
+                cancellable_sleep(wait)
             _last_call = time.monotonic()
+        check_cancelled()
         try:
             r = httpx.get(BASE_URL, params=params, timeout=timeout_s)
         except httpx.HTTPError as e:
@@ -119,5 +122,5 @@ def _get_with_retry(params: dict, attempts: int, timeout_s: float) -> str:
             else:
                 return r.text
         if i < attempts - 1:
-            time.sleep(2**i)
+            cancellable_sleep(2**i)
     raise ArxivError(f"arXiv failed after {attempts} attempts ({problem})")

@@ -41,10 +41,10 @@ Source: participant onboarding deck. Final requirements are in the Official Rule
 | Criterion | Points | Our evidence |
 | --- | --- | --- |
 | Impact: real problem, clear user | 30 | Research students starting a literature review: one question gives a map of the papers that answer it, the work around it, how papers connect and what is still open, in minutes instead of days, with every claim tied to a quote they can check |
-| Technical: implementation, reliability, architecture | 20 | Five agents exchanging typed Pydantic models; independent verification and grading after each finding stage; bounded retries, timeouts and token budgets; partial results instead of crashes; 489 pytest tests passed on 27 Oct (11.18 s), plus browser tests; `docs/agents/`, ARCHITECTURE.md |
+| Technical: implementation, reliability, architecture | 20 | Five agents exchanging typed Pydantic models; independent verification and grading after each finding stage; bounded retries, timeouts and token budgets; partial results instead of crashes; 517 pytest tests passed on 27 Oct (11.66 s), plus browser tests; `docs/agents/`, ARCHITECTURE.md |
 | Innovation | 15 | Every connection and gap must quote both papers verbatim (checked in code) and pass an independent check; abstaining is a valid result; gaps are checked against the literature (OpenAlex coverage search) and unverified novelty is marked as such |
 | Demo: explains itself | 15 | Live activity feed and Reasoning tab (each agent's steps, marked code / LLM / human, retries in orange); "Who made this, and why" on every paper, cluster, connection and gap |
-| Product & UX | 10 | One question box with Fast / Pro modes, paper review before the map, a map that builds itself (clusters → Graph 1 → Graph 2), paper names on hover, foldable panels, versions and rollback, human review page |
+| Product & UX | 10 | One question box with Fast / Pro modes, paper review before the map, a map that builds itself (clusters → Graph 1 → Graph 2), paper names on hover, foldable panels, versions and rollback, thumbs-up/down feedback and a draggable feedback assistant that revises the graph |
 | Sponsor Tech | 10 | `docs/sponsor-tech.md`: Nightshift for every model call, Nemotron 3 Ultra for every producer and DeepSeek for every check, Zetaris as the shared paper store, Meterless World Model (8/8 conformance checks), Cursor project rules |
 
 Ties go to the higher Impact score, then the earlier submission.

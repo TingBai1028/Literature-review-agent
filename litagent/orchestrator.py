@@ -158,26 +158,26 @@ def run_pipeline(
                 # ----- 4. Connection finder + grading -----
                 stage = "connection_finder"
                 check_time(stage)
-                mark("connection_finder", "start", "Connection finder: linking papers (Graph 1)")
+                mark("connection_finder", "start", "Connection finder: building the connection graph")
                 result.connections = _graded_stage(
                     "connections",
                     lambda fix: connection_finder.find_connections(papers, result.clusters, settings, fix, context=finding_context),
                     papers, settings, trace, result, world, finding_context=finding_context,
                 )
                 world.write_connections(result.connections)
-                mark("connection_finder", "done", f"Connection finder: {len(result.connections)} edges (Graph 1)")
+                mark("connection_finder", "done", f"Connection finder: {len(result.connections)} edges (Connection graph)")
 
                 # ----- 5. Gap finder + grading -----
                 stage = "gap_finder"
                 check_time(stage)
-                mark("gap_finder", "start", "Gap finder: looking for research gaps (Graph 2)")
+                mark("gap_finder", "start", "Gap finder: building the gap graph")
                 result.gaps = _graded_stage(
                     "gaps",
                     lambda fix: gap_finder.find_gaps(papers, result.clusters, result.connections, settings, fix, context=finding_context),
                     papers, settings, trace, result, world, finding_context=finding_context,
                 )
                 world.write_gaps(result.gaps)
-                mark("gap_finder", "done", f"Gap finder: {len(result.gaps)} gaps (Graph 2)")
+                mark("gap_finder", "done", f"Gap finder: {len(result.gaps)} gaps (Gap graph)")
                 result.paper_map = world.to_graph_json()
 
                 # ----- Human review 2 -----

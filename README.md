@@ -24,12 +24,13 @@ Literature Map does the same mapping in minutes and shows its work. A claim is o
 2. **Check the papers (Human review 1).** The Planner turns the question into a search plan, or asks for a topic if there isn't one. The Retriever searches OpenAlex and arXiv, removes duplicates and drops papers that aren't about the question. You keep or remove papers, or write feedback ("only since 2023") to search again.
 3. **Get the map.** The map builds itself in three steps, each shown as soon as it is ready:
    - **Clusters.** One **main** cluster holds the papers most related to the question, a **foundation** cluster the older, highly cited work they build on, and **side** clusters the rest.
-   - **Graph 1 · Connections.** Pairs of papers that really relate, each with a short reason, a longer explanation and a quote from both papers.
-   - **Graph 2 · Gaps.** Testable research hypotheses between papers, each checked against the literature with an OpenAlex search for a study that already answers it.
+   - **Connection graph.** Pairs of papers that really relate, each with a short reason, a longer explanation and a quote from both papers.
+   - **Gap graph.** Testable research hypotheses between papers, each checked against the literature with an OpenAlex search for a study that already answers it.
 4. **Explore and judge (Human review 2).**
    - **Look:** click any paper, cluster, connection or gap to see its quotes and who made it and why. Paper IDs in agent-written text appear as the paper's title.
    - **Change the map:** move papers between side clusters (with a preview, versions and rollback), or swap side papers for the next-best ones from the backup pool.
-   - **Judge:** give your verdict on a finding (a reason is optional) and submit. The agent that wrote it rewrites it with your feedback, or removes it if the sources don't support it, as a new map version. An independent AI review can grade every finding first.
+   - **Find:** search paper titles and topics from the header. Results appear below the search box as you type, showing each paper with its cluster; selecting a result opens its details.
+   - **Give feedback:** use thumbs-up to save approval or thumbs-down to immediately regenerate the graph. After the graph finishes, a draggable feedback assistant opens at the bottom right. Type a change and choose **Update graph** to revise clusters, connections and gaps from the original sources. Each update creates a new version; earlier versions remain available. See [graph feedback](docs/graph-feedback.md).
 
 ## How it explains itself
 
@@ -47,10 +48,10 @@ Five agents run in sequence; each finding stage is checked before the next one s
 | 1 | [Planner](docs/agents/planner.md): turns the question into a search plan | Asks for a topic if none is given |
 | 2 | [Retriever](docs/agents/retriever.md): searches scholarly APIs, ranks by relevance and citations, keeps a backup pool | Human review 1 |
 | 3 | [Clusterer](docs/agents/clusterer.md): main, foundation and side clusters, each named with quoted evidence | [Grading agent](docs/agents/grading_agent.md) |
-| 4 | [Connection finder](docs/agents/connection_finder.md): paper-to-paper edges with reasons (Graph 1) | Independent verifier, grading agent |
-| 5 | [Gap finder](docs/agents/gap_finder.md): testable gaps between papers (Graph 2) | Coverage search, gap grader, grading agent, then Human review 2 |
+| 4 | [Connection finder](docs/agents/connection_finder.md): paper-to-paper edges with reasons (Connection graph) | Independent verifier, grading agent |
+| 5 | [Gap finder](docs/agents/gap_finder.md): testable gaps between papers (Gap graph) | Coverage search, gap grader, grading agent, then Human review 2 |
 
-Agents exchange typed Pydantic models (`litagent/schemas.py`), never free text. An independent [review agent](docs/agents/review_agent.md) grades individual findings on request in the Human review page.
+Agents exchange typed Pydantic models (`litagent/schemas.py`), never free text. The floating feedback assistant replaces the separate Human review page. An independent [review agent](docs/agents/review_agent.md) remains available through the API for per-finding assessment.
 
 ## Sponsor technology
 
@@ -59,7 +60,7 @@ The full write-up, with evidence from real runs, is in [docs/sponsor-tech.md](do
 | Sponsor | How we use it |
 | --- | --- |
 | **Meterless Nightshift** | Primary AI provider: every model call goes through it (`litagent/integrations/llm.py`, OpenAI-compatible client). Each run gets its own answer-cache partition, and each call its own answer-memory scope. |
-| **NVIDIA** | Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`, `NIGHTSHIFT_MODEL` in `litagent/config.py`) through Nightshift's NVIDIA provider, for every agent that builds the map. The checks (grades, verifiers, AI review) run on DeepSeek V4.1 Flash through Nightshift (`GRADER_MODEL`). The trace logs the model that answered each call. |
+| **NVIDIA** | Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`, `NIGHTSHIFT_MODEL` in `litagent/config.py`) through Nightshift's NVIDIA provider, for every agent that builds the map. The checks (grades, verifiers, AI review) run on DeepSeek V4 Pro 0813 through Nightshift's OpenRouter provider (`GRADER_MODEL`). The trace logs the model that answered each call. |
 | **Zetaris** | Shared paper data layer, running locally in Docker. The Retriever writes papers to our paper store, which Zetaris serves as `litagent_db`; every later agent reads them back with Zetaris SQL (`litagent/integrations/zetaris.py`). |
 | **Meterless World Model** | Implemented in Python from Meterless's spec and reference (`litagent/integrations/world_model/`), passing all 8 Meterless conformance checks. It holds each run's papers, authors, clusters, connections (with evidence) and gaps; `/run` returns it as `paper_map` and `GET /world/{run_id}` serves it. |
 | **Cursor** | Development environment, with the project's architecture and conventions in `.cursor/rules/project.mdc`. |
@@ -176,7 +177,7 @@ Every run writes `logs/trace-<run_id>.jsonl`, one JSON event per line with `time
 ## Tests
 
 ```bash
-python -m pytest -q                                              # 489 passed (27 Oct); no real model calls
+python -m pytest -q                                              # 517 passed (27 Oct); no real model calls
 cd frontend && PLAYWRIGHT_CHANNEL=chrome npx playwright test     # browser tests on a sample map
 ```
 

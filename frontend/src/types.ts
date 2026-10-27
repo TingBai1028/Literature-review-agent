@@ -254,7 +254,10 @@ export interface SearchResult {
   sample_mode: boolean;
   message_to_user: string | null;
   plan: SearchPlan | null;
-  papers: (Paper & { citation_count?: number | null; is_review?: boolean | null })[];
+  papers: (Paper & {
+    citation_count?: number | null;
+    is_review?: boolean | null;
+  })[];
   backup_papers?: Paper[];
   summary: string | null;
   follow_up_question: string | null;
@@ -265,3 +268,23 @@ export type Selection = {
   id: string;
 };
 export type Filter = "all" | "connections" | "gaps";
+
+export interface FeedbackTarget {
+  kind: "cluster" | "connection" | "gap";
+  id: string;
+}
+export interface FeedbackState {
+  version_token?: string;
+  votes: Record<string, { vote: "up" | "down"; at: string }>;
+  messages: { id: string; role: "user" | "assistant"; text: string }[];
+  update?: {
+    status: "paused" | "complete" | "dismissed";
+    run_id: string;
+    active_run_id: string;
+    can_resume: boolean;
+    completed: string[];
+    pending: string[];
+    issue: { code: string; reason: string; next_step: string } | null;
+    message: string;
+  };
+}

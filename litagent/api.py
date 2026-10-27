@@ -17,7 +17,9 @@ in which case Human review 1 sends it back to the Planner once (see RequestRevie
 
 from __future__ import annotations
 
+import asyncio
 import re
+from threading import Event
 from pathlib import Path
 from typing import Any, Literal
 
@@ -27,6 +29,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from litagent.config import EFFORT_PROFILES, Effort, Settings
+from litagent.cancellation import SearchCancelled, cancellation_scope
 from litagent.cluster_preview import run_cluster_map
 from litagent import cluster_regeneration
 from litagent.events import read_events, stream_events
@@ -126,7 +129,7 @@ class AnalyzeMapRequest(BaseModel):
     expected_version_token: str = Field(pattern=r"^[a-f0-9]{32}$")
     run_id: str | None = Field(default=None, pattern=RUN_ID_PATTERN)  # the new version's ID, to subscribe to its events first
     request_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{32}$")
-    # ["connections"] returns Graph 1 at once; ["gaps"] on that version adds Graph 2. Default: both.
+    # ["connections"] returns Connection graph at once; ["gaps"] on that version adds Gap graph. Default: both.
     stages: list[Literal["connections", "gaps"]] | None = Field(default=None, min_length=1)
 
 
@@ -211,11 +214,29 @@ def world(run_id: str, settings: Settings = Depends(get_settings)) -> Any:
 
 
 @app.post("/search")
-def search(req: SearchRequest, settings: Settings = Depends(get_settings)) -> Any:
+async def search(req: SearchRequest, request: Request, settings: Settings = Depends(get_settings)) -> Any:
     run_id = req.run_id or new_run_id()
+    stop = Event()
+
+    def execute():
+        with cancellation_scope(stop):
+            return run_search(req.input.query, req.input.effort, settings, feedback=req.input.feedback,
+                              previous_plan=req.input.previous_plan, signed_in=req.input.signed_in, search_id=run_id)
+
+    worker = asyncio.create_task(asyncio.to_thread(execute))
     try:
-        result = run_search(req.input.query, req.input.effort, settings, feedback=req.input.feedback,
-                            previous_plan=req.input.previous_plan, signed_in=req.input.signed_in, search_id=run_id)
+        while not worker.done():
+            await asyncio.wait({worker}, timeout=0.1)
+            if not worker.done() and await request.is_disconnected():
+                stop.set()
+        result = worker.result()
+    except SearchCancelled as error:
+        return _error(run_id, 499, "SearchCancelled", str(error))
+    except asyncio.CancelledError:
+        stop.set()
+        # The thread may finish its current provider call before noticing cancellation.
+        worker.add_done_callback(lambda done: done.exception() if not done.cancelled() else None)
+        raise
     except Exception as error:  # the trace already has the error
         return _error(run_id, 500, type(error).__name__, str(error))
     return {"run_id": run_id, "status": "success", "output": result.model_dump(mode="json")}
