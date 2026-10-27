@@ -42,7 +42,7 @@ def http(monkeypatch):
         return item
     for module in (arxiv, semantic_scholar):
         monkeypatch.setattr(module.httpx, "get", get)
-        monkeypatch.setattr(module.time, "sleep", state["sleeps"].append)
+        monkeypatch.setattr(module, "cancellable_sleep", state["sleeps"].append)
     monkeypatch.setattr(arxiv, "_last_call", 0.0)
     monkeypatch.delenv("SEMANTIC_SCHOLAR_API_KEY", raising=False)
     return state

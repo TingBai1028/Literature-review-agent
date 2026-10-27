@@ -1,7 +1,7 @@
 // Force-directed paper layout (spec G), in the style of Connected Papers: similar papers settle near each other,
 // clusters hold together as soft hulls, and the main cluster sits in the centre. There are no grid slots: positions
 // come only from the simulation. The layout is seeded by the map's lineage, and positions are cached per lineage, so
-// Graph 1 / Graph 2 and refreshed versions keep every surviving paper where it was (specs E3, G4).
+// Connection graph / Gap graph and refreshed versions keep every surviving paper where it was (specs E3, G4).
 import {
   forceCollide,
   forceLink,

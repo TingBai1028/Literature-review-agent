@@ -30,9 +30,15 @@ export function useWorkspace() {
         if (abort.signal.aborted) return;
         setConfig(cfg);
         const initial = new URLSearchParams(location.search).get("run");
+        const current =
+          maps.find(
+            (m) => m.active && m.root_run_id === maps[0]?.root_run_id,
+          ) ??
+          maps.find((m) => m.active) ??
+          maps[0];
         setRunId(
           maps.find((m) => m.run_id === initial)?.run_id ??
-            maps[0]?.run_id ??
+            current?.run_id ??
             "",
         );
         if (!maps.length) setLoading(false);
@@ -49,7 +55,6 @@ export function useWorkspace() {
     if (!runId) return;
     const abort = new AbortController();
     setLoading(true);
-    setData(null);
     setError("");
     Promise.all([
       request<MapResult>(`/cluster/${runId}`, { signal: abort.signal }),

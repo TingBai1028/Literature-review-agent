@@ -23,7 +23,8 @@ export function MovePreview({
     <Dialog title="Preview cluster changes" onClose={onClose} busy={busy}>
       <div className="dialog-body">
         <p className="muted">
-          Check where the papers land after all the moves. The current version is kept and can be restored from Versions.
+          Check where the papers land after all the moves. The current version
+          is kept and can be restored from Versions.
         </p>
         {plan.changes.map((c) => (
           <div className="change-row" key={c.cluster_id}>
@@ -39,8 +40,8 @@ export function MovePreview({
         ))}
         <p className="muted small">
           Relabels {plan.relabel_cluster_ids.length} side clusters and reuses{" "}
-          {plan.reused_label_cluster_ids.length}{" "}
-          labels. Active connections and hypotheses are checked again against the final clusters.
+          {plan.reused_label_cluster_ids.length} labels. Active connections and
+          hypotheses are checked again against the final clusters.
         </p>
         {!plan.applicable && (
           <div className="inline-error" role="alert">
@@ -89,7 +90,8 @@ export function VersionDialog({
       <div className="dialog-body">
         <div className="version-intro">
           <p className="muted">
-            Viewing history does not change the active version. It changes only when you make a version active.
+            Viewing history does not change the active version. It changes only
+            when you make a version active.
           </p>
           <button className="quiet-button" onClick={onRefresh} disabled={busy}>
             <RefreshCw size={15} />
@@ -166,8 +168,14 @@ export function NewMapDialog({
   const [error, setError] = useState("");
   const search = useSearchReview(query, effort, timeout);
   const locked = busy || search.loading;
+  const close = () => {
+    search.cancel();
+    onClose();
+  };
   const [name, setName] = useState(
-    papers.length ? `Use the current ${papers.length} papers` : "No paper records chosen yet",
+    papers.length
+      ? `Use the current ${papers.length} papers`
+      : "No paper records chosen yet",
   );
   const upload = async (file: File | undefined) => {
     if (!file) return;
@@ -231,11 +239,17 @@ export function NewMapDialog({
       } as Record<string, number>
     )[effort];
     if (!chosen.length) {
-      setError(mode === "search" ? "Keep at least one paper." : "Choose paper records.");
+      setError(
+        mode === "search"
+          ? "Keep at least one paper."
+          : "Choose paper records.",
+      );
       return;
     }
     if (chosen.length > cap) {
-      setError(`This level supports at most ${cap} papers; choose another level or other records.`);
+      setError(
+        `This level supports at most ${cap} papers; choose another level or other records.`,
+      );
       return;
     }
     onCreate(
@@ -248,8 +262,8 @@ export function NewMapDialog({
   return (
     <Dialog
       title="New research map"
-      onClose={onClose}
-      busy={locked}
+      onClose={close}
+      busy={busy}
       wide={reviewed}
     >
       <form
@@ -321,7 +335,11 @@ export function NewMapDialog({
             </select>
           </label>
           {mode === "search" && search.loading && (
-            <ActivityFeed inline events={search.events} title="Searching for papers" />
+            <ActivityFeed
+              inline
+              events={search.events}
+              title="Searching for papers"
+            />
           )}
           {mode === "search" ? (
             <SearchReview search={search} />
@@ -354,8 +372,8 @@ export function NewMapDialog({
           <button
             className="secondary-button"
             type="button"
-            onClick={onClose}
-            disabled={locked}
+            onClick={close}
+            disabled={busy}
           >
             Cancel
           </button>

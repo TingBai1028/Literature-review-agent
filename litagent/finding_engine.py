@@ -32,6 +32,7 @@ def now() -> str:
 @dataclass
 class FindingContext:
     question: str | None = None
+    feedback: str | None = None
     similarity: np.ndarray | None = None
     use_full_text: bool = False
     # Spec H2: when set, only these papers (main and foundation) are read in full; all others use metadata.

@@ -13,6 +13,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from litagent.agents import planner, retriever
+from litagent.cancellation import SearchCancelled, check_cancelled
 from litagent.config import EFFORT_PROFILES, Effort, Settings
 from litagent.integrations.llm import TokenMeter
 from litagent.integrations.zetaris import ZetarisError, ZetarisStore
@@ -43,8 +44,10 @@ def run_search(question: str, effort: Effort, settings: Settings, *, feedback: s
                   why=f"Web Human review 1; effort={effort.value}; re-plan={previous_plan is not None}")
         failed = False
         try:
+            check_cancelled()
             trace.log("planner", "start", "plan searches", phase="start", message="Planner: turning the question into searches")
             planned = planner.plan(question, effort, settings, feedback, previous_plan)
+            check_cancelled()
             if planned.status == "need_topic" or planned.plan is None:
                 result.status, result.message_to_user = "need_topic", planned.message_to_user
                 trace.log("planner", "check topic", "no clear topic", next_step="ask user", why="Avoid guessing a topic",
@@ -57,6 +60,7 @@ def run_search(question: str, effort: Effort, settings: Settings, *, feedback: s
             trace.log("retriever", "start", "search sources", phase="start",
                       message=f"Retriever: searching for up to {plan.max_papers} papers")
             papers, result.backup_papers = retriever.retrieve_pool(plan, settings, signed_in=signed_in)
+            check_cancelled()
             if not papers:
                 result.status = "no_results"
                 result.message_to_user = retriever.no_results_message(plan)
@@ -67,11 +71,18 @@ def run_search(question: str, effort: Effort, settings: Settings, *, feedback: s
                       why="sample papers from data/sample/" if settings.sample_mode else f"queries: {plan.queries}",
                       phase="done", message=f"Retriever: kept {len(papers)} papers", payload={"paper_ids": [p.id for p in papers]})
             result.papers = _through_zetaris(papers, settings, trace.run_id, result)
+            check_cancelled()
             summary = retriever.summarise(result.papers, plan, settings)
+            check_cancelled()
             result.summary, result.follow_up_question = summary.summary, summary.follow_up_question
             trace.log("human", "review 1", "waiting for the user", f"{len(result.papers)} papers", "user review",
                       why="The web reviewer keeps/removes papers or sends feedback; nothing is auto-approved")
             return result
+        except SearchCancelled:
+            failed = True
+            trace.log("human", "cancel search", "cancelled", phase="done", terminal=True,
+                      message="Search cancelled; no further retrieval or map creation will run.")
+            raise
         except Exception as error:
             failed = True
             trace.error("orchestrator", "search review", error, next_step="return error to caller", terminal=True)

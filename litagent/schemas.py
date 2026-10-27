@@ -613,6 +613,7 @@ class ClusterCardSummaries(BaseModel):
 
 
 class ClusterMapResult(BaseModel):
+    human_feedback: str | None = None  # retained when unfinished feedback-driven findings are resumed
     run_id: str
     stage: Literal["clusters", "findings"] = "clusters"
     status: Literal["done", "partial"] = "done"

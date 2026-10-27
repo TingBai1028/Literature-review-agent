@@ -1,7 +1,5 @@
-import { Search, Info, MoreHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
-import type { Cluster, Paper, Selection } from "../types";
-import { searchMap } from "../search";
+import { Info } from "lucide-react";
+import type { Cluster, Selection } from "../types";
 export const colors = [
   "#86bda9",
   "#92bce4",
@@ -17,31 +15,22 @@ export const topicColor = (c: Cluster, i: number) =>
       ? "#9a7438"
       : colors[i % colors.length];
 export const roleName = (c?: Cluster) =>
-  c?.kind === "main" ? "Main cluster" : c?.kind === "foundation" ? "Foundation cluster" : "Side cluster";
+  c?.kind === "main"
+    ? "Main cluster"
+    : c?.kind === "foundation"
+      ? "Foundation cluster"
+      : "Side cluster";
 export function TopicSidebar({
   clusters,
-  papers,
   selection,
   onSelect,
-  search,
-  onSearch,
   mobileOpen,
 }: {
   clusters: Cluster[];
-  papers: Paper[];
   selection: Selection | null;
   onSelect: (s: Selection) => void;
-  search: string;
-  onSearch: (s: string) => void;
   mobileOpen: boolean;
 }) {
-  const [all, setAll] = useState(false);
-  const { clusterIds, hasQuery } = useMemo(
-    () => searchMap(clusters, papers, search),
-    [clusters, papers, search],
-  );
-  const matches = clusters.filter((c) => clusterIds.has(c.id));
-  const shown = all || hasQuery ? matches : matches.slice(0, 7);
   return (
     <aside
       className={`topic-sidebar ${mobileOpen ? "mobile-open" : ""}`}
@@ -50,18 +39,8 @@ export function TopicSidebar({
       <div className="sidebar-heading">
         <h2>Topics</h2>
       </div>
-      <label className="search-field">
-        <Search size={17} />
-        <input
-          value={search}
-          onChange={(e) => onSearch(e.target.value)}
-          placeholder="Search papers or topics"
-          aria-label="Search papers or topics"
-        />
-      </label>
       <nav className="topic-list">
-        {shown.map((c) => {
-          const index = clusters.indexOf(c);
+        {clusters.map((c, index) => {
           const selected =
             selection?.type === "cluster"
               ? selection.id === c.id
@@ -89,14 +68,8 @@ export function TopicSidebar({
             </button>
           );
         })}
-        {!shown.length && <p className="muted small">No matching topics.</p>}
+        {!clusters.length && <p className="muted small">No topics yet.</p>}
       </nav>
-      {!hasQuery && matches.length > 7 && (
-        <button className="show-topics" onClick={() => setAll((v) => !v)}>
-          <MoreHorizontal size={20} />
-          {all ? "Show fewer topics" : `Show all ${matches.length} topics`}
-        </button>
-      )}
       <div className="sidebar-note">
         <Info size={16} />
         <span>Hypotheses still need human review</span>

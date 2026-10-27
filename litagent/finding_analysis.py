@@ -9,6 +9,7 @@ import uuid
 from openai import OpenAIError
 
 from litagent.agents import connection_finder, gap_finder, grader
+from litagent import feedback_status
 from litagent.cluster_state import (VersionError, atomic_json, effective_settings, head, load_version, path_for,
                                     save_version, set_head, version_lock)
 from litagent.config import EFFORT_PROFILES, Settings
@@ -20,7 +21,7 @@ from litagent.schemas import FindingAnalysis
 from litagent.trace import Trace, current_trace, mask, new_run_id
 
 
-STAGES = ("connections", "gaps")  # fixed order: Graph 1 (paper edges), then Graph 2 (gaps)
+STAGES = ("connections", "gaps")  # fixed order: Connection graph (paper edges), then Gap graph (gaps)
 
 
 def _completed_stages(analysis) -> list[str]:
@@ -52,7 +53,7 @@ def grade_stage(result, stage, output, papers, settings, world, scope: dict, *, 
     """Grade a finished stage. A grade scores the findings and never gates the next stage (a failing score
     doesn't either), so a grade the grader can't give (timeout, empty answer) leaves the stage complete but
     ungraded: `<stage>_grade` stays pending and a later analysis request retries it. On 26 Oct a missing
-    connections grade stopped Graph 2 although all edges were ready. Running out of budget or time still stops."""
+    connections grade stopped Gap graph although all edges were ready. Running out of budget or time still stops."""
     analysis = result.analysis
     result.warnings = [w for w in result.warnings if not _grade_warning(w, stage)]
     try:
@@ -84,7 +85,7 @@ def grade_stage(result, stage, output, papers, settings, world, scope: dict, *, 
 
 def run_finding_stages(result, papers, settings, world, context: FindingContext, stages=STAGES) -> None:
     """Completed tasks survive a provider/budget failure; an explicit new request can resume.
-    `stages` limits the run to some stages, so Graph 1 can be delivered before Graph 2 is produced."""
+    `stages` limits the run to some stages, so Connection graph can be delivered before Gap graph is produced."""
     analysis = result.analysis
     retained = set(analysis.completed_stages)
     stage, phase, written = "connections", "produce", set()
@@ -103,27 +104,28 @@ def run_finding_stages(result, papers, settings, world, context: FindingContext,
             agent = {"connections": "connection_finder", "gaps": "gap_finder"}[stage]
             if trace := current_trace():
                 trace.log(agent, "start", f"find {stage}", phase="start",
-                          message={"connections": "Connection finder: linking papers (Graph 1)",
-                                   "gaps": "Gap finder: looking for research gaps (Graph 2)"}[stage])
+                          message={"connections": "Connection finder: building the connection graph",
+                                   "gaps": "Gap finder: building the gap graph"}[stage])
             _check_resources(context)
+            feedback = {"fix": context.feedback} if context.feedback else {}
             if stage == "connections":
-                result.connections = connection_finder.find_connections(papers, result.clusters, settings, context=context)
+                result.connections = connection_finder.find_connections(papers, result.clusters, settings, context=context, **feedback)
             else:
-                result.gaps = gap_finder.find_gaps(papers, result.clusters, result.connections, settings, context=context)
+                result.gaps = gap_finder.find_gaps(papers, result.clusters, result.connections, settings, context=context, **feedback)
             output = getattr(result, stage)
             {"connections": world.write_connections, "gaps": world.write_gaps}[stage](output)
             written.add(stage)
             if trace := current_trace():
                 trace.log(agent, stage, f"{len(output)} {stage}", phase="done",
                           message=f"{'Connection finder' if stage == 'connections' else 'Gap finder'}: {len(output)} {stage} "
-                                  f"ready ({'Graph 1' if stage == 'connections' else 'Graph 2'}); grading next",
+                                  f"ready ({'Connection graph' if stage == 'connections' else 'Gap graph'}); grading next",
                           payload={"ids": [item.id for item in output]})
             phase = "grade"
             analysis.completed_stages.append(stage)
             analysis.pending_stages = _pending_stages(analysis)
             assess(stage)
-        # Retry old missing grades AFTER new production. A slow Graph 1 grader must
-        # not consume Graph 2's budget before the Gap finder even starts. Each grade
+        # Retry old missing grades AFTER new production. A slow Connection graph grader must
+        # not consume Gap graph's budget before the Gap finder even starts. Each grade
         # gets one wrapper call per explicit request (including its bounded repairs).
         for stage in (s for s in STAGES if s in retained and s not in analysis.grades):
             phase = "grade"
@@ -160,12 +162,12 @@ def analyze_cluster_map(run_id: str, expected_version_token: str, settings: Sett
                         request_id: str | None = None, stages: list[str] | None = None,
                         child_run_id: str | None = None):
     """Run the finding stages on a saved map as a new immutable child version. With stages=["connections"] the
-    child is Graph 1 (active at once, gaps pending); stages=["gaps"] on that child adds Graph 2 and keeps its edges."""
+    child is Connection graph (active at once, gaps pending); stages=["gaps"] on that child adds Gap graph and keeps its edges."""
     request_id = request_id or uuid.uuid4().hex
     stages = [s for s in STAGES if s in (stages or STAGES)]
     source, state, arrays = load_version(run_id, settings)
     if stages == ["gaps"] and "connections" not in _completed_stages(source.analysis):
-        raise VersionError("Connections come first: run the connections stage (Graph 1) before gaps", 422)
+        raise VersionError("Connections come first: run the connections stage (Connection graph) before gaps", 422)
     with version_lock(settings, source.root_run_id):
         receipt_path = path_for(settings, "cluster-analysis", request_id)
         if receipt_path.exists():
@@ -194,6 +196,8 @@ def analyze_cluster_map(run_id: str, expected_version_token: str, settings: Sett
                 child = _analyze(source, state, arrays, cfg, child_id, request_id, stages)
                 if child.status == "done":
                     set_head(child, settings)
+                if source.human_feedback:
+                    feedback_status.record_resume(source, child, settings)
                 atomic_json(receipt_path, {**receipt, "status": child.status})
                 return child
             except Exception:
@@ -226,7 +230,7 @@ def _analyze(source, state, arrays, cfg, child_id, request_id, stages=STAGES):
             "analysis": analysis,
             "warnings": [w for w in source.warnings if w.startswith(("Sample mode:", "No paper passed", "Cluster map did not pass"))
                          or any(_grade_warning(w, s) for s in kept)]})
-        context = FindingContext(question=child.question, similarity=arrays.similarity, use_full_text=child.use_full_text,
+        context = FindingContext(question=child.question, feedback=child.human_feedback, similarity=arrays.similarity, use_full_text=child.use_full_text,
             full_text_ids=full_text_ids(child.clusters), cards=child.cluster_cards,
             deadline=time.monotonic() + cfg.run_timeout_s, audits=analysis.audits,
             cache={k: v.model_copy(deep=True) for k, v in state.finding_cache.items()})

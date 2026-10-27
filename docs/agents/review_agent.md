@@ -1,9 +1,9 @@
 # Independent finding Review Agent
 
 Code: `litagent/agents/review_agent.py`; prompt: `prompts/review_agent.md`.
-The map's **Human review** page includes **AI grading** and **Show existing grades**.
-The former assesses the current version's queue; the latter only reads a saved report.
-Opening the review page does not call the model or reveal its judgments automatically.
+The per-finding Review Agent remains accessible through its API. The map now uses quick thumbs-up/down
+feedback and a floating assistant instead of a separate Human review page. These controls do not automatically
+request a model assessment; pipeline grades and source checks still run during graph generation.
 
 ## Agent Loop Spec
 

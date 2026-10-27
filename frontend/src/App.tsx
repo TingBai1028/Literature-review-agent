@@ -1,13 +1,25 @@
-import { useRef, useState } from "react";
-import { ChevronDown, LoaderCircle, Menu, Play, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { LoaderCircle, Menu, Plus, X } from "lucide-react";
 import { request, messageOf, ApiError } from "./api";
 import { DialogNotice } from "./components/Dialog";
 import { useWorkspace } from "./useWorkspace";
-import type { Filter, MapResult, Move, Paper, Plan, Selection } from "./types";
+import { feedbackError } from "./feedbackWorkflow";
+import type {
+  FeedbackState,
+  FeedbackTarget,
+  Filter,
+  MapResult,
+  Move,
+  Paper,
+  Plan,
+  Selection,
+} from "./types";
 import { TopicSidebar } from "./components/TopicSidebar";
 import { LiteratureGraph } from "./components/LiteratureGraph";
 import { Inspector } from "./components/Inspector";
-import { ReviewPanel } from "./components/ReviewPanel";
+import { MapSearch } from "./components/MapSearch";
+import { FeedbackBot } from "./components/FeedbackBot";
+import { QuickFeedback } from "./components/QuickFeedback";
 import { ActivityFeed } from "./components/ActivityFeed";
 import { ReasoningPanel } from "./components/ReasoningPanel";
 import { PanelHandle, usePanels } from "./components/PanelHandle";
@@ -46,6 +58,11 @@ export default function App() {
       if (e instanceof ApiError && e.status === 409 && ws.data) {
         try {
           await ws.open(ws.data.map.run_id);
+          setFeedback(
+            await request<FeedbackState>(
+              `/cluster/${ws.data.map.run_id}/feedback`,
+            ),
+          );
         } catch {
           /* Keep the original conflict visible. */
         }
@@ -56,13 +73,46 @@ export default function App() {
     }
   };
   const data = ws.data;
+  const panels = usePanels();
+  const [selection, setSelection] = useState<Selection | null>(null);
+  const [feedback, setFeedback] = useState<FeedbackState>({
+    votes: {},
+    messages: [],
+  });
+  const [botOpenRequest, setBotOpenRequest] = useState(0);
+  const graphReady =
+    !!data &&
+    data.map.status === "done" &&
+    ["connections", "gaps"].every((stage) =>
+      data.map.analysis?.completed_stages?.includes(stage),
+    );
+  useEffect(() => {
+    if (!data) return;
+    const abort = new AbortController();
+    setFeedback({ votes: {}, messages: [] });
+    request<FeedbackState>(`/cluster/${data.map.run_id}/feedback`, {
+      signal: abort.signal,
+    })
+      .then((record) => {
+        if (!abort.signal.aborted) setFeedback(record);
+      })
+      .catch((error) => {
+        if (!abort.signal.aborted) setNotice(messageOf(error));
+      });
+    return () => abort.abort();
+  }, [data?.map.run_id]);
+  const select = (next: Selection | null) => {
+    setSelection(next);
+    setTab("map");
+    panels.set("right", { open: true });
+  };
   const navigationUnavailable = !data || ws.loading || !!busy;
   const navigationMessage = busy
-    ? "Review and Reasoning will be available when processing finishes. You can keep exploring the paper map."
+    ? "Reasoning and feedback will be available when processing finishes. You can keep exploring the paper map."
     : ws.loading
-      ? "Loading the map. Review and Reasoning will be available shortly."
+      ? "Loading the map. Reasoning and feedback will be available shortly."
       : !data
-        ? "Build a map to open Review and Reasoning."
+        ? "Create a map to explore its reasoning and give feedback."
         : "";
   const changeTab = (next: Tab) => {
     if (next !== "map" && navigationUnavailable) return;
@@ -93,6 +143,7 @@ export default function App() {
       const runId = newRunId();
       setDialog(null);
       setTab("map");
+      setSelection(null);
       setLive({
         runId,
         base: null,
@@ -119,10 +170,13 @@ export default function App() {
       } finally {
         setLive(null);
       }
-      // One click builds the whole map: Graph 1 (connections) and then Graph 2 (gaps) follow straight away, each
+      // One click builds the whole map: Connection graph (connections) and then Gap graph (gaps) follow straight away, each
       // shown as soon as it is ready. Incomplete maps can continue from the map's recovery action.
       if (built.status !== "partial") {
-        await analyzeMap(await request<MapResult>(`/cluster/${built.run_id}`), selected);
+        await analyzeMap(
+          await request<MapResult>(`/cluster/${built.run_id}`),
+          selected,
+        );
       }
     });
   // Spec F5: swap the side papers for the next-best backup papers; main and foundation stay.
@@ -154,7 +208,7 @@ export default function App() {
           " Choose Continue analysis on the map to update connections and research gaps.",
       );
     });
-  // Spec E: Graph 1 (paper edges) is opened as soon as it is ready; Graph 2 (gaps) follows on that version.
+  // Spec E: Connection graph (paper edges) is opened as soon as it is ready; Gap graph (gaps) follows on that version.
   const runStage = (
     map: MapResult,
     stage: "connections" | "gaps",
@@ -167,7 +221,9 @@ export default function App() {
       papers,
       question: map.question,
       title:
-        stage === "connections" ? "Graph 1: finding paper connections" : "Graph 2: finding research gaps",
+        stage === "connections"
+          ? "Connection graph: finding connections"
+          : "Gap graph: finding research gaps",
     });
     return request<MapResult>(`/cluster/${map.run_id}/analyze`, {
       method: "POST",
@@ -183,7 +239,7 @@ export default function App() {
   const analyzeMap = async (start: MapResult, papers: Paper[]) => {
     let map = start;
     if (!map.analysis?.completed_stages?.includes("connections")) {
-      setBusy("Finding paper connections (Graph 1)");
+      setBusy("Building the connection graph");
       map = await runStage(map, "connections", papers);
       await ws.open(map.run_id);
       if (map.status === "partial") {
@@ -193,20 +249,222 @@ export default function App() {
         return;
       }
     }
-    setBusy("Graph 1 is ready to browse; finding research gaps (Graph 2)");
+    setBusy("Connection graph is ready to browse; building the gap graph");
     map = await runStage(map, "gaps", papers);
     await ws.open(map.run_id);
     setNotice(
       map.status === "partial"
         ? "Paper connections were kept; research gaps did not finish. Choose Continue analysis on the map to finish."
-        : "Graph 2 (research gaps) is ready. Switch to \"Graph 2 · Gaps\" to view it.",
+        : 'Gap graph is ready. Switch to "Gap graph" to view it.',
     );
   };
-  const analyze = () =>
-    data &&
-    void operate("Finding paper connections (Graph 1)", () =>
-      analyzeMap(data.map, data.papers),
-    );
+  const analyze = () => {
+    if (
+      feedback.update?.status === "paused" ||
+      (feedback.update?.status === "complete" &&
+        feedback.update.pending.length > 0)
+    ) {
+      void resumeFeedback().catch((error) => setNotice(messageOf(error)));
+    } else if (data) {
+      void operate("Building the connection graph", () =>
+        analyzeMap(data.map, data.papers),
+      );
+    }
+  };
+  const regenerateFromFeedback = async (
+    text: string,
+    target?: FeedbackTarget,
+  ) => {
+    if (feedback.update?.status === "paused") {
+      setBotOpenRequest((n) => n + 1);
+      throw new Error(
+        "Your saved update is waiting. Resume it or keep the current graph before sending more feedback.",
+      );
+    }
+    if (!data || busyRef.current || !editable || !graphReady)
+      throw new Error(
+        "Wait for the active graph to finish before giving feedback.",
+      );
+    let success = false;
+    let failure = "";
+    setTab("map");
+    setBotOpenRequest((n) => n + 1);
+    await operate("Updating the graph from your feedback", async () => {
+      const runId = newRunId();
+      try {
+        if (target) {
+          const record = await request<FeedbackState>(
+            `/cluster/${data.map.run_id}/feedback/vote`,
+            {
+              method: "POST",
+              body: {
+                expected_version_token: data.map.version_token,
+                target,
+                vote: "down",
+              },
+            },
+          );
+          setFeedback(record);
+        }
+        setLive({
+          runId,
+          base: data.map,
+          papers: data.papers,
+          question: data.map.question,
+          title: "Updating graph from feedback",
+          keepCurrentGraph: true,
+        });
+        const out = await request<{ map: MapResult; feedback: FeedbackState }>(
+          `/cluster/${data.map.run_id}/feedback/regenerate`,
+          {
+            method: "POST",
+            body: {
+              expected_version_token: data.map.version_token,
+              request_id: crypto.randomUUID().replaceAll("-", ""),
+              run_id: runId,
+              text,
+              target,
+            },
+            timeout: (ws.config.run_timeout_s + 120) * 1000,
+          },
+        );
+        setFeedback(out.feedback);
+        if (out.map.status === "done") setSelection(null);
+        await ws.open(
+          out.map.status === "done"
+            ? out.map.run_id
+            : (out.feedback.update?.active_run_id ?? data.map.run_id),
+        );
+        success = true;
+      } catch (error) {
+        failure = feedbackError(error);
+        throw new Error(failure);
+      } finally {
+        setLive(null);
+      }
+    });
+    if (!success)
+      throw new Error(
+        failure ||
+          "The graph could not be updated. Your feedback is still here. Please try again.",
+      );
+  };
+  const resumeFeedback = async () => {
+    const update = feedback.update;
+    if (!data || !update || busyRef.current) return;
+    let success = false;
+    let failure = "";
+    setBotOpenRequest((n) => n + 1);
+    await operate("Finishing your saved feedback update", async () => {
+      try {
+        const draft = await request<MapResult>(`/cluster/${update.run_id}`);
+        const runId = newRunId();
+        setTab("map");
+        setLive({
+          runId,
+          base: data.map,
+          papers: data.papers,
+          question: data.map.question,
+          title: "Finishing feedback update",
+          keepCurrentGraph: true,
+        });
+        const map = await request<MapResult>(
+          `/cluster/${draft.run_id}/analyze`,
+          {
+            method: "POST",
+            body: {
+              expected_version_token: draft.version_token,
+              request_id: crypto.randomUUID().replaceAll("-", ""),
+              run_id: runId,
+              stages: ["connections", "gaps"],
+            },
+            timeout: (ws.config.run_timeout_s + 120) * 1000,
+          },
+        );
+        const record = await request<FeedbackState>(
+          `/cluster/${map.run_id}/feedback`,
+        );
+        setFeedback(record);
+        if (map.status === "done") setSelection(null);
+        await ws.open(
+          map.status === "done"
+            ? map.run_id
+            : (record.update?.active_run_id ?? update.active_run_id),
+        );
+        success = true;
+      } catch (error) {
+        failure = feedbackError(error);
+        throw new Error(failure);
+      } finally {
+        setLive(null);
+      }
+    });
+    if (!success)
+      throw new Error(
+        failure ||
+          "Your saved update is still available. Please try resuming again.",
+      );
+  };
+  const keepCurrentGraph = async () => {
+    const update = feedback.update;
+    if (!data || !update || busyRef.current) return;
+    let success = false;
+    await operate("Keeping the current graph", async () => {
+      const current = await request<MapResult>(
+        `/cluster/${update.active_run_id}`,
+      );
+      if (data.map.run_id !== current.run_id && !update.can_resume) {
+        await ws.open(current.run_id);
+      } else {
+        setFeedback(
+          await request<FeedbackState>(
+            `/cluster/${current.run_id}/feedback/dismiss`,
+            {
+              method: "POST",
+              body: {
+                expected_version_token: current.version_token,
+                expected_update_run_id: update.run_id,
+              },
+            },
+          ),
+        );
+        await ws.open(current.run_id);
+      }
+      success = true;
+    });
+    if (!success)
+      throw new Error(
+        "Could not switch to the current graph. Please try again.",
+      );
+  };
+  const quickVote = (target: FeedbackTarget, vote: "up" | "down") => {
+    if (!data || busyRef.current || !editable || !graphReady) return;
+    if (feedback.update?.status === "paused") {
+      setBotOpenRequest((n) => n + 1);
+      return;
+    }
+    if (vote === "down") {
+      void regenerateFromFeedback(
+        `I do not approve this ${target.kind}. Reconsider it against the research question and the original source evidence, and improve the graph accordingly.`,
+        target,
+      ).catch((error) => setNotice(messageOf(error)));
+    } else {
+      void operate("Saving your feedback", async () => {
+        const record = await request<FeedbackState>(
+          `/cluster/${data.map.run_id}/feedback/vote`,
+          {
+            method: "POST",
+            body: {
+              expected_version_token: data.map.version_token,
+              target,
+              vote,
+            },
+          },
+        );
+        setFeedback(record);
+      });
+    }
+  };
   return (
     <DialogNotice.Provider value={notice}>
       <div className="app-shell">
@@ -225,36 +483,32 @@ export default function App() {
               map
             </button>
             <button
-              className={tab === "review" ? "active" : ""}
-              aria-pressed={tab === "review"}
-              onClick={() => changeTab("review")}
-              aria-label="Human review"
-              disabled={navigationUnavailable}
-              aria-describedby={navigationMessage ? "workspace-navigation-status" : undefined}
-              title={navigationMessage || "Review the completed map's findings"}
-            >
-              <span className="nav-qualifier">Human </span>
-              review
-            </button>
-            <button
               className={tab === "reasoning" ? "active" : ""}
               aria-pressed={tab === "reasoning"}
               onClick={() => changeTab("reasoning")}
               disabled={navigationUnavailable}
-              aria-describedby={navigationMessage ? "workspace-navigation-status" : undefined}
+              aria-describedby={
+                navigationMessage ? "workspace-navigation-status" : undefined
+              }
               title={navigationMessage || "Read the completed run's reasoning"}
             >
               Reasoning
             </button>
           </nav>
+          <MapSearch
+            clusters={data?.map.clusters ?? []}
+            papers={data?.papers ?? []}
+            disabled={!data || !!busy || ws.loading}
+            onSelect={select}
+          />
           <div className="header-actions">
             <button
-              className="text-button"
+              className="primary-button create-map-button"
               onClick={() => setDialog("new")}
               disabled={!!busy}
               title="Build a map for a new research question"
             >
-              New map
+              <Plus size={18} /> Create new map
             </button>
             <button
               className="text-button history-button"
@@ -267,35 +521,17 @@ export default function App() {
         </header>
         {(data || live) && (
           <section className="question-bar">
-            <h1 title={live?.question ?? data?.map.question}>{live?.question ?? data?.map.question}</h1>
-            {live ? (
-              <span className="map-counts">
-                {live.papers.length} papers · {live.base ? "Updating findings" : "Building map"}
-              </span>
-            ) : data && (
-              <span className="map-counts">
-                {data.papers.length} papers ·{" "}
-                {data.map.clusters.filter((c) => c.kind === "main").length} main
-                ·{" "}
-                {data.map.clusters.filter((c) => c.kind === "foundation").length}{" "}
-                foundation ·{" "}
-                {
-                  data.map.clusters.filter(
-                    (c) => c.kind !== "main" && c.kind !== "foundation",
-                  ).length
-                }{" "}
-                side clusters
-              </span>
-            )}
+            <h1 title={live?.question ?? data?.map.question}>
+              {live?.question ?? data?.map.question}
+            </h1>
           </section>
         )}
         {(notice ||
           ws.error ||
-          (!live && (
-            data?.map.sample_mode ||
-            (data && data.map.sample_mode !== ws.config.sample_mode) ||
-            busy
-          ))) && (
+          (!live &&
+            (data?.map.sample_mode ||
+              (data && data.map.sample_mode !== ws.config.sample_mode) ||
+              busy))) && (
           <div
             className={`notice-bar ${notice || ws.error ? "error" : ""}`}
             role={notice || ws.error ? "alert" : "status"}
@@ -318,7 +554,11 @@ export default function App() {
           </div>
         )}
         {navigationMessage && (
-          <p id="workspace-navigation-status" className="navigation-status" role="status">
+          <p
+            id="workspace-navigation-status"
+            className="navigation-status"
+            role="status"
+          >
             {navigationMessage}
           </p>
         )}
@@ -337,9 +577,12 @@ export default function App() {
         ) : !data ? (
           <main className="empty-workspace">
             <h1>Start from papers, connect research questions.</h1>
-            <p>Enter a research question to search for papers, review them, then build a research map with source evidence you can inspect.</p>
+            <p>
+              Enter a research question to search for papers, review them, then
+              build a research map with source evidence you can inspect.
+            </p>
             <button className="primary-button" onClick={() => setDialog("new")}>
-              New map
+              <Plus size={18} /> Create new map
             </button>
             {ws.error && <p className="inline-error">{ws.error}</p>}
           </main>
@@ -349,6 +592,12 @@ export default function App() {
             data={data}
             tab={tab}
             setTab={changeTab}
+            selection={selection}
+            onSelect={select}
+            panels={panels}
+            feedback={feedback}
+            onVote={quickVote}
+            onOpenFeedback={() => setBotOpenRequest((n) => n + 1)}
             editable={editable}
             busy={!!busy}
             onOperation={operate}
@@ -364,39 +613,39 @@ export default function App() {
             }
           />
         )}
-        {data && (
-          <footer className="workspace-footer">
-            <div className="version-selector">
-              <strong>Current view</strong>
-              <label>
-                <span className="sr-only">Choose a map version</span>
-                <select
-                  value={ws.runId}
-                  disabled={!!busy}
-                  onChange={(e) => ws.setRunId(e.target.value)}
-                >
-                  {ws.catalog.map((m) => (
-                    <option value={m.run_id} key={m.run_id}>
-                      {m.sample_mode ? "Sample · " : ""}v{m.revision}{" "}
-                      {m.active ? "· active " : ""}· {m.run_id}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown size={13} />
-              </label>
-            </div>
-            {data.map.warnings.length > 0 && (
-              <details className="quality-notes">
-                <summary>Quality warnings {data.map.warnings.length}</summary>
-                <div>
-                  {data.map.warnings.map((w, i) => (
-                    <p key={i}>{w}</p>
-                  ))}
-                </div>
-              </details>
-            )}
-          </footer>
-        )}
+        <FeedbackBot
+          map={data?.map}
+          feedback={feedback}
+          busy={!!busy || ws.loading}
+          editable={editable}
+          ready={graphReady}
+          openRequest={botOpenRequest}
+          onSubmit={(text) => regenerateFromFeedback(text)}
+          onResume={resumeFeedback}
+          onKeepCurrent={keepCurrentGraph}
+          onViewDraft={() => {
+            if (feedback.update)
+              void ws
+                .open(feedback.update.run_id)
+                .catch((error) => setNotice(messageOf(error)));
+          }}
+          progress={
+            live?.keepCurrentGraph
+              ? (
+                  {
+                    clusterer: "Revising topics from your feedback…",
+                    clusters_finder: "Revising topics from your feedback…",
+                    grader: "Checking the revised graph…",
+                    connection_finder: "Updating the connection graph…",
+                    connections_finder: "Checking connections…",
+                    gap_finder: "Updating the gap graph…",
+                    gaps_finder: "Checking gaps…",
+                    orchestrator: "Saving the updated graph…",
+                  } as Record<string, string>
+                )[events.at(-1)?.agent ?? ""] || "Applying your feedback…"
+              : busy
+          }
+        />
         {dialog === "new" && (
           <NewMapDialog
             papers={data?.papers ?? []}
@@ -459,6 +708,12 @@ function WorkspaceView({
   onSwap,
   onContinueAnalysis,
   analysisDisabled,
+  selection,
+  onSelect,
+  panels,
+  feedback,
+  onVote,
+  onOpenFeedback,
 }: {
   data: NonNullable<ReturnType<typeof useWorkspace>["data"]>;
   tab: Tab;
@@ -473,51 +728,61 @@ function WorkspaceView({
   onSwap: () => void;
   onContinueAnalysis: () => void;
   analysisDisabled: boolean;
+  selection: Selection | null;
+  onSelect: (selection: Selection | null) => void;
+  panels: ReturnType<typeof usePanels>;
+  feedback: FeedbackState;
+  onVote: (target: FeedbackTarget, vote: "up" | "down") => void;
+  onOpenFeedback: () => void;
 }) {
   // During an analysis or refresh the map shows the base version plus everything accepted so far (A2, A4).
-  const map = live ? overlay(data.map, live.events) : data.map;
+  const map =
+    live && !live.keepCurrentGraph ? overlay(data.map, live.events) : data.map;
   const { papers } = data;
-  const [selection, setSelection] = useState<Selection | null>({
-    type: "paper",
-    id:
-      map.clusters.find((c) => c.kind === "main")?.paper_ids[0] ??
-      papers[0]?.id,
-  });
+  const selected =
+    selection &&
+    (selection.type === "paper"
+      ? papers.some((p) => p.id === selection.id)
+      : selection.type === "cluster"
+        ? map.clusters.some((c) => c.id === selection.id)
+        : selection.type === "connection"
+          ? map.connections.some((c) => c.id === selection.id)
+          : map.gaps.some((g) => g.id === selection.id))
+      ? selection
+      : {
+          type: "paper" as const,
+          id:
+            map.clusters.find((c) => c.kind === "main")?.paper_ids[0] ??
+            papers[0]?.id,
+        };
   const [filter, setFilter] = useState<Filter>("all");
-  const [search, setSearch] = useState("");
   const [moves, setMoves] = useState<Move[]>([]);
   const [plan, setPlan] = useState<Plan | null>(null);
   const [mobile, setMobile] = useState(false);
-  const panels = usePanels();
   const changeFilter = (f: Filter) => {
     setFilter(f);
     if (f === "connections")
-      setSelection(
+      onSelect(
         map.connections[0]
           ? { type: "connection", id: map.connections[0].id }
           : null,
       );
     if (f === "gaps")
-      setSelection(map.gaps[0] ? { type: "gap", id: map.gaps[0].id } : null);
+      onSelect(map.gaps[0] ? { type: "gap", id: map.gaps[0].id } : null);
   };
   return (
     <>
-      {tab === "review" ? (
-        <ReviewPanel
-          map={map}
-          timeout={timeout}
-          onOperation={onOperation}
-          onOpen={onOpen}
-          onNotice={onNotice}
-        />
-      ) : tab === "reasoning" ? (
+      {tab === "reasoning" ? (
         <ReasoningPanel
           map={data.map}
           versions={data.versions}
           live={live?.events ?? []}
         />
       ) : (
-        <main className={`workspace-grid${panels.className}`} style={panels.style}>
+        <main
+          className={`workspace-grid${panels.className}`}
+          style={panels.style}
+        >
           <button
             className="mobile-topic-toggle"
             onClick={() => setMobile((v) => !v)}
@@ -528,12 +793,9 @@ function WorkspaceView({
           </button>
           <TopicSidebar
             clusters={map.clusters}
-            papers={papers}
-            selection={selection}
-            search={search}
-            onSearch={setSearch}
+            selection={selected}
             onSelect={(s) => {
-              setSelection(s);
+              onSelect(s);
               setMobile(false);
             }}
             mobileOpen={mobile}
@@ -542,12 +804,12 @@ function WorkspaceView({
           <LiteratureGraph
             map={map}
             papers={papers}
-            selection={selection}
-            onSelect={setSelection}
+            selection={selected}
+            onSelect={onSelect}
             filter={filter}
             onFilter={changeFilter}
-            search={search}
-            onReview={busy ? undefined : () => setTab("review")}
+            search=""
+            onFeedback={busy ? undefined : onOpenFeedback}
             onContinueAnalysis={busy ? undefined : onContinueAnalysis}
             analysisDisabled={analysisDisabled}
             onSwap={onSwap}
@@ -557,8 +819,8 @@ function WorkspaceView({
           <Inspector
             map={map}
             papers={papers}
-            selection={selection}
-            onSelect={setSelection}
+            selection={selected}
+            onSelect={onSelect}
             moves={moves}
             canEdit={editable && !busy}
             onMove={(pid, target) => {
@@ -570,35 +832,7 @@ function WorkspaceView({
               ]);
               setPlan(null);
             }}
-            onReview={busy ? undefined : () => setTab("review")}
-          >
-            <Provenance
-              map={map}
-              papers={papers}
-              selection={selection}
-              onShowReasoning={busy ? undefined : () => setTab("reasoning")}
-            />
-          </Inspector>
-        </main>
-      )}
-      {tab === "map" && (
-        <div className="move-bar">
-          {moves.length > 0 && (
-            <>
-              <span>{moves.length} papers to move</span>
-              <button
-                className="text-button small"
-                disabled={busy}
-                onClick={() => setMoves([])}
-              >
-                Clear
-              </button>
-            </>
-          )}
-          <button
-            className="secondary-button"
-            disabled={!moves.length || busy || !editable}
-            onClick={() =>
+            onPreviewMove={() =>
               void onOperation("Checking move constraints", async () =>
                 setPlan(
                   await request<Plan>(
@@ -608,11 +842,32 @@ function WorkspaceView({
                 ),
               )
             }
+            feedback={
+              selected.type !== "paper" && (
+                <QuickFeedback
+                  target={{ kind: selected.type, id: selected.id }}
+                  vote={feedback.votes[`${selected.type}:${selected.id}`]?.vote}
+                  disabled={
+                    busy ||
+                    !editable ||
+                    map.status !== "done" ||
+                    !["connections", "gaps"].every((s) =>
+                      map.analysis?.completed_stages?.includes(s),
+                    )
+                  }
+                  onVote={onVote}
+                />
+              )
+            }
           >
-            <Play size={13} fill="currentColor" />
-            Preview move
-          </button>
-        </div>
+            <Provenance
+              map={map}
+              papers={papers}
+              selection={selected}
+              onShowReasoning={busy ? undefined : () => setTab("reasoning")}
+            />
+          </Inspector>
+        </main>
       )}
       {plan && (
         <MovePreview
@@ -642,13 +897,14 @@ function WorkspaceView({
   );
 }
 
-type Tab = "map" | "review" | "reasoning";
+type Tab = "map" | "reasoning";
 interface Live {
   runId: string;
   base: MapResult | null; // null while a new map is being built
   papers: Paper[];
   question: string;
   title: string;
+  keepCurrentGraph?: boolean;
 }
 
 /** A new map being built (spec A2): papers appear, glide into their clusters, then the clusters get names.
@@ -676,11 +932,16 @@ function LiveBuild({
     (p) => selection?.type === "paper" && p.id === selection.id,
   );
   return (
-    <main className={`workspace-grid live-build${panels.className}`} style={panels.style}>
+    <main
+      className={`workspace-grid live-build${panels.className}`}
+      style={panels.style}
+    >
       <aside className="topic-sidebar">
         <h2>{live.title}</h2>
         <p className="muted small">{live.question}</p>
-        <p className="small">{live.papers.length} papers are being grouped and named.</p>
+        <p className="small">
+          {live.papers.length} papers are being grouped and named.
+        </p>
       </aside>
       <PanelHandle side="left" panels={panels.panels} set={panels.set} />
       <LiteratureGraph
@@ -704,7 +965,10 @@ function LiveBuild({
             <p className="small">{paper.abstract}</p>
           </>
         ) : (
-          <p className="muted">The map is being built; click a paper to read its abstract meanwhile.</p>
+          <p className="muted">
+            The map is being built; click a paper to read its abstract
+            meanwhile.
+          </p>
         )}
       </aside>
     </main>

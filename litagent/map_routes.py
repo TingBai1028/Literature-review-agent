@@ -15,6 +15,8 @@ from litagent.agents import review_agent
 from litagent.schemas import ReviewAgentRequest, ReviewRegenerateRequest
 from litagent.similarity import nearest_pairs
 from litagent.trace import mask
+from litagent import graph_feedback
+from litagent.graph_feedback import DismissFeedbackRequest, GraphFeedbackRequest, VoteRequest
 
 
 def map_catalog(settings):
@@ -82,6 +84,22 @@ def install_map_routes(app, get_settings, respond):
     @app.get("/cluster/{run_id}/review")
     def review(run_id: str, reveal: bool = False, settings=Depends(get_settings)):
         return respond(run_id, lambda: prepare_review(run_id, settings, reveal=reveal))
+
+    @app.get("/cluster/{run_id}/feedback")
+    def graph_feedback_state(run_id: str, settings=Depends(get_settings)):
+        return respond(run_id, lambda: graph_feedback.read_feedback(run_id, settings))
+
+    @app.post("/cluster/{run_id}/feedback/vote")
+    def graph_vote(run_id: str, body: VoteRequest, settings=Depends(get_settings)):
+        return respond(run_id, lambda: graph_feedback.vote(run_id, body, settings))
+
+    @app.post("/cluster/{run_id}/feedback/regenerate")
+    def graph_feedback_regenerate(run_id: str, body: GraphFeedbackRequest, settings=Depends(get_settings)):
+        return respond(run_id, lambda: graph_feedback.regenerate(run_id, body, settings))
+
+    @app.post("/cluster/{run_id}/feedback/dismiss")
+    def dismiss_graph_feedback(run_id: str, body: DismissFeedbackRequest, settings=Depends(get_settings)):
+        return respond(run_id, lambda: graph_feedback.dismiss(run_id, body, settings))
 
     @app.post("/cluster/{run_id}/review/{item_id}")
     def submit_review(run_id: str, item_id: str, body: ReviewSubmission, settings=Depends(get_settings)):

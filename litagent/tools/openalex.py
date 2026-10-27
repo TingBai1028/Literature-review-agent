@@ -23,6 +23,7 @@ import time
 import httpx
 
 from litagent.config import Settings
+from litagent.cancellation import cancellable_sleep, check_cancelled
 from litagent.schemas import Paper, SearchCriteria
 from litagent.tools.search_store import SearchBudget, SearchLimitError, SearchStore
 from litagent.trace import current_trace
@@ -107,6 +108,7 @@ def _get_with_retry(url: str, params: dict, attempts: int = 3, timeout_s: float 
                     request_budget: SearchBudget | None = None) -> dict:
     problem = ""
     for i in range(attempts):
+        check_cancelled()
         if store is not None:
             store.reserve(scope, daily_limit, request_budget)
         try:
@@ -124,7 +126,7 @@ def _get_with_retry(url: str, params: dict, attempts: int = 3, timeout_s: float 
                         "A free OPENALEX_API_KEY raises the limit 10x."
                     )
                 problem = "rate limited"
-                time.sleep(wait)
+                cancellable_sleep(wait)
                 continue
             if r.status_code >= 500:
                 problem = f"HTTP {r.status_code}"
@@ -133,7 +135,7 @@ def _get_with_retry(url: str, params: dict, attempts: int = 3, timeout_s: float 
             else:
                 return r.json()
         if i < attempts - 1:
-            time.sleep(2**i)
+            cancellable_sleep(2**i)
     raise OpenAlexError(f"OpenAlex failed after {attempts} attempts ({problem})")
 
 

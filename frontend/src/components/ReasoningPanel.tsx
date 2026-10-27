@@ -7,7 +7,7 @@ const kindNames = { code: "Code", llm: "LLM", human: "Human" } as const;
 const QUIET = new Set(["zetaris", "meterless_world_model"]);
 
 /** Spec B4/B5: each agent's run log as plain sentences, setbacks highlighted, raw data behind a details toggle.
- * Covers the whole lineage of the open version: the map, Graph 1, Graph 2 and any refresh or move. */
+ * Covers the whole lineage of the open version: the map, Connection graph, Gap graph and any refresh or move. */
 export function ReasoningPanel({
   map,
   versions,
@@ -49,10 +49,21 @@ export function ReasoningPanel({
       <header>
         <h2>Reasoning</h2>
         <p className="muted small">
-          Every step of every agent: what it decided, why, and whether the step was code or an
-          LLM. Corrections, retries and fallbacks are marked in orange.
+          Every step of every agent: what it decided, why, and whether the step
+          was code or an LLM. Corrections, retries and fallbacks are marked in
+          orange.
         </p>
       </header>
+      {!!map.warnings.length && (
+        <details className="reasoning-warnings">
+          <summary>Run warnings ({map.warnings.length})</summary>
+          <ul>
+            {map.warnings.map((warning, index) => (
+              <li key={index}>{warning}</li>
+            ))}
+          </ul>
+        </details>
+      )}
       {error && <p className="inline-error">{error}</p>}
       {events === null && !live.length && (
         <p className="muted">Loading the run log…</p>
@@ -67,7 +78,9 @@ export function ReasoningPanel({
               <strong>{agentNames[agent] ?? agent}</strong>
               <span className="muted small">
                 {steps.length} steps · {llm} LLM calls
-                {setbacks ? ` · ${setbacks} corrections, retries or fallbacks` : ""}
+                {setbacks
+                  ? ` · ${setbacks} corrections, retries or fallbacks`
+                  : ""}
               </span>
             </summary>
             <AgentSteps steps={steps} />
