@@ -155,6 +155,79 @@ for (const mobile of [false, true]) {
   });
 }
 
+for (const mobile of [false, true]) {
+  test(`analysis recovery appears only for unfinished maps (${mobile ? "mobile" : "desktop"})`, async ({
+    page,
+    appUrl,
+  }, info) => {
+    if (mobile) await page.setViewportSize({ width: 390, height: 844 });
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+    });
+    await page.goto(appUrl);
+    await expect(page).toHaveTitle("Literature Map");
+    await expect(page).toHaveURL(new RegExp(appUrl));
+    await expect(page.locator(".paper-node")).toHaveCount(6);
+    await expect(page.locator("vite-error-overlay")).toHaveCount(0);
+    await expect(page.locator(".app-header").getByRole("button", { name: /analysis/i })).toHaveCount(0);
+    const recovery = page.getByRole("button", { name: "Continue analysis", exact: true });
+    await expect(recovery).toBeVisible();
+    await page.screenshot({ path: info.outputPath("analysis-missing.png") });
+
+    // Keep the first response pending to verify the recovery action disappears while work runs.
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    let first = true;
+    await page.route("**/analyze", async (route) => {
+      const response = await route.fetch();
+      if (first) {
+        first = false;
+        await gate;
+      }
+      await route.fulfill({ response });
+    });
+    try {
+      await recovery.click();
+      await expect(page.getByText("Finding paper connections (Graph 1)", { exact: true })).toBeVisible();
+      await expect(recovery).toHaveCount(0);
+    } finally {
+      release();
+    }
+    await expect(page.getByText("Graph 2 (research gaps) is ready", { exact: false })).toBeVisible();
+    await expect(recovery).toHaveCount(0);
+    await page.screenshot({ path: info.outputPath("analysis-complete.png") });
+
+    // Empty findings are valid completed results; missing grades and partial findings still need recovery.
+    let state: "partial" | "grades" | "empty" = "partial";
+    await page.route(/\/cluster\/[^/]+$/, async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      body.output.status = state === "partial" ? "partial" : "done";
+      body.output.analysis.completed_stages = state === "partial" ? ["connections"] : ["connections", "gaps"];
+      body.output.analysis.pending_stages = state === "partial" ? ["gaps"] : state === "grades" ? ["connections_grade"] : [];
+      if (state === "empty") {
+        body.output.connections = [];
+        body.output.gaps = [];
+      }
+      await route.fulfill({ response, json: body });
+    });
+    for (const next of ["partial", "grades", "empty"] as const) {
+      state = next;
+      await page.reload();
+      await expect(page.locator(".paper-node")).toHaveCount(6);
+      if (state === "empty") await expect(recovery).toHaveCount(0);
+      else await expect(recovery).toBeVisible();
+    }
+    await page.getByRole("button", { name: "Graph 2 · Gaps", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "No hypotheses have passed the checks yet" })).toBeVisible();
+    await expect(recovery).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(errors).toEqual([]);
+  });
+}
+
 test("sample API: analyze, inspect, move, rollback and explicitly save review", async ({
   page,
   request,
@@ -173,7 +246,7 @@ test("sample API: analyze, inspect, move, rollback and explicitly save review", 
   await expect(
     page.getByText("Sample mode: clusters, similarities and grades are placeholders."),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Run analysis", exact: true }).click();
+  await page.getByRole("button", { name: "Continue analysis", exact: true }).click();
   // Graph 1 opens first; wait until Graph 2 has replaced it as the active version.
   await expect(
     page.getByText("Graph 2 (research gaps) is ready", { exact: false }),
@@ -438,7 +511,7 @@ test("stale preview conflict is visible inside the dialog and does not move pape
   appUrl,
 }) => {
   await page.goto(appUrl);
-  await page.getByRole("button", { name: "Run analysis", exact: true }).click();
+  await page.getByRole("button", { name: "Continue analysis", exact: true }).click();
   // Graph 1 opens first; wait until Graph 2 has replaced it as the active version.
   await expect(
     page.getByText("Graph 2 (research gaps) is ready", { exact: false }),

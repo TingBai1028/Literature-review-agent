@@ -1,0 +1,52 @@
+{
+  "scope": "Offline payload sizing on a real saved map; model responses are fixtures, not accuracy or latency results.",
+  "run_id": "20261026-230247-0c76cb",
+  "paper_count": 50,
+  "input_char_cap": 48000,
+  "batch_size": 5,
+  "stages": {
+    "connections": {
+      "findings": 6,
+      "reviewed_pairs": 8,
+      "batches": 2,
+      "unbatched_input_chars": 45116,
+      "batch_input_chars": [
+        40055,
+        12458
+      ],
+      "max_input_chars": 40055,
+      "all_findings_once": true,
+      "all_reviewed_pairs_once": true
+    },
+    "gaps": {
+      "findings": 29,
+      "reviewed_pairs": 87,
+      "batches": 18,
+      "unbatched_input_chars": 182169,
+      "batch_input_chars": [
+        34057,
+        30204,
+        25482,
+        30791,
+        28408,
+        25553,
+        9351,
+        9007,
+        13940,
+        9720,
+        9299,
+        8433,
+        11798,
+        7913,
+        11375,
+        11244,
+        10317,
+        5487
+      ],
+      "max_input_chars": 34057,
+      "all_findings_once": true,
+      "all_reviewed_pairs_once": true
+    }
+  },
+  "source_snapshots_unchanged": true
+}

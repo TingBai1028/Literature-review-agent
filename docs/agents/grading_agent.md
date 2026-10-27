@@ -35,3 +35,14 @@ abstract statements. Before this, the same honest abstention scored 9/9 in one r
 
 For independent per-claim scoring in the review UI, see the [Review Agent](review_agent.md).
 Its model-only reports are separate from these stage grades and from human annotations.
+
+**Bounded finding grades (27 Oct).** Connection and gap stage grades cover every accepted finding and
+reviewed abstention in batches of at most `finding_grader_batch_size` (5) units and
+`finding_grader_max_input_chars` (48,000) serialized user-payload characters. Only the batch's relevant
+papers are included. Repeated original quotes are deduplicated, never shortened; coverage-hit records
+carry metadata rather than full papers, while coverage status and quoted counterevidence remain.
+The lowest-scoring batch supplies the stage's three scores and fix; batch explanations remain in the
+reasoning. A failing batch cannot be averaged into a pass. If any request fails, no complete stage grade
+is recorded and the normal pending-grade recovery applies. A single item that cannot fit is rejected
+before any model request, with its evidence preserved. The existing model, concurrency and timeouts
+are unchanged; deadlines are checked between requests. See [payload sizing](../benchmarks/grading-payload-size.json).

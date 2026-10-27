@@ -48,7 +48,7 @@ def _grade_warning(warning: str, stage: str) -> bool:
     return warning.startswith((f"{stage} grade unavailable", f"{stage} did not pass independent grading"))
 
 
-def grade_stage(result, stage, output, papers, settings, world, scope: dict) -> None:
+def grade_stage(result, stage, output, papers, settings, world, scope: dict, *, deadline: float | None = None) -> None:
     """Grade a finished stage. A grade scores the findings and never gates the next stage (a failing score
     doesn't either), so a grade the grader can't give (timeout, empty answer) leaves the stage complete but
     ungraded: `<stage>_grade` stays pending and a later analysis request retries it. On 26 Oct a missing
@@ -56,7 +56,7 @@ def grade_stage(result, stage, output, papers, settings, world, scope: dict) -> 
     analysis = result.analysis
     result.warnings = [w for w in result.warnings if not _grade_warning(w, stage)]
     try:
-        grade = grader.grade(stage, output, papers, settings, **scope, retry_timeout=False)
+        grade = grader.grade(stage, output, papers, settings, **scope, retry_timeout=False, deadline=deadline)
         if grade.stage != stage:
             raise LLMError("Independent grader returned the wrong finding stage")
     except TokenBudgetExceeded:
@@ -91,7 +91,8 @@ def run_finding_stages(result, papers, settings, world, context: FindingContext,
 
     def assess(stage):
         _check_resources(context)
-        grade_stage(result, stage, getattr(result, stage), papers, settings, world, grader.finding_scope(context, stage))
+        grade_stage(result, stage, getattr(result, stage), papers, settings, world, grader.finding_scope(context, stage),
+                    deadline=context.deadline)
         # A timed-out request or a late successful response can exhaust the run even
         # when it was within budget before the call. Keep its result, then stop.
         _check_resources(context)

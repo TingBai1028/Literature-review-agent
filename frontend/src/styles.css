@@ -956,6 +956,19 @@ blockquote {
     transform: rotate(360deg);
   }
 }
+.analysis-recovery {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.analysis-recovery > span {
+  flex: 1 1 220px;
+}
+.analysis-recovery > button {
+  flex-shrink: 0;
+}
 .graph-empty {
   height: 100%;
   min-height: 320px;

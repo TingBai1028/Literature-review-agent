@@ -24,7 +24,7 @@ same Python application. API routes take precedence over static files.
 For development, keep the API running and use `npm run dev` in this directory.
 Vite proxies `/api` to `http://127.0.0.1:8000` (override with `LITAGENT_API_PROXY`).
 
-Opening the UI reads saved data and does not start a model call. **Search papers**, **New map**, **Run analysis**,
+Opening the UI reads saved data and does not start a model call. **Search papers**, **New map**, **Continue analysis**,
 and applying a move in real mode can call the configured Nightshift model. The UI
 shows the server's sample/real mode and the operation progress. Sample mode explicitly
 labels its synthetic similarities, groupings and findings.
@@ -52,8 +52,9 @@ labels its synthetic similarities, groupings and findings.
    topic navigation and the inspector show full labels; the overview omits dense labels.
    Drag the map with a finger and use the zoom controls to inspect individual nodes.
 3. A new map continues on its own: Graph 1 (paper-to-paper edges) appears as soon as it is ready,
-   then Graph 2 (research gaps) is added on the same positions. **Run analysis** continues an
-   unfinished analysis or analyses an older version. Hover an edge for its one-line reason; click it
+   then Graph 2 (research gaps) is added on the same positions. A **Continue analysis** action appears
+   beside the map only when analysis is missing or unfinished; completed maps need no extra step.
+   Hover an edge for its one-line reason; click it
    for the longer reason, evidence and similarity. Edges always join two papers. Empty gap output is
    valid and does not prove no gap exists. **Swap papers** (map toolbar, with the backup pool's size)
    swaps the side papers for the next-best papers of the backup pool; main and foundation stay.

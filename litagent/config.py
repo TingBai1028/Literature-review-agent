@@ -246,6 +246,8 @@ class Settings:
     finding_min_quote_chars: int = 20
     finding_validation_retries: int = 1
     finding_grader_source_chars: int = 1400
+    finding_grader_batch_size: int = 5  # findings or abstained pairs per independent stage-grade request
+    finding_grader_max_input_chars: int = 48000  # serialized user payload; never truncate original quotes to fit
     connection_similarity_min: float = 0.5
     connection_within_pairs_per_cluster: int = 2
     connection_max_within_pairs: int = 4

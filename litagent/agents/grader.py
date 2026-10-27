@@ -10,12 +10,13 @@ Cheap rule-based checks run first; the LLM grader only runs if they pass.
 from __future__ import annotations
 
 import json
+import time
 from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
 
 from litagent.config import CLUSTER_MAX_PAPER_FRACTION, CLUSTER_MAX_SINGLETON_FRACTION, Settings
-from litagent.integrations.llm import complete_json, load_prompt
+from litagent.integrations.llm import LLMError, TokenBudgetExceeded, complete_json, load_prompt
 from litagent.schemas import Cluster, Grade, Paper, QuestionCluster
 from litagent.trace import current_trace
 
@@ -23,7 +24,8 @@ Stage = Literal["clusters", "connections", "gaps"]
 
 
 def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: Settings,
-          *, question: str | None = None, reviewed_pairs: list[dict] | None = None, retry_timeout: bool = True) -> Grade:
+          *, question: str | None = None, reviewed_pairs: list[dict] | None = None, retry_timeout: bool = True,
+          deadline: float | None = None) -> Grade:
     """`retry_timeout=False` when a missing grade is acceptable (it stays pending and is retried later)."""
     if stage == "clusters":
         problem = check_cluster_sizes(output, len(papers))  # type: ignore[arg-type]
@@ -87,13 +89,102 @@ def grade(stage: Stage, output: list[BaseModel], papers: list[Paper], settings: 
                                         for p in search.get("papers", [])]
         payload["papers"] = [{"id": p.id, "title": p.title,
             "abstract": (p.abstract or "")[:settings.finding_grader_source_chars],
-            "cited_original_spans": [{"field": field, "quote": e.quote} for item in output for e in item.evidence
-                if e.paper_id == p.id for field in ("abstract", "full_text") if getattr(p, field) and e.quote in getattr(p, field)]}
+            "cited_original_spans": [{"field": field, "quote": quote} for field, quote in dict.fromkeys(
+                (field, e.quote) for item in output for e in item.evidence if e.paper_id == p.id
+                for field in ("abstract", "full_text") if getattr(p, field) and e.quote in getattr(p, field))]}
             for p in papers if (not referenced and reviewed_pairs is None) or p.id in referenced]
+        return _grade_findings(payload, settings, retry_timeout, deadline)
     draft = complete_json(load_prompt("grader"), json.dumps(payload, ensure_ascii=False), _explained_grade(settings.grade_pass_mark),
                           settings=settings, agent_name="grader", retry_timeout=retry_timeout,
                           model=settings.grader_model)
     return Grade.model_validate(draft.model_dump())
+
+
+def _finding_batches(payload: dict, settings: Settings) -> list[str]:
+    """Partition every finding and reviewed pair, with only its sources. Preflight all requests before sending.
+
+    A quote is never shortened to meet the cap. A single oversized unit fails as a pending grade instead of
+    sending an unbounded request or silently dropping evidence. Source records and coverage hits in payload
+    are already compact; their originals are unchanged.
+    """
+    if min(settings.finding_grader_batch_size, settings.finding_grader_max_input_chars) < 1:
+        raise ValueError("Finding grader batch size and input cap must be positive")
+    units = [{"output": [item], "pairs": [], "source_ids": []} for item in payload["output"]]
+    by_pair = {}
+    for unit in units:
+        item = unit["output"][0]
+        by_pair.setdefault(frozenset(item.get("paper_ids", item.get("between_paper_ids", []))), unit)
+    for pair in payload["reviewed_pairs"] or []:
+        # Only source scope belongs in the grader; never include the producer's verdict/reason.
+        scope = {"pair_id": pair["pair_id"], "paper_ids": pair["paper_ids"]}
+        unit = by_pair.get(frozenset(pair["paper_ids"]))
+        if unit is not None:
+            unit["pairs"].append(scope)
+        else:
+            units.append({"output": [], "pairs": [scope], "source_ids": []})
+    if not units and payload["reviewed_pairs"] is None:
+        # Legacy callers without candidate scope still grade all supplied sources in bounded batches.
+        units = [{"output": [], "pairs": [], "source_ids": [p["id"]]} for p in payload["papers"]]
+
+    def serialize(batch):
+        out = {k: v for k, v in payload.items() if k not in {"output", "papers", "reviewed_pairs", "empty_output"}}
+        out["output"] = [item for unit in batch for item in unit["output"]]
+        pairs = [pair for unit in batch for pair in unit["pairs"]]
+        out["reviewed_pairs"] = pairs if payload["reviewed_pairs"] is not None else None
+        ids = {pid for unit in batch for pid in unit["source_ids"]}
+        ids.update(pid for pair in pairs for pid in pair["paper_ids"])
+        quotes = set()
+        for item in out["output"]:
+            ids.update(item.get("paper_ids", item.get("between_paper_ids", [])))
+            quotes.update((e["paper_id"], e["quote"]) for e in item["evidence"])
+        out["papers"] = [{**p, "cited_original_spans": [span for span in p["cited_original_spans"]
+                           if (p["id"], span["quote"]) in quotes]} for p in payload["papers"] if p["id"] in ids]
+        if not out["output"]:
+            out["empty_output"] = ("Every supplied reviewed pair was abstained or rejected. Judge whether abstention is justified "
+                "by the supplied sources; fail only by naming a reviewed pair and its supporting source statements.")
+        return json.dumps(out, ensure_ascii=False)
+
+    batches, batch = [], []
+    for unit in units:
+        proposed = batch + [unit]
+        if batch and (len(proposed) > settings.finding_grader_batch_size
+                      or len(serialize(proposed)) > settings.finding_grader_max_input_chars):
+            batches.append(serialize(batch))
+            batch = []
+        batch.append(unit)
+        if len(serialize(batch)) > settings.finding_grader_max_input_chars:
+            raise LLMError("A finding grading item exceeds finding_grader_max_input_chars; original evidence was kept and no grading request was sent")
+    message = serialize(batch)
+    if len(message) > settings.finding_grader_max_input_chars:
+        raise LLMError("A finding grading item exceeds finding_grader_max_input_chars; original evidence was kept and no grading request was sent")
+    batches.append(message)
+    return batches
+
+
+def _grade_findings(payload: dict, settings: Settings, retry_timeout: bool, deadline: float | None) -> Grade:
+    batches = _finding_batches(payload, settings)
+    deadline = deadline if deadline is not None else time.monotonic() + settings.run_timeout_s
+    grades = []
+    for index, message in enumerate(batches, 1):
+        if time.monotonic() >= deadline:
+            raise TokenBudgetExceeded("Finding grading time limit reached; finished findings are retained")
+        if trace := current_trace():
+            trace.log("grader", "grade finding batch", f"{payload['stage']} {index}/{len(batches)}",
+                      result={"input_chars": len(message)}, why="Bounded source-only grading; all batches must finish")
+        draft = complete_json(load_prompt("grader"), message, _explained_grade(settings.grade_pass_mark),
+                              settings=settings, agent_name="grader", retry_timeout=retry_timeout,
+                              model=settings.grader_model)
+        grade = Grade.model_validate(draft.model_dump())
+        if grade.stage != payload["stage"]:
+            raise LLMError("Independent grader returned the wrong finding stage")
+        grades.append(grade)
+    if len(grades) == 1:
+        return grades[0]
+    # Keep the weakest complete batch's scores, so no failing batch is averaged into a pass.
+    weakest = min(grades, key=lambda grade: grade.total)
+    return weakest.model_copy(update={"reasoning":
+        f"Lowest-scoring of {len(grades)} bounded batches; scores are model judgments, not measured accuracy. "
+        + " ".join(f"Batch {i}: {grade.total}/9. {grade.reasoning}" for i, grade in enumerate(grades, 1))})
 
 
 def _explained_grade(pass_mark: int) -> type[BaseModel]:
