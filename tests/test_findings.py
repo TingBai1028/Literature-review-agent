@@ -241,7 +241,7 @@ def test_grader_receives_question_and_only_reviewed_scope_without_verifier_reaso
     seen = []
     def grade_response(prompt, message, schema, **kw):
         seen.append(json.loads(message))
-        return Grade(stage="connections", accuracy=2, appropriateness=2, actionability=2)
+        return Grade(stage=seen[-1]["stage"], accuracy=2, appropriateness=2, actionability=2)
     monkeypatch.setattr(grader, "complete_json", grade_response)
     real_grade("connections", found, papers, cfg, **grader.finding_scope(ctx, "connections"))
     assert seen[0]["question"] == root.question
